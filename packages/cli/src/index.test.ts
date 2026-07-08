@@ -544,8 +544,6 @@ describe("@podo/cli", () => {
     ).toMatchObject({
       ok: true,
     });
-    await expect(runCli(["ui", "--dry-run"], io)).resolves.toBe(0);
-    expect(io.out.some((line) => line.includes("Would start Podo Studio"))).toBe(true);
     await expect(runCli(["mcp", "--dry-run"], io)).resolves.toBe(0);
     expect(io.out.some((line) => line.includes("Would start Podo MCP"))).toBe(true);
   });

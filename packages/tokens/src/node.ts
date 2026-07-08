@@ -6,7 +6,7 @@ import type { LoadTokenDocumentsOptions, TokenSource, TokenSourceTier } from "./
 /**
  * Node-only token file loading. Kept in a separate entry (`@podo/tokens/node`)
  * so the browser-safe `@podo/tokens` main entry carries no `node:` imports and
- * can be bundled into the editor UI. See report.md §5 / §12.
+ * can be bundled for browser consumers.
  */
 export async function loadTokenDocument(
   filePath: string,

@@ -83,7 +83,7 @@ function readNumbers(input: string): number[] {
  * Convert SVG path data into an opentype glyph path, mapping the viewBox into
  * the em with a pure Y-flip and integer-rounded coordinates. The data is first
  * normalized with svgpath (relative → absolute, arcs → cubics, shorthands
- * expanded) so editor-drawn and uploaded paths parse the same as generated ones.
+ * expanded) so browser-drawn and uploaded paths parse the same as generated ones.
  * No dependency on opentype's own `fromSVG` (whose default transform is opaque
  * and version-dependent), so output is deterministic.
  */

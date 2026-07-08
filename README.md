@@ -1,6 +1,6 @@
 # Podo UI v2
 
-Podo UI v2 is a JSON-spec-first TypeScript design system. Design tokens, component specifications, icon metadata, themes, project overrides, builders, editor tooling, and MCP access are built around validated JSON contracts.
+Podo UI v2 is a JSON-spec-first TypeScript design system. Design tokens, component specifications, icon metadata, themes, project overrides, builders, and MCP access are built around validated JSON contracts.
 
 ## Packages
 
@@ -9,7 +9,6 @@ Podo UI v2 is a JSON-spec-first TypeScript design system. Design tokens, compone
 - `@podo/icons`: icon manifest validation and font/native asset builders.
 - `@podo/core`: shared behavior, accessibility, registry, and state helpers.
 - `@podo/web`, `@podo/react`, `@podo/hono`, `@podo/native`: runtime component targets.
-- `@podo/editor` and `@podo/studio`: design-system authoring and installed-project UI tools.
 - `@podo/cli`: `podo` project setup/build/update command.
 - `@podo/mcp`: Model Context Protocol server for AI tool access to Podo specs.
 
@@ -18,7 +17,6 @@ Podo UI v2 is a JSON-spec-first TypeScript design system. Design tokens, compone
 ```sh
 pnpm install
 pnpm check
-pnpm test:studio:e2e
 pnpm build
 pnpm release:verify
 ```
@@ -33,7 +31,7 @@ podo build --dry-run
 podo build
 ```
 
-Project-local Podo state lives under `.podo`. The CLI, Studio, and MCP tools must validate JSON specs before writing and keep generated outputs reproducible from JSON source.
+Project-local Podo state lives under `.podo`. The CLI and MCP tools must validate JSON specs before writing and keep generated outputs reproducible from JSON source.
 
 ## Documentation
 

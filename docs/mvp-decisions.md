@@ -10,12 +10,10 @@ These decisions close the postponed v2 MVP choices in `todo.md`.
 | React Native icons           | Use generated glyph maps as the default; SVG component adapters are optional. | The icon source remains SVG, web output remains WOFF/WOFF2, and native can consume stable codepoints without requiring a web font runtime. | Add SVG component output if teams need per-icon tree shaking or multi-color icons.                        |
 | Package strategy             | Publish scoped `@podo/*` packages first.                                      | Each target has different dependencies, peer dependencies, and size budgets; a single `podo-ui` compatibility package can be added later.  | Add a compatibility package only after adoption data shows install friction.                              |
 | Figma integration            | Support variable import/export and GitHub Action PR sync for MVP.             | Browser-side direct pushes and full plugin workflow add auth and review risk; CI PR sync keeps JSON changes reviewable.                    | Add plugin/REST write flows after token sync conflicts, auth, and review policies are tested.             |
-| Editor canvas                | Standardize on tldraw for the MVP editor canvas.                              | The current editor already has a custom tldraw shape, resize handling, slot composition, and JSON export/import paths.                     | Compare alternatives when page/layout schema editing or higher-scale canvas performance becomes a limit.  |
 
 Related documents:
 
 - `docs/component-renderer-mvp.md`
 - `docs/icon-guide.md`
 - `docs/package-strategy.md`
-- `docs/editor-workflow.md`
 - `docs/release-strategy.md`

@@ -12,8 +12,6 @@ export default tseslint.config(
       "**/node_modules/**",
       ".changeset/**",
       "pnpm-lock.yaml",
-      // Vendored verbatim from the main branch (v1 editor); not hand-maintained.
-      "packages/editor/src/vendor/**",
     ],
   },
   js.configs.recommended,

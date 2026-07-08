@@ -2,7 +2,6 @@
   "files": [],
   "references": [
     { "path": "./packages/spec" },
-    { "path": "./packages/edit-core" },
     { "path": "./packages/tokens" },
     { "path": "./packages/icon-build" },
     { "path": "./packages/icons" },
@@ -12,9 +11,7 @@
     { "path": "./packages/hono" },
     { "path": "./packages/native" },
     { "path": "./packages/codegen" },
-    { "path": "./packages/editor" },
     { "path": "./packages/migration" },
-    { "path": "./packages/studio" },
     { "path": "./packages/mcp" },
     { "path": "./packages/cli" }
   ]

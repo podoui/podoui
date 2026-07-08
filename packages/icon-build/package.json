@@ -2,7 +2,7 @@
   "name": "@podo/icon-build",
   "version": "0.0.0",
   "type": "module",
-  "description": "Deterministic, isomorphic SVG-to-woff2 icon font builder shared by the Podo editor and Node icon build.",
+  "description": "Deterministic, isomorphic SVG-to-woff2 icon font builder for browser and Node icon builds.",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

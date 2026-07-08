@@ -1,6 +1,6 @@
 # Component Spec Authoring Guide
 
-Component specs are JSON contracts used by codegen, Studio, editor tooling, and MCP.
+Component specs are JSON contracts used by codegen, the renderers, and MCP.
 
 ## File Shape
 
@@ -60,7 +60,7 @@ Slots describe composition points. Use `required` when the component is invalid 
 }
 ```
 
-Slot-heavy components such as GNB/LNB should keep navigation data and child placement outside the base component renderer. The editor exports composition separately when layout/page specs are introduced.
+Slot-heavy components such as GNB/LNB should keep navigation data and child placement outside the base component renderer. Composition is expressed separately when layout/page specs are introduced.
 
 ## Variants And States
 

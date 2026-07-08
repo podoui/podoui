@@ -6,11 +6,10 @@ Phase 10 defines the release quality gates for Podo v2. The commands are intenti
 
 ```sh
 pnpm check
-pnpm test:studio:e2e
 pnpm build
 ```
 
-`pnpm check` runs typecheck, lint, unit/integration tests, and format checks. `pnpm test:studio:e2e` runs the Playwright browser workflow for the installed-project Studio. `pnpm build` verifies package and example compilation.
+`pnpm check` runs typecheck, lint, unit/integration tests, and format checks. `pnpm build` verifies package and example compilation.
 
 ## Test Coverage Map
 
@@ -22,7 +21,6 @@ pnpm build
 | Build output snapshots | `packages/tokens/src/__snapshots__`, `packages/icons/src/__snapshots__`, `packages/codegen/src/__snapshots__`                                                                      |
 | Cross-target parity    | `packages/codegen/src/parity.test.ts`                                                                                                                                              |
 | CLI e2e                | `packages/cli/src/index.test.ts` creates temp projects and runs `podo init`, `podo validate`, `podo build`, `podo update`, and `podo migrate`                                      |
-| Studio e2e             | `packages/studio/src/index.test.ts` covers API workflows; `packages/studio/e2e/studio.spec.ts` uses Playwright for setup, token override, and build UI workflows                   |
 | MCP integration        | `packages/mcp/src/index.test.ts` exercises MCP read tools and an in-memory MCP client/server transport                                                                             |
 
 ## Package Size Budgets
@@ -45,7 +43,7 @@ Rules:
 
 ## Release Blocking Rules
 
-- Any schema, resolver, codegen, CLI, Studio, or MCP regression test failure blocks release.
+- Any schema, resolver, codegen, CLI, or MCP regression test failure blocks release.
 - Snapshot changes are allowed only when the source JSON or renderer contract change is intentional.
 - CLI and MCP write paths must preserve dry-run or validation-first behavior.
 - Example builds must stay green because they are used as installation smoke tests.

@@ -26,7 +26,7 @@ interface Subpath {
 }
 
 // Fixed resolution constants — changing them changes every generated glyph, so
-// they are constants, never options, and are shared by the browser editor build
+// they are constants, never options, and are shared by the browser build
 // and the Node generator so both produce identical fonts.
 const CURVE_STEPS = 18; // flattening steps per cubic/quadratic bezier
 const DISC_SEGMENTS = 16; // polygon segments for a round cap / round join disc

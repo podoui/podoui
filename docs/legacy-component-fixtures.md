@@ -1,9 +1,9 @@
 # Legacy Component Fixture Migration
 
-P3 migrates the v1 `public/ai/components` catalog into editable v2 component specs for the
-editor. These fixtures are intentionally minimal JSON specs: they preserve catalog identity,
-category mapping, primary props, variants, states, anatomy, examples, and target availability so the
-editor can list, search, select, preview, and edit the components.
+P3 migrates the v1 `public/ai/components` catalog into v2 component specs. These fixtures are
+intentionally minimal JSON specs: they preserve catalog identity, category mapping, primary props,
+variants, states, anatomy, examples, and target availability so the component registry, codegen, and
+MCP can list, look up, and generate the components.
 
 ## Migrated Fixtures
 
@@ -36,7 +36,7 @@ No v1 component files are intentionally omitted from the P3 fixture catalog.
 P3 does not claim runtime behavior parity for every component renderer. Complex behaviors such as
 calendar date math, rich text editing, toast queue management, tab hash synchronization, table data
 rendering, and file picker integration remain renderer or behavior-module work. The P3 fixtures only
-make those components visible and editable in the v2 JSON-spec-first editor path.
+make those components available in the v2 JSON-spec-first catalog.
 
 The following v1 schema details are normalized for v2 validation:
 

@@ -6,7 +6,7 @@ This repository is the `v2` orphan branch for Podo UI. Follow these instructions
 
 Build Podo v2 as a JSON-spec-first TypeScript design system:
 
-- Design tokens, component specs, icon metadata, themes, project overrides, builders, editor tooling, and MCP access are driven by validated JSON.
+- Design tokens, component specs, icon metadata, themes, project overrides, builders, and MCP access are driven by validated JSON.
 - The source planning documents are `plan.md` and `todo.md`.
 - Work through `todo.md` in order unless the user explicitly changes priority.
 
@@ -58,8 +58,6 @@ pnpm check
 ```
 
 If a command cannot run because dependencies are not installed or the current phase has not implemented the required package yet, state that clearly in the review request and final update.
-
-For ad-hoc visual checks of the running editor UI (not regression tests), use the `agent-browser` CLI per `docs/browser-testing.md`. Reproducible regression stays in Playwright/Vitest.
 
 ## Review Standard
 

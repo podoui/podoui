@@ -10,8 +10,6 @@ Podo v2 uses scoped npm packages as the first release strategy:
 - `@podo/react`
 - `@podo/hono`
 - `@podo/native`
-- `@podo/editor`
-- `@podo/studio`
 - `@podo/cli`
 - `@podo/mcp`
 

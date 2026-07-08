@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   emitCssVariables,
@@ -16,7 +16,8 @@ import {
 } from "./index.js";
 import { loadTokenDocuments } from "./node.js";
 
-const specSamples = resolve(process.cwd(), "packages/spec/samples/tokens");
+// Repo-relative so the origin filePaths captured in snapshots are stable across machines.
+const specSamples = join("packages", "spec", "samples", "tokens");
 
 describe("@podo/tokens", () => {
   it("loads package token files and project .podo overrides", async () => {

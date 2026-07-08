@@ -132,7 +132,7 @@
 - [x] React Native token object 생성기 구현
   - 완료 기준: RN에서 사용할 number/string 값이 단위 변환되어 생성된다.
 - [x] token JSON bundle 생성기 구현
-  - 완료 기준: MCP와 editor가 읽는 resolved JSON bundle이 생성된다.
+  - 완료 기준: MCP가 읽는 resolved JSON bundle이 생성된다.
 - [x] sourcemap 또는 origin metadata 생성
   - 완료 기준: resolved 값이 어느 원본 파일/토큰에서 왔는지 추적된다.
 
@@ -280,7 +280,7 @@
 - [x] `@podo/cli` 패키지 생성
   - 완료 기준: `podo` bin이 로컬에서 실행된다.
 - [x] CLI command router 구현
-  - 완료 기준: `init`, `build`, `validate`, `ui`, `update`, `migrate`, `mcp` 명령이 등록된다.
+  - 완료 기준: `init`, `build`, `validate`, `update`, `migrate`, `mcp` 명령이 등록된다.
 - [x] project root 탐색 구현
   - 완료 기준: package.json 또는 git root 기준으로 설치 프로젝트 루트를 찾는다.
 - [x] config loader 구현
@@ -322,78 +322,6 @@
   - 완료 기준: JSON report를 CI에서 사용할 수 있다.
 - [x] schema mismatch 감지 구현
   - 완료 기준: lock schema version이 현재 패키지와 다르면 migrate 안내를 한다.
-
-## Phase 5: 경량 Web UI
-
-### Studio Foundation
-
-- [x] `@podo/studio` 패키지 생성
-  - 완료 기준: `podo ui`로 로컬 Web UI가 열린다.
-- [x] Hono 또는 Vite 기반 로컬 서버 구현
-  - 완료 기준: local file API와 frontend dev/build가 연결된다.
-- [x] file API 구현
-  - 완료 기준: `.podo` 파일 읽기/쓰기, validation, build 실행 API가 제공된다.
-- [x] project context loader 구현
-  - 완료 기준: 설치 프로젝트의 config, resolved tokens, component specs를 UI에 제공한다.
-- [x] UI shell 구현
-  - 완료 기준: navigation, status bar, validation panel, build button이 있다.
-
-### Initial Setup UI
-
-- [x] 초기 설정 wizard 화면 구현
-  - 완료 기준: environment, theme, dark mode, outDir, icon groups를 설정할 수 있다.
-- [x] framework 감지 결과 표시
-  - 완료 기준: 자동 감지 결과와 수동 변경 옵션을 제공한다.
-- [x] 설정 저장 및 build 실행 연결
-  - 완료 기준: wizard 완료 후 `.podo/config.json` 저장과 첫 build가 실행된다.
-
-### Token/Theme Editor
-
-- [x] color token editor 구현
-  - 완료 기준: palette/semantic/component token을 편집하고 preview할 수 있다.
-- [x] typography editor 구현
-  - 완료 기준: landing/dashboard/custom별 h1/body scale을 편집할 수 있다.
-- [x] spacing/radius editor 구현
-  - 완료 기준: scale과 component binding preview가 가능하다.
-- [x] dark mode editor 구현
-  - 완료 기준: light/dark 값을 나란히 비교하고 수정할 수 있다.
-- [x] token reference picker 구현
-  - 완료 기준: component token binding에 기존 token을 검색해 연결할 수 있다.
-
-### Component Editor
-
-- [x] component list/detail UI 구현
-  - 완료 기준: 기본 컴포넌트와 project local component를 구분해 보여준다.
-- [x] props editor 구현
-  - 완료 기준: prop 추가/수정/삭제와 타입 검증이 가능하다.
-- [x] variants/states editor 구현
-  - 완료 기준: variant matrix와 state별 token binding을 편집할 수 있다.
-- [x] slots editor 구현
-  - 완료 기준: default/named/required slot을 편집하고 target별 매핑을 볼 수 있다.
-- [x] local component 생성 UI 구현
-  - 완료 기준: `.podo/components/local`에 새 component spec을 저장한다.
-- [x] lng/gnb 등 슬롯형 컴포넌트 템플릿 구현
-  - 완료 기준: navigation 계열 슬롯 컴포넌트를 생성하고 바로 build할 수 있다.
-
-### Icon Editor
-
-- [x] icon group manager 구현
-  - 완료 기준: 그룹 생성/수정/삭제, 아이콘 이동/복사가 가능하다.
-- [x] SVG upload/import 구현
-  - 완료 기준: SVG 검증 후 `.podo/icons/svg`에 저장한다.
-- [x] codepoint preview 구현
-  - 완료 기준: codepoint lock 상태와 충돌을 UI에서 확인한다.
-- [x] icon font rebuild action 구현
-  - 완료 기준: UI에서 아이콘 빌드를 실행하고 결과를 preview한다.
-
-### Diff/Build UI
-
-- [x] build diff panel 구현
-  - 완료 기준: 생성/수정/삭제 파일 diff를 확인할 수 있다.
-- [x] validation panel 구현
-  - 완료 기준: schema/reference/build error를 위치와 함께 보여준다.
-- [x] target preview 구현
-  - 완료 기준: web/react/hono/native 산출물 일부를 UI에서 확인한다.
 
 ## Phase 6: MCP
 
@@ -455,35 +383,10 @@
   - 완료 기준: 새 버전과 현재 `.podo` 차이를 쓰기 없이 보고한다.
 - [x] conflict detector 구현
   - 완료 기준: 사용자 override와 새 기본 스펙 변경이 충돌하면 명확히 표시한다.
-- [x] migration UI 구현
-  - 완료 기준: Studio에서 변경점, 자동 적용 가능 항목, 수동 처리 항목을 볼 수 있다.
 - [x] lockfile update 구현
   - 완료 기준: migration 성공 후 `.podo/lock.json`이 갱신된다.
 - [x] rollback 전략 문서화
   - 완료 기준: migration 전 backup 또는 git diff 기반 복구 방법이 안내된다.
-
-## Phase 8: 고급 편집 도구
-
-- [x] `@podo/editor` 패키지 생성
-  - 완료 기준: 디자인 시스템 개발용 editor 앱이 실행된다.
-- [x] tldraw 기반 canvas 도입 검증
-  - 완료 기준: Podo component node를 custom shape로 렌더링하는 prototype이 있다.
-- [x] component drag/drop 구현
-  - 완료 기준: canvas에 컴포넌트를 배치하고 props를 수정할 수 있다.
-- [x] slot composition 구현
-  - 완료 기준: gnb/lng 같은 슬롯형 컴포넌트에 child component를 배치할 수 있다.
-- [x] responsive preview 구현
-  - 완료 기준: desktop/tablet/mobile viewport별 preview가 가능하다.
-- [x] component spec export 구현
-  - 완료 기준: canvas 편집 결과가 `.component.json`으로 저장된다.
-- [x] layout/page spec 모델 검토
-  - 완료 기준: 컴포넌트 스펙과 페이지 조합 스펙의 경계를 문서화한다.
-- [x] Figma variables import 구현
-  - 완료 기준: Figma 변수에서 token JSON으로 가져올 수 있다.
-- [x] Figma variables export 구현
-  - 완료 기준: token JSON을 Figma 변수로 내보내는 흐름이 검증된다.
-- [x] GitHub sync 전략 검토
-  - 완료 기준: Figma sync를 CI/GitHub Action으로 운영할 수 있는지 결정한다.
 
 ## Phase 9: 예제와 문서
 
@@ -522,14 +425,12 @@
   - 완료 기준: 같은 spec이 web/react/hono/native에서 의미상 같은 props와 token을 사용한다.
 - [x] CLI e2e test 작성
   - 완료 기준: temp project에서 `podo init/build/validate/update`가 실행된다.
-- [x] Studio e2e test 작성
-  - 완료 기준: 설정 변경, token 변경, build 실행 workflow가 Playwright로 검증된다.
 - [x] MCP integration test 작성
   - 완료 기준: MCP tools가 sample `.podo` 프로젝트에서 올바른 응답을 반환한다.
 - [x] package size budget 설정
   - 완료 기준: web/react/native/cli/mcp 패키지의 목표 크기가 문서화된다.
 - [x] performance budget 설정
-  - 완료 기준: token build, component build, Studio initial load 목표 시간이 문서화된다.
+  - 완료 기준: token build, component build 목표 시간이 문서화된다.
 
 ## 릴리스 준비 체크리스트
 
@@ -562,9 +463,6 @@
 ## 2차 MVP 완료 기준
 
 - [x] React Native 기본 컴포넌트가 동작한다.
-- [x] Studio에서 초기 설정과 token/theme 편집이 가능하다.
-- [x] Studio에서 component slot/variant 편집이 가능하다.
-- [x] Studio에서 icon group 관리와 rebuild가 가능하다.
 - [x] `podo update --dry-run`과 migration report가 동작한다.
 - [x] Claude Code/Codex가 MCP로 Podo 스펙을 조회해 코드 작성에 활용할 수 있다.
 
@@ -576,22 +474,18 @@
 - [x] React Native 아이콘을 font glyph로 갈지 SVG component로 갈지 결정
 - [x] 단일 `podo-ui` 패키지와 `@podo/*` 멀티 패키지 배포 중 1차 전략 결정
 - [x] Figma 연동을 plugin, REST sync, GitHub Action 중 어디까지 1차 지원할지 결정
-- [x] Editor canvas를 tldraw로 고정할지 다른 canvas SDK도 비교할지 결정
 
 ## Claude 보고서 기반 보정 작업
 
-- [x] P0: editor 변경 안정화
-  - 완료 기준: `legacy-fixtures.ts`, `spec-editing.ts`, editor UI 변경이 의도된 프로덕션 코드로 포함되고 `pnpm check`가 통과한다.
-  - 완료 기준: Claude CLI가 현재 P0 범위를 엄격히 리뷰하고 차단 이슈가 없다고 확인한다.
 - [x] P1: 테마와 기존 grid 반영 보강
-  - 완료 기준: v2 수정 범위의 기본 color scheme은 `light`, `dark`, `auto`로 명확히 제한하고 editor preview/spec에서 전환 가능하다.
-  - 완료 기준: 기존 v1 grid 시스템은 새 토큰 재설계 없이 호환 산출물/문서/테스트 기준으로 유지됨이 editor 보정 범위에서도 확인된다.
+  - 완료 기준: v2 수정 범위의 기본 color scheme은 `light`, `dark`, `auto`로 명확히 제한한다.
+  - 완료 기준: 기존 v1 grid 시스템은 새 토큰 재설계 없이 호환 산출물/문서/테스트 기준으로 유지된다.
 - [x] P2: Button spec 완성
-  - 완료 기준: 기존 Button의 theme, variant, size, state, alignment 조합이 JSON spec과 editor preview/test에 반영된다.
+  - 완료 기준: 기존 Button의 theme, variant, size, state, alignment 조합이 JSON spec과 test에 반영된다.
   - 완료 기준: Button 기본값과 token binding이 v1 문서/SCSS 기준과 충돌하지 않는다.
 - [x] P3: 기존 컴포넌트 spec fixture 확장
-  - 완료 기준: v1 `public/ai/components`에 있던 주요 컴포넌트가 최소 JSON spec fixture로 이식되고 editor 목록/검색/preview에서 참조 가능하다.
+  - 완료 기준: v1 `public/ai/components`에 있던 주요 컴포넌트가 최소 JSON spec fixture로 이식된다.
   - 완료 기준: 누락 컴포넌트 목록과 의도적으로 보류한 범위가 문서화된다.
 - [x] P4: 설치 프로젝트 반영 플로우 연결 검증
-  - 완료 기준: editor export 결과가 `.podo` 기반 project override/build/update 흐름으로 이어지는 경로가 CLI/Studio 문서와 테스트로 검증된다.
+  - 완료 기준: `.podo` 기반 project override/build/update 흐름 경로가 CLI 문서와 테스트로 검증된다.
   - 완료 기준: dry-run, validation, diff 확인 없이 설치 프로젝트 파일을 덮어쓰지 않는다.

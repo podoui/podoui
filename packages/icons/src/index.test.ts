@@ -87,7 +87,7 @@ describe("@podo/icons", () => {
     expect(css).toContain(".podo-icon-chevron-left::before");
   });
 
-  it("builds inline manifests as woff2 via the shared pipeline, byte-identical to the editor", async () => {
+  it("builds inline manifests as woff2 via the shared pipeline, byte-identical to the browser build", async () => {
     const icons = {
       box: {
         svg: '<svg viewBox="0 0 1000 1000"><path d="M100 100H900V900H100Z" fill="currentColor"/></svg>',
@@ -140,7 +140,7 @@ describe("@podo/icons", () => {
     // Only the always-woff2 artifact is emitted (no legacy woff).
     await expect(stat(join(outDir, "PodoIcons.woff"))).rejects.toThrow();
     const writtenWoff2 = await readFile(join(outDir, "PodoIcons.woff2"));
-    // The Node build's bytes match the editor's @podo/icon-build output exactly.
+    // The Node build's bytes match the browser @podo/icon-build output exactly.
     expect(Buffer.compare(writtenWoff2, Buffer.from(built.woff2))).toBe(0);
     expect(result.metadata.fontFiles).toEqual(["woff2"]);
     expect(result.metadata.woff2).toBe(true);

@@ -18,6 +18,5 @@ Required local checks:
 
 ```sh
 pnpm check
-pnpm test:studio:e2e
 pnpm build
 ```

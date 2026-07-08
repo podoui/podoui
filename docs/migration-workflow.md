@@ -1,6 +1,6 @@
 # Migration Workflow
 
-Phase 7 introduces `@podo/migration`, `podo update`, `podo migrate`, and the Studio Migration tab.
+Phase 7 introduces `@podo/migration`, `podo update`, and `podo migrate`.
 
 ## Manifest Contract
 
@@ -45,7 +45,7 @@ podo update --dry-run --report .podo/migration-report.json
 
 ## Conflict Rules
 
-Blocking conflicts stop `podo migrate` and Studio apply:
+Blocking conflicts stop `podo migrate`:
 
 - `renameToken` target exists with a different value.
 - `moveComponentProp` target prop already exists.
@@ -64,15 +64,6 @@ Successful apply updates `.podo/lock.json`:
 - `generatedHash` is recalculated from the manifest and migrated file hashes.
 
 Run `podo build` after migration to refresh generated target outputs.
-
-## Studio Flow
-
-The Studio Migration tab calls:
-
-- `POST /api/migration/plan` for dry-run plans.
-- `POST /api/migration/apply` for reviewed apply.
-
-Studio uses the same runner as the CLI and writes only `.podo` files.
 
 ## Rollback Strategy
 

@@ -29,7 +29,6 @@
     "@podo/migration": "workspace:*",
     "@podo/mcp": "workspace:*",
     "@podo/spec": "workspace:*",
-    "@podo/studio": "workspace:*",
     "@podo/tokens": "workspace:*"
   }
 }

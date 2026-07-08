@@ -35,7 +35,6 @@ Run the release gate before publishing:
 
 ```sh
 pnpm check
-pnpm test:studio:e2e
 pnpm build
 pnpm release:verify
 pnpm changeset:dry-run

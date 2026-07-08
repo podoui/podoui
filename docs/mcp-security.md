@@ -25,5 +25,5 @@ Use the server from a trusted project root. The server reads package defaults an
 ## Agent Boundaries
 
 - Prefer MCP read tools for token/component lookup.
-- Use CLI or Studio for file writes until a reviewed `write_*` MCP tool exists.
+- Use the CLI for file writes until a reviewed `write_*` MCP tool exists.
 - For migrations, request `explain_migration` first and use `podo update --dry-run` when Phase 7 is available.

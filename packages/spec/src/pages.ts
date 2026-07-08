@@ -11,7 +11,7 @@ import type { ComponentDocument } from "./components.js";
 /**
  * Page/layout spec (installed-project only). A page INSTANTIATES design-system
  * components and arranges them; it never redefines a component's API. Style
- * values are token references only (no raw hex/px). See report.md §8.
+ * values are token references only (no raw hex/px).
  */
 
 export const pageBreakpointSchema = z.enum(["desktop", "tablet", "mobile"]);

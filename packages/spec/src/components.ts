@@ -91,7 +91,7 @@ export const componentVariantSchema = z
     tokens: z.record(dottedPathSchema, componentBindingValueSchema).optional(),
     // Per-value token bindings: value -> part.prop -> token alias, so a specific
     // variant value (e.g. "soft") can re-bind component tokens. Enables
-    // spec-driven per-variant styling in codegen (report.md §3.2 / §6).
+    // spec-driven per-variant styling in codegen.
     valueTokens: z
       .record(z.string(), z.record(dottedPathSchema, componentBindingValueSchema))
       .optional(),

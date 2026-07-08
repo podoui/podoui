@@ -15,7 +15,6 @@
   },
   "homepage": "https://podoui.com",
   "scripts": {
-    "ui": "pnpm --filter @podo/editor dev",
     "build": "pnpm clean && pnpm -r --if-present build",
     "clean": "pnpm -r --if-present clean && rm -rf dist coverage .turbo",
     "examples:build": "pnpm --filter './examples/*' build",
@@ -24,20 +23,18 @@
     "format:check": "prettier . --check",
     "typecheck": "tsc -b tsconfig.json",
     "test": "vitest run",
-    "test:studio:e2e": "playwright test -c playwright.config.ts",
     "test:watch": "vitest",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm format:check",
     "release:verify": "node scripts/verify-release.mjs",
     "changeset:dry-run": "changeset status --verbose && pnpm --filter './packages/*' pack --dry-run",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "pnpm check && pnpm test:studio:e2e && pnpm build && pnpm release:verify && pnpm changeset:dry-run && changeset publish",
-    "prepublishOnly": "pnpm check && pnpm test:studio:e2e && pnpm build && pnpm release:verify && pnpm changeset:dry-run"
+    "release": "pnpm check && pnpm build && pnpm release:verify && pnpm changeset:dry-run && changeset publish",
+    "prepublishOnly": "pnpm check && pnpm build && pnpm release:verify && pnpm changeset:dry-run"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
     "@eslint/js": "^9.39.1",
-    "@playwright/test": "^1.60.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",

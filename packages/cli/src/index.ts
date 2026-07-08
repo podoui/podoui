@@ -57,16 +57,10 @@ import {
   type MigrationPlan,
 } from "@podo/migration";
 import { startMcpServer } from "@podo/mcp";
-import {
-  startStudioServer,
-  type StudioBuildInput,
-  type StudioSetupInput,
-  type StudioServer,
-} from "@podo/studio";
 
 export const packageName = "@podo/cli";
 
-export type CliCommandName = "init" | "build" | "validate" | "ui" | "update" | "migrate" | "mcp";
+export type CliCommandName = "init" | "build" | "validate" | "update" | "migrate" | "mcp";
 
 export interface CliIO {
   cwd: string;
@@ -103,15 +97,7 @@ export interface ValidationReport {
   issues: ValidationIssue[];
 }
 
-const commandNames: CliCommandName[] = [
-  "init",
-  "build",
-  "validate",
-  "ui",
-  "update",
-  "migrate",
-  "mcp",
-];
+const commandNames: CliCommandName[] = ["init", "build", "validate", "update", "migrate", "mcp"];
 
 export async function runCli(
   argv = process.argv.slice(2),
@@ -139,10 +125,6 @@ export async function runCli(
         return 1;
       }
       io.stdout.log(formatInfo("validate", "No validation issues found."));
-      return 0;
-    }
-    if (args.command === "ui") {
-      await startUi(args, io);
       return 0;
     }
     if (args.command === "update") {
@@ -478,46 +460,6 @@ export async function validateProject(args: ParsedArgs, io: CliIO): Promise<Vali
     io.stdout.log(formatInfo("validate", "No validation issues found."));
   }
   return report;
-}
-
-export async function startUi(args: ParsedArgs, io: CliIO): Promise<void> {
-  const root = await findProjectRoot(io.cwd);
-  const host = stringOption(args, "host") ?? "127.0.0.1";
-  const port = parsePort(stringOption(args, "port") ?? "4873");
-  if (args.options["dry-run"]) {
-    io.stdout.log(
-      formatInfo("ui", `Would start Podo Studio at http://${host}:${port} for ${root}.`)
-    );
-    return;
-  }
-
-  const server = await startStudioServer({
-    root,
-    host,
-    port,
-    io,
-    actions: {
-      initialize: async (input) =>
-        initProject(parseArgs(studioSetupArgs(input)), { ...io, cwd: root }),
-      build: async (input) => buildProject(parseArgs(studioBuildArgs(input)), { ...io, cwd: root }),
-      validate: async (input) =>
-        validateProject(
-          parseArgs(["validate", ...(input.report ? ["--report", input.report] : [])]),
-          {
-            ...io,
-            cwd: root,
-          }
-        ),
-    },
-  });
-  io.stdout.log(formatInfo("ui", `Open ${server.url}.`));
-
-  if (args.options.once) {
-    await server.close();
-    return;
-  }
-
-  await waitForUiShutdown(server);
 }
 
 export async function startMcp(args: ParsedArgs, io: CliIO): Promise<void> {
@@ -947,7 +889,6 @@ function helpText(): string {
     "  init       Create .podo config, lock, directories, and bootstrap files",
     "  build      Build tokens, icons, and component target files",
     "  validate   Validate .podo config, tokens, components, and icons",
-    "  ui         Start the local Podo Studio Web UI",
     "  update     Plan package/schema migrations without writing files",
     "  migrate    Apply reviewed migrations to .podo specs and lockfile",
     "  mcp        Start the Podo MCP stdio server",
@@ -980,52 +921,6 @@ function parseBooleanOption(value: string | boolean | undefined, fallback: boole
     return false;
   }
   return fallback;
-}
-
-function parsePort(value: string): number {
-  const port = Number(value);
-  if (!Number.isInteger(port) || port < 0 || port > 65535) {
-    throw new Error(`Invalid port "${value}".`);
-  }
-  return port;
-}
-
-function studioSetupArgs(input: StudioSetupInput): string[] {
-  return [
-    "init",
-    "--target",
-    input.target,
-    "--theme",
-    input.theme,
-    "--dark-mode",
-    String(input.darkMode),
-    "--out-dir",
-    input.outDir,
-    "--yes",
-    ...(input.force ? ["--force"] : []),
-  ];
-}
-
-function studioBuildArgs(input: StudioBuildInput): string[] {
-  return [
-    "build",
-    ...(input.target ? ["--target", input.target] : []),
-    ...(input.outDir ? ["--out-dir", input.outDir] : []),
-    ...(input.dryRun ? ["--dry-run"] : []),
-    ...(input.force ? ["--force"] : []),
-  ];
-}
-
-async function waitForUiShutdown(server: StudioServer): Promise<void> {
-  await new Promise<void>((resolveShutdown) => {
-    const close = (): void => {
-      process.off("SIGINT", close);
-      process.off("SIGTERM", close);
-      void server.close().finally(resolveShutdown);
-    };
-    process.once("SIGINT", close);
-    process.once("SIGTERM", close);
-  });
 }
 
 async function writeJson(filePath: string, value: unknown, force: boolean): Promise<void> {

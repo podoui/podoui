@@ -10,7 +10,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FEF1F1",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -21,7 +21,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFE0DF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -32,7 +32,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFADAD",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -43,7 +43,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FF8985",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -54,7 +54,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#F56666",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -65,7 +65,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#F23B3B",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -76,7 +76,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#EE1818",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -87,7 +87,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#CD0404",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -98,7 +98,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#8F0000",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -109,7 +109,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#5F0000",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -120,7 +120,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FEF1F2",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -131,7 +131,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FCD9DC",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -142,7 +142,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FAB7BD",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -153,7 +153,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#F8969E",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -164,7 +164,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#F66F7A",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -175,7 +175,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#F15764",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -186,7 +186,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#D63D4A",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -197,7 +197,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#BF3742",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -208,7 +208,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#992C35",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -219,7 +219,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#732128",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -230,7 +230,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#ECF8EF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -241,7 +241,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#C5E9CD",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -252,7 +252,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#A9DEB4",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -263,7 +263,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#81CF92",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -274,7 +274,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#57C16F",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -285,7 +285,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#3EA856",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -296,7 +296,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#38994E",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -307,7 +307,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#308242",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -318,7 +318,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#256533",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -329,7 +329,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#1C4D27",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -340,7 +340,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFF7E6",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -351,7 +351,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFEBC2",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -362,7 +362,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFD88A",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -373,7 +373,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFC654",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -384,7 +384,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFBB33",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -395,7 +395,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFAA00",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -406,7 +406,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#E89B00",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -417,7 +417,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#B57900",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -428,7 +428,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#8C5E00",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -439,7 +439,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#6B4700",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -450,7 +450,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFF4F0",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -461,7 +461,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFDACC",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -472,7 +472,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFB599",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -483,7 +483,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FE9975",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -494,7 +494,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FE8052",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -505,7 +505,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FF6A33",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -516,7 +516,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FF5212",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -527,7 +527,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#DB3B00",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -538,7 +538,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#992900",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -549,7 +549,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#661C00",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -560,7 +560,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#EBF5FF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -571,7 +571,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#C7E3FF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -582,7 +582,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#8FC8FF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -593,7 +593,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#70B9FF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -604,7 +604,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#56ACFF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -615,7 +615,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#0095FF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -626,7 +626,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#0074E5",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -637,7 +637,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#0056AA",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -648,7 +648,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#00407F",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -659,7 +659,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#002B55",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -670,7 +670,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#F1F4FD",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -681,7 +681,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#D0DBFB",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -692,7 +692,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#ABBEF7",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -703,7 +703,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#819EF3",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -714,7 +714,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#577DEF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -725,7 +725,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#426CED",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -736,7 +736,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#1245E2",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -747,7 +747,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#123BBA",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -758,7 +758,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#0D2C8B",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -769,7 +769,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#091D5D",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -780,7 +780,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#F5F9FF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -791,7 +791,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#E6F0FE",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -802,7 +802,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#CEE2FD",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -813,7 +813,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#A0C2EE",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -824,7 +824,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#76A0D8",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -835,7 +835,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#4A78B5",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -846,7 +846,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#34547E",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -857,7 +857,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#2D486C",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -868,7 +868,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#253C5A",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -879,7 +879,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#1E3048",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -890,7 +890,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFFFFF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -901,7 +901,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#F9F9F9",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -912,7 +912,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#F4F4F5",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -923,7 +923,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#E4E4E7",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -934,7 +934,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#D1D2D6",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -945,7 +945,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#9FA2AD",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -956,7 +956,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#767985",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -967,7 +967,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#50555E",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -978,7 +978,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#3E424B",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -989,7 +989,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#27272A",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1000,7 +1000,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#18181B",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1011,7 +1011,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#000000",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1022,7 +1022,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(255, 255, 255, 0.05)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1033,7 +1033,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(255, 255, 255, 0.1)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1044,7 +1044,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(255, 255, 255, 0.25)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1055,7 +1055,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(255, 255, 255, 0.3)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1066,7 +1066,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(255, 255, 255, 0.4)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1077,7 +1077,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(255, 255, 255, 0.5)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1088,7 +1088,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(255, 255, 255, 0.6)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1099,7 +1099,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(255, 255, 255, 0.7)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1110,7 +1110,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(255, 255, 255, 0.8)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1121,7 +1121,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(255, 255, 255, 0.9)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1132,7 +1132,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(0, 0, 0, 0.05)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1143,7 +1143,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(0, 0, 0, 0.1)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1154,7 +1154,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(0, 0, 0, 0.25)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1165,7 +1165,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(0, 0, 0, 0.3)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1176,7 +1176,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(0, 0, 0, 0.4)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1187,7 +1187,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(0, 0, 0, 0.5)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1198,7 +1198,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(0, 0, 0, 0.6)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1209,7 +1209,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(0, 0, 0, 0.7)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1220,7 +1220,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(0, 0, 0, 0.8)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1231,7 +1231,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "rgba(0, 0, 0, 0.9)",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+        "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
         "tier": "package"
       }
     },
@@ -1242,7 +1242,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#5B5BD6",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1253,7 +1253,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#FFFFFF",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1264,7 +1264,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#14151A",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1275,7 +1275,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "#D92D20",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1288,7 +1288,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "color.palette.gray.900"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1301,7 +1301,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "color.palette.gray.0"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1314,7 +1314,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "color.palette.red.600"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1327,7 +1327,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "color.palette.purple.600"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1340,7 +1340,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "color.palette.gray.0"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1353,7 +1353,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "color.palette.gray.900"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1366,7 +1366,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "semantic.color.action.primary"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1379,7 +1379,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "semantic.color.text.inverse"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1392,7 +1392,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "semantic.color.surface"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1405,7 +1405,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "semantic.color.text.default"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
         "tier": "package"
       }
     },
@@ -1416,7 +1416,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "4px",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+        "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
         "tier": "package"
       }
     },
@@ -1427,7 +1427,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "8px",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+        "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
         "tier": "package"
       }
     },
@@ -1440,7 +1440,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "spacing.scale.2"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+        "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
         "tier": "package"
       }
     },
@@ -1451,7 +1451,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "8px",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+        "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
         "tier": "package"
       }
     },
@@ -1474,7 +1474,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       },
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+        "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
         "tier": "package"
       }
     },
@@ -1485,7 +1485,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "120ms",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+        "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
         "tier": "package"
       }
     },
@@ -1506,7 +1506,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       ],
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+        "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
         "tier": "package"
       }
     },
@@ -1531,7 +1531,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "motion.easing.standard"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+        "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
         "tier": "package"
       }
     },
@@ -1550,7 +1550,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       },
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+        "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
         "tier": "package"
       }
     },
@@ -1561,7 +1561,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "rawValue": "Pretendard",
       "references": [],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1594,7 +1594,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1627,7 +1627,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1660,7 +1660,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1693,7 +1693,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1726,7 +1726,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1759,7 +1759,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1792,7 +1792,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1825,7 +1825,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1858,7 +1858,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1891,7 +1891,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1924,7 +1924,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1957,7 +1957,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -1990,7 +1990,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -2023,7 +2023,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -2056,7 +2056,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -2089,7 +2089,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -2122,7 +2122,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -2155,7 +2155,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -2188,7 +2188,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -2221,7 +2221,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     },
@@ -2254,638 +2254,638 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "font.family.sans"
       ],
       "origin": {
-        "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+        "filePath": "packages/spec/samples/tokens/typography.tokens.json",
         "tier": "package"
       }
     }
   },
   "origins": {
     "color.base.red.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.red.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.red.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.red.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.red.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.red.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.red.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.red.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.red.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.red.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.rose.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.rose.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.rose.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.rose.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.rose.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.rose.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.rose.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.rose.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.rose.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.rose.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.green.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.green.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.green.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.green.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.green.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.green.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.green.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.green.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.green.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.green.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gold.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gold.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gold.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gold.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gold.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gold.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gold.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gold.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gold.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gold.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.orange.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.orange.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.orange.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.orange.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.orange.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.orange.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.orange.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.orange.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.orange.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.orange.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.blue.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.blue.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.blue.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.blue.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.blue.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.blue.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.blue.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.blue.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.blue.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.blue.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.royal-blue.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.royal-blue.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.royal-blue.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.royal-blue.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.royal-blue.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.royal-blue.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.royal-blue.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.royal-blue.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.royal-blue.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.royal-blue.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.classic-blue.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.classic-blue.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.classic-blue.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.classic-blue.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.classic-blue.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.classic-blue.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.classic-blue.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.classic-blue.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.classic-blue.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.classic-blue.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.0": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.gray.100": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-white.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-white.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-white.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-white.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-white.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-white.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-white.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-white.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-white.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-white.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-black.5": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-black.10": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-black.20": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-black.30": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-black.40": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-black.50": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-black.60": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-black.70": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-black.80": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.base.alpha-black.90": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/base-palette.tokens.json",
+      "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
     "color.palette.purple.600": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "color.palette.gray.0": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "color.palette.gray.900": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "color.palette.red.600": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "semantic.color.text.default": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "semantic.color.text.inverse": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "semantic.color.text.danger": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "semantic.color.action.primary": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "semantic.color.surface": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "semantic.color.dark.surface": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "component.button.background": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "component.button.text": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "component.input.background": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "component.input.border": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/color.tokens.json",
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "spacing.scale.1": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+      "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
       "tier": "package"
     },
     "spacing.scale.2": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+      "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
       "tier": "package"
     },
     "spacing.component.field-gap": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+      "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
       "tier": "package"
     },
     "radius.control.md": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+      "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
       "tier": "package"
     },
     "shadow.popover": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+      "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
       "tier": "package"
     },
     "motion.duration.fast": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+      "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
       "tier": "package"
     },
     "motion.easing.standard": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+      "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
       "tier": "package"
     },
     "motion.transition.fast": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+      "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
       "tier": "package"
     },
     "border.control.default": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/foundation.tokens.json",
+      "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
       "tier": "package"
     },
     "font.family.sans": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.display.xlarge": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.display.large": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.display.medium": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.display.small": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.display.xsmall": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.heading.xlarge": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.heading.large": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.heading.medium": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.heading.small": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.heading.xsmall": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.heading.xxsmall": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.body.xlarge": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.body.xlarge-bold": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.body.large": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.body.large-bold": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.body.medium": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.body.medium-bold": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.body.small": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.body.small-bold": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.body.xsmall": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     },
     "typography.body.xsmall-bold": {
-      "filePath": "/Users/ourteam/project/podo-ui/packages/spec/samples/tokens/typography.tokens.json",
+      "filePath": "packages/spec/samples/tokens/typography.tokens.json",
       "tier": "package"
     }
   }

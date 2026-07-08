@@ -134,7 +134,7 @@ function cssRule(selector: string, declarations: Array<[string, string]>): strin
  * bound to the referenced token var, with per-variant-value and per-state
  * overrides scoped by `[data-<variant>="<value>"]` / `[data-state="<state>"]`.
  * Editing a component's variant/state token bindings therefore changes build
- * output (report.md P0 #7). Deterministic (sorted by id, then binding key).
+ * output. Deterministic (sorted by id, then binding key).
  */
 export function emitComponentTokenCss(specs: ComponentDocument[]): string {
   const blocks: string[] = [];
