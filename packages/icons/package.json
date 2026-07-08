@@ -1,0 +1,31 @@
+{
+  "name": "@podo/icons",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Icon manifests, groups, font builds, and native icon outputs for Podo.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@podo/icon-build": "workspace:*",
+    "@podo/spec": "workspace:*",
+    "fantasticon": "^4.1.0",
+    "svgo": "^4.0.1",
+    "wawoff2": "^2.0.1"
+  }
+}

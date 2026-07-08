@@ -1,0 +1,35 @@
+{
+  "name": "@podo/cli",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Podo command-line interface.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "podo": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/index.js",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@podo/codegen": "workspace:*",
+    "@podo/icons": "workspace:*",
+    "@podo/migration": "workspace:*",
+    "@podo/mcp": "workspace:*",
+    "@podo/spec": "workspace:*",
+    "@podo/studio": "workspace:*",
+    "@podo/tokens": "workspace:*"
+  }
+}

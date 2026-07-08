@@ -1,0 +1,32 @@
+{
+  "name": "@podo/mcp",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Model Context Protocol server for Podo specs.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "podo-mcp": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/index.js",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@podo/spec": "workspace:*",
+    "@podo/tokens": "workspace:*",
+    "zod": "^4.4.3"
+  }
+}

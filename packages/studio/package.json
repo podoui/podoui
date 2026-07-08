@@ -1,0 +1,31 @@
+{
+  "name": "@podo/studio",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Installed-project lightweight web UI for Podo configuration.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.0.4",
+    "@podo/migration": "workspace:*",
+    "@podo/spec": "workspace:*",
+    "@podo/tokens": "workspace:*",
+    "hono": "^4.12.25"
+  }
+}

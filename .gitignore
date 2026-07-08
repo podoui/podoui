@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.turbo/
+.DS_Store
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+
+# Podo generated project output
+.podo/cache/
+.podo/generated/
+
+.scratch/

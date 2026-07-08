@@ -1,0 +1,27 @@
+{
+  "name": "@podo/codegen",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Component spec code generation templates for Podo targets.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@podo/spec": "workspace:*"
+  }
+}

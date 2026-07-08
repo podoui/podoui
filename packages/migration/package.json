@@ -1,0 +1,28 @@
+{
+  "name": "@podo/migration",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Migration manifest, JSON Patch runner, and conflict detection for Podo projects.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@podo/spec": "workspace:*",
+    "zod": "^4.4.3"
+  }
+}
