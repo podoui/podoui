@@ -15,3 +15,7 @@ test-results/
 .podo/generated/
 
 .scratch/
+
+# Tooling / editor state
+.bkit/
+.idea/
