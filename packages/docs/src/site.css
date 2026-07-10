@@ -41,9 +41,10 @@
   --site-radius-md: 8px;
   --site-radius-lg: 10px;
 
+  /* Pretendard first = the design system's font.family.sans token (see index.html). */
   --site-font-ui:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    "Pretendard Variable", "Pretendard", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
 
   --site-nav-width: 248px;
   --site-header-height: 60px;
@@ -317,7 +318,7 @@ a {
   width: 100%;
   border-collapse: collapse;
   margin: 18px 0;
-  font-family: "Pretendard", var(--site-font-ui);
+  font-family: var(--site-font-ui);
 }
 
 .spec-table th {
@@ -480,7 +481,7 @@ a {
 .type-sample {
   margin: 0;
   color: var(--site-fg);
-  font-family: "Pretendard", var(--site-font-ui);
+  font-family: var(--site-font-ui);
   letter-spacing: -0.01em;
 }
 
@@ -501,7 +502,7 @@ a {
 }
 
 .prop-tags__label {
-  font-family: "Pretendard", var(--site-font-ui);
+  font-family: var(--site-font-ui);
   font-size: 14px;
   font-weight: 700;
   color: var(--gray-90);
@@ -552,7 +553,7 @@ a {
   display: inline-flex;
   align-items: center;
   padding: 0 6px 0 7px;
-  font-family: "Pretendard", var(--site-font-ui);
+  font-family: var(--site-font-ui);
   font-size: 13px;
   color: var(--gray-90);
   background: var(--gray-20);
