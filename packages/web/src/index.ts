@@ -53,6 +53,11 @@ export const podoWebComponentCss = `:host {
   font: inherit;
 }
 
+:host([fill]) {
+  display: block;
+  width: 100%;
+}
+
 button,
 input {
   box-sizing: border-box;
@@ -81,6 +86,11 @@ input {
   align-items: center;
   color: var(--podo-button-icon-color, var(--podo-button-label-color, currentColor));
   display: inline-flex;
+}
+
+/* fill stretches the button to the parent's full width (auto-layout fill). */
+.podo-button[data-fill="true"] {
+  width: 100%;
 }
 
 /* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
@@ -442,7 +452,7 @@ export function componentStyleBlock(): string {
 function createButtonElement(): CustomElementConstructor {
   return class PodoButtonElement extends HTMLElement {
     static get observedAttributes(): string[] {
-      return ["disabled", "size", "theme"];
+      return ["disabled", "fill", "size", "theme"];
     }
 
     readonly shadow = this.attachShadow({ mode: "open" });
@@ -462,11 +472,12 @@ function createButtonElement(): CustomElementConstructor {
       const disabled = behavior.root.disabled ? "disabled" : "";
       // Expose the disabled state so the generated [data-state] token overrides apply.
       const stateAttr = this.hasAttribute("disabled") ? 'data-state="disabled"' : "";
+      const fillAttr = this.hasAttribute("fill") ? 'data-fill="true"' : "";
 
       this.shadow.innerHTML = `${componentStyleBlock()}
 <button class="podo-button" part="root" data-theme="${escapeHtml(
         attr(this, "theme", "solid-primary")
-      )}" data-size="${escapeHtml(attr(this, "size", "md"))}" ${stateAttr} ${disabled}>
+      )}" data-size="${escapeHtml(attr(this, "size", "md"))}" ${fillAttr} ${stateAttr} ${disabled}>
   <span class="podo-button__icon" part="prefix"><slot name="prefix"></slot></span>
   <span part="label"><slot></slot></span>
   <span class="podo-button__icon" part="suffix"><slot name="suffix"></slot></span>

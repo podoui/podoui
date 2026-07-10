@@ -40,6 +40,8 @@ export interface NativeButtonProps {
   disabled?: boolean;
   theme?: NativeButtonTheme;
   size?: "xs" | "sm" | "md" | "lg";
+  /** Stretch to the parent's full width (alignSelf: stretch). */
+  fill?: boolean;
   prefix?: ReactNode;
   suffix?: ReactNode;
   onPress?: () => void;
@@ -193,6 +195,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           onPress: behavior.pressable ? props.onPress : undefined,
           style: {
             ...styles.button,
+            ...(props.fill ? { alignSelf: "stretch" } : {}),
             opacity: behavior.pressable ? 1 : 0.56,
           },
           testID: props.testID,

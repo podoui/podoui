@@ -19,6 +19,8 @@ export interface HonoButtonProps {
   theme?: HonoButtonTheme;
   size?: "xs" | "sm" | "md" | "lg";
   disabled?: boolean;
+  /** Stretch to the parent's full width (Figma auto-layout fill container). */
+  fill?: boolean;
   prefix?: Child;
   suffix?: Child;
   type?: "button" | "submit" | "reset";
@@ -96,6 +98,7 @@ export function Button({
   theme = "solid-primary",
   size = "md",
   disabled,
+  fill,
   prefix,
   suffix,
   type,
@@ -112,6 +115,7 @@ export function Button({
       tabIndex={behavior.root.tabIndex}
       data-theme={theme}
       data-size={size}
+      data-fill={fill ? "true" : undefined}
       data-disabled={disabled ? "true" : undefined}
     >
       {prefix ? <span class="podo-button__icon">{prefix}</span> : null}

@@ -184,6 +184,16 @@ export function ButtonPage() {
             ],
             [
               <span className="prop-name">
+                <code>fill</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              <code>false</code>,
+              "부모 너비를 꽉 채워요 (모바일 CTA, 폼 제출, 모달 푸터 등)",
+            ],
+            [
+              <span className="prop-name">
                 <code>onPress</code>
               </span>,
               <span className="prop-type">

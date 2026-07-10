@@ -20,7 +20,13 @@ describe("cross-target component parity", () => {
       expect(files.find((file) => file.path.includes(`/${target}/`))?.contents).toContain("Button");
     }
 
-    expect(button.props.map((prop) => prop.name)).toEqual(["theme", "size", "disabled", "onPress"]);
+    expect(button.props.map((prop) => prop.name)).toEqual([
+      "theme",
+      "size",
+      "disabled",
+      "fill",
+      "onPress",
+    ]);
     expect(button.slots.map((slot) => slot.name)).toEqual(["prefix", "children", "suffix"]);
     expect(button.tokens).toMatchObject({
       "root.background": "{component.button.background}",

@@ -31,6 +31,11 @@ describe("@podo/react", () => {
     expect(screen.getByRole("button").getAttribute("data-theme")).toBe("solid-primary");
   });
 
+  it("stretches to the parent width with fill", () => {
+    render(<Button fill>Submit</Button>);
+    expect(screen.getByRole("button", { name: "Submit" }).getAttribute("data-fill")).toBe("true");
+  });
+
   it("renders chip themes/sizes and blocks presses while disabled", async () => {
     const user = userEvent.setup();
     let presses = 0;

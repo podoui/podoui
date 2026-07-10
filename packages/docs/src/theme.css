@@ -36,6 +36,11 @@
   display: inline-flex;
 }
 
+/* fill stretches the button to the parent's full width (auto-layout fill). */
+.podo-button[data-fill="true"] {
+  width: 100%;
+}
+
 /* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
 .podo-button[data-size="xs"] {
   border-radius: 6px;

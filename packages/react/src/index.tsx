@@ -43,6 +43,8 @@ export interface ButtonProps extends Omit<
   theme?: ButtonTheme;
   size?: "xs" | "sm" | "md" | "lg";
   disabled?: boolean;
+  /** Stretch to the parent's full width (Figma auto-layout fill container). */
+  fill?: boolean;
   prefix?: ReactNode;
   suffix?: ReactNode;
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
@@ -143,6 +145,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     theme = "solid-primary",
     size = "md",
     disabled,
+    fill,
     prefix,
     suffix,
     children,
@@ -169,6 +172,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       className={classes}
       data-size={size}
       data-theme={theme}
+      data-fill={fill ? "true" : undefined}
       onClick={(event) => {
         onClick?.(event);
         if (!behavior.pressable || event.defaultPrevented) {

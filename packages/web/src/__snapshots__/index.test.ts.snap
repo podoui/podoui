@@ -6,6 +6,11 @@ exports[`@podo/web > renders button slots, states, and activation event 1`] = `
   font: inherit;
 }
 
+:host([fill]) {
+  display: block;
+  width: 100%;
+}
+
 button,
 input {
   box-sizing: border-box;
@@ -34,6 +39,11 @@ input {
   align-items: center;
   color: var(--podo-button-icon-color, var(--podo-button-label-color, currentColor));
   display: inline-flex;
+}
+
+/* fill stretches the button to the parent's full width (auto-layout fill). */
+.podo-button[data-fill="true"] {
+  width: 100%;
 }
 
 /* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
@@ -384,6 +394,11 @@ exports[`@podo/web > renders input, field, icon, and typography components > chi
   font: inherit;
 }
 
+:host([fill]) {
+  display: block;
+  width: 100%;
+}
+
 button,
 input {
   box-sizing: border-box;
@@ -412,6 +427,11 @@ input {
   align-items: center;
   color: var(--podo-button-icon-color, var(--podo-button-label-color, currentColor));
   display: inline-flex;
+}
+
+/* fill stretches the button to the parent's full width (auto-layout fill). */
+.podo-button[data-fill="true"] {
+  width: 100%;
 }
 
 /* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
@@ -762,6 +782,11 @@ exports[`@podo/web > renders input, field, icon, and typography components > fie
   font: inherit;
 }
 
+:host([fill]) {
+  display: block;
+  width: 100%;
+}
+
 button,
 input {
   box-sizing: border-box;
@@ -790,6 +815,11 @@ input {
   align-items: center;
   color: var(--podo-button-icon-color, var(--podo-button-label-color, currentColor));
   display: inline-flex;
+}
+
+/* fill stretches the button to the parent's full width (auto-layout fill). */
+.podo-button[data-fill="true"] {
+  width: 100%;
 }
 
 /* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
@@ -1149,6 +1179,11 @@ exports[`@podo/web > renders input, field, icon, and typography components > ico
   font: inherit;
 }
 
+:host([fill]) {
+  display: block;
+  width: 100%;
+}
+
 button,
 input {
   box-sizing: border-box;
@@ -1177,6 +1212,11 @@ input {
   align-items: center;
   color: var(--podo-button-icon-color, var(--podo-button-label-color, currentColor));
   display: inline-flex;
+}
+
+/* fill stretches the button to the parent's full width (auto-layout fill). */
+.podo-button[data-fill="true"] {
+  width: 100%;
 }
 
 /* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
@@ -1522,6 +1562,11 @@ exports[`@podo/web > renders input, field, icon, and typography components > inp
   font: inherit;
 }
 
+:host([fill]) {
+  display: block;
+  width: 100%;
+}
+
 button,
 input {
   box-sizing: border-box;
@@ -1550,6 +1595,11 @@ input {
   align-items: center;
   color: var(--podo-button-icon-color, var(--podo-button-label-color, currentColor));
   display: inline-flex;
+}
+
+/* fill stretches the button to the parent's full width (auto-layout fill). */
+.podo-button[data-fill="true"] {
+  width: 100%;
 }
 
 /* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
@@ -1898,6 +1948,11 @@ exports[`@podo/web > renders input, field, icon, and typography components > tex
   font: inherit;
 }
 
+:host([fill]) {
+  display: block;
+  width: 100%;
+}
+
 button,
 input {
   box-sizing: border-box;
@@ -1926,6 +1981,11 @@ input {
   align-items: center;
   color: var(--podo-button-icon-color, var(--podo-button-label-color, currentColor));
   display: inline-flex;
+}
+
+/* fill stretches the button to the parent's full width (auto-layout fill). */
+.podo-button[data-fill="true"] {
+  width: 100%;
 }
 
 /* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */

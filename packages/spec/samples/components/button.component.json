@@ -77,6 +77,12 @@
     },
     { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
     {
+      "name": "fill",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "Stretch to the parent's full width (Figma auto-layout fill container)."
+    },
+    {
       "name": "onPress",
       "type": { "kind": "event", "payload": { "source": "button" } },
       "description": "Target-neutral activation event."
