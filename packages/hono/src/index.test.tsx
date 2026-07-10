@@ -7,7 +7,16 @@ import { Button, Field, Icon, Input, Typography, renderCriticalCss } from "./ind
 describe("@podo/hono", () => {
   it("renders static SSR HTML for form components", () => {
     const html = renderToString(
-      <Field id="email" label="Email" description="Work email" error="Required" invalid required>
+      <Field
+        id="email"
+        label="Email"
+        subLabel="선택"
+        helperText="Work email"
+        error="Required"
+        invalid
+        required
+        countMax={500}
+      >
         <Input name="email" value="team@podo.dev" invalid required />
       </Field>
     );
@@ -15,7 +24,12 @@ describe("@podo/hono", () => {
     expect(html).toContain('class="podo-field"');
     expect(html).toContain('for="email-control"');
     expect(html).toContain('id="email-control"');
-    expect(html).toContain('aria-describedby="email-description email-error"');
+    // The error replaces the helper text in the footer, so only its id is referenced.
+    expect(html).toContain('aria-describedby="email-error"');
+    expect(html).toContain('class="podo-field__requirement"');
+    expect(html).toContain('class="podo-field__sub-label"');
+    expect(html).toContain("0/500");
+    expect(html).not.toContain("Work email");
     expect(html).toContain('aria-invalid="true"');
     expect(html).toContain('name="email"');
   });

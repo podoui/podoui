@@ -64,8 +64,18 @@ export interface NativeInputProps {
 export interface NativeFieldProps {
   children: ReactNode;
   label: ReactNode;
-  description?: ReactNode;
+  /** Supplementary text next to the label (Figma sub-label). */
+  subLabel?: ReactNode;
+  /** Helper/status icon at the right edge of the heading row (Figma suffix-icon). */
+  suffixIcon?: ReactNode;
+  /** Footer guidance for how to fill the control (Figma helper-text). */
+  helperText?: ReactNode;
+  /** Footer error message; replaces helperText and renders in the danger color. */
   error?: ReactNode;
+  /** Current character count, shown as count/countMax when countMax is set. */
+  count?: number;
+  /** Maximum character count; enables the footer counter (Figma character-count). */
+  countMax?: number;
   invalid?: boolean;
   required?: boolean;
   disabled?: boolean;
@@ -201,12 +211,16 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     Field: (props) => {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
+      // The footer shows a single guidance line (Figma 538:6691): the error
+      // wins over the helper text, matching the web/react/hono renderers.
+      const showError = Boolean(props.error);
+      const showHelper = Boolean(props.helperText) && !showError;
       const a11y = createFieldA11y({
         id: props.id,
         invalid: props.invalid,
         required: props.required,
-        hasDescription: Boolean(props.description),
-        hasError: Boolean(props.error),
+        hasDescription: showHelper,
+        hasError: showError,
       });
       return createElement(
         host.View,
@@ -215,20 +229,54 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           style: styles.field,
           testID: props.testID,
         },
-        createElement(host.Text, { nativeID: a11y.ids.labelId, style: styles.label }, props.label),
+        createElement(
+          host.View,
+          { style: styles.fieldHeading },
+          createElement(
+            host.Text,
+            { nativeID: a11y.ids.labelId, style: styles.label },
+            props.label
+          ),
+          props.required
+            ? createElement(
+                host.Text,
+                { accessibilityElementsHidden: true, style: styles.fieldRequirement },
+                "*"
+              )
+            : null,
+          props.subLabel
+            ? createElement(host.Text, { style: styles.fieldSubLabel }, props.subLabel)
+            : null,
+          props.suffixIcon
+            ? createElement(host.View, { style: styles.fieldSuffixIcon }, props.suffixIcon)
+            : null
+        ),
         wireNativeControl(props.children, a11y),
-        props.description
+        showError || showHelper || props.countMax != null
           ? createElement(
-              host.Text,
-              { nativeID: a11y.ids.descriptionId, style: styles.description },
-              props.description
-            )
-          : null,
-        props.error
-          ? createElement(
-              host.Text,
-              { nativeID: a11y.ids.errorId, style: styles.error },
-              props.error
+              host.View,
+              { style: styles.fieldFooter },
+              showError
+                ? createElement(
+                    host.Text,
+                    { nativeID: a11y.ids.errorId, style: styles.error },
+                    props.error
+                  )
+                : null,
+              showHelper
+                ? createElement(
+                    host.Text,
+                    { nativeID: a11y.ids.descriptionId, style: styles.fieldHelperText },
+                    props.helperText
+                  )
+                : null,
+              props.countMax != null
+                ? createElement(
+                    host.Text,
+                    { style: styles.fieldCount },
+                    `${props.count ?? 0}/${props.countMax}`
+                  )
+                : null
             )
           : null
       );
@@ -271,23 +319,43 @@ function wireNativeControl(
 function createNativeThemeStyles(
   theme: NativeTheme
 ): Record<
-  "button" | "buttonLabel" | "description" | "error" | "field" | "icon" | "input" | "label",
+  | "button"
+  | "buttonLabel"
+  | "error"
+  | "field"
+  | "fieldCount"
+  | "fieldFooter"
+  | "fieldHeading"
+  | "fieldHelperText"
+  | "fieldRequirement"
+  | "fieldSubLabel"
+  | "fieldSuffixIcon"
+  | "icon"
+  | "input"
+  | "label",
   NativeStyle
 > {
   const tokens = adaptReactNativeTokens(theme.tokens);
   const textColor = stringToken(tokens, ["color", "text"]) ?? defaultNativeTextColor(theme);
   const backgroundColor =
     stringToken(tokens, ["color", "background"]) ?? defaultNativeBackgroundColor(theme);
-  const dangerColor = stringToken(tokens, ["color", "danger"]) ?? "#D92D20";
-  const gap = numberToken(tokens, ["spacing", "controlGap"]) ?? 8;
+  const dangerColor = stringToken(tokens, ["color", "danger"]) ?? "#F23B3B";
+  const mutedColor = "#9FA2AD";
+  const gap = numberToken(tokens, ["spacing", "controlGap"]) ?? 6;
   const borderColor = theme.colorScheme === "dark" ? "#61708A" : "#9AA8BD";
   const accentColor = theme.colorScheme === "dark" ? "#9DB7FF" : "#305CDE";
 
   return {
     field: { gap, padding: gap },
-    label: { color: textColor, fontWeight: "600" },
-    description: { color: textColor, opacity: 0.72 },
-    error: { color: dangerColor },
+    fieldHeading: { alignItems: "center", flexDirection: "row", gap: 2 },
+    label: { color: textColor, fontSize: 14, fontWeight: "600" },
+    fieldRequirement: { color: dangerColor, fontSize: 13, fontWeight: "600" },
+    fieldSubLabel: { color: mutedColor, fontSize: 13 },
+    fieldSuffixIcon: { alignItems: "center", height: 20, justifyContent: "center", width: 20 },
+    fieldFooter: { alignItems: "center", flexDirection: "row", gap: 2 },
+    fieldHelperText: { color: mutedColor, flex: 1, fontSize: 14 },
+    fieldCount: { color: mutedColor, fontSize: 14, marginLeft: "auto" },
+    error: { color: dangerColor, flex: 1, fontSize: 14 },
     input: {
       backgroundColor,
       borderColor,

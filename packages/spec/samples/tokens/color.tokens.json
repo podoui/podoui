@@ -1044,18 +1044,6 @@
               }
             }
           }
-        },
-        "red": {
-          "600": {
-            "$type": "color",
-            "$value": "#D92D20",
-            "$extensions": {
-              "podo": {
-                "scope": "primitive",
-                "roles": ["danger"]
-              }
-            }
-          }
         }
       }
     },
@@ -1084,9 +1072,31 @@
               }
             }
           },
+          "subtle": {
+            "$type": "color",
+            "$value": "{color.palette.gray.60}",
+            "$extensions": {
+              "podo": {
+                "scope": "semantic",
+                "roles": ["text", "subtle"],
+                "themeable": true
+              }
+            }
+          },
+          "muted": {
+            "$type": "color",
+            "$value": "{color.palette.gray.40}",
+            "$extensions": {
+              "podo": {
+                "scope": "semantic",
+                "roles": ["text", "muted"],
+                "themeable": true
+              }
+            }
+          },
           "danger": {
             "$type": "color",
-            "$value": "{color.palette.red.600}",
+            "$value": "{color.palette.error.50}",
             "$extensions": {
               "podo": {
                 "scope": "semantic",

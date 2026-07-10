@@ -2357,17 +2357,6 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "tier": "package"
       }
     },
-    "color.palette.red.600": {
-      "path": "color.palette.red.600",
-      "type": "color",
-      "value": "#D92D20",
-      "rawValue": "#D92D20",
-      "references": [],
-      "origin": {
-        "filePath": "packages/spec/samples/tokens/color.tokens.json",
-        "tier": "package"
-      }
-    },
     "semantic.color.text.default": {
       "path": "semantic.color.text.default",
       "type": "color",
@@ -2394,13 +2383,39 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "tier": "package"
       }
     },
+    "semantic.color.text.subtle": {
+      "path": "semantic.color.text.subtle",
+      "type": "color",
+      "value": "#50555E",
+      "rawValue": "{color.palette.gray.60}",
+      "references": [
+        "color.palette.gray.60"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "semantic.color.text.muted": {
+      "path": "semantic.color.text.muted",
+      "type": "color",
+      "value": "#9FA2AD",
+      "rawValue": "{color.palette.gray.40}",
+      "references": [
+        "color.palette.gray.40"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
     "semantic.color.text.danger": {
       "path": "semantic.color.text.danger",
       "type": "color",
-      "value": "#D92D20",
-      "rawValue": "{color.palette.red.600}",
+      "value": "#F23B3B",
+      "rawValue": "{color.palette.error.50}",
       "references": [
-        "color.palette.red.600"
+        "color.palette.error.50"
       ],
       "origin": {
         "filePath": "packages/spec/samples/tokens/color.tokens.json",
@@ -2796,11 +2811,9 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
     "spacing.component.field-gap": {
       "path": "spacing.component.field-gap",
       "type": "spacing",
-      "value": "8px",
-      "rawValue": "{spacing.scale.2}",
-      "references": [
-        "spacing.scale.2"
-      ],
+      "value": "6px",
+      "rawValue": "6px",
+      "references": [],
       "origin": {
         "filePath": "packages/spec/samples/tokens/foundation.tokens.json",
         "tier": "package"
@@ -4478,15 +4491,19 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
-    "color.palette.red.600": {
-      "filePath": "packages/spec/samples/tokens/color.tokens.json",
-      "tier": "package"
-    },
     "semantic.color.text.default": {
       "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
     "semantic.color.text.inverse": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "semantic.color.text.subtle": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "semantic.color.text.muted": {
       "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
@@ -4996,9 +5013,6 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "70": "#553199",
         "80": "#472980",
         "90": "#361F61"
-      },
-      "red": {
-        "600": "#D92D20"
       }
     }
   },
@@ -5007,7 +5021,9 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "text": {
         "default": "#18181B",
         "inverse": "#FFFFFF",
-        "danger": "#D92D20"
+        "subtle": "#50555E",
+        "muted": "#9FA2AD",
+        "danger": "#F23B3B"
       },
       "action": {
         "primary": "#426CED",
@@ -5066,7 +5082,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "2": 8
     },
     "component": {
-      "field-gap": 8
+      "field-gap": 6
     }
   },
   "radius": {
@@ -5553,7 +5569,6 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-color-palette-purple-70: #553199;
   --podo-color-palette-purple-80: #472980;
   --podo-color-palette-purple-90: #361F61;
-  --podo-color-palette-red-600: #D92D20;
   --podo-color-palette-secondary-10: #E6F0FE;
   --podo-color-palette-secondary-20: #CEE2FD;
   --podo-color-palette-secondary-30: #A0C2EE;
@@ -5617,15 +5632,17 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-semantic-color-action-primary-hover: #1245E2;
   --podo-semantic-color-action-primary-pressed: #123BBA;
   --podo-semantic-color-surface: #FFFFFF;
-  --podo-semantic-color-text-danger: #D92D20;
+  --podo-semantic-color-text-danger: #F23B3B;
   --podo-semantic-color-text-default: #18181B;
   --podo-semantic-color-text-inverse: #FFFFFF;
+  --podo-semantic-color-text-muted: #9FA2AD;
+  --podo-semantic-color-text-subtle: #50555E;
   --podo-shadow-popover-blur: 24px;
   --podo-shadow-popover-color: #14151A33;
   --podo-shadow-popover-spread: 0px;
   --podo-shadow-popover-x: 0px;
   --podo-shadow-popover-y: 8px;
-  --podo-spacing-component-field-gap: 8px;
+  --podo-spacing-component-field-gap: 6px;
   --podo-spacing-scale-1: 4px;
   --podo-spacing-scale-2: 8px;
   --podo-typography-body-large-bold-fontFamily: Pretendard;
@@ -5975,7 +5992,6 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-color-palette-purple-70: #553199;
   --podo-color-palette-purple-80: #472980;
   --podo-color-palette-purple-90: #361F61;
-  --podo-color-palette-red-600: #D92D20;
   --podo-color-palette-secondary-10: #E6F0FE;
   --podo-color-palette-secondary-20: #CEE2FD;
   --podo-color-palette-secondary-30: #A0C2EE;
@@ -6039,15 +6055,17 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-semantic-color-action-primary-hover: #1245E2;
   --podo-semantic-color-action-primary-pressed: #123BBA;
   --podo-semantic-color-surface: #18181B;
-  --podo-semantic-color-text-danger: #D92D20;
+  --podo-semantic-color-text-danger: #F23B3B;
   --podo-semantic-color-text-default: #18181B;
   --podo-semantic-color-text-inverse: #FFFFFF;
+  --podo-semantic-color-text-muted: #9FA2AD;
+  --podo-semantic-color-text-subtle: #50555E;
   --podo-shadow-popover-blur: 24px;
   --podo-shadow-popover-color: #14151A33;
   --podo-shadow-popover-spread: 0px;
   --podo-shadow-popover-x: 0px;
   --podo-shadow-popover-y: 8px;
-  --podo-spacing-component-field-gap: 8px;
+  --podo-spacing-component-field-gap: 6px;
   --podo-spacing-scale-1: 4px;
   --podo-spacing-scale-2: 8px;
   --podo-typography-body-large-bold-fontFamily: Pretendard;
@@ -6397,7 +6415,6 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-color-palette-purple-70: #553199;
   --podo-color-palette-purple-80: #472980;
   --podo-color-palette-purple-90: #361F61;
-  --podo-color-palette-red-600: #D92D20;
   --podo-color-palette-secondary-10: #E6F0FE;
   --podo-color-palette-secondary-20: #CEE2FD;
   --podo-color-palette-secondary-30: #A0C2EE;
@@ -6461,15 +6478,17 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-semantic-color-action-primary-hover: #1245E2;
   --podo-semantic-color-action-primary-pressed: #123BBA;
   --podo-semantic-color-surface: #FFFFFF;
-  --podo-semantic-color-text-danger: #D92D20;
+  --podo-semantic-color-text-danger: #F23B3B;
   --podo-semantic-color-text-default: #18181B;
   --podo-semantic-color-text-inverse: #FFFFFF;
+  --podo-semantic-color-text-muted: #9FA2AD;
+  --podo-semantic-color-text-subtle: #50555E;
   --podo-shadow-popover-blur: 24px;
   --podo-shadow-popover-color: #14151A33;
   --podo-shadow-popover-spread: 0px;
   --podo-shadow-popover-x: 0px;
   --podo-shadow-popover-y: 8px;
-  --podo-spacing-component-field-gap: 8px;
+  --podo-spacing-component-field-gap: 6px;
   --podo-spacing-scale-1: 4px;
   --podo-spacing-scale-2: 8px;
   --podo-typography-body-large-bold-fontFamily: Pretendard;
@@ -6819,7 +6838,6 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-color-palette-purple-70: #553199;
   --podo-color-palette-purple-80: #472980;
   --podo-color-palette-purple-90: #361F61;
-  --podo-color-palette-red-600: #D92D20;
   --podo-color-palette-secondary-10: #E6F0FE;
   --podo-color-palette-secondary-20: #CEE2FD;
   --podo-color-palette-secondary-30: #A0C2EE;
@@ -6883,15 +6901,17 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-semantic-color-action-primary-hover: #1245E2;
   --podo-semantic-color-action-primary-pressed: #123BBA;
   --podo-semantic-color-surface: #18181B;
-  --podo-semantic-color-text-danger: #D92D20;
+  --podo-semantic-color-text-danger: #F23B3B;
   --podo-semantic-color-text-default: #18181B;
   --podo-semantic-color-text-inverse: #FFFFFF;
+  --podo-semantic-color-text-muted: #9FA2AD;
+  --podo-semantic-color-text-subtle: #50555E;
   --podo-shadow-popover-blur: 24px;
   --podo-shadow-popover-color: #14151A33;
   --podo-shadow-popover-spread: 0px;
   --podo-shadow-popover-x: 0px;
   --podo-shadow-popover-y: 8px;
-  --podo-spacing-component-field-gap: 8px;
+  --podo-spacing-component-field-gap: 6px;
   --podo-spacing-scale-1: 4px;
   --podo-spacing-scale-2: 8px;
   --podo-typography-body-large-bold-fontFamily: Pretendard;
@@ -7316,9 +7336,6 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "70": "#553199",
         "80": "#472980",
         "90": "#361F61"
-      },
-      "red": {
-        "600": "#D92D20"
       }
     }
   },
@@ -7327,7 +7344,9 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "text": {
         "default": "#18181B",
         "inverse": "#FFFFFF",
-        "danger": "#D92D20"
+        "subtle": "#50555E",
+        "muted": "#9FA2AD",
+        "danger": "#F23B3B"
       },
       "action": {
         "primary": "#426CED",
@@ -7389,7 +7408,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "2": "8px"
     },
     "component": {
-      "field-gap": "8px"
+      "field-gap": "6px"
     }
   },
   "radius": {
@@ -7685,6 +7704,6 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   }
 } as const;
 
-export type TokenPath = "border.control.default" | "color.base.alpha-black.10" | "color.base.alpha-black.20" | "color.base.alpha-black.30" | "color.base.alpha-black.40" | "color.base.alpha-black.5" | "color.base.alpha-black.50" | "color.base.alpha-black.60" | "color.base.alpha-black.70" | "color.base.alpha-black.80" | "color.base.alpha-black.90" | "color.base.alpha-white.10" | "color.base.alpha-white.20" | "color.base.alpha-white.30" | "color.base.alpha-white.40" | "color.base.alpha-white.5" | "color.base.alpha-white.50" | "color.base.alpha-white.60" | "color.base.alpha-white.70" | "color.base.alpha-white.80" | "color.base.alpha-white.90" | "color.base.blue.10" | "color.base.blue.20" | "color.base.blue.30" | "color.base.blue.40" | "color.base.blue.5" | "color.base.blue.50" | "color.base.blue.60" | "color.base.blue.70" | "color.base.blue.80" | "color.base.blue.90" | "color.base.classic-blue.10" | "color.base.classic-blue.20" | "color.base.classic-blue.30" | "color.base.classic-blue.40" | "color.base.classic-blue.5" | "color.base.classic-blue.50" | "color.base.classic-blue.60" | "color.base.classic-blue.70" | "color.base.classic-blue.80" | "color.base.classic-blue.90" | "color.base.gold.10" | "color.base.gold.20" | "color.base.gold.30" | "color.base.gold.40" | "color.base.gold.5" | "color.base.gold.50" | "color.base.gold.60" | "color.base.gold.70" | "color.base.gold.80" | "color.base.gold.90" | "color.base.gray.0" | "color.base.gray.10" | "color.base.gray.100" | "color.base.gray.20" | "color.base.gray.30" | "color.base.gray.40" | "color.base.gray.5" | "color.base.gray.50" | "color.base.gray.60" | "color.base.gray.70" | "color.base.gray.80" | "color.base.gray.90" | "color.base.green.10" | "color.base.green.20" | "color.base.green.30" | "color.base.green.40" | "color.base.green.5" | "color.base.green.50" | "color.base.green.60" | "color.base.green.70" | "color.base.green.80" | "color.base.green.90" | "color.base.orange.10" | "color.base.orange.20" | "color.base.orange.30" | "color.base.orange.40" | "color.base.orange.5" | "color.base.orange.50" | "color.base.orange.60" | "color.base.orange.70" | "color.base.orange.80" | "color.base.orange.90" | "color.base.red.10" | "color.base.red.20" | "color.base.red.30" | "color.base.red.40" | "color.base.red.5" | "color.base.red.50" | "color.base.red.60" | "color.base.red.70" | "color.base.red.80" | "color.base.red.90" | "color.base.rose.10" | "color.base.rose.20" | "color.base.rose.30" | "color.base.rose.40" | "color.base.rose.5" | "color.base.rose.50" | "color.base.rose.60" | "color.base.rose.70" | "color.base.rose.80" | "color.base.rose.90" | "color.base.royal-blue.10" | "color.base.royal-blue.20" | "color.base.royal-blue.30" | "color.base.royal-blue.40" | "color.base.royal-blue.5" | "color.base.royal-blue.50" | "color.base.royal-blue.60" | "color.base.royal-blue.70" | "color.base.royal-blue.80" | "color.base.royal-blue.90" | "color.palette.accent.10" | "color.palette.accent.20" | "color.palette.accent.30" | "color.palette.accent.40" | "color.palette.accent.5" | "color.palette.accent.50" | "color.palette.accent.60" | "color.palette.accent.70" | "color.palette.accent.80" | "color.palette.accent.90" | "color.palette.error.10" | "color.palette.error.20" | "color.palette.error.30" | "color.palette.error.40" | "color.palette.error.5" | "color.palette.error.50" | "color.palette.error.60" | "color.palette.error.70" | "color.palette.error.80" | "color.palette.error.90" | "color.palette.gray.0" | "color.palette.gray.10" | "color.palette.gray.100" | "color.palette.gray.20" | "color.palette.gray.30" | "color.palette.gray.40" | "color.palette.gray.5" | "color.palette.gray.50" | "color.palette.gray.60" | "color.palette.gray.70" | "color.palette.gray.80" | "color.palette.gray.90" | "color.palette.info.10" | "color.palette.info.20" | "color.palette.info.30" | "color.palette.info.40" | "color.palette.info.5" | "color.palette.info.50" | "color.palette.info.60" | "color.palette.info.70" | "color.palette.info.80" | "color.palette.info.90" | "color.palette.orange.10" | "color.palette.orange.20" | "color.palette.orange.30" | "color.palette.orange.40" | "color.palette.orange.5" | "color.palette.orange.50" | "color.palette.orange.60" | "color.palette.orange.70" | "color.palette.orange.80" | "color.palette.orange.90" | "color.palette.primary.10" | "color.palette.primary.20" | "color.palette.primary.30" | "color.palette.primary.40" | "color.palette.primary.5" | "color.palette.primary.50" | "color.palette.primary.60" | "color.palette.primary.70" | "color.palette.primary.80" | "color.palette.primary.90" | "color.palette.purple.10" | "color.palette.purple.20" | "color.palette.purple.30" | "color.palette.purple.40" | "color.palette.purple.5" | "color.palette.purple.50" | "color.palette.purple.60" | "color.palette.purple.70" | "color.palette.purple.80" | "color.palette.purple.90" | "color.palette.red.600" | "color.palette.secondary.10" | "color.palette.secondary.20" | "color.palette.secondary.30" | "color.palette.secondary.40" | "color.palette.secondary.5" | "color.palette.secondary.50" | "color.palette.secondary.60" | "color.palette.secondary.70" | "color.palette.secondary.80" | "color.palette.secondary.90" | "color.palette.success.10" | "color.palette.success.20" | "color.palette.success.30" | "color.palette.success.40" | "color.palette.success.5" | "color.palette.success.50" | "color.palette.success.60" | "color.palette.success.70" | "color.palette.success.80" | "color.palette.success.90" | "color.palette.warning.10" | "color.palette.warning.20" | "color.palette.warning.30" | "color.palette.warning.40" | "color.palette.warning.5" | "color.palette.warning.50" | "color.palette.warning.60" | "color.palette.warning.70" | "color.palette.warning.80" | "color.palette.warning.90" | "component.button.background" | "component.button.disabled.background" | "component.button.disabled.text" | "component.button.outline-assistive.background" | "component.button.outline-assistive.border" | "component.button.outline-assistive.text" | "component.button.outline-primary.background" | "component.button.outline-primary.border" | "component.button.outline-primary.text" | "component.button.outline-white.background" | "component.button.outline-white.border" | "component.button.outline-white.text" | "component.button.solid-assistive.background" | "component.button.solid-assistive.text" | "component.button.solid-primary.background" | "component.button.solid-primary.background-hover" | "component.button.solid-primary.background-pressed" | "component.button.solid-primary.text" | "component.button.solid-white.background" | "component.button.solid-white.text" | "component.button.text" | "component.input.background" | "component.input.border" | "font.family.sans" | "motion.duration.fast" | "motion.easing.standard" | "motion.transition.fast" | "radius.control.md" | "semantic.color.action.primary" | "semantic.color.action.primary-hover" | "semantic.color.action.primary-pressed" | "semantic.color.dark.surface" | "semantic.color.surface" | "semantic.color.text.danger" | "semantic.color.text.default" | "semantic.color.text.inverse" | "shadow.popover" | "spacing.component.field-gap" | "spacing.scale.1" | "spacing.scale.2" | "typography.body.large" | "typography.body.large-bold" | "typography.body.medium" | "typography.body.medium-bold" | "typography.body.small" | "typography.body.small-bold" | "typography.body.xlarge" | "typography.body.xlarge-bold" | "typography.body.xsmall" | "typography.body.xsmall-bold" | "typography.display.large" | "typography.display.medium" | "typography.display.small" | "typography.display.xlarge" | "typography.display.xsmall" | "typography.heading.large" | "typography.heading.medium" | "typography.heading.small" | "typography.heading.xlarge" | "typography.heading.xsmall" | "typography.heading.xxsmall";
+export type TokenPath = "border.control.default" | "color.base.alpha-black.10" | "color.base.alpha-black.20" | "color.base.alpha-black.30" | "color.base.alpha-black.40" | "color.base.alpha-black.5" | "color.base.alpha-black.50" | "color.base.alpha-black.60" | "color.base.alpha-black.70" | "color.base.alpha-black.80" | "color.base.alpha-black.90" | "color.base.alpha-white.10" | "color.base.alpha-white.20" | "color.base.alpha-white.30" | "color.base.alpha-white.40" | "color.base.alpha-white.5" | "color.base.alpha-white.50" | "color.base.alpha-white.60" | "color.base.alpha-white.70" | "color.base.alpha-white.80" | "color.base.alpha-white.90" | "color.base.blue.10" | "color.base.blue.20" | "color.base.blue.30" | "color.base.blue.40" | "color.base.blue.5" | "color.base.blue.50" | "color.base.blue.60" | "color.base.blue.70" | "color.base.blue.80" | "color.base.blue.90" | "color.base.classic-blue.10" | "color.base.classic-blue.20" | "color.base.classic-blue.30" | "color.base.classic-blue.40" | "color.base.classic-blue.5" | "color.base.classic-blue.50" | "color.base.classic-blue.60" | "color.base.classic-blue.70" | "color.base.classic-blue.80" | "color.base.classic-blue.90" | "color.base.gold.10" | "color.base.gold.20" | "color.base.gold.30" | "color.base.gold.40" | "color.base.gold.5" | "color.base.gold.50" | "color.base.gold.60" | "color.base.gold.70" | "color.base.gold.80" | "color.base.gold.90" | "color.base.gray.0" | "color.base.gray.10" | "color.base.gray.100" | "color.base.gray.20" | "color.base.gray.30" | "color.base.gray.40" | "color.base.gray.5" | "color.base.gray.50" | "color.base.gray.60" | "color.base.gray.70" | "color.base.gray.80" | "color.base.gray.90" | "color.base.green.10" | "color.base.green.20" | "color.base.green.30" | "color.base.green.40" | "color.base.green.5" | "color.base.green.50" | "color.base.green.60" | "color.base.green.70" | "color.base.green.80" | "color.base.green.90" | "color.base.orange.10" | "color.base.orange.20" | "color.base.orange.30" | "color.base.orange.40" | "color.base.orange.5" | "color.base.orange.50" | "color.base.orange.60" | "color.base.orange.70" | "color.base.orange.80" | "color.base.orange.90" | "color.base.red.10" | "color.base.red.20" | "color.base.red.30" | "color.base.red.40" | "color.base.red.5" | "color.base.red.50" | "color.base.red.60" | "color.base.red.70" | "color.base.red.80" | "color.base.red.90" | "color.base.rose.10" | "color.base.rose.20" | "color.base.rose.30" | "color.base.rose.40" | "color.base.rose.5" | "color.base.rose.50" | "color.base.rose.60" | "color.base.rose.70" | "color.base.rose.80" | "color.base.rose.90" | "color.base.royal-blue.10" | "color.base.royal-blue.20" | "color.base.royal-blue.30" | "color.base.royal-blue.40" | "color.base.royal-blue.5" | "color.base.royal-blue.50" | "color.base.royal-blue.60" | "color.base.royal-blue.70" | "color.base.royal-blue.80" | "color.base.royal-blue.90" | "color.palette.accent.10" | "color.palette.accent.20" | "color.palette.accent.30" | "color.palette.accent.40" | "color.palette.accent.5" | "color.palette.accent.50" | "color.palette.accent.60" | "color.palette.accent.70" | "color.palette.accent.80" | "color.palette.accent.90" | "color.palette.error.10" | "color.palette.error.20" | "color.palette.error.30" | "color.palette.error.40" | "color.palette.error.5" | "color.palette.error.50" | "color.palette.error.60" | "color.palette.error.70" | "color.palette.error.80" | "color.palette.error.90" | "color.palette.gray.0" | "color.palette.gray.10" | "color.palette.gray.100" | "color.palette.gray.20" | "color.palette.gray.30" | "color.palette.gray.40" | "color.palette.gray.5" | "color.palette.gray.50" | "color.palette.gray.60" | "color.palette.gray.70" | "color.palette.gray.80" | "color.palette.gray.90" | "color.palette.info.10" | "color.palette.info.20" | "color.palette.info.30" | "color.palette.info.40" | "color.palette.info.5" | "color.palette.info.50" | "color.palette.info.60" | "color.palette.info.70" | "color.palette.info.80" | "color.palette.info.90" | "color.palette.orange.10" | "color.palette.orange.20" | "color.palette.orange.30" | "color.palette.orange.40" | "color.palette.orange.5" | "color.palette.orange.50" | "color.palette.orange.60" | "color.palette.orange.70" | "color.palette.orange.80" | "color.palette.orange.90" | "color.palette.primary.10" | "color.palette.primary.20" | "color.palette.primary.30" | "color.palette.primary.40" | "color.palette.primary.5" | "color.palette.primary.50" | "color.palette.primary.60" | "color.palette.primary.70" | "color.palette.primary.80" | "color.palette.primary.90" | "color.palette.purple.10" | "color.palette.purple.20" | "color.palette.purple.30" | "color.palette.purple.40" | "color.palette.purple.5" | "color.palette.purple.50" | "color.palette.purple.60" | "color.palette.purple.70" | "color.palette.purple.80" | "color.palette.purple.90" | "color.palette.secondary.10" | "color.palette.secondary.20" | "color.palette.secondary.30" | "color.palette.secondary.40" | "color.palette.secondary.5" | "color.palette.secondary.50" | "color.palette.secondary.60" | "color.palette.secondary.70" | "color.palette.secondary.80" | "color.palette.secondary.90" | "color.palette.success.10" | "color.palette.success.20" | "color.palette.success.30" | "color.palette.success.40" | "color.palette.success.5" | "color.palette.success.50" | "color.palette.success.60" | "color.palette.success.70" | "color.palette.success.80" | "color.palette.success.90" | "color.palette.warning.10" | "color.palette.warning.20" | "color.palette.warning.30" | "color.palette.warning.40" | "color.palette.warning.5" | "color.palette.warning.50" | "color.palette.warning.60" | "color.palette.warning.70" | "color.palette.warning.80" | "color.palette.warning.90" | "component.button.background" | "component.button.disabled.background" | "component.button.disabled.text" | "component.button.outline-assistive.background" | "component.button.outline-assistive.border" | "component.button.outline-assistive.text" | "component.button.outline-primary.background" | "component.button.outline-primary.border" | "component.button.outline-primary.text" | "component.button.outline-white.background" | "component.button.outline-white.border" | "component.button.outline-white.text" | "component.button.solid-assistive.background" | "component.button.solid-assistive.text" | "component.button.solid-primary.background" | "component.button.solid-primary.background-hover" | "component.button.solid-primary.background-pressed" | "component.button.solid-primary.text" | "component.button.solid-white.background" | "component.button.solid-white.text" | "component.button.text" | "component.input.background" | "component.input.border" | "font.family.sans" | "motion.duration.fast" | "motion.easing.standard" | "motion.transition.fast" | "radius.control.md" | "semantic.color.action.primary" | "semantic.color.action.primary-hover" | "semantic.color.action.primary-pressed" | "semantic.color.dark.surface" | "semantic.color.surface" | "semantic.color.text.danger" | "semantic.color.text.default" | "semantic.color.text.inverse" | "semantic.color.text.muted" | "semantic.color.text.subtle" | "shadow.popover" | "spacing.component.field-gap" | "spacing.scale.1" | "spacing.scale.2" | "typography.body.large" | "typography.body.large-bold" | "typography.body.medium" | "typography.body.medium-bold" | "typography.body.small" | "typography.body.small-bold" | "typography.body.xlarge" | "typography.body.xlarge-bold" | "typography.body.xsmall" | "typography.body.xsmall-bold" | "typography.display.large" | "typography.display.medium" | "typography.display.small" | "typography.display.xlarge" | "typography.display.xsmall" | "typography.heading.large" | "typography.heading.medium" | "typography.heading.small" | "typography.heading.xlarge" | "typography.heading.xsmall" | "typography.heading.xxsmall";
 "
 `;

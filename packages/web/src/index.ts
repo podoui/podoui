@@ -182,28 +182,73 @@ input {
   border-color: var(--podo-semantic-color-text-danger, #D92D20);
 }
 
+/* Field (Figma 538:6691): heading(label + requirement + sub-label + suffix-icon),
+   free control slot, footer(helper-text/error + character count). */
 .podo-field {
-  display: grid;
-  gap: var(--podo-spacing-component-field-gap, 8px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--podo-spacing-component-field-gap, 6px);
+}
+
+.podo-field__heading {
+  align-items: center;
+  display: flex;
+  gap: 2px;
 }
 
 .podo-field__label {
-  color: var(--podo-field-label-color, var(--podo-semantic-color-text-default, #14151A));
+  align-items: baseline;
+  color: var(--podo-field-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  display: inline-flex;
+  flex: 1 1 0;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 2px;
+  line-height: 1.6;
+}
+
+.podo-field__requirement {
+  color: var(--podo-field-requirement-color, var(--podo-semantic-color-text-danger, #F23B3B));
+  font-size: 13px;
   font-weight: 600;
 }
 
-.podo-field__description,
-.podo-field__error {
-  color: var(--podo-semantic-color-text-default, #14151A);
-  font-size: 0.875em;
+.podo-field__sub-label {
+  color: var(--podo-field-sub-label-color, var(--podo-semantic-color-text-muted, #9FA2AD));
+  font-size: 13px;
+  font-weight: 400;
 }
 
-.podo-field__description {
-  color: var(--podo-field-description-color, var(--podo-semantic-color-text-default, #14151A));
+.podo-field__suffix-icon {
+  align-items: center;
+  color: var(--podo-semantic-color-text-subtle, #50555E);
+  display: inline-flex;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+}
+
+.podo-field__footer {
+  align-items: center;
+  display: flex;
+  font-size: 14px;
+  gap: 2px;
+  line-height: 1.6;
+}
+
+.podo-field__helper-text {
+  color: var(--podo-field-helper-text-color, var(--podo-semantic-color-text-muted, #9FA2AD));
+  flex: 1 1 0;
 }
 
 .podo-field__error {
-  color: var(--podo-field-error-color, var(--podo-semantic-color-text-danger, #D92D20));
+  color: var(--podo-field-error-color, var(--podo-semantic-color-text-danger, #F23B3B));
+  flex: 1 1 0;
+}
+
+.podo-field__count {
+  color: var(--podo-field-count-color, var(--podo-semantic-color-text-muted, #9FA2AD));
+  margin-left: auto;
 }
 
 .podo-icon {
@@ -375,7 +420,7 @@ function createInputElement(): CustomElementConstructor {
 function createFieldElement(): CustomElementConstructor {
   return class PodoFieldElement extends HTMLElement {
     static get observedAttributes(): string[] {
-      return ["disabled", "invalid", "required", "field-id"];
+      return ["disabled", "invalid", "required", "field-id", "count", "count-max"];
     }
 
     readonly shadow = this.attachShadow({ mode: "open" });
@@ -390,29 +435,46 @@ function createFieldElement(): CustomElementConstructor {
 
     private render(): void {
       const fieldId = attr(this, "field-id", "podo-field");
+      const required = this.hasAttribute("required");
+      const countMax = attr(this, "count-max", "");
       const a11y = createFieldA11y({
         id: fieldId,
         invalid: this.hasAttribute("invalid"),
-        required: this.hasAttribute("required"),
+        required,
         hasDescription: true,
         hasError: this.hasAttribute("invalid"),
       });
 
       const stateAttr = this.hasAttribute("invalid") ? 'data-state="invalid"' : "";
+      // Figma 538:6691: red asterisk beside the label while the field requires input.
+      const requirement = required
+        ? '<span class="podo-field__requirement" aria-hidden="true">*</span>'
+        : "";
+      const count = countMax
+        ? `<span class="podo-field__count" part="count">${escapeHtml(
+            attr(this, "count", "0")
+          )}/${escapeHtml(countMax)}</span>`
+        : "";
 
       this.shadow.innerHTML = `${componentStyleBlock()}
 <div class="podo-field" part="root" id="${escapeHtml(a11y.ids.rootId)}" ${stateAttr}>
-  <label class="podo-field__label" part="label" id="${escapeHtml(
-    a11y.ids.labelId
-  )}" for="${escapeHtml(a11y.ids.controlId)}">
-    <slot name="label">Label</slot>
-  </label>
-  <div part="control"><slot></slot></div>
-  <div class="podo-field__description" part="description" id="${escapeHtml(a11y.ids.descriptionId)}">
-    <slot name="description"></slot>
+  <div class="podo-field__heading" part="heading">
+    <label class="podo-field__label" part="label" id="${escapeHtml(
+      a11y.ids.labelId
+    )}" for="${escapeHtml(a11y.ids.controlId)}">
+      <slot name="label">Label</slot>${requirement}
+      <span class="podo-field__sub-label" part="sub-label"><slot name="sub-label"></slot></span>
+    </label>
+    <span class="podo-field__suffix-icon" part="suffix-icon"><slot name="suffix-icon"></slot></span>
   </div>
-  <div class="podo-field__error" part="error" id="${escapeHtml(a11y.ids.errorId)}">
-    <slot name="error"></slot>
+  <div part="control"><slot></slot></div>
+  <div class="podo-field__footer" part="footer">
+    <span class="podo-field__helper-text" part="helper-text" id="${escapeHtml(
+      a11y.ids.descriptionId
+    )}"><slot name="helper-text"></slot></span>
+    <span class="podo-field__error" part="error" id="${escapeHtml(a11y.ids.errorId)}">
+      <slot name="error"></slot>
+    </span>${count}
   </div>
 </div>`;
       wireDefaultSlotControl(this.shadow, a11y.control);

@@ -123,3 +123,97 @@
   --podo-button-label-color: #9fa2ad;
   cursor: not-allowed;
 }
+
+/* Field (Figma 538:6691) — mirrors the canonical @podo/web field CSS. */
+.podo-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 300px;
+}
+
+.podo-field__heading {
+  align-items: center;
+  display: flex;
+  gap: 2px;
+}
+
+.podo-field__label {
+  align-items: baseline;
+  color: #50555e;
+  display: inline-flex;
+  flex: 1 1 0;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 2px;
+  line-height: 1.6;
+}
+
+.podo-field__requirement {
+  color: #f23b3b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.podo-field__sub-label {
+  color: #9fa2ad;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.podo-field__suffix-icon {
+  align-items: center;
+  color: #50555e;
+  display: inline-flex;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+}
+
+.podo-field__footer {
+  align-items: center;
+  display: flex;
+  font-size: 14px;
+  gap: 2px;
+  line-height: 1.6;
+}
+
+.podo-field__helper-text {
+  color: #9fa2ad;
+  flex: 1 1 0;
+}
+
+.podo-field__error {
+  color: #f23b3b;
+  flex: 1 1 0;
+}
+
+.podo-field__count {
+  color: #9fa2ad;
+  margin-left: auto;
+}
+
+/* Input preview inside the field slot — mirrors @podo/web input CSS. */
+.podo-input {
+  background: #ffffff;
+  border: 1px solid #d1d2d6;
+  border-radius: 10px;
+  color: #18181b;
+  font: inherit;
+  min-height: 52px;
+  padding: 0 16px;
+  width: 100%;
+}
+
+.podo-input::placeholder {
+  color: #9fa2ad;
+}
+
+.podo-input:focus-visible {
+  border-color: #426ced;
+  outline: none;
+}
+
+.podo-input[aria-invalid="true"] {
+  border-color: #f23b3b;
+}

@@ -45,8 +45,18 @@ export interface HonoFieldProps {
   children: Child;
   id?: string;
   label: Child;
-  description?: Child;
+  /** Supplementary text next to the label (Figma sub-label). */
+  subLabel?: Child;
+  /** Helper/status icon at the right edge of the heading row (Figma suffix-icon). */
+  suffixIcon?: Child;
+  /** Footer guidance for how to fill the control (Figma helper-text). */
+  helperText?: Child;
+  /** Footer error message; replaces helperText and renders in the danger color. */
   error?: Child;
+  /** Current character count, shown as count/countMax when countMax is set. */
+  count?: number;
+  /** Maximum character count; enables the footer counter (Figma character-count). */
+  countMax?: number;
   invalid?: boolean;
   required?: boolean;
   disabled?: boolean;
@@ -126,19 +136,27 @@ export function Input({
 export function Field({
   id = "podo-field",
   label,
-  description,
+  subLabel,
+  suffixIcon,
+  helperText,
   error,
+  count,
+  countMax,
   invalid,
   required,
   disabled,
   children,
 }: HonoFieldProps): JSX.Element {
+  // The footer shows a single guidance line (Figma 538:6691): the error wins
+  // over the helper text so only the ids of what is rendered are referenced.
+  const showError = Boolean(error);
+  const showHelper = Boolean(helperText) && !showError;
   const a11y = createFieldA11y({
     id,
     invalid,
     required,
-    hasDescription: Boolean(description),
-    hasError: Boolean(error),
+    hasDescription: showHelper,
+    hasError: showError,
   });
 
   return (
@@ -148,18 +166,36 @@ export function Field({
       data-disabled={disabled ? "true" : undefined}
       data-required={required ? "true" : undefined}
     >
-      <label class="podo-field__label" id={a11y.ids.labelId} for={a11y.ids.controlId}>
-        {label}
-      </label>
+      <div class="podo-field__heading">
+        <label class="podo-field__label" id={a11y.ids.labelId} for={a11y.ids.controlId}>
+          {label}
+          {required ? (
+            <span class="podo-field__requirement" aria-hidden="true">
+              *
+            </span>
+          ) : null}
+          {subLabel ? <span class="podo-field__sub-label">{subLabel}</span> : null}
+        </label>
+        {suffixIcon ? <span class="podo-field__suffix-icon">{suffixIcon}</span> : null}
+      </div>
       <div class="podo-field__control">{wireHonoControl(children, a11y.control)}</div>
-      {description ? (
-        <div class="podo-field__description" id={a11y.ids.descriptionId}>
-          {description}
-        </div>
-      ) : null}
-      {error ? (
-        <div class="podo-field__error" id={a11y.ids.errorId}>
-          {error}
+      {showError || showHelper || countMax != null ? (
+        <div class="podo-field__footer">
+          {showError ? (
+            <span class="podo-field__error" id={a11y.ids.errorId}>
+              {error}
+            </span>
+          ) : null}
+          {showHelper ? (
+            <span class="podo-field__helper-text" id={a11y.ids.descriptionId}>
+              {helperText}
+            </span>
+          ) : null}
+          {countMax != null ? (
+            <span class="podo-field__count">
+              {count ?? 0}/{countMax}
+            </span>
+          ) : null}
         </div>
       ) : null}
     </div>

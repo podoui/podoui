@@ -56,7 +56,16 @@ describe("@podo/react", () => {
 
     render(
       <PodoThemeProvider theme="dashboard" colorScheme="dark">
-        <Field id="email" label="Email" description="Work email" error="Required" invalid required>
+        <Field
+          id="email"
+          label="Email"
+          subLabel="선택"
+          helperText="Work email"
+          error="Required"
+          invalid
+          required
+          countMax={500}
+        >
           <Input aria-label="Email" invalid required />
         </Field>
         <Typography as="h1">Dashboard</Typography>
@@ -65,11 +74,15 @@ describe("@podo/react", () => {
     );
 
     expect(screen.getByTestId("theme").textContent).toBe("dashboard:dark");
-    expect(screen.getByText("Email").getAttribute("for")).toBe("email-control");
-    expect(screen.getByLabelText("Email").getAttribute("id")).toBe("email-control");
-    expect(screen.getByLabelText("Email").getAttribute("aria-describedby")).toBe(
-      "email-description email-error"
-    );
+    expect(screen.getByText("Email").closest("label")?.getAttribute("for")).toBe("email-control");
+    expect(screen.getByLabelText(/Email/).getAttribute("id")).toBe("email-control");
+    // The error replaces the helper text in the footer, so only its id is referenced.
+    expect(screen.getByLabelText(/Email/).getAttribute("aria-describedby")).toBe("email-error");
+    expect(screen.getByText("*").className).toBe("podo-field__requirement");
+    expect(screen.getByText("선택").className).toBe("podo-field__sub-label");
+    expect(screen.getByText("Required").className).toBe("podo-field__error");
+    expect(screen.queryByText("Work email")).toBeNull();
+    expect(screen.getByText("0/500").className).toBe("podo-field__count");
     expect(screen.getByRole("heading", { name: "Dashboard" }).className).toContain("podo-text--h1");
   });
 
@@ -79,7 +92,16 @@ describe("@podo/react", () => {
         <Button theme="solid-assistive" size="lg" prefix={<Icon name="menu" />}>
           Save
         </Button>
-        <Field id="email" label="Email" description="Work email" invalid>
+        <Field
+          id="email"
+          label="Email"
+          subLabel="선택"
+          suffixIcon={<Icon name="menu" />}
+          helperText="Work email"
+          count={0}
+          countMax={500}
+          invalid
+        >
           <Input aria-label="Email" invalid />
         </Field>
       </PodoThemeProvider>

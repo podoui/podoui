@@ -29,7 +29,7 @@
       "component": {
         "field-gap": {
           "$type": "spacing",
-          "$value": "{spacing.scale.2}",
+          "$value": "6px",
           "$extensions": {
             "podo": {
               "scope": "component",

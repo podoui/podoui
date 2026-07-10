@@ -61,8 +61,18 @@ export interface InputProps extends Omit<
 
 export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
   label: ReactNode;
-  description?: ReactNode;
+  /** Supplementary text next to the label (Figma sub-label, e.g. "선택"). */
+  subLabel?: ReactNode;
+  /** Helper/status icon at the right edge of the heading row (Figma suffix-icon). */
+  suffixIcon?: ReactNode;
+  /** Footer guidance for how to fill the control (Figma helper-text). */
+  helperText?: ReactNode;
+  /** Footer error message; replaces helperText and renders in the danger color. */
   error?: ReactNode;
+  /** Current character count, shown as count/countMax when countMax is set. */
+  count?: number;
+  /** Maximum character count; enables the footer counter (Figma character-count). */
+  countMax?: number;
   invalid?: boolean;
   required?: boolean;
   disabled?: boolean;
@@ -178,8 +188,12 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
   {
     id = "podo-field",
     label,
-    description,
+    subLabel,
+    suffixIcon,
+    helperText,
     error,
+    count,
+    countMax,
     invalid,
     required,
     disabled,
@@ -191,12 +205,16 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
 ) {
   const generatedId = useId().replaceAll(":", "podo");
   const fieldId = id === "podo-field" ? generatedId : id;
+  // The footer shows a single guidance line (Figma 538:6691): the error wins
+  // over the helper text so only the ids of what is rendered are referenced.
+  const showError = Boolean(error);
+  const showHelper = Boolean(helperText) && !showError;
   const a11y = createFieldA11y({
     id: fieldId,
     invalid,
     required,
-    hasDescription: Boolean(description),
-    hasError: Boolean(error),
+    hasDescription: showHelper,
+    hasError: showError,
   });
   const wiredChildren = wireReactControl(children, a11y.control);
 
@@ -209,18 +227,36 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
       data-invalid={invalid ? "true" : undefined}
       data-required={required ? "true" : undefined}
     >
-      <label className="podo-field__label" id={a11y.ids.labelId} htmlFor={a11y.ids.controlId}>
-        {label}
-      </label>
+      <div className="podo-field__heading">
+        <label className="podo-field__label" id={a11y.ids.labelId} htmlFor={a11y.ids.controlId}>
+          {label}
+          {required ? (
+            <span className="podo-field__requirement" aria-hidden="true">
+              *
+            </span>
+          ) : null}
+          {subLabel ? <span className="podo-field__sub-label">{subLabel}</span> : null}
+        </label>
+        {suffixIcon ? <span className="podo-field__suffix-icon">{suffixIcon}</span> : null}
+      </div>
       <div className="podo-field__control">{wiredChildren}</div>
-      {description ? (
-        <div className="podo-field__description" id={a11y.ids.descriptionId}>
-          {description}
-        </div>
-      ) : null}
-      {error ? (
-        <div className="podo-field__error" id={a11y.ids.errorId}>
-          {error}
+      {showError || showHelper || countMax != null ? (
+        <div className="podo-field__footer">
+          {showError ? (
+            <span className="podo-field__error" id={a11y.ids.errorId}>
+              {error}
+            </span>
+          ) : null}
+          {showHelper ? (
+            <span className="podo-field__helper-text" id={a11y.ids.descriptionId}>
+              {helperText}
+            </span>
+          ) : null}
+          {countMax != null ? (
+            <span className="podo-field__count">
+              {count ?? 0}/{countMax}
+            </span>
+          ) : null}
         </div>
       ) : null}
     </div>

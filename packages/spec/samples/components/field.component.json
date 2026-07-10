@@ -5,20 +5,46 @@
   "name": "Field",
   "category": "molecule",
   "status": "stable",
-  "description": "Form field wrapper with label, description, error, and control slot.",
+  "description": "Form field wrapper (Figma 538:6691): heading with label, requirement marker, sub-label, and suffix icon; a free control slot; and a footer with helper text, error, and character count.",
   "anatomy": [
     { "name": "root" },
-    { "name": "label" },
-    { "name": "description" },
-    { "name": "control" },
-    { "name": "error" }
+    { "name": "heading", "parent": "root" },
+    { "name": "label", "parent": "heading" },
+    { "name": "requirement", "parent": "heading" },
+    { "name": "sub-label", "parent": "heading" },
+    { "name": "suffix-icon", "parent": "heading" },
+    { "name": "control", "parent": "root" },
+    { "name": "footer", "parent": "root" },
+    { "name": "helper-text", "parent": "footer" },
+    { "name": "error", "parent": "footer" },
+    { "name": "count", "parent": "footer" }
   ],
   "slots": [
     { "name": "label", "required": true, "fallback": "Label" },
-    { "name": "description" },
+    {
+      "name": "sub-label",
+      "description": "Supplementary text next to the label (e.g. 선택).",
+      "targets": {
+        "web": { "name": "sub-label" },
+        "react": { "name": "subLabel" },
+        "hono": { "name": "subLabel" },
+        "native": { "name": "subLabel" }
+      }
+    },
+    {
+      "name": "suffix-icon",
+      "description": "Helper/status icon at the right edge of the heading row.",
+      "targets": {
+        "web": { "name": "suffix-icon" },
+        "react": { "name": "suffixIcon" },
+        "hono": { "name": "suffixIcon" },
+        "native": { "name": "suffixIcon" }
+      }
+    },
     {
       "name": "control",
       "required": true,
+      "description": "Any control: input, button, combobox, textarea, custom tags.",
       "targets": {
         "web": { "name": "default" },
         "react": { "name": "children" },
@@ -26,12 +52,32 @@
         "native": { "name": "children" }
       }
     },
+    {
+      "name": "helper-text",
+      "description": "Footer guidance for how to fill the control.",
+      "targets": {
+        "web": { "name": "helper-text" },
+        "react": { "name": "helperText" },
+        "hono": { "name": "helperText" },
+        "native": { "name": "helperText" }
+      }
+    },
     { "name": "error" }
   ],
   "props": [
     { "name": "required", "type": { "kind": "boolean" }, "default": false },
     { "name": "invalid", "type": { "kind": "boolean" }, "default": false },
-    { "name": "disabled", "type": { "kind": "boolean" }, "default": false }
+    { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
+    {
+      "name": "count",
+      "type": { "kind": "number", "min": 0 },
+      "description": "Current character count shown in the footer as count/countMax."
+    },
+    {
+      "name": "countMax",
+      "type": { "kind": "number", "min": 0 },
+      "description": "Maximum character count; enables the footer counter."
+    }
   ],
   "variants": [],
   "states": [
@@ -39,8 +85,11 @@
     { "name": "invalid", "tokens": { "error.color": "{semantic.color.text.danger}" } }
   ],
   "tokens": {
-    "label.color": "{semantic.color.text.default}",
-    "description.color": "{semantic.color.text.default}",
+    "label.color": "{semantic.color.text.subtle}",
+    "requirement.color": "{semantic.color.text.danger}",
+    "sub-label.color": "{semantic.color.text.muted}",
+    "helper-text.color": "{semantic.color.text.muted}",
+    "count.color": "{semantic.color.text.muted}",
     "error.color": "{semantic.color.text.danger}"
   },
   "targets": {
@@ -57,8 +106,8 @@
   "examples": [
     {
       "target": "react",
-      "title": "Field with error",
-      "code": "<Field required invalid><Input /></Field>"
+      "title": "Field composition",
+      "code": "<Field label=\"제목\" required subLabel=\"선택\" helperText=\"도움말 텍스트\" count={0} countMax={500}><Input /></Field>"
     }
   ]
 }

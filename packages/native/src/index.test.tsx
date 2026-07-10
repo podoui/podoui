@@ -73,7 +73,7 @@ describe("@podo/native", () => {
         colorScheme="dark"
         tokens={{ color: { background: "#000000", text: "#eeeeee" }, spacing: { controlGap: 10 } }}
       >
-        <domNative.Field label="Email" description="Work email" testID="field">
+        <domNative.Field label="Email" helperText="Work email" testID="field">
           <domNative.Input accessibilityLabel="Email" testID="input" />
         </domNative.Field>
         <domNative.Button testID="button">Save</domNative.Button>

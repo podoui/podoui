@@ -29,13 +29,30 @@ exports[`@podo/react > snapshots themed variant markup for visual regression 1`]
     class="podo-field"
     data-invalid="true"
   >
-    <label
-      class="podo-field__label"
-      for="email-control"
-      id="email-label"
+    <div
+      class="podo-field__heading"
     >
-      Email
-    </label>
+      <label
+        class="podo-field__label"
+        for="email-control"
+        id="email-label"
+      >
+        Email
+        <span
+          class="podo-field__sub-label"
+        >
+          선택
+        </span>
+      </label>
+      <span
+        class="podo-field__suffix-icon"
+      >
+        <i
+          aria-hidden="true"
+          class="podo-icon podo-icon-menu"
+        />
+      </span>
+    </div>
     <div
       class="podo-field__control"
     >
@@ -50,10 +67,21 @@ exports[`@podo/react > snapshots themed variant markup for visual regression 1`]
       />
     </div>
     <div
-      class="podo-field__description"
-      id="email-description"
+      class="podo-field__footer"
     >
-      Work email
+      <span
+        class="podo-field__helper-text"
+        id="email-description"
+      >
+        Work email
+      </span>
+      <span
+        class="podo-field__count"
+      >
+        0
+        /
+        500
+      </span>
     </div>
   </div>
 </div>

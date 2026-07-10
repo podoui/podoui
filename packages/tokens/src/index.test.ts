@@ -84,7 +84,8 @@ describe("@podo/tokens", () => {
 
     expect(issues).toEqual([]);
     expect(bundle.tokens["component.button.background"]?.value).toBe("#426CED");
-    expect(bundle.tokens["spacing.component.field-gap"]?.value).toBe("8px");
+    // Figma 538:6691 field column gap (spacing/3).
+    expect(bundle.tokens["spacing.component.field-gap"]?.value).toBe("6px");
     expect(bundle.tokens["motion.transition.fast"]?.value).toEqual({
       duration: "120ms",
       easing: [0.2, 0, 0, 1],
@@ -260,35 +261,96 @@ describe("@podo/tokens", () => {
       expect.objectContaining({ code: "token.duplicate", path: "color.palette.purple.70" }),
       expect.objectContaining({ code: "token.duplicate", path: "color.palette.purple.80" }),
       expect.objectContaining({ code: "token.duplicate", path: "color.palette.purple.90" }),
-      expect.objectContaining({ code: "token.duplicate", path: "color.palette.red.600" }),
       expect.objectContaining({ code: "token.duplicate", path: "semantic.color.text.default" }),
       expect.objectContaining({ code: "token.duplicate", path: "semantic.color.text.inverse" }),
+      expect.objectContaining({ code: "token.duplicate", path: "semantic.color.text.subtle" }),
+      expect.objectContaining({ code: "token.duplicate", path: "semantic.color.text.muted" }),
       expect.objectContaining({ code: "token.duplicate", path: "semantic.color.text.danger" }),
       expect.objectContaining({ code: "token.duplicate", path: "semantic.color.action.primary" }),
-      expect.objectContaining({ code: "token.duplicate", path: "semantic.color.action.primary-hover" }),
-      expect.objectContaining({ code: "token.duplicate", path: "semantic.color.action.primary-pressed" }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "semantic.color.action.primary-hover",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "semantic.color.action.primary-pressed",
+      }),
       expect.objectContaining({ code: "token.duplicate", path: "semantic.color.surface" }),
       expect.objectContaining({ code: "token.duplicate", path: "semantic.color.dark.surface" }),
       expect.objectContaining({ code: "token.duplicate", path: "component.button.background" }),
       expect.objectContaining({ code: "token.duplicate", path: "component.button.text" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.solid-primary.background" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.solid-primary.background-hover" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.solid-primary.background-pressed" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.solid-primary.text" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.solid-assistive.background" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.solid-assistive.text" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.solid-white.background" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.solid-white.text" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.outline-primary.background" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.outline-primary.border" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.outline-primary.text" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.outline-assistive.background" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.outline-assistive.border" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.outline-assistive.text" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.outline-white.background" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.outline-white.border" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.outline-white.text" }),
-      expect.objectContaining({ code: "token.duplicate", path: "component.button.disabled.background" }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-primary.background",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-primary.background-hover",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-primary.background-pressed",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-primary.text",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-assistive.background",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-assistive.text",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-white.background",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-white.text",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-primary.background",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-primary.border",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-primary.text",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-assistive.background",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-assistive.border",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-assistive.text",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-white.background",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-white.border",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-white.text",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.disabled.background",
+      }),
       expect.objectContaining({ code: "token.duplicate", path: "component.button.disabled.text" }),
       expect.objectContaining({ code: "token.duplicate", path: "component.input.background" }),
       expect.objectContaining({ code: "token.duplicate", path: "component.input.border" }),
