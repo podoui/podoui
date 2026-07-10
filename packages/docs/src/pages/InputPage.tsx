@@ -74,7 +74,7 @@ export function InputPage() {
             <Input disabled placeholder="플레이스홀더" aria-label="disabled 입력" />
           </div>
         </Card>
-        <PropertyTags values={["normal", "focused", "completed", "danger", "disabled"]} />
+        <PropertyTags values={["normal", "hover", "focused", "completed", "danger", "disabled"]} />
       </DocSection>
 
       <DocSection
