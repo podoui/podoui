@@ -355,6 +355,28 @@ a {
   background: var(--gray-5);
 }
 
+/* Props reference variant: text-heavy, left-aligned, smaller than the numeric
+   typography table, with monospace type/default cells. */
+.spec-table--props th,
+.spec-table--props td {
+  text-align: left;
+  font-size: 14px;
+  vertical-align: top;
+}
+.spec-table--props td {
+  color: var(--gray-60);
+}
+.spec-table--props code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+}
+.spec-table--props .prop-name code {
+  color: var(--site-accent);
+}
+.spec-table--props .prop-type code {
+  color: var(--gray-50);
+}
+
 .site-content :not(pre) > code {
   background: var(--site-subtle);
   border-radius: var(--site-radius-sm);

@@ -4,6 +4,7 @@ import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
+import { SpecTable } from "../components/SpecTable.js";
 
 const SIZES = ["xs", "sm", "md", "lg"] as const;
 const THEMES = [
@@ -120,6 +121,89 @@ export function ButtonPage() {
           </Button>
         </Card>
         <PropertyTags values={["normal", "hover", "pressed", "disabled"]} />
+      </DocSection>
+
+      <DocSection
+        index={5}
+        title="속성 (props)"
+        description="@podo/react의 Button이 받는 속성이에요. 앞서 시안의 layout(text·prefix·suffix)은 코드에서는 prefix·suffix 두 슬롯(ReactNode)으로 표현하며, 둘을 동시에 넣을 수도 있어요. 이 밖에 표준 button 속성(className, aria-*, type 등)도 그대로 전달돼요."
+      >
+        <SpecTable
+          variant="props"
+          columns={["Prop", "Type", "Default", "설명"]}
+          rows={[
+            [
+              <span className="prop-name">
+                <code>theme</code>
+              </span>,
+              <span className="prop-type">
+                <code>ButtonTheme</code>
+              </span>,
+              <code>"solid-primary"</code>,
+              "형태(solid·outline)와 색 위계(primary·assistive·white)를 조합한 6가지 테마",
+            ],
+            [
+              <span className="prop-name">
+                <code>size</code>
+              </span>,
+              <span className="prop-type">
+                <code>"xs" | "sm" | "md" | "lg"</code>
+              </span>,
+              <code>"md"</code>,
+              "높이·패딩·폰트·radius (xs 32 / sm 36 / md 42 / lg 52)",
+            ],
+            [
+              <span className="prop-name">
+                <code>prefix</code>
+              </span>,
+              <span className="prop-type">
+                <code>ReactNode</code>
+              </span>,
+              "—",
+              "레이블 앞에 놓이는 아이콘 슬롯",
+            ],
+            [
+              <span className="prop-name">
+                <code>suffix</code>
+              </span>,
+              <span className="prop-type">
+                <code>ReactNode</code>
+              </span>,
+              "—",
+              "레이블 뒤에 놓이는 아이콘 슬롯",
+            ],
+            [
+              <span className="prop-name">
+                <code>disabled</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              <code>false</code>,
+              "비활성 상태. press·click이 발생하지 않아요",
+            ],
+            [
+              <span className="prop-name">
+                <code>onPress</code>
+              </span>,
+              <span className="prop-type">
+                <code>(e: PodoPressEvent) =&gt; void</code>
+              </span>,
+              "—",
+              "버튼이 눌렸을 때 호출돼요. disabled면 발생하지 않아요",
+            ],
+            [
+              <span className="prop-name">
+                <code>onClick</code>
+              </span>,
+              <span className="prop-type">
+                <code>(e: MouseEvent) =&gt; void</code>
+              </span>,
+              "—",
+              "표준 클릭 핸들러. onPress보다 먼저 호출돼요",
+            ],
+          ]}
+        />
       </DocSection>
     </>
   );

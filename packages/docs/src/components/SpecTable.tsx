@@ -4,9 +4,19 @@ import type { ReactNode } from "react";
  * Generic spec table used by foundation pages (e.g. the typography size/weight
  * tables). Reuses the `.spec-table` styling shared with the component props table.
  */
-export function SpecTable({ columns, rows }: { columns: string[]; rows: ReactNode[][] }) {
+export function SpecTable({
+  columns,
+  rows,
+  variant,
+}: {
+  columns: string[];
+  rows: ReactNode[][];
+  /** "props" left-aligns and shrinks the cells for a text-heavy API table. */
+  variant?: "props";
+}) {
+  const className = variant === "props" ? "spec-table spec-table--props" : "spec-table";
   return (
-    <table className="spec-table">
+    <table className={className}>
       <thead>
         <tr>
           {columns.map((col) => (
