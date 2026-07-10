@@ -432,6 +432,20 @@
 - [x] performance budget 설정
   - 완료 기준: token build, component build 목표 시간이 문서화된다.
 
+## Phase 11: 문서 사이트 (Docs Site)
+
+기준: shadcn/ui 스타일 문서 사이트. `@podo/react`를 그대로 렌더링하는 라이브 프리뷰. 정적(Vite) 빌드.
+
+- [ ] `@podo/docs` 패키지 뼈대
+  - 완료 기준: `packages/docs`가 pnpm workspace로 인식되고 `@podo/react`를 workspace 의존성으로 import한다.
+  - 완료 기준: Vite + React로 dev 서버 실행과 정적 `dist` 빌드가 된다.
+  - 완료 기준: 헤더, 사이드바 내비게이션, 콘텐츠 레이아웃, 컴포넌트별 라우팅 틀이 있어 컴포넌트 추가가 라우트/사이드바 항목 추가만으로 가능하다.
+- [ ] Button 문서 페이지
+  - 완료 기준: 현재 `@podo/react`의 Button을 실제로 렌더링하는 라이브 프리뷰가 있다(hover/disabled 동작).
+  - 완료 기준: react/web/hono/native 4타깃 코드 스니펫을 탭으로 보여준다. react/web은 `button.component.json`의 examples와, hono/native는 각 렌더러 사용법과 일치한다.
+  - 완료 기준: variant(solid/soft/outline/ghost) × size(sm/md/lg)와 disabled/loading을 보여주는 variants 쇼케이스가 있다.
+  - 완료 기준: variant/size/disabled/loading/onPress를 담은 props 테이블이 있고, 값이 `button.component.json`과 일치한다.
+
 ## 릴리스 준비 체크리스트
 
 - [x] 모든 package `exports` 검증

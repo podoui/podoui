@@ -1,0 +1,125 @@
+/*
+ * Preview styling for the live @podo/react Button.
+ *
+ * The React Button renders `class="podo-button"` with `data-theme` / `data-size`
+ * and reads its colors from CSS custom properties. It ships no CSS of its own —
+ * in a real install those come from the token build (components.css). Here we
+ * mirror the canonical @podo/web button CSS (the same Figma values) so previews
+ * render each theme and size distinctly, WITHOUT wiring the token pipeline into
+ * the docs app. Replace this with the generated token CSS once available.
+ */
+
+.podo-button {
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--podo-button-root-borderColor, transparent);
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 400;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 80px;
+  padding: 2px 16px;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
+  background: var(--podo-button-root-background, #426ced);
+  color: var(--podo-button-label-color, #ffffff);
+}
+
+.podo-button__icon {
+  align-items: center;
+  display: inline-flex;
+}
+
+/* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
+.podo-button[data-size="xs"] {
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 32px;
+  padding: 2px 10px;
+}
+.podo-button[data-size="sm"] {
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 36px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="md"] {
+  border-radius: 10px;
+  font-size: 16px;
+  min-height: 42px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="lg"] {
+  border-radius: 12px;
+  font-size: 16px;
+  min-height: 52px;
+  padding: 2px 20px;
+}
+
+/* Themes */
+.podo-button[data-theme="solid-primary"] {
+  --podo-button-root-background: #426ced;
+  --podo-button-label-color: #ffffff;
+}
+.podo-button[data-theme="solid-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #1245e2;
+}
+.podo-button[data-theme="solid-primary"]:active:not([disabled]) {
+  --podo-button-root-background: #123bba;
+}
+.podo-button[data-theme="solid-assistive"] {
+  --podo-button-root-background: #f4f4f5;
+  --podo-button-label-color: #18181b;
+}
+.podo-button[data-theme="solid-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #e4e4e7;
+}
+.podo-button[data-theme="solid-white"] {
+  --podo-button-root-background: #ffffff;
+  --podo-button-label-color: #18181b;
+}
+.podo-button[data-theme="solid-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #f4f4f5;
+}
+.podo-button[data-theme="outline-primary"] {
+  --podo-button-root-background: #ffffff;
+  --podo-button-root-borderColor: #426ced;
+  --podo-button-label-color: #426ced;
+}
+.podo-button[data-theme="outline-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #f4f7fe;
+}
+.podo-button[data-theme="outline-assistive"] {
+  --podo-button-root-background: #f9f9f9;
+  --podo-button-root-borderColor: #d1d2d6;
+  --podo-button-label-color: #18181b;
+}
+.podo-button[data-theme="outline-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #f4f4f5;
+}
+.podo-button[data-theme="outline-white"] {
+  --podo-button-root-background: #ffffff;
+  --podo-button-root-borderColor: #d1d2d6;
+  --podo-button-label-color: #18181b;
+}
+.podo-button[data-theme="outline-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #f9f9f9;
+}
+
+.podo-button:focus-visible {
+  outline: 2px solid #426ced;
+  outline-offset: 2px;
+}
+
+.podo-button[disabled] {
+  --podo-button-root-background: #e4e4e7;
+  --podo-button-root-borderColor: transparent;
+  --podo-button-label-color: #9fa2ad;
+  cursor: not-allowed;
+}

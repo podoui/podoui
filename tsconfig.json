@@ -13,6 +13,7 @@
     { "path": "./packages/codegen" },
     { "path": "./packages/migration" },
     { "path": "./packages/mcp" },
-    { "path": "./packages/cli" }
+    { "path": "./packages/cli" },
+    { "path": "./packages/docs" }
   ]
 }
