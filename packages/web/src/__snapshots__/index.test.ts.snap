@@ -14,15 +14,20 @@ input {
 
 .podo-button {
   align-items: center;
-  background: var(--podo-button-root-background, var(--podo-component-button-background, #5B5BD6));
-  border: 1px solid transparent;
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-button-label-color, var(--podo-component-button-text, #FFFFFF));
+  justify-content: center;
+  background: var(--podo-button-root-background, #426CED);
+  border: 1px solid var(--podo-button-root-borderColor, transparent);
+  border-radius: 10px;
+  color: var(--podo-button-label-color, #FFFFFF);
   cursor: pointer;
   display: inline-flex;
-  gap: var(--podo-spacing-scale-1, 4px);
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  font-weight: 400;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 80px;
+  padding: 2px 16px;
 }
 
 .podo-button__icon {
@@ -31,9 +36,92 @@ input {
   display: inline-flex;
 }
 
+/* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
+.podo-button[data-size="xs"] {
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 32px;
+  padding: 2px 10px;
+}
+.podo-button[data-size="sm"] {
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 36px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="md"] {
+  border-radius: 10px;
+  font-size: 16px;
+  min-height: 42px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="lg"] {
+  border-radius: 12px;
+  font-size: 16px;
+  min-height: 52px;
+  padding: 2px 20px;
+}
+
+/* Themes (Figma solid/outline x primary/assistive/white) */
+.podo-button[data-theme="solid-primary"] {
+  --podo-button-root-background: #426CED;
+  --podo-button-label-color: #FFFFFF;
+}
+.podo-button[data-theme="solid-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #1245E2;
+}
+.podo-button[data-theme="solid-primary"]:active:not([disabled]) {
+  --podo-button-root-background: #123BBA;
+}
+.podo-button[data-theme="solid-assistive"] {
+  --podo-button-root-background: #F4F4F5;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #E4E4E7;
+}
+.podo-button[data-theme="solid-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-primary"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #426CED;
+  --podo-button-label-color: #426CED;
+}
+.podo-button[data-theme="outline-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F7FE;
+}
+.podo-button[data-theme="outline-assistive"] {
+  --podo-button-root-background: #F9F9F9;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F9F9F9;
+}
+
+.podo-button:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
 .podo-button[disabled] {
+  --podo-button-root-background: #E4E4E7;
+  --podo-button-root-borderColor: transparent;
+  --podo-button-label-color: #9FA2AD;
   cursor: not-allowed;
-  opacity: 0.56;
 }
 
 .podo-input {
@@ -93,10 +181,10 @@ input {
   font-weight: var(--podo-typography-heading-xlarge-fontWeight, 700);
   line-height: var(--podo-typography-heading-xlarge-lineHeight, 1.2);
 }</style>
-<button class="podo-button" part="root" data-variant="solid" data-size="md">
-  <span class="podo-button__icon" part="leftIcon"><slot name="leftIcon"></slot></span>
+<button class="podo-button" part="root" data-theme="solid-primary" data-size="md">
+  <span class="podo-button__icon" part="prefix"><slot name="prefix"></slot></span>
   <span part="label"><slot></slot></span>
-  <span class="podo-button__icon" part="rightIcon"><slot name="rightIcon"></slot></span>
+  <span class="podo-button__icon" part="suffix"><slot name="suffix"></slot></span>
 </button>"
 `;
 
@@ -114,15 +202,20 @@ input {
 
 .podo-button {
   align-items: center;
-  background: var(--podo-button-root-background, var(--podo-component-button-background, #5B5BD6));
-  border: 1px solid transparent;
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-button-label-color, var(--podo-component-button-text, #FFFFFF));
+  justify-content: center;
+  background: var(--podo-button-root-background, #426CED);
+  border: 1px solid var(--podo-button-root-borderColor, transparent);
+  border-radius: 10px;
+  color: var(--podo-button-label-color, #FFFFFF);
   cursor: pointer;
   display: inline-flex;
-  gap: var(--podo-spacing-scale-1, 4px);
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  font-weight: 400;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 80px;
+  padding: 2px 16px;
 }
 
 .podo-button__icon {
@@ -131,9 +224,92 @@ input {
   display: inline-flex;
 }
 
+/* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
+.podo-button[data-size="xs"] {
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 32px;
+  padding: 2px 10px;
+}
+.podo-button[data-size="sm"] {
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 36px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="md"] {
+  border-radius: 10px;
+  font-size: 16px;
+  min-height: 42px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="lg"] {
+  border-radius: 12px;
+  font-size: 16px;
+  min-height: 52px;
+  padding: 2px 20px;
+}
+
+/* Themes (Figma solid/outline x primary/assistive/white) */
+.podo-button[data-theme="solid-primary"] {
+  --podo-button-root-background: #426CED;
+  --podo-button-label-color: #FFFFFF;
+}
+.podo-button[data-theme="solid-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #1245E2;
+}
+.podo-button[data-theme="solid-primary"]:active:not([disabled]) {
+  --podo-button-root-background: #123BBA;
+}
+.podo-button[data-theme="solid-assistive"] {
+  --podo-button-root-background: #F4F4F5;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #E4E4E7;
+}
+.podo-button[data-theme="solid-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-primary"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #426CED;
+  --podo-button-label-color: #426CED;
+}
+.podo-button[data-theme="outline-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F7FE;
+}
+.podo-button[data-theme="outline-assistive"] {
+  --podo-button-root-background: #F9F9F9;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F9F9F9;
+}
+
+.podo-button:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
 .podo-button[disabled] {
+  --podo-button-root-background: #E4E4E7;
+  --podo-button-root-borderColor: transparent;
+  --podo-button-label-color: #9FA2AD;
   cursor: not-allowed;
-  opacity: 0.56;
 }
 
 .podo-input {
@@ -221,15 +397,20 @@ input {
 
 .podo-button {
   align-items: center;
-  background: var(--podo-button-root-background, var(--podo-component-button-background, #5B5BD6));
-  border: 1px solid transparent;
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-button-label-color, var(--podo-component-button-text, #FFFFFF));
+  justify-content: center;
+  background: var(--podo-button-root-background, #426CED);
+  border: 1px solid var(--podo-button-root-borderColor, transparent);
+  border-radius: 10px;
+  color: var(--podo-button-label-color, #FFFFFF);
   cursor: pointer;
   display: inline-flex;
-  gap: var(--podo-spacing-scale-1, 4px);
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  font-weight: 400;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 80px;
+  padding: 2px 16px;
 }
 
 .podo-button__icon {
@@ -238,9 +419,92 @@ input {
   display: inline-flex;
 }
 
+/* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
+.podo-button[data-size="xs"] {
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 32px;
+  padding: 2px 10px;
+}
+.podo-button[data-size="sm"] {
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 36px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="md"] {
+  border-radius: 10px;
+  font-size: 16px;
+  min-height: 42px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="lg"] {
+  border-radius: 12px;
+  font-size: 16px;
+  min-height: 52px;
+  padding: 2px 20px;
+}
+
+/* Themes (Figma solid/outline x primary/assistive/white) */
+.podo-button[data-theme="solid-primary"] {
+  --podo-button-root-background: #426CED;
+  --podo-button-label-color: #FFFFFF;
+}
+.podo-button[data-theme="solid-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #1245E2;
+}
+.podo-button[data-theme="solid-primary"]:active:not([disabled]) {
+  --podo-button-root-background: #123BBA;
+}
+.podo-button[data-theme="solid-assistive"] {
+  --podo-button-root-background: #F4F4F5;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #E4E4E7;
+}
+.podo-button[data-theme="solid-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-primary"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #426CED;
+  --podo-button-label-color: #426CED;
+}
+.podo-button[data-theme="outline-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F7FE;
+}
+.podo-button[data-theme="outline-assistive"] {
+  --podo-button-root-background: #F9F9F9;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F9F9F9;
+}
+
+.podo-button:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
 .podo-button[disabled] {
+  --podo-button-root-background: #E4E4E7;
+  --podo-button-root-borderColor: transparent;
+  --podo-button-label-color: #9FA2AD;
   cursor: not-allowed;
-  opacity: 0.56;
 }
 
 .podo-input {
@@ -316,15 +580,20 @@ input {
 
 .podo-button {
   align-items: center;
-  background: var(--podo-button-root-background, var(--podo-component-button-background, #5B5BD6));
-  border: 1px solid transparent;
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-button-label-color, var(--podo-component-button-text, #FFFFFF));
+  justify-content: center;
+  background: var(--podo-button-root-background, #426CED);
+  border: 1px solid var(--podo-button-root-borderColor, transparent);
+  border-radius: 10px;
+  color: var(--podo-button-label-color, #FFFFFF);
   cursor: pointer;
   display: inline-flex;
-  gap: var(--podo-spacing-scale-1, 4px);
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  font-weight: 400;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 80px;
+  padding: 2px 16px;
 }
 
 .podo-button__icon {
@@ -333,9 +602,92 @@ input {
   display: inline-flex;
 }
 
+/* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
+.podo-button[data-size="xs"] {
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 32px;
+  padding: 2px 10px;
+}
+.podo-button[data-size="sm"] {
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 36px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="md"] {
+  border-radius: 10px;
+  font-size: 16px;
+  min-height: 42px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="lg"] {
+  border-radius: 12px;
+  font-size: 16px;
+  min-height: 52px;
+  padding: 2px 20px;
+}
+
+/* Themes (Figma solid/outline x primary/assistive/white) */
+.podo-button[data-theme="solid-primary"] {
+  --podo-button-root-background: #426CED;
+  --podo-button-label-color: #FFFFFF;
+}
+.podo-button[data-theme="solid-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #1245E2;
+}
+.podo-button[data-theme="solid-primary"]:active:not([disabled]) {
+  --podo-button-root-background: #123BBA;
+}
+.podo-button[data-theme="solid-assistive"] {
+  --podo-button-root-background: #F4F4F5;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #E4E4E7;
+}
+.podo-button[data-theme="solid-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-primary"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #426CED;
+  --podo-button-label-color: #426CED;
+}
+.podo-button[data-theme="outline-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F7FE;
+}
+.podo-button[data-theme="outline-assistive"] {
+  --podo-button-root-background: #F9F9F9;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F9F9F9;
+}
+
+.podo-button:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
 .podo-button[disabled] {
+  --podo-button-root-background: #E4E4E7;
+  --podo-button-root-borderColor: transparent;
+  --podo-button-label-color: #9FA2AD;
   cursor: not-allowed;
-  opacity: 0.56;
 }
 
 .podo-input {
@@ -412,15 +764,20 @@ input {
 
 .podo-button {
   align-items: center;
-  background: var(--podo-button-root-background, var(--podo-component-button-background, #5B5BD6));
-  border: 1px solid transparent;
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-button-label-color, var(--podo-component-button-text, #FFFFFF));
+  justify-content: center;
+  background: var(--podo-button-root-background, #426CED);
+  border: 1px solid var(--podo-button-root-borderColor, transparent);
+  border-radius: 10px;
+  color: var(--podo-button-label-color, #FFFFFF);
   cursor: pointer;
   display: inline-flex;
-  gap: var(--podo-spacing-scale-1, 4px);
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  font-weight: 400;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 80px;
+  padding: 2px 16px;
 }
 
 .podo-button__icon {
@@ -429,9 +786,92 @@ input {
   display: inline-flex;
 }
 
+/* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
+.podo-button[data-size="xs"] {
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 32px;
+  padding: 2px 10px;
+}
+.podo-button[data-size="sm"] {
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 36px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="md"] {
+  border-radius: 10px;
+  font-size: 16px;
+  min-height: 42px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="lg"] {
+  border-radius: 12px;
+  font-size: 16px;
+  min-height: 52px;
+  padding: 2px 20px;
+}
+
+/* Themes (Figma solid/outline x primary/assistive/white) */
+.podo-button[data-theme="solid-primary"] {
+  --podo-button-root-background: #426CED;
+  --podo-button-label-color: #FFFFFF;
+}
+.podo-button[data-theme="solid-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #1245E2;
+}
+.podo-button[data-theme="solid-primary"]:active:not([disabled]) {
+  --podo-button-root-background: #123BBA;
+}
+.podo-button[data-theme="solid-assistive"] {
+  --podo-button-root-background: #F4F4F5;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #E4E4E7;
+}
+.podo-button[data-theme="solid-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-primary"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #426CED;
+  --podo-button-label-color: #426CED;
+}
+.podo-button[data-theme="outline-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F7FE;
+}
+.podo-button[data-theme="outline-assistive"] {
+  --podo-button-root-background: #F9F9F9;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F9F9F9;
+}
+
+.podo-button:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
 .podo-button[disabled] {
+  --podo-button-root-background: #E4E4E7;
+  --podo-button-root-borderColor: transparent;
+  --podo-button-label-color: #9FA2AD;
   cursor: not-allowed;
-  opacity: 0.56;
 }
 
 .podo-input {

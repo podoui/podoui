@@ -19,7 +19,7 @@ describe("@podo/react", () => {
     const user = userEvent.setup();
     let presses = 0;
     render(
-      <Button leftIcon={<Icon name="menu" />} onPress={() => (presses += 1)}>
+      <Button prefix={<Icon name="menu" />} onPress={() => (presses += 1)}>
         Save
       </Button>
     );
@@ -27,7 +27,7 @@ describe("@podo/react", () => {
     await user.click(screen.getByRole("button", { name: "Save" }));
 
     expect(presses).toBe(1);
-    expect(screen.getByRole("button").getAttribute("data-variant")).toBe("solid");
+    expect(screen.getByRole("button").getAttribute("data-theme")).toBe("solid-primary");
   });
 
   it("supports controlled and uncontrolled input value changes", async () => {
@@ -76,7 +76,7 @@ describe("@podo/react", () => {
   it("snapshots themed variant markup for visual regression", () => {
     const { container } = render(
       <PodoThemeProvider theme="dashboard" colorScheme="dark">
-        <Button variant="soft" size="lg" leftIcon={<Icon name="menu" />}>
+        <Button theme="solid-assistive" size="lg" prefix={<Icon name="menu" />}>
           Save
         </Button>
         <Field id="email" label="Email" description="Work email" invalid>

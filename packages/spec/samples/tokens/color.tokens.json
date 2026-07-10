@@ -5,10 +5,222 @@
   "tokens": {
     "color": {
       "palette": {
-        "purple": {
-          "600": {
+        "gray": {
+          "0": {
             "$type": "color",
-            "$value": "#5B5BD6",
+            "$value": "#FFFFFF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "5": {
+            "$type": "color",
+            "$value": "#F9F9F9",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "10": {
+            "$type": "color",
+            "$value": "#F4F4F5",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "20": {
+            "$type": "color",
+            "$value": "#E4E4E7",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "30": {
+            "$type": "color",
+            "$value": "#D1D2D6",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "40": {
+            "$type": "color",
+            "$value": "#9FA2AD",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#767985",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "60": {
+            "$type": "color",
+            "$value": "#50555E",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "70": {
+            "$type": "color",
+            "$value": "#3E424B",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "80": {
+            "$type": "color",
+            "$value": "#27272A",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "90": {
+            "$type": "color",
+            "$value": "#18181B",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          },
+          "100": {
+            "$type": "color",
+            "$value": "#000000",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["neutral"]
+              }
+            }
+          }
+        },
+        "primary": {
+          "5": {
+            "$type": "color",
+            "$value": "#F1F4FD",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand", "action"]
+              }
+            }
+          },
+          "10": {
+            "$type": "color",
+            "$value": "#D0DBFB",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand", "action"]
+              }
+            }
+          },
+          "20": {
+            "$type": "color",
+            "$value": "#ABBEF7",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand", "action"]
+              }
+            }
+          },
+          "30": {
+            "$type": "color",
+            "$value": "#819EF3",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand", "action"]
+              }
+            }
+          },
+          "40": {
+            "$type": "color",
+            "$value": "#577DEF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand", "action"]
+              }
+            }
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#426CED",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand", "action"]
+              }
+            }
+          },
+          "60": {
+            "$type": "color",
+            "$value": "#1245E2",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand", "action"]
+              }
+            }
+          },
+          "70": {
+            "$type": "color",
+            "$value": "#123BBA",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand", "action"]
+              }
+            }
+          },
+          "80": {
+            "$type": "color",
+            "$value": "#0D2C8B",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand", "action"]
+              }
+            }
+          },
+          "90": {
+            "$type": "color",
+            "$value": "#091D5D",
             "$extensions": {
               "podo": {
                 "scope": "primitive",
@@ -17,24 +229,818 @@
             }
           }
         },
-        "gray": {
-          "0": {
+        "secondary": {
+          "5": {
             "$type": "color",
-            "$value": "#FFFFFF",
+            "$value": "#F5F9FF",
             "$extensions": {
               "podo": {
                 "scope": "primitive",
-                "roles": ["surface"]
+                "roles": ["brand"]
               }
             }
           },
-          "900": {
+          "10": {
             "$type": "color",
-            "$value": "#14151A",
+            "$value": "#E6F0FE",
             "$extensions": {
               "podo": {
                 "scope": "primitive",
-                "roles": ["text"]
+                "roles": ["brand"]
+              }
+            }
+          },
+          "20": {
+            "$type": "color",
+            "$value": "#CEE2FD",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand"]
+              }
+            }
+          },
+          "30": {
+            "$type": "color",
+            "$value": "#A0C2EE",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand"]
+              }
+            }
+          },
+          "40": {
+            "$type": "color",
+            "$value": "#76A0D8",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand"]
+              }
+            }
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#4A78B5",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand"]
+              }
+            }
+          },
+          "60": {
+            "$type": "color",
+            "$value": "#34547E",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand"]
+              }
+            }
+          },
+          "70": {
+            "$type": "color",
+            "$value": "#2D486C",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand"]
+              }
+            }
+          },
+          "80": {
+            "$type": "color",
+            "$value": "#253C5A",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand"]
+              }
+            }
+          },
+          "90": {
+            "$type": "color",
+            "$value": "#1E3048",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["brand"]
+              }
+            }
+          }
+        },
+        "accent": {
+          "5": {
+            "$type": "color",
+            "$value": "#FEF1F2",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["accent"]
+              }
+            }
+          },
+          "10": {
+            "$type": "color",
+            "$value": "#FCD9DC",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["accent"]
+              }
+            }
+          },
+          "20": {
+            "$type": "color",
+            "$value": "#FAB7BD",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["accent"]
+              }
+            }
+          },
+          "30": {
+            "$type": "color",
+            "$value": "#F8969E",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["accent"]
+              }
+            }
+          },
+          "40": {
+            "$type": "color",
+            "$value": "#F66F7A",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["accent"]
+              }
+            }
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#F15764",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["accent"]
+              }
+            }
+          },
+          "60": {
+            "$type": "color",
+            "$value": "#D63D4A",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["accent"]
+              }
+            }
+          },
+          "70": {
+            "$type": "color",
+            "$value": "#BF3742",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["accent"]
+              }
+            }
+          },
+          "80": {
+            "$type": "color",
+            "$value": "#992C35",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["accent"]
+              }
+            }
+          },
+          "90": {
+            "$type": "color",
+            "$value": "#732128",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["accent"]
+              }
+            }
+          }
+        },
+        "error": {
+          "5": {
+            "$type": "color",
+            "$value": "#FEF1F1",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "danger"]
+              }
+            }
+          },
+          "10": {
+            "$type": "color",
+            "$value": "#FFE0DF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "danger"]
+              }
+            }
+          },
+          "20": {
+            "$type": "color",
+            "$value": "#FFADAD",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "danger"]
+              }
+            }
+          },
+          "30": {
+            "$type": "color",
+            "$value": "#FF8985",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "danger"]
+              }
+            }
+          },
+          "40": {
+            "$type": "color",
+            "$value": "#F56666",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "danger"]
+              }
+            }
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#F23B3B",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "danger"]
+              }
+            }
+          },
+          "60": {
+            "$type": "color",
+            "$value": "#EE1818",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "danger"]
+              }
+            }
+          },
+          "70": {
+            "$type": "color",
+            "$value": "#CD0404",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "danger"]
+              }
+            }
+          },
+          "80": {
+            "$type": "color",
+            "$value": "#8F0000",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "danger"]
+              }
+            }
+          },
+          "90": {
+            "$type": "color",
+            "$value": "#5F0000",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "danger"]
+              }
+            }
+          }
+        },
+        "warning": {
+          "5": {
+            "$type": "color",
+            "$value": "#FFF7E6",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "warning"]
+              }
+            }
+          },
+          "10": {
+            "$type": "color",
+            "$value": "#FFEBC2",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "warning"]
+              }
+            }
+          },
+          "20": {
+            "$type": "color",
+            "$value": "#FFD88A",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "warning"]
+              }
+            }
+          },
+          "30": {
+            "$type": "color",
+            "$value": "#FFC654",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "warning"]
+              }
+            }
+          },
+          "40": {
+            "$type": "color",
+            "$value": "#FFBB33",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "warning"]
+              }
+            }
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#FFAA00",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "warning"]
+              }
+            }
+          },
+          "60": {
+            "$type": "color",
+            "$value": "#E89B00",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "warning"]
+              }
+            }
+          },
+          "70": {
+            "$type": "color",
+            "$value": "#B57900",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "warning"]
+              }
+            }
+          },
+          "80": {
+            "$type": "color",
+            "$value": "#8C5E00",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "warning"]
+              }
+            }
+          },
+          "90": {
+            "$type": "color",
+            "$value": "#6B4700",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "warning"]
+              }
+            }
+          }
+        },
+        "success": {
+          "5": {
+            "$type": "color",
+            "$value": "#ECF8EF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "success"]
+              }
+            }
+          },
+          "10": {
+            "$type": "color",
+            "$value": "#C5E9CD",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "success"]
+              }
+            }
+          },
+          "20": {
+            "$type": "color",
+            "$value": "#A9DEB4",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "success"]
+              }
+            }
+          },
+          "30": {
+            "$type": "color",
+            "$value": "#81CF92",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "success"]
+              }
+            }
+          },
+          "40": {
+            "$type": "color",
+            "$value": "#57C16F",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "success"]
+              }
+            }
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#3EA856",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "success"]
+              }
+            }
+          },
+          "60": {
+            "$type": "color",
+            "$value": "#38994E",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "success"]
+              }
+            }
+          },
+          "70": {
+            "$type": "color",
+            "$value": "#308242",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "success"]
+              }
+            }
+          },
+          "80": {
+            "$type": "color",
+            "$value": "#256533",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "success"]
+              }
+            }
+          },
+          "90": {
+            "$type": "color",
+            "$value": "#1C4D27",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "success"]
+              }
+            }
+          }
+        },
+        "info": {
+          "5": {
+            "$type": "color",
+            "$value": "#EBF5FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "info"]
+              }
+            }
+          },
+          "10": {
+            "$type": "color",
+            "$value": "#C7E3FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "info"]
+              }
+            }
+          },
+          "20": {
+            "$type": "color",
+            "$value": "#8FC8FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "info"]
+              }
+            }
+          },
+          "30": {
+            "$type": "color",
+            "$value": "#70B9FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "info"]
+              }
+            }
+          },
+          "40": {
+            "$type": "color",
+            "$value": "#56ACFF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "info"]
+              }
+            }
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#0095FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "info"]
+              }
+            }
+          },
+          "60": {
+            "$type": "color",
+            "$value": "#0074E5",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "info"]
+              }
+            }
+          },
+          "70": {
+            "$type": "color",
+            "$value": "#0056AA",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "info"]
+              }
+            }
+          },
+          "80": {
+            "$type": "color",
+            "$value": "#00407F",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "info"]
+              }
+            }
+          },
+          "90": {
+            "$type": "color",
+            "$value": "#002B55",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["system", "info"]
+              }
+            }
+          }
+        },
+        "orange": {
+          "5": {
+            "$type": "color",
+            "$value": "#FFF4F0",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "10": {
+            "$type": "color",
+            "$value": "#FFDACC",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "20": {
+            "$type": "color",
+            "$value": "#FFB599",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "30": {
+            "$type": "color",
+            "$value": "#FE9975",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "40": {
+            "$type": "color",
+            "$value": "#FE8052",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#FF6A33",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "60": {
+            "$type": "color",
+            "$value": "#FF5212",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "70": {
+            "$type": "color",
+            "$value": "#DB3B00",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "80": {
+            "$type": "color",
+            "$value": "#992900",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "90": {
+            "$type": "color",
+            "$value": "#661C00",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          }
+        },
+        "purple": {
+          "5": {
+            "$type": "color",
+            "$value": "#F8F5FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "10": {
+            "$type": "color",
+            "$value": "#EEE5FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "20": {
+            "$type": "color",
+            "$value": "#D7C2FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "30": {
+            "$type": "color",
+            "$value": "#BD99FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "40": {
+            "$type": "color",
+            "$value": "#AC80FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#8E51FF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "60": {
+            "$type": "color",
+            "$value": "#6A3DBF",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "70": {
+            "$type": "color",
+            "$value": "#553199",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "80": {
+            "$type": "color",
+            "$value": "#472980",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
+              }
+            }
+          },
+          "90": {
+            "$type": "color",
+            "$value": "#361F61",
+            "$extensions": {
+              "podo": {
+                "scope": "primitive",
+                "roles": ["base"]
               }
             }
           }
@@ -58,12 +1064,12 @@
         "text": {
           "default": {
             "$type": "color",
-            "$value": "{color.palette.gray.900}",
+            "$value": "{color.palette.gray.90}",
             "$extensions": {
               "podo": {
-                "themeable": true,
                 "scope": "semantic",
-                "roles": ["text"]
+                "roles": ["text"],
+                "themeable": true
               }
             }
           },
@@ -72,9 +1078,9 @@
             "$value": "{color.palette.gray.0}",
             "$extensions": {
               "podo": {
-                "themeable": true,
                 "scope": "semantic",
-                "roles": ["text", "inverse"]
+                "roles": ["text", "inverse"],
+                "themeable": true
               }
             }
           },
@@ -83,9 +1089,9 @@
             "$value": "{color.palette.red.600}",
             "$extensions": {
               "podo": {
-                "themeable": true,
                 "scope": "semantic",
-                "roles": ["text", "danger"]
+                "roles": ["text", "danger"],
+                "themeable": true
               }
             }
           }
@@ -93,12 +1099,34 @@
         "action": {
           "primary": {
             "$type": "color",
-            "$value": "{color.palette.purple.600}",
+            "$value": "{color.palette.primary.50}",
             "$extensions": {
               "podo": {
-                "themeable": true,
                 "scope": "semantic",
-                "roles": ["action", "primary"]
+                "roles": ["action", "primary"],
+                "themeable": true
+              }
+            }
+          },
+          "primary-hover": {
+            "$type": "color",
+            "$value": "{color.palette.primary.60}",
+            "$extensions": {
+              "podo": {
+                "scope": "semantic",
+                "roles": ["action", "primary", "hover"],
+                "themeable": true
+              }
+            }
+          },
+          "primary-pressed": {
+            "$type": "color",
+            "$value": "{color.palette.primary.70}",
+            "$extensions": {
+              "podo": {
+                "scope": "semantic",
+                "roles": ["action", "primary", "pressed"],
+                "themeable": true
               }
             }
           }
@@ -108,16 +1136,16 @@
           "$value": "{color.palette.gray.0}",
           "$extensions": {
             "podo": {
-              "themeable": true,
               "scope": "semantic",
-              "roles": ["surface", "light"]
+              "roles": ["surface", "light"],
+              "themeable": true
             }
           }
         },
         "dark": {
           "surface": {
             "$type": "color",
-            "$value": "{color.palette.gray.900}",
+            "$value": "{color.palette.gray.90}",
             "$extensions": {
               "podo": {
                 "themeable": true,
@@ -148,6 +1176,210 @@
             "podo": {
               "scope": "component",
               "roles": ["button", "text"]
+            }
+          }
+        },
+        "solid-primary": {
+          "background": {
+            "$type": "color",
+            "$value": "{semantic.color.action.primary}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "background"]
+              }
+            }
+          },
+          "background-hover": {
+            "$type": "color",
+            "$value": "{semantic.color.action.primary-hover}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "hover"]
+              }
+            }
+          },
+          "background-pressed": {
+            "$type": "color",
+            "$value": "{semantic.color.action.primary-pressed}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "pressed"]
+              }
+            }
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{semantic.color.text.inverse}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "text"]
+              }
+            }
+          }
+        },
+        "solid-assistive": {
+          "background": {
+            "$type": "color",
+            "$value": "{color.palette.gray.10}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "background"]
+              }
+            }
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{semantic.color.text.default}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "text"]
+              }
+            }
+          }
+        },
+        "solid-white": {
+          "background": {
+            "$type": "color",
+            "$value": "{color.palette.gray.0}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "background"]
+              }
+            }
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{semantic.color.text.default}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "text"]
+              }
+            }
+          }
+        },
+        "outline-primary": {
+          "background": {
+            "$type": "color",
+            "$value": "{color.palette.gray.0}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "background"]
+              }
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$value": "{semantic.color.action.primary}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "border"]
+              }
+            }
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{semantic.color.action.primary}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "text"]
+              }
+            }
+          }
+        },
+        "outline-assistive": {
+          "background": {
+            "$type": "color",
+            "$value": "{color.palette.gray.5}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "background"]
+              }
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$value": "{color.palette.gray.30}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "border"]
+              }
+            }
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{semantic.color.text.default}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "text"]
+              }
+            }
+          }
+        },
+        "outline-white": {
+          "background": {
+            "$type": "color",
+            "$value": "{color.palette.gray.0}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "background"]
+              }
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$value": "{color.palette.gray.30}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "border"]
+              }
+            }
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{semantic.color.text.default}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "text"]
+              }
+            }
+          }
+        },
+        "disabled": {
+          "background": {
+            "$type": "color",
+            "$value": "{color.palette.gray.20}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "disabled"]
+              }
+            }
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{color.palette.gray.40}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "disabled", "text"]
+              }
             }
           }
         }

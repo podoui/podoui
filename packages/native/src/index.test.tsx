@@ -46,7 +46,7 @@ describe("@podo/native", () => {
     expect(screen.getByLabelText("Email").getAttribute("data-describedby")).toBe(
       "podo-field-control-error"
     );
-    expect(screen.getByRole("button").getAttribute("data-variant")).toBe("solid");
+    expect(screen.getByRole("button").getAttribute("data-theme")).toBe("solid-primary");
     expect(screen.getByText("≡")).toBeDefined();
     expect(screen.getByText("Required")).toBeDefined();
   });
@@ -100,7 +100,7 @@ function TestPressable({
       data-bg={styleRecord?.backgroundColor as string | undefined}
       data-testid={testID as string | undefined}
       data-size={props["data-size"] as string | undefined}
-      data-variant={props["data-variant"] as string | undefined}
+      data-theme={props["data-theme"] as string | undefined}
       disabled={Boolean(props.disabled)}
       onClick={() => {
         if (typeof onPress === "function") {

@@ -8,7 +8,7 @@ exports[`@podo/react > snapshots themed variant markup for visual regression 1`]
   <button
     class="podo-button"
     data-size="lg"
-    data-variant="soft"
+    data-theme="solid-assistive"
     type="button"
   >
     <span

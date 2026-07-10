@@ -6,12 +6,21 @@ import type { JSX } from "hono/jsx/jsx-runtime";
 import { raw } from "hono/html";
 import { createButtonBehavior, createFieldA11y, createInputBehavior } from "@podo/core";
 
+export type HonoButtonTheme =
+  | "solid-primary"
+  | "solid-assistive"
+  | "solid-white"
+  | "outline-primary"
+  | "outline-assistive"
+  | "outline-white";
+
 export interface HonoButtonProps {
   children: Child;
-  variant?: "solid" | "soft" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
+  theme?: HonoButtonTheme;
+  size?: "xs" | "sm" | "md" | "lg";
   disabled?: boolean;
-  loading?: boolean;
+  prefix?: Child;
+  suffix?: Child;
   type?: "button" | "submit" | "reset";
   class?: string;
 }
@@ -51,29 +60,30 @@ export interface HonoCriticalCssOptions {
 
 export function Button({
   children,
-  variant = "solid",
+  theme = "solid-primary",
   size = "md",
   disabled,
-  loading,
+  prefix,
+  suffix,
   type,
   class: className,
 }: HonoButtonProps): JSX.Element {
-  const behavior = createButtonBehavior({ disabled, loading, type });
+  const behavior = createButtonBehavior({ disabled, type });
 
   return (
     <button
       class={joinClass("podo-button", className)}
       type={behavior.root.type}
       disabled={behavior.root.disabled}
-      aria-busy={behavior.root.ariaBusy}
       aria-disabled={behavior.root.ariaDisabled}
       tabIndex={behavior.root.tabIndex}
-      data-variant={variant}
+      data-theme={theme}
       data-size={size}
       data-disabled={disabled ? "true" : undefined}
-      data-loading={loading ? "true" : undefined}
     >
-      {children}
+      {prefix ? <span class="podo-button__icon">{prefix}</span> : null}
+      <span class="podo-button__label">{children}</span>
+      {suffix ? <span class="podo-button__icon">{suffix}</span> : null}
     </button>
   );
 }

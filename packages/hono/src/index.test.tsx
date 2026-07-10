@@ -28,8 +28,8 @@ describe("@podo/hono", () => {
           colorScheme: "dark",
           css: ".podo-button{color:var(--podo-component-button-text)}",
         })}
-        <Button loading>
-          <Icon name="menu" /> Save
+        <Button theme="outline-primary" prefix={<Icon name="menu" />}>
+          Save
         </Button>
         <Typography as="h1">Dashboard</Typography>
       </>
@@ -37,7 +37,7 @@ describe("@podo/hono", () => {
 
     expect(html).toContain("data-podo-critical");
     expect(html).toContain("dashboard");
-    expect(html).toContain('aria-busy="true"');
+    expect(html).toContain('data-theme="outline-primary"');
     expect(html).toContain("podo-icon-menu");
     expect(html).toContain("podo-text--h1");
     expect(html).toMatchSnapshot();

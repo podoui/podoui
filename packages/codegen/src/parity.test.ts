@@ -20,20 +20,14 @@ describe("cross-target component parity", () => {
       expect(files.find((file) => file.path.includes(`/${target}/`))?.contents).toContain("Button");
     }
 
-    expect(button.props.map((prop) => prop.name)).toEqual([
-      "variant",
-      "size",
-      "disabled",
-      "loading",
-      "onPress",
-    ]);
-    expect(button.slots.map((slot) => slot.name)).toEqual(["leftIcon", "children", "rightIcon"]);
+    expect(button.props.map((prop) => prop.name)).toEqual(["theme", "size", "disabled", "onPress"]);
+    expect(button.slots.map((slot) => slot.name)).toEqual(["prefix", "children", "suffix"]);
     expect(button.tokens).toMatchObject({
       "root.background": "{component.button.background}",
       "label.color": "{component.button.text}",
       "icon.color": "{component.button.text}",
     });
-    expect(button.variants.find((variant) => variant.name === "variant")?.tokens).toMatchObject({
+    expect(button.variants.find((variant) => variant.name === "theme")?.tokens).toMatchObject({
       "root.background": "{component.button.background}",
       "label.color": "{component.button.text}",
     });

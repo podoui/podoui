@@ -15,7 +15,7 @@ describe("@podo/web", () => {
 
     expect(customElements.get("podo-button")).toBeDefined();
     expect(customElements.get("podo-input")).toBeDefined();
-    expect(podoWebComponentCss).toContain("--podo-component-button-background");
+    expect(podoWebComponentCss).toContain('.podo-button[data-theme="solid-primary"]');
   });
 
   it("reads binding-key vars, exposes data-state, and consumes the registered token CSS", () => {
@@ -23,18 +23,19 @@ describe("@podo/web", () => {
     // base reads the binding-key var (with token-var fallback)
     expect(podoWebComponentCss).toContain("var(--podo-button-root-background,");
 
-    const layer = '.podo-button[data-variant="soft"] { --podo-button-root-background: red; }';
+    const layer =
+      '.podo-button[data-theme="solid-assistive"] { --podo-button-root-background: red; }';
     registerComponentTokenCss(layer);
     expect(componentStyleBlock()).toContain(layer);
 
     const button = document.createElement("podo-button");
-    button.setAttribute("variant", "soft");
+    button.setAttribute("theme", "solid-assistive");
     button.setAttribute("disabled", "");
     document.body.append(button);
     const html = button.shadowRoot?.innerHTML ?? "";
     // the generated layer is injected into the shadow, and state is exposed
     expect(html).toContain(layer);
-    expect(html).toContain('data-variant="soft"');
+    expect(html).toContain('data-theme="solid-assistive"');
     expect(html).toContain('data-state="disabled"');
 
     // reset so other tests/snapshots see the unregistered style block
@@ -44,7 +45,7 @@ describe("@podo/web", () => {
   it("renders button slots, states, and activation event", () => {
     registerPodoElements();
     const button = document.createElement("podo-button");
-    button.setAttribute("variant", "solid");
+    button.setAttribute("theme", "solid-primary");
     button.textContent = "Save";
     let pressed = 0;
     button.addEventListener("podo-press", () => {

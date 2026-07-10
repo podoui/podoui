@@ -5,32 +5,32 @@
   "name": "Button",
   "category": "atom",
   "status": "stable",
-  "description": "Action button with typed variants, icon slots, and loading state.",
+  "description": "Action button with themed solid/outline treatments, sizes, and prefix/suffix icon slots.",
   "anatomy": [
     {
       "name": "root",
       "targets": { "web": "button", "react": "button", "hono": "button", "native": "Pressable" }
     },
     {
-      "name": "left-icon",
-      "targets": { "web": "slot[name=leftIcon]", "react": "leftIcon", "native": "leftIcon" }
+      "name": "prefix",
+      "targets": { "web": "slot[name=prefix]", "react": "prefix", "native": "prefix" }
     },
     {
       "name": "label",
       "targets": { "web": "slot", "react": "children", "hono": "children", "native": "Text" }
     },
     {
-      "name": "right-icon",
-      "targets": { "web": "slot[name=rightIcon]", "react": "rightIcon", "native": "rightIcon" }
+      "name": "suffix",
+      "targets": { "web": "slot[name=suffix]", "react": "suffix", "native": "suffix" }
     }
   ],
   "slots": [
     {
-      "name": "leftIcon",
+      "name": "prefix",
       "targets": {
-        "web": { "name": "leftIcon" },
-        "react": { "name": "leftIcon" },
-        "native": { "name": "leftIcon" }
+        "web": { "name": "prefix" },
+        "react": { "name": "prefix" },
+        "native": { "name": "prefix" }
       }
     },
     {
@@ -44,29 +44,38 @@
       }
     },
     {
-      "name": "rightIcon",
+      "name": "suffix",
       "targets": {
-        "web": { "name": "rightIcon" },
-        "react": { "name": "rightIcon" },
-        "native": { "name": "rightIcon" }
+        "web": { "name": "suffix" },
+        "react": { "name": "suffix" },
+        "native": { "name": "suffix" }
       }
     }
   ],
   "props": [
     {
-      "name": "variant",
-      "type": { "kind": "enum", "values": ["solid", "soft", "outline", "ghost"] },
-      "default": "solid",
-      "description": "Visual treatment."
+      "name": "theme",
+      "type": {
+        "kind": "enum",
+        "values": [
+          "solid-primary",
+          "solid-assistive",
+          "solid-white",
+          "outline-primary",
+          "outline-assistive",
+          "outline-white"
+        ]
+      },
+      "default": "solid-primary",
+      "description": "Form (solid/outline) and tone (primary/assistive/white) treatment."
     },
     {
       "name": "size",
-      "type": { "kind": "enum", "values": ["sm", "md", "lg"] },
+      "type": { "kind": "enum", "values": ["xs", "sm", "md", "lg"] },
       "default": "md",
-      "description": "Control height and padding."
+      "description": "Control height, padding, font size, and radius (xs 32, sm 36, md 42, lg 52)."
     },
     { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
-    { "name": "loading", "type": { "kind": "boolean" }, "default": false },
     {
       "name": "onPress",
       "type": { "kind": "event", "payload": { "source": "button" } },
@@ -75,26 +84,57 @@
   ],
   "variants": [
     {
-      "name": "variant",
-      "values": ["solid", "soft", "outline", "ghost"],
-      "default": "solid",
+      "name": "theme",
+      "values": [
+        "solid-primary",
+        "solid-assistive",
+        "solid-white",
+        "outline-primary",
+        "outline-assistive",
+        "outline-white"
+      ],
+      "default": "solid-primary",
       "tokens": {
         "root.background": "{component.button.background}",
         "label.color": "{component.button.text}"
       },
       "valueTokens": {
-        "soft": { "root.background": "{component.button.background}" },
-        "outline": { "label.color": "{component.button.text}" }
+        "solid-primary": {
+          "root.background": "{component.button.solid-primary.background}",
+          "label.color": "{component.button.solid-primary.text}"
+        },
+        "solid-assistive": {
+          "root.background": "{component.button.solid-assistive.background}",
+          "label.color": "{component.button.solid-assistive.text}"
+        },
+        "solid-white": {
+          "root.background": "{component.button.solid-white.background}",
+          "label.color": "{component.button.solid-white.text}"
+        },
+        "outline-primary": {
+          "root.background": "{component.button.outline-primary.background}",
+          "root.borderColor": "{component.button.outline-primary.border}",
+          "label.color": "{component.button.outline-primary.text}"
+        },
+        "outline-assistive": {
+          "root.background": "{component.button.outline-assistive.background}",
+          "root.borderColor": "{component.button.outline-assistive.border}",
+          "label.color": "{component.button.outline-assistive.text}"
+        },
+        "outline-white": {
+          "root.background": "{component.button.outline-white.background}",
+          "root.borderColor": "{component.button.outline-white.border}",
+          "label.color": "{component.button.outline-white.text}"
+        }
       }
     },
-    { "name": "size", "values": ["sm", "md", "lg"], "default": "md" }
+    { "name": "size", "values": ["xs", "sm", "md", "lg"], "default": "md" }
   ],
   "states": [
     { "name": "hover", "description": "Pointer hover affordance." },
-    { "name": "active", "description": "Pressed state." },
+    { "name": "active", "description": "Pressed state (Figma 'pressed')." },
     { "name": "focusVisible", "description": "Keyboard focus ring." },
-    { "name": "disabled", "description": "Unavailable action." },
-    { "name": "loading", "description": "Pending action indicator." }
+    { "name": "disabled", "description": "Unavailable action." }
   ],
   "tokens": {
     "root.background": "{component.button.background}",
@@ -112,7 +152,7 @@
   },
   "accessibility": {
     "role": "button",
-    "aria": ["aria-disabled", "aria-busy"],
+    "aria": ["aria-disabled"],
     "keyboard": ["Enter activates", "Space activates"],
     "focusManagement": "Use focus-visible state for keyboard focus."
   },
@@ -120,12 +160,12 @@
     {
       "target": "react",
       "title": "Primary action",
-      "code": "<Button variant=\"solid\">Save</Button>"
+      "code": "<Button theme=\"solid-primary\">Save</Button>"
     },
     {
       "target": "web",
       "title": "Web component",
-      "code": "<podo-button variant=\"solid\">Save</podo-button>"
+      "code": "<podo-button theme=\"solid-primary\">Save</podo-button>"
     }
   ]
 }

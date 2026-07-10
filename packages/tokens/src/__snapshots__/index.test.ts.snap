@@ -1235,17 +1235,6 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "tier": "package"
       }
     },
-    "color.palette.purple.600": {
-      "path": "color.palette.purple.600",
-      "type": "color",
-      "value": "#5B5BD6",
-      "rawValue": "#5B5BD6",
-      "references": [],
-      "origin": {
-        "filePath": "packages/spec/samples/tokens/color.tokens.json",
-        "tier": "package"
-      }
-    },
     "color.palette.gray.0": {
       "path": "color.palette.gray.0",
       "type": "color",
@@ -1257,11 +1246,1111 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "tier": "package"
       }
     },
-    "color.palette.gray.900": {
-      "path": "color.palette.gray.900",
+    "color.palette.gray.5": {
+      "path": "color.palette.gray.5",
       "type": "color",
-      "value": "#14151A",
-      "rawValue": "#14151A",
+      "value": "#F9F9F9",
+      "rawValue": "#F9F9F9",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.gray.10": {
+      "path": "color.palette.gray.10",
+      "type": "color",
+      "value": "#F4F4F5",
+      "rawValue": "#F4F4F5",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.gray.20": {
+      "path": "color.palette.gray.20",
+      "type": "color",
+      "value": "#E4E4E7",
+      "rawValue": "#E4E4E7",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.gray.30": {
+      "path": "color.palette.gray.30",
+      "type": "color",
+      "value": "#D1D2D6",
+      "rawValue": "#D1D2D6",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.gray.40": {
+      "path": "color.palette.gray.40",
+      "type": "color",
+      "value": "#9FA2AD",
+      "rawValue": "#9FA2AD",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.gray.50": {
+      "path": "color.palette.gray.50",
+      "type": "color",
+      "value": "#767985",
+      "rawValue": "#767985",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.gray.60": {
+      "path": "color.palette.gray.60",
+      "type": "color",
+      "value": "#50555E",
+      "rawValue": "#50555E",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.gray.70": {
+      "path": "color.palette.gray.70",
+      "type": "color",
+      "value": "#3E424B",
+      "rawValue": "#3E424B",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.gray.80": {
+      "path": "color.palette.gray.80",
+      "type": "color",
+      "value": "#27272A",
+      "rawValue": "#27272A",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.gray.90": {
+      "path": "color.palette.gray.90",
+      "type": "color",
+      "value": "#18181B",
+      "rawValue": "#18181B",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.gray.100": {
+      "path": "color.palette.gray.100",
+      "type": "color",
+      "value": "#000000",
+      "rawValue": "#000000",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.primary.5": {
+      "path": "color.palette.primary.5",
+      "type": "color",
+      "value": "#F1F4FD",
+      "rawValue": "#F1F4FD",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.primary.10": {
+      "path": "color.palette.primary.10",
+      "type": "color",
+      "value": "#D0DBFB",
+      "rawValue": "#D0DBFB",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.primary.20": {
+      "path": "color.palette.primary.20",
+      "type": "color",
+      "value": "#ABBEF7",
+      "rawValue": "#ABBEF7",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.primary.30": {
+      "path": "color.palette.primary.30",
+      "type": "color",
+      "value": "#819EF3",
+      "rawValue": "#819EF3",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.primary.40": {
+      "path": "color.palette.primary.40",
+      "type": "color",
+      "value": "#577DEF",
+      "rawValue": "#577DEF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.primary.50": {
+      "path": "color.palette.primary.50",
+      "type": "color",
+      "value": "#426CED",
+      "rawValue": "#426CED",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.primary.60": {
+      "path": "color.palette.primary.60",
+      "type": "color",
+      "value": "#1245E2",
+      "rawValue": "#1245E2",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.primary.70": {
+      "path": "color.palette.primary.70",
+      "type": "color",
+      "value": "#123BBA",
+      "rawValue": "#123BBA",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.primary.80": {
+      "path": "color.palette.primary.80",
+      "type": "color",
+      "value": "#0D2C8B",
+      "rawValue": "#0D2C8B",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.primary.90": {
+      "path": "color.palette.primary.90",
+      "type": "color",
+      "value": "#091D5D",
+      "rawValue": "#091D5D",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.secondary.5": {
+      "path": "color.palette.secondary.5",
+      "type": "color",
+      "value": "#F5F9FF",
+      "rawValue": "#F5F9FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.secondary.10": {
+      "path": "color.palette.secondary.10",
+      "type": "color",
+      "value": "#E6F0FE",
+      "rawValue": "#E6F0FE",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.secondary.20": {
+      "path": "color.palette.secondary.20",
+      "type": "color",
+      "value": "#CEE2FD",
+      "rawValue": "#CEE2FD",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.secondary.30": {
+      "path": "color.palette.secondary.30",
+      "type": "color",
+      "value": "#A0C2EE",
+      "rawValue": "#A0C2EE",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.secondary.40": {
+      "path": "color.palette.secondary.40",
+      "type": "color",
+      "value": "#76A0D8",
+      "rawValue": "#76A0D8",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.secondary.50": {
+      "path": "color.palette.secondary.50",
+      "type": "color",
+      "value": "#4A78B5",
+      "rawValue": "#4A78B5",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.secondary.60": {
+      "path": "color.palette.secondary.60",
+      "type": "color",
+      "value": "#34547E",
+      "rawValue": "#34547E",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.secondary.70": {
+      "path": "color.palette.secondary.70",
+      "type": "color",
+      "value": "#2D486C",
+      "rawValue": "#2D486C",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.secondary.80": {
+      "path": "color.palette.secondary.80",
+      "type": "color",
+      "value": "#253C5A",
+      "rawValue": "#253C5A",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.secondary.90": {
+      "path": "color.palette.secondary.90",
+      "type": "color",
+      "value": "#1E3048",
+      "rawValue": "#1E3048",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.accent.5": {
+      "path": "color.palette.accent.5",
+      "type": "color",
+      "value": "#FEF1F2",
+      "rawValue": "#FEF1F2",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.accent.10": {
+      "path": "color.palette.accent.10",
+      "type": "color",
+      "value": "#FCD9DC",
+      "rawValue": "#FCD9DC",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.accent.20": {
+      "path": "color.palette.accent.20",
+      "type": "color",
+      "value": "#FAB7BD",
+      "rawValue": "#FAB7BD",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.accent.30": {
+      "path": "color.palette.accent.30",
+      "type": "color",
+      "value": "#F8969E",
+      "rawValue": "#F8969E",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.accent.40": {
+      "path": "color.palette.accent.40",
+      "type": "color",
+      "value": "#F66F7A",
+      "rawValue": "#F66F7A",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.accent.50": {
+      "path": "color.palette.accent.50",
+      "type": "color",
+      "value": "#F15764",
+      "rawValue": "#F15764",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.accent.60": {
+      "path": "color.palette.accent.60",
+      "type": "color",
+      "value": "#D63D4A",
+      "rawValue": "#D63D4A",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.accent.70": {
+      "path": "color.palette.accent.70",
+      "type": "color",
+      "value": "#BF3742",
+      "rawValue": "#BF3742",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.accent.80": {
+      "path": "color.palette.accent.80",
+      "type": "color",
+      "value": "#992C35",
+      "rawValue": "#992C35",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.accent.90": {
+      "path": "color.palette.accent.90",
+      "type": "color",
+      "value": "#732128",
+      "rawValue": "#732128",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.error.5": {
+      "path": "color.palette.error.5",
+      "type": "color",
+      "value": "#FEF1F1",
+      "rawValue": "#FEF1F1",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.error.10": {
+      "path": "color.palette.error.10",
+      "type": "color",
+      "value": "#FFE0DF",
+      "rawValue": "#FFE0DF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.error.20": {
+      "path": "color.palette.error.20",
+      "type": "color",
+      "value": "#FFADAD",
+      "rawValue": "#FFADAD",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.error.30": {
+      "path": "color.palette.error.30",
+      "type": "color",
+      "value": "#FF8985",
+      "rawValue": "#FF8985",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.error.40": {
+      "path": "color.palette.error.40",
+      "type": "color",
+      "value": "#F56666",
+      "rawValue": "#F56666",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.error.50": {
+      "path": "color.palette.error.50",
+      "type": "color",
+      "value": "#F23B3B",
+      "rawValue": "#F23B3B",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.error.60": {
+      "path": "color.palette.error.60",
+      "type": "color",
+      "value": "#EE1818",
+      "rawValue": "#EE1818",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.error.70": {
+      "path": "color.palette.error.70",
+      "type": "color",
+      "value": "#CD0404",
+      "rawValue": "#CD0404",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.error.80": {
+      "path": "color.palette.error.80",
+      "type": "color",
+      "value": "#8F0000",
+      "rawValue": "#8F0000",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.error.90": {
+      "path": "color.palette.error.90",
+      "type": "color",
+      "value": "#5F0000",
+      "rawValue": "#5F0000",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.warning.5": {
+      "path": "color.palette.warning.5",
+      "type": "color",
+      "value": "#FFF7E6",
+      "rawValue": "#FFF7E6",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.warning.10": {
+      "path": "color.palette.warning.10",
+      "type": "color",
+      "value": "#FFEBC2",
+      "rawValue": "#FFEBC2",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.warning.20": {
+      "path": "color.palette.warning.20",
+      "type": "color",
+      "value": "#FFD88A",
+      "rawValue": "#FFD88A",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.warning.30": {
+      "path": "color.palette.warning.30",
+      "type": "color",
+      "value": "#FFC654",
+      "rawValue": "#FFC654",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.warning.40": {
+      "path": "color.palette.warning.40",
+      "type": "color",
+      "value": "#FFBB33",
+      "rawValue": "#FFBB33",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.warning.50": {
+      "path": "color.palette.warning.50",
+      "type": "color",
+      "value": "#FFAA00",
+      "rawValue": "#FFAA00",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.warning.60": {
+      "path": "color.palette.warning.60",
+      "type": "color",
+      "value": "#E89B00",
+      "rawValue": "#E89B00",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.warning.70": {
+      "path": "color.palette.warning.70",
+      "type": "color",
+      "value": "#B57900",
+      "rawValue": "#B57900",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.warning.80": {
+      "path": "color.palette.warning.80",
+      "type": "color",
+      "value": "#8C5E00",
+      "rawValue": "#8C5E00",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.warning.90": {
+      "path": "color.palette.warning.90",
+      "type": "color",
+      "value": "#6B4700",
+      "rawValue": "#6B4700",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.success.5": {
+      "path": "color.palette.success.5",
+      "type": "color",
+      "value": "#ECF8EF",
+      "rawValue": "#ECF8EF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.success.10": {
+      "path": "color.palette.success.10",
+      "type": "color",
+      "value": "#C5E9CD",
+      "rawValue": "#C5E9CD",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.success.20": {
+      "path": "color.palette.success.20",
+      "type": "color",
+      "value": "#A9DEB4",
+      "rawValue": "#A9DEB4",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.success.30": {
+      "path": "color.palette.success.30",
+      "type": "color",
+      "value": "#81CF92",
+      "rawValue": "#81CF92",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.success.40": {
+      "path": "color.palette.success.40",
+      "type": "color",
+      "value": "#57C16F",
+      "rawValue": "#57C16F",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.success.50": {
+      "path": "color.palette.success.50",
+      "type": "color",
+      "value": "#3EA856",
+      "rawValue": "#3EA856",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.success.60": {
+      "path": "color.palette.success.60",
+      "type": "color",
+      "value": "#38994E",
+      "rawValue": "#38994E",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.success.70": {
+      "path": "color.palette.success.70",
+      "type": "color",
+      "value": "#308242",
+      "rawValue": "#308242",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.success.80": {
+      "path": "color.palette.success.80",
+      "type": "color",
+      "value": "#256533",
+      "rawValue": "#256533",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.success.90": {
+      "path": "color.palette.success.90",
+      "type": "color",
+      "value": "#1C4D27",
+      "rawValue": "#1C4D27",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.info.5": {
+      "path": "color.palette.info.5",
+      "type": "color",
+      "value": "#EBF5FF",
+      "rawValue": "#EBF5FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.info.10": {
+      "path": "color.palette.info.10",
+      "type": "color",
+      "value": "#C7E3FF",
+      "rawValue": "#C7E3FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.info.20": {
+      "path": "color.palette.info.20",
+      "type": "color",
+      "value": "#8FC8FF",
+      "rawValue": "#8FC8FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.info.30": {
+      "path": "color.palette.info.30",
+      "type": "color",
+      "value": "#70B9FF",
+      "rawValue": "#70B9FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.info.40": {
+      "path": "color.palette.info.40",
+      "type": "color",
+      "value": "#56ACFF",
+      "rawValue": "#56ACFF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.info.50": {
+      "path": "color.palette.info.50",
+      "type": "color",
+      "value": "#0095FF",
+      "rawValue": "#0095FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.info.60": {
+      "path": "color.palette.info.60",
+      "type": "color",
+      "value": "#0074E5",
+      "rawValue": "#0074E5",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.info.70": {
+      "path": "color.palette.info.70",
+      "type": "color",
+      "value": "#0056AA",
+      "rawValue": "#0056AA",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.info.80": {
+      "path": "color.palette.info.80",
+      "type": "color",
+      "value": "#00407F",
+      "rawValue": "#00407F",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.info.90": {
+      "path": "color.palette.info.90",
+      "type": "color",
+      "value": "#002B55",
+      "rawValue": "#002B55",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.orange.5": {
+      "path": "color.palette.orange.5",
+      "type": "color",
+      "value": "#FFF4F0",
+      "rawValue": "#FFF4F0",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.orange.10": {
+      "path": "color.palette.orange.10",
+      "type": "color",
+      "value": "#FFDACC",
+      "rawValue": "#FFDACC",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.orange.20": {
+      "path": "color.palette.orange.20",
+      "type": "color",
+      "value": "#FFB599",
+      "rawValue": "#FFB599",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.orange.30": {
+      "path": "color.palette.orange.30",
+      "type": "color",
+      "value": "#FE9975",
+      "rawValue": "#FE9975",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.orange.40": {
+      "path": "color.palette.orange.40",
+      "type": "color",
+      "value": "#FE8052",
+      "rawValue": "#FE8052",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.orange.50": {
+      "path": "color.palette.orange.50",
+      "type": "color",
+      "value": "#FF6A33",
+      "rawValue": "#FF6A33",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.orange.60": {
+      "path": "color.palette.orange.60",
+      "type": "color",
+      "value": "#FF5212",
+      "rawValue": "#FF5212",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.orange.70": {
+      "path": "color.palette.orange.70",
+      "type": "color",
+      "value": "#DB3B00",
+      "rawValue": "#DB3B00",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.orange.80": {
+      "path": "color.palette.orange.80",
+      "type": "color",
+      "value": "#992900",
+      "rawValue": "#992900",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.orange.90": {
+      "path": "color.palette.orange.90",
+      "type": "color",
+      "value": "#661C00",
+      "rawValue": "#661C00",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.purple.5": {
+      "path": "color.palette.purple.5",
+      "type": "color",
+      "value": "#F8F5FF",
+      "rawValue": "#F8F5FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.purple.10": {
+      "path": "color.palette.purple.10",
+      "type": "color",
+      "value": "#EEE5FF",
+      "rawValue": "#EEE5FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.purple.20": {
+      "path": "color.palette.purple.20",
+      "type": "color",
+      "value": "#D7C2FF",
+      "rawValue": "#D7C2FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.purple.30": {
+      "path": "color.palette.purple.30",
+      "type": "color",
+      "value": "#BD99FF",
+      "rawValue": "#BD99FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.purple.40": {
+      "path": "color.palette.purple.40",
+      "type": "color",
+      "value": "#AC80FF",
+      "rawValue": "#AC80FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.purple.50": {
+      "path": "color.palette.purple.50",
+      "type": "color",
+      "value": "#8E51FF",
+      "rawValue": "#8E51FF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.purple.60": {
+      "path": "color.palette.purple.60",
+      "type": "color",
+      "value": "#6A3DBF",
+      "rawValue": "#6A3DBF",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.purple.70": {
+      "path": "color.palette.purple.70",
+      "type": "color",
+      "value": "#553199",
+      "rawValue": "#553199",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.purple.80": {
+      "path": "color.palette.purple.80",
+      "type": "color",
+      "value": "#472980",
+      "rawValue": "#472980",
+      "references": [],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "color.palette.purple.90": {
+      "path": "color.palette.purple.90",
+      "type": "color",
+      "value": "#361F61",
+      "rawValue": "#361F61",
       "references": [],
       "origin": {
         "filePath": "packages/spec/samples/tokens/color.tokens.json",
@@ -1282,10 +2371,10 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
     "semantic.color.text.default": {
       "path": "semantic.color.text.default",
       "type": "color",
-      "value": "#14151A",
-      "rawValue": "{color.palette.gray.900}",
+      "value": "#18181B",
+      "rawValue": "{color.palette.gray.90}",
       "references": [
-        "color.palette.gray.900"
+        "color.palette.gray.90"
       ],
       "origin": {
         "filePath": "packages/spec/samples/tokens/color.tokens.json",
@@ -1321,10 +2410,36 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
     "semantic.color.action.primary": {
       "path": "semantic.color.action.primary",
       "type": "color",
-      "value": "#5B5BD6",
-      "rawValue": "{color.palette.purple.600}",
+      "value": "#426CED",
+      "rawValue": "{color.palette.primary.50}",
       "references": [
-        "color.palette.purple.600"
+        "color.palette.primary.50"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "semantic.color.action.primary-hover": {
+      "path": "semantic.color.action.primary-hover",
+      "type": "color",
+      "value": "#1245E2",
+      "rawValue": "{color.palette.primary.60}",
+      "references": [
+        "color.palette.primary.60"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "semantic.color.action.primary-pressed": {
+      "path": "semantic.color.action.primary-pressed",
+      "type": "color",
+      "value": "#123BBA",
+      "rawValue": "{color.palette.primary.70}",
+      "references": [
+        "color.palette.primary.70"
       ],
       "origin": {
         "filePath": "packages/spec/samples/tokens/color.tokens.json",
@@ -1347,10 +2462,10 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
     "semantic.color.dark.surface": {
       "path": "semantic.color.dark.surface",
       "type": "color",
-      "value": "#14151A",
-      "rawValue": "{color.palette.gray.900}",
+      "value": "#18181B",
+      "rawValue": "{color.palette.gray.90}",
       "references": [
-        "color.palette.gray.900"
+        "color.palette.gray.90"
       ],
       "origin": {
         "filePath": "packages/spec/samples/tokens/color.tokens.json",
@@ -1360,7 +2475,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
     "component.button.background": {
       "path": "component.button.background",
       "type": "color",
-      "value": "#5B5BD6",
+      "value": "#426CED",
       "rawValue": "{semantic.color.action.primary}",
       "references": [
         "semantic.color.action.primary"
@@ -1383,6 +2498,253 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
         "tier": "package"
       }
     },
+    "component.button.solid-primary.background": {
+      "path": "component.button.solid-primary.background",
+      "type": "color",
+      "value": "#426CED",
+      "rawValue": "{semantic.color.action.primary}",
+      "references": [
+        "semantic.color.action.primary"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.solid-primary.background-hover": {
+      "path": "component.button.solid-primary.background-hover",
+      "type": "color",
+      "value": "#1245E2",
+      "rawValue": "{semantic.color.action.primary-hover}",
+      "references": [
+        "semantic.color.action.primary-hover"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.solid-primary.background-pressed": {
+      "path": "component.button.solid-primary.background-pressed",
+      "type": "color",
+      "value": "#123BBA",
+      "rawValue": "{semantic.color.action.primary-pressed}",
+      "references": [
+        "semantic.color.action.primary-pressed"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.solid-primary.text": {
+      "path": "component.button.solid-primary.text",
+      "type": "color",
+      "value": "#FFFFFF",
+      "rawValue": "{semantic.color.text.inverse}",
+      "references": [
+        "semantic.color.text.inverse"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.solid-assistive.background": {
+      "path": "component.button.solid-assistive.background",
+      "type": "color",
+      "value": "#F4F4F5",
+      "rawValue": "{color.palette.gray.10}",
+      "references": [
+        "color.palette.gray.10"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.solid-assistive.text": {
+      "path": "component.button.solid-assistive.text",
+      "type": "color",
+      "value": "#18181B",
+      "rawValue": "{semantic.color.text.default}",
+      "references": [
+        "semantic.color.text.default"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.solid-white.background": {
+      "path": "component.button.solid-white.background",
+      "type": "color",
+      "value": "#FFFFFF",
+      "rawValue": "{color.palette.gray.0}",
+      "references": [
+        "color.palette.gray.0"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.solid-white.text": {
+      "path": "component.button.solid-white.text",
+      "type": "color",
+      "value": "#18181B",
+      "rawValue": "{semantic.color.text.default}",
+      "references": [
+        "semantic.color.text.default"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.outline-primary.background": {
+      "path": "component.button.outline-primary.background",
+      "type": "color",
+      "value": "#FFFFFF",
+      "rawValue": "{color.palette.gray.0}",
+      "references": [
+        "color.palette.gray.0"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.outline-primary.border": {
+      "path": "component.button.outline-primary.border",
+      "type": "color",
+      "value": "#426CED",
+      "rawValue": "{semantic.color.action.primary}",
+      "references": [
+        "semantic.color.action.primary"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.outline-primary.text": {
+      "path": "component.button.outline-primary.text",
+      "type": "color",
+      "value": "#426CED",
+      "rawValue": "{semantic.color.action.primary}",
+      "references": [
+        "semantic.color.action.primary"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.outline-assistive.background": {
+      "path": "component.button.outline-assistive.background",
+      "type": "color",
+      "value": "#F9F9F9",
+      "rawValue": "{color.palette.gray.5}",
+      "references": [
+        "color.palette.gray.5"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.outline-assistive.border": {
+      "path": "component.button.outline-assistive.border",
+      "type": "color",
+      "value": "#D1D2D6",
+      "rawValue": "{color.palette.gray.30}",
+      "references": [
+        "color.palette.gray.30"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.outline-assistive.text": {
+      "path": "component.button.outline-assistive.text",
+      "type": "color",
+      "value": "#18181B",
+      "rawValue": "{semantic.color.text.default}",
+      "references": [
+        "semantic.color.text.default"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.outline-white.background": {
+      "path": "component.button.outline-white.background",
+      "type": "color",
+      "value": "#FFFFFF",
+      "rawValue": "{color.palette.gray.0}",
+      "references": [
+        "color.palette.gray.0"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.outline-white.border": {
+      "path": "component.button.outline-white.border",
+      "type": "color",
+      "value": "#D1D2D6",
+      "rawValue": "{color.palette.gray.30}",
+      "references": [
+        "color.palette.gray.30"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.outline-white.text": {
+      "path": "component.button.outline-white.text",
+      "type": "color",
+      "value": "#18181B",
+      "rawValue": "{semantic.color.text.default}",
+      "references": [
+        "semantic.color.text.default"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.disabled.background": {
+      "path": "component.button.disabled.background",
+      "type": "color",
+      "value": "#E4E4E7",
+      "rawValue": "{color.palette.gray.20}",
+      "references": [
+        "color.palette.gray.20"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
+    "component.button.disabled.text": {
+      "path": "component.button.disabled.text",
+      "type": "color",
+      "value": "#9FA2AD",
+      "rawValue": "{color.palette.gray.40}",
+      "references": [
+        "color.palette.gray.40"
+      ],
+      "origin": {
+        "filePath": "packages/spec/samples/tokens/color.tokens.json",
+        "tier": "package"
+      }
+    },
     "component.input.background": {
       "path": "component.input.background",
       "type": "color",
@@ -1399,7 +2761,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
     "component.input.border": {
       "path": "component.input.border",
       "type": "color",
-      "value": "#14151A",
+      "value": "#18181B",
       "rawValue": "{semantic.color.text.default}",
       "references": [
         "semantic.color.text.default"
@@ -2708,15 +4070,411 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "filePath": "packages/spec/samples/tokens/base-palette.tokens.json",
       "tier": "package"
     },
-    "color.palette.purple.600": {
-      "filePath": "packages/spec/samples/tokens/color.tokens.json",
-      "tier": "package"
-    },
     "color.palette.gray.0": {
       "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
-    "color.palette.gray.900": {
+    "color.palette.gray.5": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.gray.10": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.gray.20": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.gray.30": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.gray.40": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.gray.50": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.gray.60": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.gray.70": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.gray.80": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.gray.90": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.gray.100": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.primary.5": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.primary.10": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.primary.20": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.primary.30": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.primary.40": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.primary.50": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.primary.60": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.primary.70": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.primary.80": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.primary.90": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.secondary.5": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.secondary.10": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.secondary.20": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.secondary.30": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.secondary.40": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.secondary.50": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.secondary.60": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.secondary.70": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.secondary.80": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.secondary.90": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.accent.5": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.accent.10": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.accent.20": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.accent.30": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.accent.40": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.accent.50": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.accent.60": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.accent.70": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.accent.80": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.accent.90": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.error.5": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.error.10": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.error.20": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.error.30": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.error.40": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.error.50": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.error.60": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.error.70": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.error.80": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.error.90": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.warning.5": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.warning.10": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.warning.20": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.warning.30": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.warning.40": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.warning.50": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.warning.60": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.warning.70": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.warning.80": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.warning.90": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.success.5": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.success.10": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.success.20": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.success.30": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.success.40": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.success.50": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.success.60": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.success.70": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.success.80": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.success.90": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.info.5": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.info.10": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.info.20": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.info.30": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.info.40": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.info.50": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.info.60": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.info.70": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.info.80": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.info.90": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.orange.5": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.orange.10": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.orange.20": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.orange.30": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.orange.40": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.orange.50": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.orange.60": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.orange.70": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.orange.80": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.orange.90": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.purple.5": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.purple.10": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.purple.20": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.purple.30": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.purple.40": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.purple.50": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.purple.60": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.purple.70": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.purple.80": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "color.palette.purple.90": {
       "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
@@ -2740,6 +4498,14 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
+    "semantic.color.action.primary-hover": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "semantic.color.action.primary-pressed": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
     "semantic.color.surface": {
       "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
@@ -2753,6 +4519,82 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       "tier": "package"
     },
     "component.button.text": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.solid-primary.background": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.solid-primary.background-hover": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.solid-primary.background-pressed": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.solid-primary.text": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.solid-assistive.background": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.solid-assistive.text": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.solid-white.background": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.solid-white.text": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.outline-primary.background": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.outline-primary.border": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.outline-primary.text": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.outline-assistive.background": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.outline-assistive.border": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.outline-assistive.text": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.outline-white.background": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.outline-white.border": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.outline-white.text": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.disabled.background": {
+      "filePath": "packages/spec/samples/tokens/color.tokens.json",
+      "tier": "package"
+    },
+    "component.button.disabled.text": {
       "filePath": "packages/spec/samples/tokens/color.tokens.json",
       "tier": "package"
     },
@@ -3033,12 +4875,127 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       }
     },
     "palette": {
-      "purple": {
-        "600": "#5B5BD6"
-      },
       "gray": {
         "0": "#FFFFFF",
-        "900": "#14151A"
+        "5": "#F9F9F9",
+        "10": "#F4F4F5",
+        "20": "#E4E4E7",
+        "30": "#D1D2D6",
+        "40": "#9FA2AD",
+        "50": "#767985",
+        "60": "#50555E",
+        "70": "#3E424B",
+        "80": "#27272A",
+        "90": "#18181B",
+        "100": "#000000"
+      },
+      "primary": {
+        "5": "#F1F4FD",
+        "10": "#D0DBFB",
+        "20": "#ABBEF7",
+        "30": "#819EF3",
+        "40": "#577DEF",
+        "50": "#426CED",
+        "60": "#1245E2",
+        "70": "#123BBA",
+        "80": "#0D2C8B",
+        "90": "#091D5D"
+      },
+      "secondary": {
+        "5": "#F5F9FF",
+        "10": "#E6F0FE",
+        "20": "#CEE2FD",
+        "30": "#A0C2EE",
+        "40": "#76A0D8",
+        "50": "#4A78B5",
+        "60": "#34547E",
+        "70": "#2D486C",
+        "80": "#253C5A",
+        "90": "#1E3048"
+      },
+      "accent": {
+        "5": "#FEF1F2",
+        "10": "#FCD9DC",
+        "20": "#FAB7BD",
+        "30": "#F8969E",
+        "40": "#F66F7A",
+        "50": "#F15764",
+        "60": "#D63D4A",
+        "70": "#BF3742",
+        "80": "#992C35",
+        "90": "#732128"
+      },
+      "error": {
+        "5": "#FEF1F1",
+        "10": "#FFE0DF",
+        "20": "#FFADAD",
+        "30": "#FF8985",
+        "40": "#F56666",
+        "50": "#F23B3B",
+        "60": "#EE1818",
+        "70": "#CD0404",
+        "80": "#8F0000",
+        "90": "#5F0000"
+      },
+      "warning": {
+        "5": "#FFF7E6",
+        "10": "#FFEBC2",
+        "20": "#FFD88A",
+        "30": "#FFC654",
+        "40": "#FFBB33",
+        "50": "#FFAA00",
+        "60": "#E89B00",
+        "70": "#B57900",
+        "80": "#8C5E00",
+        "90": "#6B4700"
+      },
+      "success": {
+        "5": "#ECF8EF",
+        "10": "#C5E9CD",
+        "20": "#A9DEB4",
+        "30": "#81CF92",
+        "40": "#57C16F",
+        "50": "#3EA856",
+        "60": "#38994E",
+        "70": "#308242",
+        "80": "#256533",
+        "90": "#1C4D27"
+      },
+      "info": {
+        "5": "#EBF5FF",
+        "10": "#C7E3FF",
+        "20": "#8FC8FF",
+        "30": "#70B9FF",
+        "40": "#56ACFF",
+        "50": "#0095FF",
+        "60": "#0074E5",
+        "70": "#0056AA",
+        "80": "#00407F",
+        "90": "#002B55"
+      },
+      "orange": {
+        "5": "#FFF4F0",
+        "10": "#FFDACC",
+        "20": "#FFB599",
+        "30": "#FE9975",
+        "40": "#FE8052",
+        "50": "#FF6A33",
+        "60": "#FF5212",
+        "70": "#DB3B00",
+        "80": "#992900",
+        "90": "#661C00"
+      },
+      "purple": {
+        "5": "#F8F5FF",
+        "10": "#EEE5FF",
+        "20": "#D7C2FF",
+        "30": "#BD99FF",
+        "40": "#AC80FF",
+        "50": "#8E51FF",
+        "60": "#6A3DBF",
+        "70": "#553199",
+        "80": "#472980",
+        "90": "#361F61"
       },
       "red": {
         "600": "#D92D20"
@@ -3048,24 +5005,59 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   "semantic": {
     "color": {
       "text": {
-        "default": "#14151A",
+        "default": "#18181B",
         "inverse": "#FFFFFF",
         "danger": "#D92D20"
       },
       "action": {
-        "primary": "#5B5BD6"
+        "primary": "#426CED",
+        "primary-hover": "#1245E2",
+        "primary-pressed": "#123BBA"
       },
       "surface": "#FFFFFF"
     }
   },
   "component": {
     "button": {
-      "background": "#5B5BD6",
-      "text": "#FFFFFF"
+      "background": "#426CED",
+      "text": "#FFFFFF",
+      "solid-primary": {
+        "background": "#426CED",
+        "background-hover": "#1245E2",
+        "background-pressed": "#123BBA",
+        "text": "#FFFFFF"
+      },
+      "solid-assistive": {
+        "background": "#F4F4F5",
+        "text": "#18181B"
+      },
+      "solid-white": {
+        "background": "#FFFFFF",
+        "text": "#18181B"
+      },
+      "outline-primary": {
+        "background": "#FFFFFF",
+        "border": "#426CED",
+        "text": "#426CED"
+      },
+      "outline-assistive": {
+        "background": "#F9F9F9",
+        "border": "#D1D2D6",
+        "text": "#18181B"
+      },
+      "outline-white": {
+        "background": "#FFFFFF",
+        "border": "#D1D2D6",
+        "text": "#18181B"
+      },
+      "disabled": {
+        "background": "#E4E4E7",
+        "text": "#9FA2AD"
+      }
     },
     "input": {
       "background": "#FFFFFF",
-      "border": "#14151A"
+      "border": "#18181B"
     }
   },
   "spacing": {
@@ -3489,24 +5481,144 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-color-base-royal-blue-70: #123BBA;
   --podo-color-base-royal-blue-80: #0D2C8B;
   --podo-color-base-royal-blue-90: #091D5D;
+  --podo-color-palette-accent-10: #FCD9DC;
+  --podo-color-palette-accent-20: #FAB7BD;
+  --podo-color-palette-accent-30: #F8969E;
+  --podo-color-palette-accent-40: #F66F7A;
+  --podo-color-palette-accent-5: #FEF1F2;
+  --podo-color-palette-accent-50: #F15764;
+  --podo-color-palette-accent-60: #D63D4A;
+  --podo-color-palette-accent-70: #BF3742;
+  --podo-color-palette-accent-80: #992C35;
+  --podo-color-palette-accent-90: #732128;
+  --podo-color-palette-error-10: #FFE0DF;
+  --podo-color-palette-error-20: #FFADAD;
+  --podo-color-palette-error-30: #FF8985;
+  --podo-color-palette-error-40: #F56666;
+  --podo-color-palette-error-5: #FEF1F1;
+  --podo-color-palette-error-50: #F23B3B;
+  --podo-color-palette-error-60: #EE1818;
+  --podo-color-palette-error-70: #CD0404;
+  --podo-color-palette-error-80: #8F0000;
+  --podo-color-palette-error-90: #5F0000;
   --podo-color-palette-gray-0: #FFFFFF;
-  --podo-color-palette-gray-900: #14151A;
-  --podo-color-palette-purple-600: #5B5BD6;
+  --podo-color-palette-gray-10: #F4F4F5;
+  --podo-color-palette-gray-100: #000000;
+  --podo-color-palette-gray-20: #E4E4E7;
+  --podo-color-palette-gray-30: #D1D2D6;
+  --podo-color-palette-gray-40: #9FA2AD;
+  --podo-color-palette-gray-5: #F9F9F9;
+  --podo-color-palette-gray-50: #767985;
+  --podo-color-palette-gray-60: #50555E;
+  --podo-color-palette-gray-70: #3E424B;
+  --podo-color-palette-gray-80: #27272A;
+  --podo-color-palette-gray-90: #18181B;
+  --podo-color-palette-info-10: #C7E3FF;
+  --podo-color-palette-info-20: #8FC8FF;
+  --podo-color-palette-info-30: #70B9FF;
+  --podo-color-palette-info-40: #56ACFF;
+  --podo-color-palette-info-5: #EBF5FF;
+  --podo-color-palette-info-50: #0095FF;
+  --podo-color-palette-info-60: #0074E5;
+  --podo-color-palette-info-70: #0056AA;
+  --podo-color-palette-info-80: #00407F;
+  --podo-color-palette-info-90: #002B55;
+  --podo-color-palette-orange-10: #FFDACC;
+  --podo-color-palette-orange-20: #FFB599;
+  --podo-color-palette-orange-30: #FE9975;
+  --podo-color-palette-orange-40: #FE8052;
+  --podo-color-palette-orange-5: #FFF4F0;
+  --podo-color-palette-orange-50: #FF6A33;
+  --podo-color-palette-orange-60: #FF5212;
+  --podo-color-palette-orange-70: #DB3B00;
+  --podo-color-palette-orange-80: #992900;
+  --podo-color-palette-orange-90: #661C00;
+  --podo-color-palette-primary-10: #D0DBFB;
+  --podo-color-palette-primary-20: #ABBEF7;
+  --podo-color-palette-primary-30: #819EF3;
+  --podo-color-palette-primary-40: #577DEF;
+  --podo-color-palette-primary-5: #F1F4FD;
+  --podo-color-palette-primary-50: #426CED;
+  --podo-color-palette-primary-60: #1245E2;
+  --podo-color-palette-primary-70: #123BBA;
+  --podo-color-palette-primary-80: #0D2C8B;
+  --podo-color-palette-primary-90: #091D5D;
+  --podo-color-palette-purple-10: #EEE5FF;
+  --podo-color-palette-purple-20: #D7C2FF;
+  --podo-color-palette-purple-30: #BD99FF;
+  --podo-color-palette-purple-40: #AC80FF;
+  --podo-color-palette-purple-5: #F8F5FF;
+  --podo-color-palette-purple-50: #8E51FF;
+  --podo-color-palette-purple-60: #6A3DBF;
+  --podo-color-palette-purple-70: #553199;
+  --podo-color-palette-purple-80: #472980;
+  --podo-color-palette-purple-90: #361F61;
   --podo-color-palette-red-600: #D92D20;
-  --podo-component-button-background: #5B5BD6;
+  --podo-color-palette-secondary-10: #E6F0FE;
+  --podo-color-palette-secondary-20: #CEE2FD;
+  --podo-color-palette-secondary-30: #A0C2EE;
+  --podo-color-palette-secondary-40: #76A0D8;
+  --podo-color-palette-secondary-5: #F5F9FF;
+  --podo-color-palette-secondary-50: #4A78B5;
+  --podo-color-palette-secondary-60: #34547E;
+  --podo-color-palette-secondary-70: #2D486C;
+  --podo-color-palette-secondary-80: #253C5A;
+  --podo-color-palette-secondary-90: #1E3048;
+  --podo-color-palette-success-10: #C5E9CD;
+  --podo-color-palette-success-20: #A9DEB4;
+  --podo-color-palette-success-30: #81CF92;
+  --podo-color-palette-success-40: #57C16F;
+  --podo-color-palette-success-5: #ECF8EF;
+  --podo-color-palette-success-50: #3EA856;
+  --podo-color-palette-success-60: #38994E;
+  --podo-color-palette-success-70: #308242;
+  --podo-color-palette-success-80: #256533;
+  --podo-color-palette-success-90: #1C4D27;
+  --podo-color-palette-warning-10: #FFEBC2;
+  --podo-color-palette-warning-20: #FFD88A;
+  --podo-color-palette-warning-30: #FFC654;
+  --podo-color-palette-warning-40: #FFBB33;
+  --podo-color-palette-warning-5: #FFF7E6;
+  --podo-color-palette-warning-50: #FFAA00;
+  --podo-color-palette-warning-60: #E89B00;
+  --podo-color-palette-warning-70: #B57900;
+  --podo-color-palette-warning-80: #8C5E00;
+  --podo-color-palette-warning-90: #6B4700;
+  --podo-component-button-background: #426CED;
+  --podo-component-button-disabled-background: #E4E4E7;
+  --podo-component-button-disabled-text: #9FA2AD;
+  --podo-component-button-outline-assistive-background: #F9F9F9;
+  --podo-component-button-outline-assistive-border: #D1D2D6;
+  --podo-component-button-outline-assistive-text: #18181B;
+  --podo-component-button-outline-primary-background: #FFFFFF;
+  --podo-component-button-outline-primary-border: #426CED;
+  --podo-component-button-outline-primary-text: #426CED;
+  --podo-component-button-outline-white-background: #FFFFFF;
+  --podo-component-button-outline-white-border: #D1D2D6;
+  --podo-component-button-outline-white-text: #18181B;
+  --podo-component-button-solid-assistive-background: #F4F4F5;
+  --podo-component-button-solid-assistive-text: #18181B;
+  --podo-component-button-solid-primary-background: #426CED;
+  --podo-component-button-solid-primary-background-hover: #1245E2;
+  --podo-component-button-solid-primary-background-pressed: #123BBA;
+  --podo-component-button-solid-primary-text: #FFFFFF;
+  --podo-component-button-solid-white-background: #FFFFFF;
+  --podo-component-button-solid-white-text: #18181B;
   --podo-component-button-text: #FFFFFF;
   --podo-component-input-background: #FFFFFF;
-  --podo-component-input-border: #14151A;
+  --podo-component-input-border: #18181B;
   --podo-font-family-sans: Pretendard;
   --podo-motion-duration-fast: 120ms;
   --podo-motion-easing-standard: 0.2, 0, 0, 1;
   --podo-motion-transition-fast-duration: 120ms;
   --podo-motion-transition-fast-easing: 0.2, 0, 0, 1;
   --podo-radius-control-md: 8px;
-  --podo-semantic-color-action-primary: #5B5BD6;
+  --podo-semantic-color-action-primary: #426CED;
+  --podo-semantic-color-action-primary-hover: #1245E2;
+  --podo-semantic-color-action-primary-pressed: #123BBA;
   --podo-semantic-color-surface: #FFFFFF;
   --podo-semantic-color-text-danger: #D92D20;
-  --podo-semantic-color-text-default: #14151A;
+  --podo-semantic-color-text-default: #18181B;
   --podo-semantic-color-text-inverse: #FFFFFF;
   --podo-shadow-popover-blur: 24px;
   --podo-shadow-popover-color: #14151A33;
@@ -3791,24 +5903,144 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-color-base-royal-blue-70: #123BBA;
   --podo-color-base-royal-blue-80: #0D2C8B;
   --podo-color-base-royal-blue-90: #091D5D;
+  --podo-color-palette-accent-10: #FCD9DC;
+  --podo-color-palette-accent-20: #FAB7BD;
+  --podo-color-palette-accent-30: #F8969E;
+  --podo-color-palette-accent-40: #F66F7A;
+  --podo-color-palette-accent-5: #FEF1F2;
+  --podo-color-palette-accent-50: #F15764;
+  --podo-color-palette-accent-60: #D63D4A;
+  --podo-color-palette-accent-70: #BF3742;
+  --podo-color-palette-accent-80: #992C35;
+  --podo-color-palette-accent-90: #732128;
+  --podo-color-palette-error-10: #FFE0DF;
+  --podo-color-palette-error-20: #FFADAD;
+  --podo-color-palette-error-30: #FF8985;
+  --podo-color-palette-error-40: #F56666;
+  --podo-color-palette-error-5: #FEF1F1;
+  --podo-color-palette-error-50: #F23B3B;
+  --podo-color-palette-error-60: #EE1818;
+  --podo-color-palette-error-70: #CD0404;
+  --podo-color-palette-error-80: #8F0000;
+  --podo-color-palette-error-90: #5F0000;
   --podo-color-palette-gray-0: #FFFFFF;
-  --podo-color-palette-gray-900: #14151A;
-  --podo-color-palette-purple-600: #5B5BD6;
+  --podo-color-palette-gray-10: #F4F4F5;
+  --podo-color-palette-gray-100: #000000;
+  --podo-color-palette-gray-20: #E4E4E7;
+  --podo-color-palette-gray-30: #D1D2D6;
+  --podo-color-palette-gray-40: #9FA2AD;
+  --podo-color-palette-gray-5: #F9F9F9;
+  --podo-color-palette-gray-50: #767985;
+  --podo-color-palette-gray-60: #50555E;
+  --podo-color-palette-gray-70: #3E424B;
+  --podo-color-palette-gray-80: #27272A;
+  --podo-color-palette-gray-90: #18181B;
+  --podo-color-palette-info-10: #C7E3FF;
+  --podo-color-palette-info-20: #8FC8FF;
+  --podo-color-palette-info-30: #70B9FF;
+  --podo-color-palette-info-40: #56ACFF;
+  --podo-color-palette-info-5: #EBF5FF;
+  --podo-color-palette-info-50: #0095FF;
+  --podo-color-palette-info-60: #0074E5;
+  --podo-color-palette-info-70: #0056AA;
+  --podo-color-palette-info-80: #00407F;
+  --podo-color-palette-info-90: #002B55;
+  --podo-color-palette-orange-10: #FFDACC;
+  --podo-color-palette-orange-20: #FFB599;
+  --podo-color-palette-orange-30: #FE9975;
+  --podo-color-palette-orange-40: #FE8052;
+  --podo-color-palette-orange-5: #FFF4F0;
+  --podo-color-palette-orange-50: #FF6A33;
+  --podo-color-palette-orange-60: #FF5212;
+  --podo-color-palette-orange-70: #DB3B00;
+  --podo-color-palette-orange-80: #992900;
+  --podo-color-palette-orange-90: #661C00;
+  --podo-color-palette-primary-10: #D0DBFB;
+  --podo-color-palette-primary-20: #ABBEF7;
+  --podo-color-palette-primary-30: #819EF3;
+  --podo-color-palette-primary-40: #577DEF;
+  --podo-color-palette-primary-5: #F1F4FD;
+  --podo-color-palette-primary-50: #426CED;
+  --podo-color-palette-primary-60: #1245E2;
+  --podo-color-palette-primary-70: #123BBA;
+  --podo-color-palette-primary-80: #0D2C8B;
+  --podo-color-palette-primary-90: #091D5D;
+  --podo-color-palette-purple-10: #EEE5FF;
+  --podo-color-palette-purple-20: #D7C2FF;
+  --podo-color-palette-purple-30: #BD99FF;
+  --podo-color-palette-purple-40: #AC80FF;
+  --podo-color-palette-purple-5: #F8F5FF;
+  --podo-color-palette-purple-50: #8E51FF;
+  --podo-color-palette-purple-60: #6A3DBF;
+  --podo-color-palette-purple-70: #553199;
+  --podo-color-palette-purple-80: #472980;
+  --podo-color-palette-purple-90: #361F61;
   --podo-color-palette-red-600: #D92D20;
-  --podo-component-button-background: #5B5BD6;
+  --podo-color-palette-secondary-10: #E6F0FE;
+  --podo-color-palette-secondary-20: #CEE2FD;
+  --podo-color-palette-secondary-30: #A0C2EE;
+  --podo-color-palette-secondary-40: #76A0D8;
+  --podo-color-palette-secondary-5: #F5F9FF;
+  --podo-color-palette-secondary-50: #4A78B5;
+  --podo-color-palette-secondary-60: #34547E;
+  --podo-color-palette-secondary-70: #2D486C;
+  --podo-color-palette-secondary-80: #253C5A;
+  --podo-color-palette-secondary-90: #1E3048;
+  --podo-color-palette-success-10: #C5E9CD;
+  --podo-color-palette-success-20: #A9DEB4;
+  --podo-color-palette-success-30: #81CF92;
+  --podo-color-palette-success-40: #57C16F;
+  --podo-color-palette-success-5: #ECF8EF;
+  --podo-color-palette-success-50: #3EA856;
+  --podo-color-palette-success-60: #38994E;
+  --podo-color-palette-success-70: #308242;
+  --podo-color-palette-success-80: #256533;
+  --podo-color-palette-success-90: #1C4D27;
+  --podo-color-palette-warning-10: #FFEBC2;
+  --podo-color-palette-warning-20: #FFD88A;
+  --podo-color-palette-warning-30: #FFC654;
+  --podo-color-palette-warning-40: #FFBB33;
+  --podo-color-palette-warning-5: #FFF7E6;
+  --podo-color-palette-warning-50: #FFAA00;
+  --podo-color-palette-warning-60: #E89B00;
+  --podo-color-palette-warning-70: #B57900;
+  --podo-color-palette-warning-80: #8C5E00;
+  --podo-color-palette-warning-90: #6B4700;
+  --podo-component-button-background: #426CED;
+  --podo-component-button-disabled-background: #E4E4E7;
+  --podo-component-button-disabled-text: #9FA2AD;
+  --podo-component-button-outline-assistive-background: #F9F9F9;
+  --podo-component-button-outline-assistive-border: #D1D2D6;
+  --podo-component-button-outline-assistive-text: #18181B;
+  --podo-component-button-outline-primary-background: #FFFFFF;
+  --podo-component-button-outline-primary-border: #426CED;
+  --podo-component-button-outline-primary-text: #426CED;
+  --podo-component-button-outline-white-background: #FFFFFF;
+  --podo-component-button-outline-white-border: #D1D2D6;
+  --podo-component-button-outline-white-text: #18181B;
+  --podo-component-button-solid-assistive-background: #F4F4F5;
+  --podo-component-button-solid-assistive-text: #18181B;
+  --podo-component-button-solid-primary-background: #426CED;
+  --podo-component-button-solid-primary-background-hover: #1245E2;
+  --podo-component-button-solid-primary-background-pressed: #123BBA;
+  --podo-component-button-solid-primary-text: #FFFFFF;
+  --podo-component-button-solid-white-background: #FFFFFF;
+  --podo-component-button-solid-white-text: #18181B;
   --podo-component-button-text: #FFFFFF;
-  --podo-component-input-background: #14151A;
-  --podo-component-input-border: #14151A;
+  --podo-component-input-background: #18181B;
+  --podo-component-input-border: #18181B;
   --podo-font-family-sans: Pretendard;
   --podo-motion-duration-fast: 120ms;
   --podo-motion-easing-standard: 0.2, 0, 0, 1;
   --podo-motion-transition-fast-duration: 120ms;
   --podo-motion-transition-fast-easing: 0.2, 0, 0, 1;
   --podo-radius-control-md: 8px;
-  --podo-semantic-color-action-primary: #5B5BD6;
-  --podo-semantic-color-surface: #14151A;
+  --podo-semantic-color-action-primary: #426CED;
+  --podo-semantic-color-action-primary-hover: #1245E2;
+  --podo-semantic-color-action-primary-pressed: #123BBA;
+  --podo-semantic-color-surface: #18181B;
   --podo-semantic-color-text-danger: #D92D20;
-  --podo-semantic-color-text-default: #14151A;
+  --podo-semantic-color-text-default: #18181B;
   --podo-semantic-color-text-inverse: #FFFFFF;
   --podo-shadow-popover-blur: 24px;
   --podo-shadow-popover-color: #14151A33;
@@ -4093,24 +6325,144 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-color-base-royal-blue-70: #123BBA;
   --podo-color-base-royal-blue-80: #0D2C8B;
   --podo-color-base-royal-blue-90: #091D5D;
+  --podo-color-palette-accent-10: #FCD9DC;
+  --podo-color-palette-accent-20: #FAB7BD;
+  --podo-color-palette-accent-30: #F8969E;
+  --podo-color-palette-accent-40: #F66F7A;
+  --podo-color-palette-accent-5: #FEF1F2;
+  --podo-color-palette-accent-50: #F15764;
+  --podo-color-palette-accent-60: #D63D4A;
+  --podo-color-palette-accent-70: #BF3742;
+  --podo-color-palette-accent-80: #992C35;
+  --podo-color-palette-accent-90: #732128;
+  --podo-color-palette-error-10: #FFE0DF;
+  --podo-color-palette-error-20: #FFADAD;
+  --podo-color-palette-error-30: #FF8985;
+  --podo-color-palette-error-40: #F56666;
+  --podo-color-palette-error-5: #FEF1F1;
+  --podo-color-palette-error-50: #F23B3B;
+  --podo-color-palette-error-60: #EE1818;
+  --podo-color-palette-error-70: #CD0404;
+  --podo-color-palette-error-80: #8F0000;
+  --podo-color-palette-error-90: #5F0000;
   --podo-color-palette-gray-0: #FFFFFF;
-  --podo-color-palette-gray-900: #14151A;
-  --podo-color-palette-purple-600: #5B5BD6;
+  --podo-color-palette-gray-10: #F4F4F5;
+  --podo-color-palette-gray-100: #000000;
+  --podo-color-palette-gray-20: #E4E4E7;
+  --podo-color-palette-gray-30: #D1D2D6;
+  --podo-color-palette-gray-40: #9FA2AD;
+  --podo-color-palette-gray-5: #F9F9F9;
+  --podo-color-palette-gray-50: #767985;
+  --podo-color-palette-gray-60: #50555E;
+  --podo-color-palette-gray-70: #3E424B;
+  --podo-color-palette-gray-80: #27272A;
+  --podo-color-palette-gray-90: #18181B;
+  --podo-color-palette-info-10: #C7E3FF;
+  --podo-color-palette-info-20: #8FC8FF;
+  --podo-color-palette-info-30: #70B9FF;
+  --podo-color-palette-info-40: #56ACFF;
+  --podo-color-palette-info-5: #EBF5FF;
+  --podo-color-palette-info-50: #0095FF;
+  --podo-color-palette-info-60: #0074E5;
+  --podo-color-palette-info-70: #0056AA;
+  --podo-color-palette-info-80: #00407F;
+  --podo-color-palette-info-90: #002B55;
+  --podo-color-palette-orange-10: #FFDACC;
+  --podo-color-palette-orange-20: #FFB599;
+  --podo-color-palette-orange-30: #FE9975;
+  --podo-color-palette-orange-40: #FE8052;
+  --podo-color-palette-orange-5: #FFF4F0;
+  --podo-color-palette-orange-50: #FF6A33;
+  --podo-color-palette-orange-60: #FF5212;
+  --podo-color-palette-orange-70: #DB3B00;
+  --podo-color-palette-orange-80: #992900;
+  --podo-color-palette-orange-90: #661C00;
+  --podo-color-palette-primary-10: #D0DBFB;
+  --podo-color-palette-primary-20: #ABBEF7;
+  --podo-color-palette-primary-30: #819EF3;
+  --podo-color-palette-primary-40: #577DEF;
+  --podo-color-palette-primary-5: #F1F4FD;
+  --podo-color-palette-primary-50: #426CED;
+  --podo-color-palette-primary-60: #1245E2;
+  --podo-color-palette-primary-70: #123BBA;
+  --podo-color-palette-primary-80: #0D2C8B;
+  --podo-color-palette-primary-90: #091D5D;
+  --podo-color-palette-purple-10: #EEE5FF;
+  --podo-color-palette-purple-20: #D7C2FF;
+  --podo-color-palette-purple-30: #BD99FF;
+  --podo-color-palette-purple-40: #AC80FF;
+  --podo-color-palette-purple-5: #F8F5FF;
+  --podo-color-palette-purple-50: #8E51FF;
+  --podo-color-palette-purple-60: #6A3DBF;
+  --podo-color-palette-purple-70: #553199;
+  --podo-color-palette-purple-80: #472980;
+  --podo-color-palette-purple-90: #361F61;
   --podo-color-palette-red-600: #D92D20;
-  --podo-component-button-background: #5B5BD6;
+  --podo-color-palette-secondary-10: #E6F0FE;
+  --podo-color-palette-secondary-20: #CEE2FD;
+  --podo-color-palette-secondary-30: #A0C2EE;
+  --podo-color-palette-secondary-40: #76A0D8;
+  --podo-color-palette-secondary-5: #F5F9FF;
+  --podo-color-palette-secondary-50: #4A78B5;
+  --podo-color-palette-secondary-60: #34547E;
+  --podo-color-palette-secondary-70: #2D486C;
+  --podo-color-palette-secondary-80: #253C5A;
+  --podo-color-palette-secondary-90: #1E3048;
+  --podo-color-palette-success-10: #C5E9CD;
+  --podo-color-palette-success-20: #A9DEB4;
+  --podo-color-palette-success-30: #81CF92;
+  --podo-color-palette-success-40: #57C16F;
+  --podo-color-palette-success-5: #ECF8EF;
+  --podo-color-palette-success-50: #3EA856;
+  --podo-color-palette-success-60: #38994E;
+  --podo-color-palette-success-70: #308242;
+  --podo-color-palette-success-80: #256533;
+  --podo-color-palette-success-90: #1C4D27;
+  --podo-color-palette-warning-10: #FFEBC2;
+  --podo-color-palette-warning-20: #FFD88A;
+  --podo-color-palette-warning-30: #FFC654;
+  --podo-color-palette-warning-40: #FFBB33;
+  --podo-color-palette-warning-5: #FFF7E6;
+  --podo-color-palette-warning-50: #FFAA00;
+  --podo-color-palette-warning-60: #E89B00;
+  --podo-color-palette-warning-70: #B57900;
+  --podo-color-palette-warning-80: #8C5E00;
+  --podo-color-palette-warning-90: #6B4700;
+  --podo-component-button-background: #426CED;
+  --podo-component-button-disabled-background: #E4E4E7;
+  --podo-component-button-disabled-text: #9FA2AD;
+  --podo-component-button-outline-assistive-background: #F9F9F9;
+  --podo-component-button-outline-assistive-border: #D1D2D6;
+  --podo-component-button-outline-assistive-text: #18181B;
+  --podo-component-button-outline-primary-background: #FFFFFF;
+  --podo-component-button-outline-primary-border: #426CED;
+  --podo-component-button-outline-primary-text: #426CED;
+  --podo-component-button-outline-white-background: #FFFFFF;
+  --podo-component-button-outline-white-border: #D1D2D6;
+  --podo-component-button-outline-white-text: #18181B;
+  --podo-component-button-solid-assistive-background: #F4F4F5;
+  --podo-component-button-solid-assistive-text: #18181B;
+  --podo-component-button-solid-primary-background: #426CED;
+  --podo-component-button-solid-primary-background-hover: #1245E2;
+  --podo-component-button-solid-primary-background-pressed: #123BBA;
+  --podo-component-button-solid-primary-text: #FFFFFF;
+  --podo-component-button-solid-white-background: #FFFFFF;
+  --podo-component-button-solid-white-text: #18181B;
   --podo-component-button-text: #FFFFFF;
   --podo-component-input-background: #FFFFFF;
-  --podo-component-input-border: #14151A;
+  --podo-component-input-border: #18181B;
   --podo-font-family-sans: Pretendard;
   --podo-motion-duration-fast: 120ms;
   --podo-motion-easing-standard: 0.2, 0, 0, 1;
   --podo-motion-transition-fast-duration: 120ms;
   --podo-motion-transition-fast-easing: 0.2, 0, 0, 1;
   --podo-radius-control-md: 8px;
-  --podo-semantic-color-action-primary: #5B5BD6;
+  --podo-semantic-color-action-primary: #426CED;
+  --podo-semantic-color-action-primary-hover: #1245E2;
+  --podo-semantic-color-action-primary-pressed: #123BBA;
   --podo-semantic-color-surface: #FFFFFF;
   --podo-semantic-color-text-danger: #D92D20;
-  --podo-semantic-color-text-default: #14151A;
+  --podo-semantic-color-text-default: #18181B;
   --podo-semantic-color-text-inverse: #FFFFFF;
   --podo-shadow-popover-blur: 24px;
   --podo-shadow-popover-color: #14151A33;
@@ -4395,24 +6747,144 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-color-base-royal-blue-70: #123BBA;
   --podo-color-base-royal-blue-80: #0D2C8B;
   --podo-color-base-royal-blue-90: #091D5D;
+  --podo-color-palette-accent-10: #FCD9DC;
+  --podo-color-palette-accent-20: #FAB7BD;
+  --podo-color-palette-accent-30: #F8969E;
+  --podo-color-palette-accent-40: #F66F7A;
+  --podo-color-palette-accent-5: #FEF1F2;
+  --podo-color-palette-accent-50: #F15764;
+  --podo-color-palette-accent-60: #D63D4A;
+  --podo-color-palette-accent-70: #BF3742;
+  --podo-color-palette-accent-80: #992C35;
+  --podo-color-palette-accent-90: #732128;
+  --podo-color-palette-error-10: #FFE0DF;
+  --podo-color-palette-error-20: #FFADAD;
+  --podo-color-palette-error-30: #FF8985;
+  --podo-color-palette-error-40: #F56666;
+  --podo-color-palette-error-5: #FEF1F1;
+  --podo-color-palette-error-50: #F23B3B;
+  --podo-color-palette-error-60: #EE1818;
+  --podo-color-palette-error-70: #CD0404;
+  --podo-color-palette-error-80: #8F0000;
+  --podo-color-palette-error-90: #5F0000;
   --podo-color-palette-gray-0: #FFFFFF;
-  --podo-color-palette-gray-900: #14151A;
-  --podo-color-palette-purple-600: #5B5BD6;
+  --podo-color-palette-gray-10: #F4F4F5;
+  --podo-color-palette-gray-100: #000000;
+  --podo-color-palette-gray-20: #E4E4E7;
+  --podo-color-palette-gray-30: #D1D2D6;
+  --podo-color-palette-gray-40: #9FA2AD;
+  --podo-color-palette-gray-5: #F9F9F9;
+  --podo-color-palette-gray-50: #767985;
+  --podo-color-palette-gray-60: #50555E;
+  --podo-color-palette-gray-70: #3E424B;
+  --podo-color-palette-gray-80: #27272A;
+  --podo-color-palette-gray-90: #18181B;
+  --podo-color-palette-info-10: #C7E3FF;
+  --podo-color-palette-info-20: #8FC8FF;
+  --podo-color-palette-info-30: #70B9FF;
+  --podo-color-palette-info-40: #56ACFF;
+  --podo-color-palette-info-5: #EBF5FF;
+  --podo-color-palette-info-50: #0095FF;
+  --podo-color-palette-info-60: #0074E5;
+  --podo-color-palette-info-70: #0056AA;
+  --podo-color-palette-info-80: #00407F;
+  --podo-color-palette-info-90: #002B55;
+  --podo-color-palette-orange-10: #FFDACC;
+  --podo-color-palette-orange-20: #FFB599;
+  --podo-color-palette-orange-30: #FE9975;
+  --podo-color-palette-orange-40: #FE8052;
+  --podo-color-palette-orange-5: #FFF4F0;
+  --podo-color-palette-orange-50: #FF6A33;
+  --podo-color-palette-orange-60: #FF5212;
+  --podo-color-palette-orange-70: #DB3B00;
+  --podo-color-palette-orange-80: #992900;
+  --podo-color-palette-orange-90: #661C00;
+  --podo-color-palette-primary-10: #D0DBFB;
+  --podo-color-palette-primary-20: #ABBEF7;
+  --podo-color-palette-primary-30: #819EF3;
+  --podo-color-palette-primary-40: #577DEF;
+  --podo-color-palette-primary-5: #F1F4FD;
+  --podo-color-palette-primary-50: #426CED;
+  --podo-color-palette-primary-60: #1245E2;
+  --podo-color-palette-primary-70: #123BBA;
+  --podo-color-palette-primary-80: #0D2C8B;
+  --podo-color-palette-primary-90: #091D5D;
+  --podo-color-palette-purple-10: #EEE5FF;
+  --podo-color-palette-purple-20: #D7C2FF;
+  --podo-color-palette-purple-30: #BD99FF;
+  --podo-color-palette-purple-40: #AC80FF;
+  --podo-color-palette-purple-5: #F8F5FF;
+  --podo-color-palette-purple-50: #8E51FF;
+  --podo-color-palette-purple-60: #6A3DBF;
+  --podo-color-palette-purple-70: #553199;
+  --podo-color-palette-purple-80: #472980;
+  --podo-color-palette-purple-90: #361F61;
   --podo-color-palette-red-600: #D92D20;
-  --podo-component-button-background: #5B5BD6;
+  --podo-color-palette-secondary-10: #E6F0FE;
+  --podo-color-palette-secondary-20: #CEE2FD;
+  --podo-color-palette-secondary-30: #A0C2EE;
+  --podo-color-palette-secondary-40: #76A0D8;
+  --podo-color-palette-secondary-5: #F5F9FF;
+  --podo-color-palette-secondary-50: #4A78B5;
+  --podo-color-palette-secondary-60: #34547E;
+  --podo-color-palette-secondary-70: #2D486C;
+  --podo-color-palette-secondary-80: #253C5A;
+  --podo-color-palette-secondary-90: #1E3048;
+  --podo-color-palette-success-10: #C5E9CD;
+  --podo-color-palette-success-20: #A9DEB4;
+  --podo-color-palette-success-30: #81CF92;
+  --podo-color-palette-success-40: #57C16F;
+  --podo-color-palette-success-5: #ECF8EF;
+  --podo-color-palette-success-50: #3EA856;
+  --podo-color-palette-success-60: #38994E;
+  --podo-color-palette-success-70: #308242;
+  --podo-color-palette-success-80: #256533;
+  --podo-color-palette-success-90: #1C4D27;
+  --podo-color-palette-warning-10: #FFEBC2;
+  --podo-color-palette-warning-20: #FFD88A;
+  --podo-color-palette-warning-30: #FFC654;
+  --podo-color-palette-warning-40: #FFBB33;
+  --podo-color-palette-warning-5: #FFF7E6;
+  --podo-color-palette-warning-50: #FFAA00;
+  --podo-color-palette-warning-60: #E89B00;
+  --podo-color-palette-warning-70: #B57900;
+  --podo-color-palette-warning-80: #8C5E00;
+  --podo-color-palette-warning-90: #6B4700;
+  --podo-component-button-background: #426CED;
+  --podo-component-button-disabled-background: #E4E4E7;
+  --podo-component-button-disabled-text: #9FA2AD;
+  --podo-component-button-outline-assistive-background: #F9F9F9;
+  --podo-component-button-outline-assistive-border: #D1D2D6;
+  --podo-component-button-outline-assistive-text: #18181B;
+  --podo-component-button-outline-primary-background: #FFFFFF;
+  --podo-component-button-outline-primary-border: #426CED;
+  --podo-component-button-outline-primary-text: #426CED;
+  --podo-component-button-outline-white-background: #FFFFFF;
+  --podo-component-button-outline-white-border: #D1D2D6;
+  --podo-component-button-outline-white-text: #18181B;
+  --podo-component-button-solid-assistive-background: #F4F4F5;
+  --podo-component-button-solid-assistive-text: #18181B;
+  --podo-component-button-solid-primary-background: #426CED;
+  --podo-component-button-solid-primary-background-hover: #1245E2;
+  --podo-component-button-solid-primary-background-pressed: #123BBA;
+  --podo-component-button-solid-primary-text: #FFFFFF;
+  --podo-component-button-solid-white-background: #FFFFFF;
+  --podo-component-button-solid-white-text: #18181B;
   --podo-component-button-text: #FFFFFF;
-  --podo-component-input-background: #14151A;
-  --podo-component-input-border: #14151A;
+  --podo-component-input-background: #18181B;
+  --podo-component-input-border: #18181B;
   --podo-font-family-sans: Pretendard;
   --podo-motion-duration-fast: 120ms;
   --podo-motion-easing-standard: 0.2, 0, 0, 1;
   --podo-motion-transition-fast-duration: 120ms;
   --podo-motion-transition-fast-easing: 0.2, 0, 0, 1;
   --podo-radius-control-md: 8px;
-  --podo-semantic-color-action-primary: #5B5BD6;
-  --podo-semantic-color-surface: #14151A;
+  --podo-semantic-color-action-primary: #426CED;
+  --podo-semantic-color-action-primary-hover: #1245E2;
+  --podo-semantic-color-action-primary-pressed: #123BBA;
+  --podo-semantic-color-surface: #18181B;
   --podo-semantic-color-text-danger: #D92D20;
-  --podo-semantic-color-text-default: #14151A;
+  --podo-semantic-color-text-default: #18181B;
   --podo-semantic-color-text-inverse: #FFFFFF;
   --podo-shadow-popover-blur: 24px;
   --podo-shadow-popover-color: #14151A33;
@@ -4723,12 +7195,127 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
       }
     },
     "palette": {
-      "purple": {
-        "600": "#5B5BD6"
-      },
       "gray": {
         "0": "#FFFFFF",
-        "900": "#14151A"
+        "5": "#F9F9F9",
+        "10": "#F4F4F5",
+        "20": "#E4E4E7",
+        "30": "#D1D2D6",
+        "40": "#9FA2AD",
+        "50": "#767985",
+        "60": "#50555E",
+        "70": "#3E424B",
+        "80": "#27272A",
+        "90": "#18181B",
+        "100": "#000000"
+      },
+      "primary": {
+        "5": "#F1F4FD",
+        "10": "#D0DBFB",
+        "20": "#ABBEF7",
+        "30": "#819EF3",
+        "40": "#577DEF",
+        "50": "#426CED",
+        "60": "#1245E2",
+        "70": "#123BBA",
+        "80": "#0D2C8B",
+        "90": "#091D5D"
+      },
+      "secondary": {
+        "5": "#F5F9FF",
+        "10": "#E6F0FE",
+        "20": "#CEE2FD",
+        "30": "#A0C2EE",
+        "40": "#76A0D8",
+        "50": "#4A78B5",
+        "60": "#34547E",
+        "70": "#2D486C",
+        "80": "#253C5A",
+        "90": "#1E3048"
+      },
+      "accent": {
+        "5": "#FEF1F2",
+        "10": "#FCD9DC",
+        "20": "#FAB7BD",
+        "30": "#F8969E",
+        "40": "#F66F7A",
+        "50": "#F15764",
+        "60": "#D63D4A",
+        "70": "#BF3742",
+        "80": "#992C35",
+        "90": "#732128"
+      },
+      "error": {
+        "5": "#FEF1F1",
+        "10": "#FFE0DF",
+        "20": "#FFADAD",
+        "30": "#FF8985",
+        "40": "#F56666",
+        "50": "#F23B3B",
+        "60": "#EE1818",
+        "70": "#CD0404",
+        "80": "#8F0000",
+        "90": "#5F0000"
+      },
+      "warning": {
+        "5": "#FFF7E6",
+        "10": "#FFEBC2",
+        "20": "#FFD88A",
+        "30": "#FFC654",
+        "40": "#FFBB33",
+        "50": "#FFAA00",
+        "60": "#E89B00",
+        "70": "#B57900",
+        "80": "#8C5E00",
+        "90": "#6B4700"
+      },
+      "success": {
+        "5": "#ECF8EF",
+        "10": "#C5E9CD",
+        "20": "#A9DEB4",
+        "30": "#81CF92",
+        "40": "#57C16F",
+        "50": "#3EA856",
+        "60": "#38994E",
+        "70": "#308242",
+        "80": "#256533",
+        "90": "#1C4D27"
+      },
+      "info": {
+        "5": "#EBF5FF",
+        "10": "#C7E3FF",
+        "20": "#8FC8FF",
+        "30": "#70B9FF",
+        "40": "#56ACFF",
+        "50": "#0095FF",
+        "60": "#0074E5",
+        "70": "#0056AA",
+        "80": "#00407F",
+        "90": "#002B55"
+      },
+      "orange": {
+        "5": "#FFF4F0",
+        "10": "#FFDACC",
+        "20": "#FFB599",
+        "30": "#FE9975",
+        "40": "#FE8052",
+        "50": "#FF6A33",
+        "60": "#FF5212",
+        "70": "#DB3B00",
+        "80": "#992900",
+        "90": "#661C00"
+      },
+      "purple": {
+        "5": "#F8F5FF",
+        "10": "#EEE5FF",
+        "20": "#D7C2FF",
+        "30": "#BD99FF",
+        "40": "#AC80FF",
+        "50": "#8E51FF",
+        "60": "#6A3DBF",
+        "70": "#553199",
+        "80": "#472980",
+        "90": "#361F61"
       },
       "red": {
         "600": "#D92D20"
@@ -4738,27 +7325,62 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   "semantic": {
     "color": {
       "text": {
-        "default": "#14151A",
+        "default": "#18181B",
         "inverse": "#FFFFFF",
         "danger": "#D92D20"
       },
       "action": {
-        "primary": "#5B5BD6"
+        "primary": "#426CED",
+        "primary-hover": "#1245E2",
+        "primary-pressed": "#123BBA"
       },
       "surface": "#FFFFFF",
       "dark": {
-        "surface": "#14151A"
+        "surface": "#18181B"
       }
     }
   },
   "component": {
     "button": {
-      "background": "#5B5BD6",
-      "text": "#FFFFFF"
+      "background": "#426CED",
+      "text": "#FFFFFF",
+      "solid-primary": {
+        "background": "#426CED",
+        "background-hover": "#1245E2",
+        "background-pressed": "#123BBA",
+        "text": "#FFFFFF"
+      },
+      "solid-assistive": {
+        "background": "#F4F4F5",
+        "text": "#18181B"
+      },
+      "solid-white": {
+        "background": "#FFFFFF",
+        "text": "#18181B"
+      },
+      "outline-primary": {
+        "background": "#FFFFFF",
+        "border": "#426CED",
+        "text": "#426CED"
+      },
+      "outline-assistive": {
+        "background": "#F9F9F9",
+        "border": "#D1D2D6",
+        "text": "#18181B"
+      },
+      "outline-white": {
+        "background": "#FFFFFF",
+        "border": "#D1D2D6",
+        "text": "#18181B"
+      },
+      "disabled": {
+        "background": "#E4E4E7",
+        "text": "#9FA2AD"
+      }
     },
     "input": {
       "background": "#FFFFFF",
-      "border": "#14151A"
+      "border": "#18181B"
     }
   },
   "spacing": {
@@ -5063,6 +7685,6 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   }
 } as const;
 
-export type TokenPath = "border.control.default" | "color.base.alpha-black.10" | "color.base.alpha-black.20" | "color.base.alpha-black.30" | "color.base.alpha-black.40" | "color.base.alpha-black.5" | "color.base.alpha-black.50" | "color.base.alpha-black.60" | "color.base.alpha-black.70" | "color.base.alpha-black.80" | "color.base.alpha-black.90" | "color.base.alpha-white.10" | "color.base.alpha-white.20" | "color.base.alpha-white.30" | "color.base.alpha-white.40" | "color.base.alpha-white.5" | "color.base.alpha-white.50" | "color.base.alpha-white.60" | "color.base.alpha-white.70" | "color.base.alpha-white.80" | "color.base.alpha-white.90" | "color.base.blue.10" | "color.base.blue.20" | "color.base.blue.30" | "color.base.blue.40" | "color.base.blue.5" | "color.base.blue.50" | "color.base.blue.60" | "color.base.blue.70" | "color.base.blue.80" | "color.base.blue.90" | "color.base.classic-blue.10" | "color.base.classic-blue.20" | "color.base.classic-blue.30" | "color.base.classic-blue.40" | "color.base.classic-blue.5" | "color.base.classic-blue.50" | "color.base.classic-blue.60" | "color.base.classic-blue.70" | "color.base.classic-blue.80" | "color.base.classic-blue.90" | "color.base.gold.10" | "color.base.gold.20" | "color.base.gold.30" | "color.base.gold.40" | "color.base.gold.5" | "color.base.gold.50" | "color.base.gold.60" | "color.base.gold.70" | "color.base.gold.80" | "color.base.gold.90" | "color.base.gray.0" | "color.base.gray.10" | "color.base.gray.100" | "color.base.gray.20" | "color.base.gray.30" | "color.base.gray.40" | "color.base.gray.5" | "color.base.gray.50" | "color.base.gray.60" | "color.base.gray.70" | "color.base.gray.80" | "color.base.gray.90" | "color.base.green.10" | "color.base.green.20" | "color.base.green.30" | "color.base.green.40" | "color.base.green.5" | "color.base.green.50" | "color.base.green.60" | "color.base.green.70" | "color.base.green.80" | "color.base.green.90" | "color.base.orange.10" | "color.base.orange.20" | "color.base.orange.30" | "color.base.orange.40" | "color.base.orange.5" | "color.base.orange.50" | "color.base.orange.60" | "color.base.orange.70" | "color.base.orange.80" | "color.base.orange.90" | "color.base.red.10" | "color.base.red.20" | "color.base.red.30" | "color.base.red.40" | "color.base.red.5" | "color.base.red.50" | "color.base.red.60" | "color.base.red.70" | "color.base.red.80" | "color.base.red.90" | "color.base.rose.10" | "color.base.rose.20" | "color.base.rose.30" | "color.base.rose.40" | "color.base.rose.5" | "color.base.rose.50" | "color.base.rose.60" | "color.base.rose.70" | "color.base.rose.80" | "color.base.rose.90" | "color.base.royal-blue.10" | "color.base.royal-blue.20" | "color.base.royal-blue.30" | "color.base.royal-blue.40" | "color.base.royal-blue.5" | "color.base.royal-blue.50" | "color.base.royal-blue.60" | "color.base.royal-blue.70" | "color.base.royal-blue.80" | "color.base.royal-blue.90" | "color.palette.gray.0" | "color.palette.gray.900" | "color.palette.purple.600" | "color.palette.red.600" | "component.button.background" | "component.button.text" | "component.input.background" | "component.input.border" | "font.family.sans" | "motion.duration.fast" | "motion.easing.standard" | "motion.transition.fast" | "radius.control.md" | "semantic.color.action.primary" | "semantic.color.dark.surface" | "semantic.color.surface" | "semantic.color.text.danger" | "semantic.color.text.default" | "semantic.color.text.inverse" | "shadow.popover" | "spacing.component.field-gap" | "spacing.scale.1" | "spacing.scale.2" | "typography.body.large" | "typography.body.large-bold" | "typography.body.medium" | "typography.body.medium-bold" | "typography.body.small" | "typography.body.small-bold" | "typography.body.xlarge" | "typography.body.xlarge-bold" | "typography.body.xsmall" | "typography.body.xsmall-bold" | "typography.display.large" | "typography.display.medium" | "typography.display.small" | "typography.display.xlarge" | "typography.display.xsmall" | "typography.heading.large" | "typography.heading.medium" | "typography.heading.small" | "typography.heading.xlarge" | "typography.heading.xsmall" | "typography.heading.xxsmall";
+export type TokenPath = "border.control.default" | "color.base.alpha-black.10" | "color.base.alpha-black.20" | "color.base.alpha-black.30" | "color.base.alpha-black.40" | "color.base.alpha-black.5" | "color.base.alpha-black.50" | "color.base.alpha-black.60" | "color.base.alpha-black.70" | "color.base.alpha-black.80" | "color.base.alpha-black.90" | "color.base.alpha-white.10" | "color.base.alpha-white.20" | "color.base.alpha-white.30" | "color.base.alpha-white.40" | "color.base.alpha-white.5" | "color.base.alpha-white.50" | "color.base.alpha-white.60" | "color.base.alpha-white.70" | "color.base.alpha-white.80" | "color.base.alpha-white.90" | "color.base.blue.10" | "color.base.blue.20" | "color.base.blue.30" | "color.base.blue.40" | "color.base.blue.5" | "color.base.blue.50" | "color.base.blue.60" | "color.base.blue.70" | "color.base.blue.80" | "color.base.blue.90" | "color.base.classic-blue.10" | "color.base.classic-blue.20" | "color.base.classic-blue.30" | "color.base.classic-blue.40" | "color.base.classic-blue.5" | "color.base.classic-blue.50" | "color.base.classic-blue.60" | "color.base.classic-blue.70" | "color.base.classic-blue.80" | "color.base.classic-blue.90" | "color.base.gold.10" | "color.base.gold.20" | "color.base.gold.30" | "color.base.gold.40" | "color.base.gold.5" | "color.base.gold.50" | "color.base.gold.60" | "color.base.gold.70" | "color.base.gold.80" | "color.base.gold.90" | "color.base.gray.0" | "color.base.gray.10" | "color.base.gray.100" | "color.base.gray.20" | "color.base.gray.30" | "color.base.gray.40" | "color.base.gray.5" | "color.base.gray.50" | "color.base.gray.60" | "color.base.gray.70" | "color.base.gray.80" | "color.base.gray.90" | "color.base.green.10" | "color.base.green.20" | "color.base.green.30" | "color.base.green.40" | "color.base.green.5" | "color.base.green.50" | "color.base.green.60" | "color.base.green.70" | "color.base.green.80" | "color.base.green.90" | "color.base.orange.10" | "color.base.orange.20" | "color.base.orange.30" | "color.base.orange.40" | "color.base.orange.5" | "color.base.orange.50" | "color.base.orange.60" | "color.base.orange.70" | "color.base.orange.80" | "color.base.orange.90" | "color.base.red.10" | "color.base.red.20" | "color.base.red.30" | "color.base.red.40" | "color.base.red.5" | "color.base.red.50" | "color.base.red.60" | "color.base.red.70" | "color.base.red.80" | "color.base.red.90" | "color.base.rose.10" | "color.base.rose.20" | "color.base.rose.30" | "color.base.rose.40" | "color.base.rose.5" | "color.base.rose.50" | "color.base.rose.60" | "color.base.rose.70" | "color.base.rose.80" | "color.base.rose.90" | "color.base.royal-blue.10" | "color.base.royal-blue.20" | "color.base.royal-blue.30" | "color.base.royal-blue.40" | "color.base.royal-blue.5" | "color.base.royal-blue.50" | "color.base.royal-blue.60" | "color.base.royal-blue.70" | "color.base.royal-blue.80" | "color.base.royal-blue.90" | "color.palette.accent.10" | "color.palette.accent.20" | "color.palette.accent.30" | "color.palette.accent.40" | "color.palette.accent.5" | "color.palette.accent.50" | "color.palette.accent.60" | "color.palette.accent.70" | "color.palette.accent.80" | "color.palette.accent.90" | "color.palette.error.10" | "color.palette.error.20" | "color.palette.error.30" | "color.palette.error.40" | "color.palette.error.5" | "color.palette.error.50" | "color.palette.error.60" | "color.palette.error.70" | "color.palette.error.80" | "color.palette.error.90" | "color.palette.gray.0" | "color.palette.gray.10" | "color.palette.gray.100" | "color.palette.gray.20" | "color.palette.gray.30" | "color.palette.gray.40" | "color.palette.gray.5" | "color.palette.gray.50" | "color.palette.gray.60" | "color.palette.gray.70" | "color.palette.gray.80" | "color.palette.gray.90" | "color.palette.info.10" | "color.palette.info.20" | "color.palette.info.30" | "color.palette.info.40" | "color.palette.info.5" | "color.palette.info.50" | "color.palette.info.60" | "color.palette.info.70" | "color.palette.info.80" | "color.palette.info.90" | "color.palette.orange.10" | "color.palette.orange.20" | "color.palette.orange.30" | "color.palette.orange.40" | "color.palette.orange.5" | "color.palette.orange.50" | "color.palette.orange.60" | "color.palette.orange.70" | "color.palette.orange.80" | "color.palette.orange.90" | "color.palette.primary.10" | "color.palette.primary.20" | "color.palette.primary.30" | "color.palette.primary.40" | "color.palette.primary.5" | "color.palette.primary.50" | "color.palette.primary.60" | "color.palette.primary.70" | "color.palette.primary.80" | "color.palette.primary.90" | "color.palette.purple.10" | "color.palette.purple.20" | "color.palette.purple.30" | "color.palette.purple.40" | "color.palette.purple.5" | "color.palette.purple.50" | "color.palette.purple.60" | "color.palette.purple.70" | "color.palette.purple.80" | "color.palette.purple.90" | "color.palette.red.600" | "color.palette.secondary.10" | "color.palette.secondary.20" | "color.palette.secondary.30" | "color.palette.secondary.40" | "color.palette.secondary.5" | "color.palette.secondary.50" | "color.palette.secondary.60" | "color.palette.secondary.70" | "color.palette.secondary.80" | "color.palette.secondary.90" | "color.palette.success.10" | "color.palette.success.20" | "color.palette.success.30" | "color.palette.success.40" | "color.palette.success.5" | "color.palette.success.50" | "color.palette.success.60" | "color.palette.success.70" | "color.palette.success.80" | "color.palette.success.90" | "color.palette.warning.10" | "color.palette.warning.20" | "color.palette.warning.30" | "color.palette.warning.40" | "color.palette.warning.5" | "color.palette.warning.50" | "color.palette.warning.60" | "color.palette.warning.70" | "color.palette.warning.80" | "color.palette.warning.90" | "component.button.background" | "component.button.disabled.background" | "component.button.disabled.text" | "component.button.outline-assistive.background" | "component.button.outline-assistive.border" | "component.button.outline-assistive.text" | "component.button.outline-primary.background" | "component.button.outline-primary.border" | "component.button.outline-primary.text" | "component.button.outline-white.background" | "component.button.outline-white.border" | "component.button.outline-white.text" | "component.button.solid-assistive.background" | "component.button.solid-assistive.text" | "component.button.solid-primary.background" | "component.button.solid-primary.background-hover" | "component.button.solid-primary.background-pressed" | "component.button.solid-primary.text" | "component.button.solid-white.background" | "component.button.solid-white.text" | "component.button.text" | "component.input.background" | "component.input.border" | "font.family.sans" | "motion.duration.fast" | "motion.easing.standard" | "motion.transition.fast" | "radius.control.md" | "semantic.color.action.primary" | "semantic.color.action.primary-hover" | "semantic.color.action.primary-pressed" | "semantic.color.dark.surface" | "semantic.color.surface" | "semantic.color.text.danger" | "semantic.color.text.default" | "semantic.color.text.inverse" | "shadow.popover" | "spacing.component.field-gap" | "spacing.scale.1" | "spacing.scale.2" | "typography.body.large" | "typography.body.large-bold" | "typography.body.medium" | "typography.body.medium-bold" | "typography.body.small" | "typography.body.small-bold" | "typography.body.xlarge" | "typography.body.xlarge-bold" | "typography.body.xsmall" | "typography.body.xsmall-bold" | "typography.display.large" | "typography.display.medium" | "typography.display.small" | "typography.display.xlarge" | "typography.display.xsmall" | "typography.heading.large" | "typography.heading.medium" | "typography.heading.small" | "typography.heading.xlarge" | "typography.heading.xsmall" | "typography.heading.xxsmall";
 "
 `;

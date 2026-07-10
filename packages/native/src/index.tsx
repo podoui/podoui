@@ -27,14 +27,21 @@ export interface NativeThemeProviderProps extends NativeTheme {
   children: ReactNode;
 }
 
+export type NativeButtonTheme =
+  | "solid-primary"
+  | "solid-assistive"
+  | "solid-white"
+  | "outline-primary"
+  | "outline-assistive"
+  | "outline-white";
+
 export interface NativeButtonProps {
   children: ReactNode;
   disabled?: boolean;
-  loading?: boolean;
-  variant?: "solid" | "soft" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
-  leftIcon?: ReactNode;
-  rightIcon?: ReactNode;
+  theme?: NativeButtonTheme;
+  size?: "xs" | "sm" | "md" | "lg";
+  prefix?: ReactNode;
+  suffix?: ReactNode;
   onPress?: () => void;
   testID?: string;
 }
@@ -142,12 +149,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     Button: (props) => {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
-      const behavior = createButtonBehavior({ disabled: props.disabled, loading: props.loading });
+      const behavior = createButtonBehavior({ disabled: props.disabled });
       return createElement(
         host.Pressable,
         {
           accessibilityRole: "button",
-          accessibilityState: { disabled: !behavior.pressable, busy: behavior.loading },
+          accessibilityState: { disabled: !behavior.pressable },
           disabled: !behavior.pressable,
           onPress: behavior.pressable ? props.onPress : undefined,
           style: {
@@ -155,12 +162,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             opacity: behavior.pressable ? 1 : 0.56,
           },
           testID: props.testID,
-          "data-variant": props.variant ?? "solid",
+          "data-theme": props.theme ?? "solid-primary",
           "data-size": props.size ?? "md",
         },
-        props.leftIcon,
+        props.prefix,
         createElement(host.Text, { style: styles.buttonLabel }, props.children),
-        props.rightIcon
+        props.suffix
       );
     },
     Input: (props) => {

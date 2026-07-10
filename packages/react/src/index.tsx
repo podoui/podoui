@@ -28,16 +28,23 @@ export interface PodoPressEvent {
   originalEvent: React.MouseEvent<HTMLButtonElement>;
 }
 
+export type ButtonTheme =
+  | "solid-primary"
+  | "solid-assistive"
+  | "solid-white"
+  | "outline-primary"
+  | "outline-assistive"
+  | "outline-white";
+
 export interface ButtonProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  "disabled" | "onClick"
+  "disabled" | "onClick" | "prefix"
 > {
-  variant?: "solid" | "soft" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
+  theme?: ButtonTheme;
+  size?: "xs" | "sm" | "md" | "lg";
   disabled?: boolean;
-  loading?: boolean;
-  leftIcon?: ReactNode;
-  rightIcon?: ReactNode;
+  prefix?: ReactNode;
+  suffix?: ReactNode;
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
   onPress?: (event: PodoPressEvent) => void;
 }
@@ -96,12 +103,11 @@ export function usePodoTheme(): PodoThemeContextValue {
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
-    variant = "solid",
+    theme = "solid-primary",
     size = "md",
     disabled,
-    loading,
-    leftIcon,
-    rightIcon,
+    prefix,
+    suffix,
     children,
     className,
     type = "button",
@@ -111,7 +117,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref
 ) {
-  const behavior = createButtonBehavior({ disabled, loading, type });
+  const behavior = createButtonBehavior({ disabled, type });
   const classes = joinClass("podo-button", className);
 
   return (
@@ -121,12 +127,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       type={behavior.root.type}
       disabled={behavior.root.disabled}
-      aria-busy={behavior.root.ariaBusy}
       aria-disabled={behavior.root.ariaDisabled}
       tabIndex={behavior.root.tabIndex}
       className={classes}
       data-size={size}
-      data-variant={variant}
+      data-theme={theme}
       onClick={(event) => {
         onClick?.(event);
         if (!behavior.pressable || event.defaultPrevented) {
@@ -135,9 +140,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         onPress?.({ source: "button", originalEvent: event });
       }}
     >
-      {leftIcon ? <span className="podo-button__icon">{leftIcon}</span> : null}
+      {prefix ? <span className="podo-button__icon">{prefix}</span> : null}
       <span className="podo-button__label">{children}</span>
-      {rightIcon ? <span className="podo-button__icon">{rightIcon}</span> : null}
+      {suffix ? <span className="podo-button__icon">{suffix}</span> : null}
     </button>
   );
 });
