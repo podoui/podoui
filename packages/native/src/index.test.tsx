@@ -81,7 +81,9 @@ describe("@podo/native", () => {
     );
 
     expect(screen.getByTestId("field").getAttribute("data-gap")).toBe("10");
-    expect(screen.getByTestId("input").getAttribute("data-bg")).toBe("#000000");
+    // The input box style (background) lives on the wrapper View; the
+    // TextInput itself carries the text color.
+    expect(screen.getByTestId("input").parentElement?.getAttribute("data-bg")).toBe("#000000");
     expect(screen.getByTestId("input").getAttribute("data-color")).toBe("#eeeeee");
     expect(screen.getByTestId("button").getAttribute("data-bg")).toBe("#9DB7FF");
   });
@@ -152,7 +154,11 @@ function TestView({
 }: Record<string, unknown> & { children?: React.ReactNode }): React.ReactElement {
   const styleRecord = style as Record<string, unknown> | undefined;
   return (
-    <div data-gap={String(styleRecord?.gap ?? "")} data-testid={testID as string | undefined}>
+    <div
+      data-gap={String(styleRecord?.gap ?? "")}
+      data-bg={styleRecord?.backgroundColor as string | undefined}
+      data-testid={testID as string | undefined}
+    >
       {children}
     </div>
   );

@@ -63,6 +63,9 @@ describe("@podo/web", () => {
     registerPodoElements();
     const input = document.createElement("podo-input") as HTMLElement & { value: string };
     input.setAttribute("invalid", "");
+    input.setAttribute("size", "lg");
+    // Composition slots (Figma prefix / suffix-text / suffix-icon).
+    input.innerHTML = '<span slot="prefix">₩</span><span slot="suffix-text">원</span>';
     input.value = "hello";
     document.body.append(input);
     input.shadowRoot

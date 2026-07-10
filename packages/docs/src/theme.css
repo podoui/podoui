@@ -193,27 +193,82 @@
   margin-left: auto;
 }
 
-/* Input preview inside the field slot — mirrors @podo/web input CSS. */
+/* Input (Figma 538:6693) — mirrors the canonical @podo/web input CSS.
+   Wrapper carries the box + states; the inner control is borderless. */
 .podo-input {
+  align-items: center;
   background: #ffffff;
-  border: 1px solid #d1d2d6;
+  border: 1px solid #e4e4e7;
   border-radius: 10px;
-  color: #18181b;
-  font: inherit;
-  min-height: 52px;
-  padding: 0 16px;
-  width: 100%;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  padding: 0 10px 0 16px;
+  width: 300px;
 }
 
-.podo-input::placeholder {
+.podo-input[data-size="lg"] {
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.podo-input:hover:not([data-state]):not(:focus-within),
+.podo-input.is-hover {
+  border-color: #9fa2ad;
+}
+
+.podo-input:focus-within:not([data-state="disabled"]),
+.podo-input.is-focus {
+  border-color: #426ced;
+  box-shadow: inset 0 0 0 1px #426ced;
+}
+
+.podo-input[data-state="invalid"] {
+  border-color: #f23b3b;
+}
+
+.podo-input[data-state="disabled"] {
+  background: #e4e4e7;
+  border-color: #d1d2d6;
+}
+
+.podo-input__control {
+  background: transparent;
+  border: 0;
+  color: #18181b;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-input__control::placeholder {
   color: #9fa2ad;
 }
 
-.podo-input:focus-visible {
-  border-color: #426ced;
-  outline: none;
+.podo-input[data-state="disabled"] .podo-input__control {
+  color: #9fa2ad;
+  cursor: not-allowed;
 }
 
-.podo-input[aria-invalid="true"] {
-  border-color: #f23b3b;
+.podo-input__prefix,
+.podo-input__suffix-icon {
+  align-items: center;
+  color: #9fa2ad;
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.podo-input:focus-within .podo-input__prefix,
+.podo-input:focus-within .podo-input__suffix-icon {
+  color: #767985;
+}
+
+.podo-input__suffix-text {
+  color: #50555e;
 }

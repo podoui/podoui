@@ -56,15 +56,33 @@ exports[`@podo/react > snapshots themed variant markup for visual regression 1`]
     <div
       class="podo-field__control"
     >
-      <input
-        aria-describedby="email-description"
-        aria-invalid="true"
-        aria-label="Email"
-        aria-labelledby="email-label"
+      <div
         class="podo-input"
-        data-invalid="true"
-        id="email-control"
-      />
+        data-size="lg"
+        data-state="invalid"
+      >
+        <span
+          class="podo-input__prefix"
+        >
+          <i
+            aria-hidden="true"
+            class="podo-icon podo-icon-menu"
+          />
+        </span>
+        <input
+          aria-describedby="email-description"
+          aria-invalid="true"
+          aria-label="Email"
+          aria-labelledby="email-label"
+          class="podo-input__control"
+          id="email-control"
+        />
+        <span
+          class="podo-input__suffix-text"
+        >
+          @podo.dev
+        </span>
+      </div>
     </div>
     <div
       class="podo-field__footer"

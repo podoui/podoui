@@ -168,18 +168,86 @@ input {
   cursor: not-allowed;
 }
 
+/* Input (Figma 538:6693): wrapper carries the box + states, the inner control
+   is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
+  align-items: center;
   background: var(--podo-input-root-background, var(--podo-component-input-background, #FFFFFF));
   border: 1px solid
-    var(--podo-input-root-borderColor, var(--podo-component-input-border, #14151A));
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #14151A));
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+    var(--podo-input-root-borderColor, var(--podo-component-input-border, #E4E4E7));
+  border-radius: 10px;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  padding: 0 10px 0 16px;
 }
 
-.podo-input[aria-invalid="true"] {
-  border-color: var(--podo-semantic-color-text-danger, #D92D20);
+.podo-input[data-size="lg"] {
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.podo-input:hover:not([data-state]):not(:focus-within) {
+  border-color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-input:focus-within:not([data-state="disabled"]) {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-input[data-state="invalid"] {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
+.podo-input[data-state="disabled"] {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+}
+
+.podo-input__control {
+  background: transparent;
+  border: 0;
+  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #18181B));
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-input__control::placeholder {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+.podo-input[data-state="disabled"] .podo-input__control {
+  color: #9FA2AD;
+  cursor: not-allowed;
+}
+
+.podo-input__prefix,
+.podo-input__suffix-icon {
+  align-items: center;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+/* Icons sharpen from muted to gray.50 while the value is being edited
+   (Figma icon/subtil #767985). */
+.podo-input:focus-within .podo-input__prefix,
+.podo-input:focus-within .podo-input__suffix-icon {
+  color: #767985;
+}
+
+.podo-input__suffix-text {
+  color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
 /* Field (Figma 538:6691): heading(label + requirement + sub-label + suffix-icon),
@@ -348,6 +416,7 @@ function createInputElement(): CustomElementConstructor {
         "name",
         "placeholder",
         "required",
+        "size",
         "value",
       ];
     }
@@ -392,16 +461,29 @@ function createInputElement(): CustomElementConstructor {
           ? 'data-state="disabled"'
           : "";
 
+      // Empty slot wrappers still take width/gap, so only render assigned ones.
+      const prefix = hasSlot(this, "prefix")
+        ? '<span class="podo-input__prefix" part="prefix"><slot name="prefix"></slot></span>'
+        : "";
+      const suffixText = hasSlot(this, "suffix-text")
+        ? '<span class="podo-input__suffix-text" part="suffix-text"><slot name="suffix-text"></slot></span>'
+        : "";
+      const suffixIcon = hasSlot(this, "suffix-icon")
+        ? '<span class="podo-input__suffix-icon" part="suffix-icon"><slot name="suffix-icon"></slot></span>'
+        : "";
+
       this.shadow.innerHTML = `${componentStyleBlock()}
-<input class="podo-input" part="control" ${stateAttr} ${attrString("id", attr(this, "id", ""))} ${attrString(
-        "name",
-        attr(this, "name", "")
-      )} value="${escapeHtml(this.value)}" placeholder="${escapeHtml(
-        attr(this, "placeholder", "")
-      )}" ${attrString("aria-labelledby", attr(this, "aria-labelledby", ""))} ${attrString(
-        "aria-describedby",
-        attr(this, "aria-describedby", "")
-      )} ${attrString("aria-required", attr(this, "aria-required", ""))} ${disabled} ${required} ${ariaInvalid} />`;
+<div class="podo-input" part="root" data-size="${escapeHtml(attr(this, "size", "md"))}" ${stateAttr}>
+  ${prefix}<input class="podo-input__control" part="control" ${attrString("id", attr(this, "id", ""))} ${attrString(
+    "name",
+    attr(this, "name", "")
+  )} value="${escapeHtml(this.value)}" placeholder="${escapeHtml(
+    attr(this, "placeholder", "")
+  )}" ${attrString("aria-labelledby", attr(this, "aria-labelledby", ""))} ${attrString(
+    "aria-describedby",
+    attr(this, "aria-describedby", "")
+  )} ${attrString("aria-required", attr(this, "aria-required", ""))} ${disabled} ${required} ${ariaInvalid} />${suffixText}${suffixIcon}
+</div>`;
       this.shadow.querySelector("input")?.addEventListener("input", (event) => {
         const value = (event.currentTarget as HTMLInputElement).value;
         this.setAttribute("value", value);
@@ -450,6 +532,13 @@ function createFieldElement(): CustomElementConstructor {
       const requirement = required
         ? '<span class="podo-field__requirement" aria-hidden="true">*</span>'
         : "";
+      // Empty slot wrappers still take width/gap, so only render assigned ones.
+      const subLabel = hasSlot(this, "sub-label")
+        ? '<span class="podo-field__sub-label" part="sub-label"><slot name="sub-label"></slot></span>'
+        : "";
+      const suffixIcon = hasSlot(this, "suffix-icon")
+        ? '<span class="podo-field__suffix-icon" part="suffix-icon"><slot name="suffix-icon"></slot></span>'
+        : "";
       const count = countMax
         ? `<span class="podo-field__count" part="count">${escapeHtml(
             attr(this, "count", "0")
@@ -462,10 +551,8 @@ function createFieldElement(): CustomElementConstructor {
     <label class="podo-field__label" part="label" id="${escapeHtml(
       a11y.ids.labelId
     )}" for="${escapeHtml(a11y.ids.controlId)}">
-      <slot name="label">Label</slot>${requirement}
-      <span class="podo-field__sub-label" part="sub-label"><slot name="sub-label"></slot></span>
-    </label>
-    <span class="podo-field__suffix-icon" part="suffix-icon"><slot name="suffix-icon"></slot></span>
+      <slot name="label">Label</slot>${requirement}${subLabel}
+    </label>${suffixIcon}
   </div>
   <div part="control"><slot></slot></div>
   <div class="podo-field__footer" part="footer">
@@ -538,6 +625,11 @@ function createTextElement(): CustomElementConstructor {
 
 function attr(element: Element, name: string, fallback: string): string {
   return element.getAttribute(name) ?? fallback;
+}
+
+/** True when the light DOM assigns content to the named slot. */
+function hasSlot(element: Element, name: string): boolean {
+  return element.querySelector(`[slot="${name}"]`) !== null;
 }
 
 function attrString(name: string, value: string): string {

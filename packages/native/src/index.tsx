@@ -50,6 +50,14 @@ export interface NativeInputProps {
   value?: string;
   defaultValue?: string;
   placeholder?: string;
+  /** Control height and radius (Figma: md 42, lg 52). */
+  size?: "md" | "lg";
+  /** Icon or symbol giving the value context, before the control (Figma prefix). */
+  prefix?: ReactNode;
+  /** Fixed unit/domain text after the control, e.g. 원, kg (Figma suffix-text). */
+  suffixText?: ReactNode;
+  /** In-input action icon: clear, search, visibility toggle (Figma suffix-icon). */
+  suffixIcon?: ReactNode;
   invalid?: boolean;
   disabled?: boolean;
   required?: boolean;
@@ -190,7 +198,9 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         invalid: props.invalid,
         required: props.required,
       });
-      return createElement(host.TextInput, {
+      // Root wrapper carries the box style so prefix/suffix content can live
+      // inside the input (Figma 538:6693); the TextInput keeps the a11y wiring.
+      const control = createElement(host.TextInput, {
         accessibilityLabel: props.accessibilityLabel,
         accessibilityLabelledBy: props.accessibilityLabelledBy,
         accessibilityDescribedBy: props.accessibilityDescribedBy,
@@ -204,9 +214,23 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         value: props.value,
         placeholder: props.placeholder,
         onChangeText: props.onValueChange,
-        style: styles.input,
+        style: styles.inputControl,
         testID: props.testID,
       });
+      return createElement(
+        host.View,
+        {
+          style: props.size === "lg" ? { ...styles.input, ...styles.inputLg } : styles.input,
+        },
+        props.prefix ? createElement(host.View, { style: styles.inputAffix }, props.prefix) : null,
+        control,
+        props.suffixText
+          ? createElement(host.Text, { style: styles.inputSuffixText }, props.suffixText)
+          : null,
+        props.suffixIcon
+          ? createElement(host.View, { style: styles.inputAffix }, props.suffixIcon)
+          : null
+      );
     },
     Field: (props) => {
       const theme = usePodoNativeTheme();
@@ -332,6 +356,10 @@ function createNativeThemeStyles(
   | "fieldSuffixIcon"
   | "icon"
   | "input"
+  | "inputAffix"
+  | "inputControl"
+  | "inputLg"
+  | "inputSuffixText"
   | "label",
   NativeStyle
 > {
@@ -342,7 +370,8 @@ function createNativeThemeStyles(
   const dangerColor = stringToken(tokens, ["color", "danger"]) ?? "#F23B3B";
   const mutedColor = "#9FA2AD";
   const gap = numberToken(tokens, ["spacing", "controlGap"]) ?? 6;
-  const borderColor = theme.colorScheme === "dark" ? "#61708A" : "#9AA8BD";
+  // Figma border/gary #E4E4E7 (gray.20) for light; dark keeps a visible gray.
+  const borderColor = theme.colorScheme === "dark" ? "#3E424B" : "#E4E4E7";
   const accentColor = theme.colorScheme === "dark" ? "#9DB7FF" : "#305CDE";
 
   return {
@@ -356,15 +385,23 @@ function createNativeThemeStyles(
     fieldHelperText: { color: mutedColor, flex: 1, fontSize: 14 },
     fieldCount: { color: mutedColor, fontSize: 14, marginLeft: "auto" },
     error: { color: dangerColor, flex: 1, fontSize: 14 },
+    // Figma 538:6693: md 42/radius 10, lg 52/radius 12, pl 16 / pr 10, gap 6.
     input: {
+      alignItems: "center",
       backgroundColor,
       borderColor,
-      borderRadius: 8,
+      borderRadius: 10,
       borderWidth: 1,
-      color: textColor,
-      minHeight: 40,
-      paddingHorizontal: 12,
+      flexDirection: "row",
+      gap: 6,
+      minHeight: 42,
+      paddingLeft: 16,
+      paddingRight: 10,
     },
+    inputLg: { borderRadius: 12, minHeight: 52 },
+    inputControl: { color: textColor, flex: 1, fontSize: 16, padding: 0 },
+    inputAffix: { alignItems: "center", height: 24, justifyContent: "center", width: 24 },
+    inputSuffixText: { color: "#50555E", fontSize: 16 },
     button: {
       alignItems: "center",
       backgroundColor: accentColor,

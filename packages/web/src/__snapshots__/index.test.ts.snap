@@ -124,18 +124,86 @@ input {
   cursor: not-allowed;
 }
 
+/* Input (Figma 538:6693): wrapper carries the box + states, the inner control
+   is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
+  align-items: center;
   background: var(--podo-input-root-background, var(--podo-component-input-background, #FFFFFF));
   border: 1px solid
-    var(--podo-input-root-borderColor, var(--podo-component-input-border, #14151A));
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #14151A));
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+    var(--podo-input-root-borderColor, var(--podo-component-input-border, #E4E4E7));
+  border-radius: 10px;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  padding: 0 10px 0 16px;
 }
 
-.podo-input[aria-invalid="true"] {
-  border-color: var(--podo-semantic-color-text-danger, #D92D20);
+.podo-input[data-size="lg"] {
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.podo-input:hover:not([data-state]):not(:focus-within) {
+  border-color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-input:focus-within:not([data-state="disabled"]) {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-input[data-state="invalid"] {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
+.podo-input[data-state="disabled"] {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+}
+
+.podo-input__control {
+  background: transparent;
+  border: 0;
+  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #18181B));
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-input__control::placeholder {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+.podo-input[data-state="disabled"] .podo-input__control {
+  color: #9FA2AD;
+  cursor: not-allowed;
+}
+
+.podo-input__prefix,
+.podo-input__suffix-icon {
+  align-items: center;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+/* Icons sharpen from muted to gray.50 while the value is being edited
+   (Figma icon/subtil #767985). */
+.podo-input:focus-within .podo-input__prefix,
+.podo-input:focus-within .podo-input__suffix-icon {
+  color: #767985;
+}
+
+.podo-input__suffix-text {
+  color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
 /* Field (Figma 538:6691): heading(label + requirement + sub-label + suffix-icon),
@@ -357,18 +425,86 @@ input {
   cursor: not-allowed;
 }
 
+/* Input (Figma 538:6693): wrapper carries the box + states, the inner control
+   is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
+  align-items: center;
   background: var(--podo-input-root-background, var(--podo-component-input-background, #FFFFFF));
   border: 1px solid
-    var(--podo-input-root-borderColor, var(--podo-component-input-border, #14151A));
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #14151A));
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+    var(--podo-input-root-borderColor, var(--podo-component-input-border, #E4E4E7));
+  border-radius: 10px;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  padding: 0 10px 0 16px;
 }
 
-.podo-input[aria-invalid="true"] {
-  border-color: var(--podo-semantic-color-text-danger, #D92D20);
+.podo-input[data-size="lg"] {
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.podo-input:hover:not([data-state]):not(:focus-within) {
+  border-color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-input:focus-within:not([data-state="disabled"]) {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-input[data-state="invalid"] {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
+.podo-input[data-state="disabled"] {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+}
+
+.podo-input__control {
+  background: transparent;
+  border: 0;
+  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #18181B));
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-input__control::placeholder {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+.podo-input[data-state="disabled"] .podo-input__control {
+  color: #9FA2AD;
+  cursor: not-allowed;
+}
+
+.podo-input__prefix,
+.podo-input__suffix-icon {
+  align-items: center;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+/* Icons sharpen from muted to gray.50 while the value is being edited
+   (Figma icon/subtil #767985). */
+.podo-input:focus-within .podo-input__prefix,
+.podo-input:focus-within .podo-input__suffix-icon {
+  color: #767985;
+}
+
+.podo-input__suffix-text {
+  color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
 /* Field (Figma 538:6691): heading(label + requirement + sub-label + suffix-icon),
@@ -463,9 +599,7 @@ input {
   <div class="podo-field__heading" part="heading">
     <label class="podo-field__label" part="label" id="email-label" for="email-control">
       <slot name="label">Label</slot><span class="podo-field__requirement" aria-hidden="true">*</span>
-      <span class="podo-field__sub-label" part="sub-label"><slot name="sub-label"></slot></span>
     </label>
-    <span class="podo-field__suffix-icon" part="suffix-icon"><slot name="suffix-icon"></slot></span>
   </div>
   <div part="control"><slot></slot></div>
   <div class="podo-field__footer" part="footer">
@@ -601,18 +735,86 @@ input {
   cursor: not-allowed;
 }
 
+/* Input (Figma 538:6693): wrapper carries the box + states, the inner control
+   is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
+  align-items: center;
   background: var(--podo-input-root-background, var(--podo-component-input-background, #FFFFFF));
   border: 1px solid
-    var(--podo-input-root-borderColor, var(--podo-component-input-border, #14151A));
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #14151A));
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+    var(--podo-input-root-borderColor, var(--podo-component-input-border, #E4E4E7));
+  border-radius: 10px;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  padding: 0 10px 0 16px;
 }
 
-.podo-input[aria-invalid="true"] {
-  border-color: var(--podo-semantic-color-text-danger, #D92D20);
+.podo-input[data-size="lg"] {
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.podo-input:hover:not([data-state]):not(:focus-within) {
+  border-color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-input:focus-within:not([data-state="disabled"]) {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-input[data-state="invalid"] {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
+.podo-input[data-state="disabled"] {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+}
+
+.podo-input__control {
+  background: transparent;
+  border: 0;
+  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #18181B));
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-input__control::placeholder {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+.podo-input[data-state="disabled"] .podo-input__control {
+  color: #9FA2AD;
+  cursor: not-allowed;
+}
+
+.podo-input__prefix,
+.podo-input__suffix-icon {
+  align-items: center;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+/* Icons sharpen from muted to gray.50 while the value is being edited
+   (Figma icon/subtil #767985). */
+.podo-input:focus-within .podo-input__prefix,
+.podo-input:focus-within .podo-input__suffix-icon {
+  color: #767985;
+}
+
+.podo-input__suffix-text {
+  color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
 /* Field (Figma 538:6691): heading(label + requirement + sub-label + suffix-icon),
@@ -829,18 +1031,86 @@ input {
   cursor: not-allowed;
 }
 
+/* Input (Figma 538:6693): wrapper carries the box + states, the inner control
+   is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
+  align-items: center;
   background: var(--podo-input-root-background, var(--podo-component-input-background, #FFFFFF));
   border: 1px solid
-    var(--podo-input-root-borderColor, var(--podo-component-input-border, #14151A));
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #14151A));
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+    var(--podo-input-root-borderColor, var(--podo-component-input-border, #E4E4E7));
+  border-radius: 10px;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  padding: 0 10px 0 16px;
 }
 
-.podo-input[aria-invalid="true"] {
-  border-color: var(--podo-semantic-color-text-danger, #D92D20);
+.podo-input[data-size="lg"] {
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.podo-input:hover:not([data-state]):not(:focus-within) {
+  border-color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-input:focus-within:not([data-state="disabled"]) {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-input[data-state="invalid"] {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
+.podo-input[data-state="disabled"] {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+}
+
+.podo-input__control {
+  background: transparent;
+  border: 0;
+  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #18181B));
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-input__control::placeholder {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+.podo-input[data-state="disabled"] .podo-input__control {
+  color: #9FA2AD;
+  cursor: not-allowed;
+}
+
+.podo-input__prefix,
+.podo-input__suffix-icon {
+  align-items: center;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+/* Icons sharpen from muted to gray.50 while the value is being edited
+   (Figma icon/subtil #767985). */
+.podo-input:focus-within .podo-input__prefix,
+.podo-input:focus-within .podo-input__suffix-icon {
+  color: #767985;
+}
+
+.podo-input__suffix-text {
+  color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
 /* Field (Figma 538:6691): heading(label + requirement + sub-label + suffix-icon),
@@ -931,7 +1201,9 @@ input {
   font-weight: var(--podo-typography-heading-xlarge-fontWeight, 700);
   line-height: var(--podo-typography-heading-xlarge-lineHeight, 1.2);
 }</style>
-<input class="podo-input" part="control" data-state="invalid" value="hello" placeholder="" aria-invalid="true">"
+<div class="podo-input" part="root" data-size="lg" data-state="invalid">
+  <span class="podo-input__prefix" part="prefix"><slot name="prefix"></slot></span><input class="podo-input__control" part="control" value="hello" placeholder="" aria-invalid="true"><span class="podo-input__suffix-text" part="suffix-text"><slot name="suffix-text"></slot></span>
+</div>"
 `;
 
 exports[`@podo/web > renders input, field, icon, and typography components > text 1`] = `
@@ -1058,18 +1330,86 @@ input {
   cursor: not-allowed;
 }
 
+/* Input (Figma 538:6693): wrapper carries the box + states, the inner control
+   is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
+  align-items: center;
   background: var(--podo-input-root-background, var(--podo-component-input-background, #FFFFFF));
   border: 1px solid
-    var(--podo-input-root-borderColor, var(--podo-component-input-border, #14151A));
-  border-radius: var(--podo-radius-control-md, 8px);
-  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #14151A));
-  min-height: 40px;
-  padding: 0 var(--podo-spacing-scale-2, 8px);
+    var(--podo-input-root-borderColor, var(--podo-component-input-border, #E4E4E7));
+  border-radius: 10px;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  padding: 0 10px 0 16px;
 }
 
-.podo-input[aria-invalid="true"] {
-  border-color: var(--podo-semantic-color-text-danger, #D92D20);
+.podo-input[data-size="lg"] {
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.podo-input:hover:not([data-state]):not(:focus-within) {
+  border-color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-input:focus-within:not([data-state="disabled"]) {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-input[data-state="invalid"] {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
+.podo-input[data-state="disabled"] {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+}
+
+.podo-input__control {
+  background: transparent;
+  border: 0;
+  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #18181B));
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-input__control::placeholder {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+.podo-input[data-state="disabled"] .podo-input__control {
+  color: #9FA2AD;
+  cursor: not-allowed;
+}
+
+.podo-input__prefix,
+.podo-input__suffix-icon {
+  align-items: center;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+/* Icons sharpen from muted to gray.50 while the value is being edited
+   (Figma icon/subtil #767985). */
+.podo-input:focus-within .podo-input__prefix,
+.podo-input:focus-within .podo-input__suffix-icon {
+  color: #767985;
+}
+
+.podo-input__suffix-text {
+  color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
 /* Field (Figma 538:6691): heading(label + requirement + sub-label + suffix-icon),

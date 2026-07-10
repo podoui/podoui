@@ -2776,10 +2776,10 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
     "component.input.border": {
       "path": "component.input.border",
       "type": "color",
-      "value": "#18181B",
-      "rawValue": "{semantic.color.text.default}",
+      "value": "#E4E4E7",
+      "rawValue": "{color.palette.gray.20}",
       "references": [
-        "semantic.color.text.default"
+        "color.palette.gray.20"
       ],
       "origin": {
         "filePath": "packages/spec/samples/tokens/color.tokens.json",
@@ -5073,7 +5073,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
     },
     "input": {
       "background": "#FFFFFF",
-      "border": "#18181B"
+      "border": "#E4E4E7"
     }
   },
   "spacing": {
@@ -5621,7 +5621,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-component-button-solid-white-text: #18181B;
   --podo-component-button-text: #FFFFFF;
   --podo-component-input-background: #FFFFFF;
-  --podo-component-input-border: #18181B;
+  --podo-component-input-border: #E4E4E7;
   --podo-font-family-sans: Pretendard;
   --podo-motion-duration-fast: 120ms;
   --podo-motion-easing-standard: 0.2, 0, 0, 1;
@@ -6044,7 +6044,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-component-button-solid-white-text: #18181B;
   --podo-component-button-text: #FFFFFF;
   --podo-component-input-background: #18181B;
-  --podo-component-input-border: #18181B;
+  --podo-component-input-border: #E4E4E7;
   --podo-font-family-sans: Pretendard;
   --podo-motion-duration-fast: 120ms;
   --podo-motion-easing-standard: 0.2, 0, 0, 1;
@@ -6467,7 +6467,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-component-button-solid-white-text: #18181B;
   --podo-component-button-text: #FFFFFF;
   --podo-component-input-background: #FFFFFF;
-  --podo-component-input-border: #18181B;
+  --podo-component-input-border: #E4E4E7;
   --podo-font-family-sans: Pretendard;
   --podo-motion-duration-fast: 120ms;
   --podo-motion-easing-standard: 0.2, 0, 0, 1;
@@ -6890,7 +6890,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
   --podo-component-button-solid-white-text: #18181B;
   --podo-component-button-text: #FFFFFF;
   --podo-component-input-background: #18181B;
-  --podo-component-input-border: #18181B;
+  --podo-component-input-border: #E4E4E7;
   --podo-font-family-sans: Pretendard;
   --podo-motion-duration-fast: 120ms;
   --podo-motion-easing-standard: 0.2, 0, 0, 1;
@@ -7399,7 +7399,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
     },
     "input": {
       "background": "#FFFFFF",
-      "border": "#18181B"
+      "border": "#E4E4E7"
     }
   },
   "spacing": {

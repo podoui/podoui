@@ -515,6 +515,14 @@ a {
   gap: 14px;
 }
 
+/* Vertical sample stack inside a stage (e.g. input state/composition rows). */
+.stage-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
 .prop-tags {
   display: flex;
   flex-wrap: wrap;

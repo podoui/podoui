@@ -51,8 +51,16 @@ export interface ButtonProps extends Omit<
 
 export interface InputProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  "disabled" | "onChange"
+  "disabled" | "onChange" | "prefix" | "size"
 > {
+  /** Control height, radius, and font (Figma: md 42, lg 52). */
+  size?: "md" | "lg";
+  /** Icon or symbol giving the value context, before the control (Figma prefix). */
+  prefix?: ReactNode;
+  /** Fixed unit/domain text after the control, e.g. 원, kg (Figma suffix-text). */
+  suffixText?: ReactNode;
+  /** In-input action icon: clear, search, visibility toggle (Figma suffix-icon). */
+  suffixIcon?: ReactNode;
   invalid?: boolean;
   disabled?: boolean;
   onChange?: InputHTMLAttributes<HTMLInputElement>["onChange"];
@@ -158,7 +166,19 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 });
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { invalid, disabled, required, className, onChange, onValueChange, ...props },
+  {
+    size = "md",
+    prefix,
+    suffixText,
+    suffixIcon,
+    invalid,
+    disabled,
+    required,
+    className,
+    onChange,
+    onValueChange,
+    ...props
+  },
   ref
 ) {
   const behavior = createInputBehavior({
@@ -169,18 +189,28 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     defaultValue: typeof props.defaultValue === "string" ? props.defaultValue : undefined,
   });
 
+  // Root wrapper carries the visual state (border, size, hover/focus) so
+  // prefix/suffix content can live inside the box (Figma 538:6693); the inner
+  // <input> receives every native/aria prop, including what Field wires in.
+  // data-state matches the [data-state] selectors the token codegen emits.
+  const state = behavior.invalid ? "invalid" : behavior.disabled ? "disabled" : undefined;
+
   return (
-    <input
-      {...props}
-      {...behavior.dataState}
-      {...behavior.root}
-      ref={ref}
-      className={joinClass("podo-input", className)}
-      onChange={(event) => {
-        onChange?.(event);
-        onValueChange?.(event.currentTarget.value, event);
-      }}
-    />
+    <div className={joinClass("podo-input", className)} data-size={size} data-state={state}>
+      {prefix ? <span className="podo-input__prefix">{prefix}</span> : null}
+      <input
+        {...props}
+        {...behavior.root}
+        ref={ref}
+        className="podo-input__control"
+        onChange={(event) => {
+          onChange?.(event);
+          onValueChange?.(event.currentTarget.value, event);
+        }}
+      />
+      {suffixText ? <span className="podo-input__suffix-text">{suffixText}</span> : null}
+      {suffixIcon ? <span className="podo-input__suffix-icon">{suffixIcon}</span> : null}
+    </div>
   );
 });
 

@@ -102,7 +102,13 @@ describe("@podo/react", () => {
           countMax={500}
           invalid
         >
-          <Input aria-label="Email" invalid />
+          <Input
+            aria-label="Email"
+            size="lg"
+            prefix={<Icon name="menu" />}
+            suffixText="@podo.dev"
+            invalid
+          />
         </Field>
       </PodoThemeProvider>
     );

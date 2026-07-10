@@ -5,18 +5,50 @@
   "name": "Input",
   "category": "atom",
   "status": "stable",
-  "description": "Text input with invalid and disabled states.",
+  "description": "Text input (Figma 538:6693): md/lg sizes, normal/hover/focused/completed/danger/disabled states, and prefix, suffix-text, suffix-icon composition slots.",
   "anatomy": [
-    {
-      "name": "root",
-      "targets": { "web": "input", "react": "input", "hono": "input", "native": "TextInput" }
-    },
+    { "name": "root" },
+    { "name": "prefix", "parent": "root" },
     {
       "name": "control",
+      "parent": "root",
       "targets": { "web": "input", "react": "input", "hono": "input", "native": "TextInput" }
+    },
+    { "name": "suffix-text", "parent": "root" },
+    { "name": "suffix-icon", "parent": "root" }
+  ],
+  "slots": [
+    {
+      "name": "prefix",
+      "description": "Icon or symbol giving the value context, before the control.",
+      "targets": {
+        "web": { "name": "prefix" },
+        "react": { "name": "prefix" },
+        "hono": { "name": "prefix" },
+        "native": { "name": "prefix" }
+      }
+    },
+    {
+      "name": "suffix-text",
+      "description": "Fixed unit/domain text after the control (원, kg, @domain).",
+      "targets": {
+        "web": { "name": "suffix-text" },
+        "react": { "name": "suffixText" },
+        "hono": { "name": "suffixText" },
+        "native": { "name": "suffixText" }
+      }
+    },
+    {
+      "name": "suffix-icon",
+      "description": "In-input action icon: clear, search, visibility toggle.",
+      "targets": {
+        "web": { "name": "suffix-icon" },
+        "react": { "name": "suffixIcon" },
+        "hono": { "name": "suffixIcon" },
+        "native": { "name": "suffixIcon" }
+      }
     }
   ],
-  "slots": [],
   "props": [
     { "name": "value", "type": { "kind": "string" }, "description": "Controlled value." },
     {
@@ -30,7 +62,7 @@
     { "name": "required", "type": { "kind": "boolean" }, "default": false },
     { "name": "onValueChange", "type": { "kind": "event", "payload": { "value": "string" } } }
   ],
-  "variants": [{ "name": "size", "values": ["sm", "md", "lg"], "default": "md" }],
+  "variants": [{ "name": "size", "values": ["md", "lg"], "default": "md" }],
   "states": [
     { "name": "focusVisible" },
     { "name": "disabled" },
@@ -39,7 +71,8 @@
   "tokens": {
     "root.background": "{component.input.background}",
     "root.borderColor": "{component.input.border}",
-    "text.color": "{semantic.color.text.default}"
+    "text.color": "{semantic.color.text.default}",
+    "suffix-text.color": "{semantic.color.text.subtle}"
   },
   "targets": {
     "web": { "supported": true, "limitations": [] },
@@ -58,8 +91,8 @@
   "examples": [
     {
       "target": "react",
-      "title": "Invalid input",
-      "code": "<Input invalid aria-describedby=\"email-error\" />"
+      "title": "Amount input with unit suffix",
+      "code": "<Input size=\"lg\" suffixText=\"원\" placeholder=\"금액을 입력해 주세요\" />"
     }
   ]
 }

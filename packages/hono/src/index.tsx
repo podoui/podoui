@@ -31,6 +31,14 @@ export interface HonoInputProps {
   value?: string;
   defaultValue?: string;
   placeholder?: string;
+  /** Control height, radius, and font (Figma: md 42, lg 52). */
+  size?: "md" | "lg";
+  /** Icon or symbol giving the value context, before the control (Figma prefix). */
+  prefix?: Child;
+  /** Fixed unit/domain text after the control, e.g. 원, kg (Figma suffix-text). */
+  suffixText?: Child;
+  /** In-input action icon: clear, search, visibility toggle (Figma suffix-icon). */
+  suffixIcon?: Child;
   invalid?: boolean;
   disabled?: boolean;
   required?: boolean;
@@ -104,6 +112,10 @@ export function Input({
   value,
   defaultValue,
   placeholder,
+  size = "md",
+  prefix,
+  suffixText,
+  suffixIcon,
   invalid,
   disabled,
   required,
@@ -114,22 +126,30 @@ export function Input({
   "aria-required": ariaRequired,
 }: HonoInputProps): JSX.Element {
   const behavior = createInputBehavior({ value, defaultValue, invalid, disabled, required });
+  const state = behavior.invalid ? "invalid" : behavior.disabled ? "disabled" : undefined;
 
+  // Root wrapper carries the visual state so prefix/suffix content can live
+  // inside the box (Figma 538:6693); the inner input keeps the aria wiring.
   return (
-    <input
-      id={id}
-      class={joinClass("podo-input", className)}
-      name={name}
-      value={value ?? defaultValue}
-      placeholder={placeholder}
-      disabled={disabled}
-      required={required}
-      aria-labelledby={ariaLabelledBy}
-      aria-describedby={ariaDescribedBy}
-      aria-invalid={ariaInvalid ?? (behavior.invalid ? "true" : undefined)}
-      aria-required={ariaRequired ?? (behavior.required ? "true" : undefined)}
-      data-invalid={invalid ? "true" : undefined}
-    />
+    <div class={joinClass("podo-input", className)} data-size={size} data-state={state}>
+      {prefix ? <span class="podo-input__prefix">{prefix}</span> : null}
+      <input
+        id={id}
+        class="podo-input__control"
+        name={name}
+        value={value ?? defaultValue}
+        placeholder={placeholder}
+        disabled={disabled}
+        required={required}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-invalid={ariaInvalid ?? (behavior.invalid ? "true" : undefined)}
+        aria-required={ariaRequired ?? (behavior.required ? "true" : undefined)}
+        data-invalid={invalid ? "true" : undefined}
+      />
+      {suffixText ? <span class="podo-input__suffix-text">{suffixText}</span> : null}
+      {suffixIcon ? <span class="podo-input__suffix-icon">{suffixIcon}</span> : null}
+    </div>
   );
 }
 
