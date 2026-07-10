@@ -7,6 +7,7 @@ export interface RegisterPodoElementsOptions {
 
 export const podoElementNames = {
   button: "podo-button",
+  chip: "podo-chip",
   input: "podo-input",
   field: "podo-field",
   icon: "podo-icon",
@@ -22,6 +23,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
   const names = createElementNames(options.prefix);
   const definitions: Array<[string, CustomElementConstructor]> = [
     [names.button, createButtonElement()],
+    [names.chip, createChipElement()],
     [names.input, createInputElement()],
     [names.field, createFieldElement()],
     [names.icon, createIconElement()],
@@ -38,6 +40,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
 export function createElementNames(prefix = "podo"): typeof podoElementNames {
   return {
     button: `${prefix}-button`,
+    chip: `${prefix}-chip`,
     input: `${prefix}-input`,
     field: `${prefix}-field`,
     icon: `${prefix}-icon`,
@@ -166,6 +169,83 @@ input {
   --podo-button-root-borderColor: transparent;
   --podo-button-label-color: #9FA2AD;
   cursor: not-allowed;
+}
+
+/* Chip (Figma 538:6615): pill tag with prefix/suffix icon slots. */
+.podo-chip {
+  align-items: center;
+  background: var(--podo-chip-root-background, #3E424B);
+  border: 1px solid var(--podo-chip-root-borderColor, transparent);
+  border-radius: 9999px;
+  color: var(--podo-chip-label-color, #FFFFFF);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  font-size: 16px;
+  font-weight: 400;
+  gap: 4px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 55px;
+  padding: 2px 8px;
+}
+
+.podo-chip[data-size="sm"] {
+  font-size: 13px;
+}
+
+/* Figma outline-strong currently renders identically to solid (filled
+   gray.70); mirrored as-is pending a design fix. */
+.podo-chip[data-theme="outline-strong"] {
+  --podo-chip-root-background: #3E424B;
+  --podo-chip-label-color: #FFFFFF;
+}
+
+.podo-chip[data-theme="outline-weak"] {
+  --podo-chip-root-background: #F9F9F9;
+  --podo-chip-root-borderColor: #767985;
+  --podo-chip-label-color: #18181B;
+}
+
+.podo-chip[data-theme="solid"]:active:not([disabled]),
+.podo-chip[data-theme="outline-strong"]:active:not([disabled]) {
+  --podo-chip-root-background: #767985;
+}
+
+.podo-chip:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-chip[disabled] {
+  --podo-chip-root-background: #E4E4E7;
+  --podo-chip-root-borderColor: transparent;
+  --podo-chip-label-color: #9FA2AD;
+  cursor: not-allowed;
+}
+
+.podo-chip__prefix,
+.podo-chip__suffix {
+  align-items: center;
+  color: var(--podo-chip-label-color, currentColor);
+  display: inline-flex;
+  justify-content: center;
+}
+
+.podo-chip__prefix {
+  height: 24px;
+  width: 24px;
+}
+
+.podo-chip__suffix {
+  height: 20px;
+  width: 20px;
+}
+
+.podo-chip[data-size="sm"] .podo-chip__prefix,
+.podo-chip[data-size="sm"] .podo-chip__suffix {
+  height: 16px;
+  width: 16px;
 }
 
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
@@ -390,6 +470,48 @@ function createButtonElement(): CustomElementConstructor {
   <span class="podo-button__icon" part="prefix"><slot name="prefix"></slot></span>
   <span part="label"><slot></slot></span>
   <span class="podo-button__icon" part="suffix"><slot name="suffix"></slot></span>
+</button>`;
+      this.shadow.querySelector("button")?.addEventListener("click", (event) => {
+        if (!behavior.pressable) {
+          event.preventDefault();
+          return;
+        }
+        this.dispatchEvent(new CustomEvent("podo-press", { bubbles: true, composed: true }));
+      });
+    }
+  };
+}
+
+function createChipElement(): CustomElementConstructor {
+  return class PodoChipElement extends HTMLElement {
+    static get observedAttributes(): string[] {
+      return ["disabled", "size", "theme"];
+    }
+
+    readonly shadow = this.attachShadow({ mode: "open" });
+
+    connectedCallback(): void {
+      this.render();
+    }
+
+    attributeChangedCallback(): void {
+      this.render();
+    }
+
+    private render(): void {
+      const behavior = createButtonBehavior({
+        disabled: this.hasAttribute("disabled"),
+      });
+      const disabled = behavior.root.disabled ? "disabled" : "";
+      const stateAttr = this.hasAttribute("disabled") ? 'data-state="disabled"' : "";
+
+      this.shadow.innerHTML = `${componentStyleBlock()}
+<button class="podo-chip" part="root" data-theme="${escapeHtml(
+        attr(this, "theme", "solid")
+      )}" data-size="${escapeHtml(attr(this, "size", "md"))}" ${stateAttr} ${disabled}>
+  <span class="podo-chip__prefix" part="prefix"><slot name="prefix"></slot></span>
+  <span part="label"><slot></slot></span>
+  <span class="podo-chip__suffix" part="suffix"><slot name="suffix"></slot></span>
 </button>`;
       this.shadow.querySelector("button")?.addEventListener("click", (event) => {
         if (!behavior.pressable) {

@@ -2,7 +2,7 @@
 
 import { renderToString } from "hono/jsx/dom/server";
 import { describe, expect, it } from "vitest";
-import { Button, Field, Icon, Input, Typography, renderCriticalCss } from "./index.js";
+import { Button, Chip, Field, Icon, Input, Typography, renderCriticalCss } from "./index.js";
 
 describe("@podo/hono", () => {
   it("renders static SSR HTML for form components", () => {
@@ -45,6 +45,9 @@ describe("@podo/hono", () => {
         <Button theme="outline-primary" prefix={<Icon name="menu" />}>
           Save
         </Button>
+        <Chip size="sm" theme="outline-weak" suffix={<Icon name="menu" />}>
+          필터
+        </Chip>
         <Typography as="h1">Dashboard</Typography>
       </>
     );
@@ -52,6 +55,8 @@ describe("@podo/hono", () => {
     expect(html).toContain("data-podo-critical");
     expect(html).toContain("dashboard");
     expect(html).toContain('data-theme="outline-primary"');
+    expect(html).toContain('class="podo-chip"');
+    expect(html).toContain('data-theme="outline-weak"');
     expect(html).toContain("podo-icon-menu");
     expect(html).toContain("podo-text--h1");
     expect(html).toMatchSnapshot();

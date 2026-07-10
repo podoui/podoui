@@ -14,8 +14,10 @@ describe("@podo/web", () => {
     registerPodoElements();
 
     expect(customElements.get("podo-button")).toBeDefined();
+    expect(customElements.get("podo-chip")).toBeDefined();
     expect(customElements.get("podo-input")).toBeDefined();
     expect(podoWebComponentCss).toContain('.podo-button[data-theme="solid-primary"]');
+    expect(podoWebComponentCss).toContain('.podo-chip[data-theme="outline-weak"]');
   });
 
   it("reads binding-key vars, exposes data-state, and consumes the registered token CSS", () => {
@@ -80,6 +82,12 @@ describe("@podo/web", () => {
     document.body.append(field);
     await Promise.resolve();
 
+    const chip = document.createElement("podo-chip");
+    chip.setAttribute("theme", "outline-weak");
+    chip.setAttribute("size", "sm");
+    chip.textContent = "필터";
+    document.body.append(chip);
+
     const icon = document.createElement("podo-icon");
     icon.setAttribute("name", "menu");
     document.body.append(icon);
@@ -91,6 +99,10 @@ describe("@podo/web", () => {
 
     expect(input.shadowRoot?.innerHTML).toMatchSnapshot("input");
     expect(field.shadowRoot?.innerHTML).toMatchSnapshot("field");
+    expect(chip.shadowRoot?.innerHTML).toMatchSnapshot("chip");
+    expect(chip.shadowRoot?.querySelector("button")?.getAttribute("data-theme")).toBe(
+      "outline-weak"
+    );
     expect(field.querySelector("podo-input")?.getAttribute("id")).toBe("email-control");
     expect(field.querySelector("podo-input")?.getAttribute("aria-describedby")).toBe(
       "email-description email-error"

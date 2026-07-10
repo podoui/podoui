@@ -124,6 +124,77 @@
   cursor: not-allowed;
 }
 
+/* Chip (Figma 538:6615) — mirrors the canonical @podo/web chip CSS. */
+.podo-chip {
+  align-items: center;
+  background: #3e424b;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 16px;
+  gap: 4px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 55px;
+  padding: 2px 8px;
+}
+
+.podo-chip[data-size="sm"] {
+  font-size: 13px;
+}
+
+/* Figma outline-strong currently renders identically to solid — pending a design fix. */
+.podo-chip[data-theme="outline-strong"] {
+  background: #3e424b;
+  color: #ffffff;
+}
+
+.podo-chip[data-theme="outline-weak"] {
+  background: #f9f9f9;
+  border-color: #767985;
+  color: #18181b;
+}
+
+.podo-chip[data-theme="solid"]:active:not([disabled]),
+.podo-chip[data-theme="outline-strong"]:active:not([disabled]),
+.podo-chip.is-pressed {
+  background: #767985;
+  color: #ffffff;
+}
+
+.podo-chip[disabled] {
+  background: #e4e4e7;
+  border-color: transparent;
+  color: #9fa2ad;
+  cursor: not-allowed;
+}
+
+.podo-chip__prefix,
+.podo-chip__suffix {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.podo-chip__prefix {
+  height: 24px;
+  width: 24px;
+}
+
+.podo-chip__suffix {
+  height: 20px;
+  width: 20px;
+}
+
+.podo-chip[data-size="sm"] .podo-chip__prefix,
+.podo-chip[data-size="sm"] .podo-chip__suffix {
+  height: 16px;
+  width: 16px;
+}
+
 /* Field (Figma 538:6691) — mirrors the canonical @podo/web field CSS. */
 .podo-field {
   display: flex;

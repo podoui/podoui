@@ -48,6 +48,14 @@ describe("@podo/native", () => {
     );
     expect(screen.getByRole("button").getAttribute("data-theme")).toBe("solid-primary");
     expect(screen.getByText("≡")).toBeDefined();
+
+    render(
+      <domNative.Chip theme="outline-weak" size="sm" testID="chip">
+        필터
+      </domNative.Chip>
+    );
+    expect(screen.getByTestId("chip").getAttribute("data-theme")).toBe("outline-weak");
+    expect(screen.getByText("필터")).toBeDefined();
     expect(screen.getByText("Required")).toBeDefined();
   });
 

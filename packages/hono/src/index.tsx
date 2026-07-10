@@ -25,6 +25,21 @@ export interface HonoButtonProps {
   class?: string;
 }
 
+export interface HonoChipProps {
+  children: Child;
+  /** Background contrast (Figma: solid, outline-strong, outline-weak). */
+  theme?: "solid" | "outline-strong" | "outline-weak";
+  /** Label/icon scale (Figma: sm 13px, md 16px — md is base). */
+  size?: "sm" | "md";
+  disabled?: boolean;
+  /** Category/status icon before the label (Figma prefix-icon). */
+  prefix?: Child;
+  /** Removal/action icon after the label, e.g. close (Figma suffix-icon). */
+  suffix?: Child;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+}
+
 export interface HonoInputProps {
   id?: string;
   name?: string;
@@ -102,6 +117,36 @@ export function Button({
       {prefix ? <span class="podo-button__icon">{prefix}</span> : null}
       <span class="podo-button__label">{children}</span>
       {suffix ? <span class="podo-button__icon">{suffix}</span> : null}
+    </button>
+  );
+}
+
+export function Chip({
+  children,
+  theme = "solid",
+  size = "md",
+  disabled,
+  prefix,
+  suffix,
+  type,
+  class: className,
+}: HonoChipProps): JSX.Element {
+  const behavior = createButtonBehavior({ disabled, type });
+
+  return (
+    <button
+      class={joinClass("podo-chip", className)}
+      type={behavior.root.type}
+      disabled={behavior.root.disabled}
+      aria-disabled={behavior.root.ariaDisabled}
+      tabIndex={behavior.root.tabIndex}
+      data-theme={theme}
+      data-size={size}
+      data-disabled={disabled ? "true" : undefined}
+    >
+      {prefix ? <span class="podo-chip__prefix">{prefix}</span> : null}
+      <span class="podo-chip__label">{children}</span>
+      {suffix ? <span class="podo-chip__suffix">{suffix}</span> : null}
     </button>
   );
 }

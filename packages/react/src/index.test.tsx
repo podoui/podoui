@@ -6,6 +6,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import {
   Button,
+  Chip,
   Field,
   Icon,
   Input,
@@ -28,6 +29,35 @@ describe("@podo/react", () => {
 
     expect(presses).toBe(1);
     expect(screen.getByRole("button").getAttribute("data-theme")).toBe("solid-primary");
+  });
+
+  it("renders chip themes/sizes and blocks presses while disabled", async () => {
+    const user = userEvent.setup();
+    let presses = 0;
+    render(
+      <>
+        <Chip
+          size="sm"
+          theme="outline-weak"
+          suffix={<Icon name="menu" />}
+          onPress={() => (presses += 1)}
+        >
+          필터
+        </Chip>
+        <Chip disabled onPress={() => (presses += 1)}>
+          비활성
+        </Chip>
+      </>
+    );
+
+    await user.click(screen.getByRole("button", { name: /필터/ }));
+    await user.click(screen.getByRole("button", { name: "비활성" }));
+
+    expect(presses).toBe(1);
+    const chip = screen.getByRole("button", { name: /필터/ });
+    expect(chip.className).toBe("podo-chip");
+    expect(chip.getAttribute("data-theme")).toBe("outline-weak");
+    expect(chip.getAttribute("data-size")).toBe("sm");
   });
 
   it("supports controlled and uncontrolled input value changes", async () => {

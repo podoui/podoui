@@ -46,6 +46,21 @@ export interface NativeButtonProps {
   testID?: string;
 }
 
+export interface NativeChipProps {
+  children: ReactNode;
+  disabled?: boolean;
+  /** Background contrast (Figma: solid, outline-strong, outline-weak). */
+  theme?: "solid" | "outline-strong" | "outline-weak";
+  /** Label/icon scale (Figma: sm 13px, md 16px — md is base). */
+  size?: "sm" | "md";
+  /** Category/status icon before the label (Figma prefix-icon). */
+  prefix?: ReactNode;
+  /** Removal/action icon after the label, e.g. close (Figma suffix-icon). */
+  suffix?: ReactNode;
+  onPress?: () => void;
+  testID?: string;
+}
+
 export interface NativeInputProps {
   value?: string;
   defaultValue?: string;
@@ -99,6 +114,7 @@ export interface NativeIconProps {
 
 export interface NativeComponents {
   Button: (props: NativeButtonProps) => React.ReactElement;
+  Chip: (props: NativeChipProps) => React.ReactElement;
   Input: (props: NativeInputProps) => React.ReactElement;
   Field: (props: NativeFieldProps) => React.ReactElement;
   Icon: (props: NativeIconProps) => React.ReactElement;
@@ -185,6 +201,43 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         },
         props.prefix,
         createElement(host.Text, { style: styles.buttonLabel }, props.children),
+        props.suffix
+      );
+    },
+    Chip: (props) => {
+      const theme = usePodoNativeTheme();
+      const styles = createNativeThemeStyles(theme);
+      const behavior = createButtonBehavior({ disabled: props.disabled });
+      const themeName = props.theme ?? "solid";
+      const size = props.size ?? "md";
+      // Figma outline-strong currently renders identically to solid; mirrored
+      // as-is pending a design fix.
+      const themed =
+        themeName === "outline-weak"
+          ? { ...styles.chip, ...styles.chipOutlineWeak }
+          : props.disabled
+            ? { ...styles.chip, ...styles.chipDisabled }
+            : styles.chip;
+      const labelColor =
+        themeName === "outline-weak" ? "#18181B" : props.disabled ? "#9FA2AD" : "#FFFFFF";
+      return createElement(
+        host.Pressable,
+        {
+          accessibilityRole: "button",
+          accessibilityState: { disabled: !behavior.pressable },
+          disabled: !behavior.pressable,
+          onPress: behavior.pressable ? props.onPress : undefined,
+          style: themed,
+          testID: props.testID,
+          "data-theme": themeName,
+          "data-size": size,
+        },
+        props.prefix,
+        createElement(
+          host.Text,
+          { style: { ...styles.chipLabel, color: labelColor, fontSize: size === "sm" ? 13 : 16 } },
+          props.children
+        ),
         props.suffix
       );
     },
@@ -317,7 +370,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
   };
 }
 
-export const { Button, Input, Field, Icon } = createNativeComponents();
+export const { Button, Chip, Input, Field, Icon } = createNativeComponents();
 
 function wireNativeControl(
   children: ReactNode,
@@ -345,6 +398,10 @@ function createNativeThemeStyles(
 ): Record<
   | "button"
   | "buttonLabel"
+  | "chip"
+  | "chipDisabled"
+  | "chipLabel"
+  | "chipOutlineWeak"
   | "error"
   | "field"
   | "fieldCount"
@@ -413,6 +470,23 @@ function createNativeThemeStyles(
       paddingVertical: 8,
     },
     buttonLabel: { color: theme.colorScheme === "dark" ? "#101828" : "#FFFFFF", fontWeight: "600" },
+    // Chip (Figma 538:6615): pill, gap 4, padding 2/8, min-width 55.
+    chip: {
+      alignItems: "center",
+      backgroundColor: "#3E424B",
+      borderColor: "transparent",
+      borderRadius: 9999,
+      borderWidth: 1,
+      flexDirection: "row",
+      gap: 4,
+      justifyContent: "center",
+      minWidth: 55,
+      paddingHorizontal: 8,
+      paddingVertical: 2,
+    },
+    chipOutlineWeak: { backgroundColor: "#F9F9F9", borderColor: "#767985" },
+    chipDisabled: { backgroundColor: "#E4E4E7" },
+    chipLabel: { color: "#FFFFFF" },
     icon: { color: textColor },
   };
 }

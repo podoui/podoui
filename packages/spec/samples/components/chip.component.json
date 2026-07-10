@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "chip",
+  "name": "Chip",
+  "category": "atom",
+  "status": "experimental",
+  "description": "Compact selectable/removable tag (Figma 538:6615): solid/outline-strong/outline-weak themes, sm/md sizes, enabled/pressed/disabled states, prefix and suffix icon slots. NOTE: the Figma outline-strong variant currently renders identically to solid (filled gray.70, no outline); mirrored as-is pending a design fix.",
+  "anatomy": [
+    { "name": "root" },
+    { "name": "prefix-icon", "parent": "root" },
+    { "name": "label", "parent": "root" },
+    { "name": "suffix-icon", "parent": "root" }
+  ],
+  "slots": [
+    {
+      "name": "prefix-icon",
+      "description": "Category/status icon before the label.",
+      "targets": {
+        "web": { "name": "prefix" },
+        "react": { "name": "prefix" },
+        "hono": { "name": "prefix" },
+        "native": { "name": "prefix" }
+      }
+    },
+    { "name": "children", "required": true, "fallback": "Label" },
+    {
+      "name": "suffix-icon",
+      "description": "Removal/action icon after the label (e.g. close).",
+      "targets": {
+        "web": { "name": "suffix" },
+        "react": { "name": "suffix" },
+        "hono": { "name": "suffix" },
+        "native": { "name": "suffix" }
+      }
+    }
+  ],
+  "props": [
+    { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
+    { "name": "onPress", "type": { "kind": "event", "payload": { "source": "chip" } } }
+  ],
+  "variants": [
+    {
+      "name": "theme",
+      "values": ["solid", "outline-strong", "outline-weak"],
+      "default": "solid",
+      "valueTokens": {
+        "solid": {
+          "root.background": "{color.palette.gray.70}",
+          "label.color": "{color.palette.gray.0}"
+        },
+        "outline-strong": {
+          "root.background": "{color.palette.gray.70}",
+          "label.color": "{color.palette.gray.0}"
+        },
+        "outline-weak": {
+          "root.background": "{color.palette.gray.5}",
+          "root.borderColor": "{color.palette.gray.50}",
+          "label.color": "{color.palette.gray.90}"
+        }
+      }
+    },
+    { "name": "size", "values": ["sm", "md"], "default": "md" }
+  ],
+  "states": [
+    { "name": "focusVisible" },
+    {
+      "name": "active",
+      "description": "Figma pressed state.",
+      "tokens": { "root.background": "{color.palette.gray.50}" }
+    },
+    {
+      "name": "disabled",
+      "tokens": {
+        "root.background": "{color.palette.gray.20}",
+        "label.color": "{color.palette.gray.40}"
+      }
+    }
+  ],
+  "tokens": {
+    "root.background": "{color.palette.gray.70}",
+    "label.color": "{color.palette.gray.0}"
+  },
+  "targets": {
+    "web": { "supported": true, "limitations": [] },
+    "react": { "supported": true, "limitations": [] },
+    "hono": { "supported": true, "limitations": ["Press handling requires client code."] },
+    "native": { "supported": true, "limitations": [] }
+  },
+  "accessibility": {
+    "aria": ["aria-disabled"],
+    "keyboard": ["Enter/Space activates the chip"],
+    "focusManagement": "Chip is a native button; focus follows the platform."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Removable filter chip",
+      "code": "<Chip suffix={<CloseIcon />} onPress={removeFilter}>필터명</Chip>"
+    }
+  ]
+}

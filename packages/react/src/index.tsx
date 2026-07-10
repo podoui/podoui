@@ -24,7 +24,7 @@ export interface PodoThemeProviderProps extends PodoThemeContextValue {
 }
 
 export interface PodoPressEvent {
-  source: "button";
+  source: "button" | "chip";
   originalEvent: React.MouseEvent<HTMLButtonElement>;
 }
 
@@ -44,6 +44,25 @@ export interface ButtonProps extends Omit<
   size?: "xs" | "sm" | "md" | "lg";
   disabled?: boolean;
   prefix?: ReactNode;
+  suffix?: ReactNode;
+  onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
+  onPress?: (event: PodoPressEvent) => void;
+}
+
+export type ChipTheme = "solid" | "outline-strong" | "outline-weak";
+
+export interface ChipProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "disabled" | "onClick" | "prefix"
+> {
+  /** Background contrast (Figma: solid, outline-strong, outline-weak). */
+  theme?: ChipTheme;
+  /** Label/icon scale (Figma: sm 13px, md 16px — md is base). */
+  size?: "sm" | "md";
+  disabled?: boolean;
+  /** Category/status icon before the label (Figma prefix-icon). */
+  prefix?: ReactNode;
+  /** Removal/action icon after the label, e.g. close (Figma suffix-icon). */
   suffix?: ReactNode;
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
   onPress?: (event: PodoPressEvent) => void;
@@ -161,6 +180,51 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {prefix ? <span className="podo-button__icon">{prefix}</span> : null}
       <span className="podo-button__label">{children}</span>
       {suffix ? <span className="podo-button__icon">{suffix}</span> : null}
+    </button>
+  );
+});
+
+export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
+  {
+    theme = "solid",
+    size = "md",
+    disabled,
+    prefix,
+    suffix,
+    children,
+    className,
+    type = "button",
+    onClick,
+    onPress,
+    ...props
+  },
+  ref
+) {
+  const behavior = createButtonBehavior({ disabled, type });
+
+  return (
+    <button
+      {...props}
+      {...behavior.dataState}
+      ref={ref}
+      type={behavior.root.type}
+      disabled={behavior.root.disabled}
+      aria-disabled={behavior.root.ariaDisabled}
+      tabIndex={behavior.root.tabIndex}
+      className={joinClass("podo-chip", className)}
+      data-size={size}
+      data-theme={theme}
+      onClick={(event) => {
+        onClick?.(event);
+        if (!behavior.pressable || event.defaultPrevented) {
+          return;
+        }
+        onPress?.({ source: "chip", originalEvent: event });
+      }}
+    >
+      {prefix ? <span className="podo-chip__prefix">{prefix}</span> : null}
+      <span className="podo-chip__label">{children}</span>
+      {suffix ? <span className="podo-chip__suffix">{suffix}</span> : null}
     </button>
   );
 });
