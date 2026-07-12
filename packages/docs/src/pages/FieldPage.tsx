@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Field, Input } from "@podo/react";
 import { Card } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
@@ -26,15 +25,16 @@ const USAGE_TABS: CodeTab[] = [
     target: "react",
     label: "React",
     code:
-      `<Field label="제목" required helperText="도움말 텍스트" count={value.length} countMax={500}>\n` +
-      `  <Input value={value} onValueChange={setValue} />\n` +
+      `// countMax만 지정하면 글자 수는 필드가 스스로 세요.\n` +
+      `<Field label="제목" required helperText="도움말 텍스트" countMax={500}>\n` +
+      `  <Input placeholder="내용을 입력해 주세요" />\n` +
       `</Field>`,
   },
   {
     target: "web",
     label: "Web",
     code:
-      `<podo-field required count="0" count-max="500">\n` +
+      `<podo-field required count-max="500">\n` +
       `  <span slot="label">제목</span>\n` +
       `  <span slot="helper-text">도움말 텍스트</span>\n` +
       `  <podo-input></podo-input>\n` +
@@ -70,22 +70,14 @@ const InfoIcon = () => (
 );
 
 export function FieldPage() {
-  const [value, setValue] = useState("");
-
   return (
     <>
       <PageHeader title="필드 (Field)" intro={INTRO} />
 
       <DocSection index={0} title="Usage">
         <Preview tabs={USAGE_TABS}>
-          <Field
-            label="제목"
-            required
-            helperText="도움말 텍스트"
-            count={value.length}
-            countMax={500}
-          >
-            <Input value={value} onValueChange={setValue} placeholder="내용을 입력해 주세요" />
+          <Field label="제목" required helperText="도움말 텍스트" countMax={500}>
+            <Input placeholder="내용을 입력해 주세요" />
           </Field>
         </Preview>
       </DocSection>
@@ -98,7 +90,6 @@ export function FieldPage() {
             subLabel="선택"
             suffixIcon={<InfoIcon />}
             helperText="도움말 텍스트"
-            count={0}
             countMax={500}
           >
             <Input placeholder="내용을 입력해 주세요" />
@@ -182,8 +173,8 @@ export function FieldPage() {
               <span className="prop-type">
                 <code>number</code>
               </span>,
-              <code>0</code>,
-              "현재 글자 수. countMax와 함께 count/countMax로 표시돼요",
+              "— (자동)",
+              "현재 글자 수. 생략하면 필드가 컨트롤의 입력을 따라 자동으로 세고, 지정하면 그 값으로 고정돼요(제어형)",
             ],
             [
               <span className="prop-name">

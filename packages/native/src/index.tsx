@@ -4,6 +4,7 @@ import React, {
   createElement,
   isValidElement,
   useContext,
+  useState,
   type ReactNode,
 } from "react";
 import { createButtonBehavior, createFieldA11y, createInputBehavior } from "@podo/core";
@@ -295,6 +296,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       // wins over the helper text, matching the web/react/hono renderers.
       const showError = Boolean(props.error);
       const showHelper = Boolean(props.helperText) && !showError;
+      // Without an explicit count prop the field tracks the wired control's
+      // text length itself (mirrors the react/web renderers).
+      const [autoCount, setAutoCount] = useState(() => initialNativeControlLength(props.children));
+      const trackCount = props.countMax != null && props.count == null;
+      const shownCount = props.count ?? autoCount;
       const a11y = createFieldA11y({
         id: props.id,
         invalid: props.invalid,
@@ -331,7 +337,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             ? createElement(host.View, { style: styles.fieldSuffixIcon }, props.suffixIcon)
             : null
         ),
-        wireNativeControl(props.children, a11y),
+        wireNativeControl(
+          props.children,
+          a11y,
+          trackCount ? (value) => setAutoCount(value.length) : undefined
+        ),
         showError || showHelper || props.countMax != null
           ? createElement(
               host.View,
@@ -354,7 +364,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                 ? createElement(
                     host.Text,
                     { style: styles.fieldCount },
-                    `${props.count ?? 0}/${props.countMax}`
+                    `${shownCount}/${props.countMax}`
                   )
                 : null
             )
@@ -377,7 +387,8 @@ export const { Button, Chip, Input, Field, Icon } = createNativeComponents();
 
 function wireNativeControl(
   children: ReactNode,
-  a11y: ReturnType<typeof createFieldA11y>
+  a11y: ReturnType<typeof createFieldA11y>,
+  onControlText?: (value: string) => void
 ): ReactNode {
   return React.Children.map(children, (child) => {
     if (!isValidElement<Record<string, unknown>>(child)) {
@@ -392,8 +403,30 @@ function wireNativeControl(
         invalid: a11y.control["aria-invalid"] === "true",
         required: a11y.control["aria-required"] === "true",
       },
+      ...(onControlText
+        ? {
+            onValueChange: (value: string) => {
+              (child.props.onValueChange as ((v: string) => void) | undefined)?.(value);
+              onControlText(value);
+            },
+          }
+        : {}),
     });
   });
+}
+
+/** Initial character count read from the control's value/defaultValue. */
+function initialNativeControlLength(children: ReactNode): number {
+  let length = 0;
+  React.Children.forEach(children, (child) => {
+    if (isValidElement<Record<string, unknown>>(child)) {
+      const value = child.props.value ?? child.props.defaultValue;
+      if (typeof value === "string") {
+        length = value.length;
+      }
+    }
+  });
+  return length;
 }
 
 function createNativeThemeStyles(

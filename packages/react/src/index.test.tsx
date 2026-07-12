@@ -65,6 +65,20 @@ describe("@podo/react", () => {
     expect(chip.getAttribute("data-size")).toBe("sm");
   });
 
+  it("tracks the character count automatically when count is not controlled", async () => {
+    const user = userEvent.setup();
+    render(
+      <Field label="제목" countMax={500}>
+        <Input aria-label="본문" defaultValue="ab" />
+      </Field>
+    );
+
+    // Initial count reflects the control's defaultValue.
+    expect(screen.getByText("2/500")).toBeDefined();
+    await user.type(screen.getByLabelText("본문"), "cde");
+    expect(screen.getByText("5/500")).toBeDefined();
+  });
+
   it("supports controlled and uncontrolled input value changes", async () => {
     const user = userEvent.setup();
     const values: string[] = [];

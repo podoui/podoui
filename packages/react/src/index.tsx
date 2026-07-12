@@ -6,6 +6,7 @@ import React, {
   isValidElement,
   useContext,
   useId,
+  useState,
   type ButtonHTMLAttributes,
   type ChangeEvent,
   type HTMLAttributes,
@@ -307,6 +308,12 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
   // over the helper text so only the ids of what is rendered are referenced.
   const showError = Boolean(error);
   const showHelper = Boolean(helperText) && !showError;
+  // Character count: an explicit `count` prop is controlled; otherwise the
+  // field tracks the wired control's value length itself, so
+  // <Field countMax={500}><Input /></Field> counts with no extra wiring.
+  const [autoCount, setAutoCount] = useState(() => initialControlLength(children));
+  const trackCount = countMax != null && count == null;
+  const shownCount = count ?? autoCount;
   const a11y = createFieldA11y({
     id: fieldId,
     invalid,
@@ -314,7 +321,18 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
     hasDescription: showHelper,
     hasError: showError,
   });
-  const wiredChildren = wireReactControl(children, a11y.control);
+  const wiredChildren = wireReactControl(
+    children,
+    a11y.control,
+    trackCount
+      ? (event) => {
+          const value = event.currentTarget?.value;
+          if (typeof value === "string") {
+            setAutoCount(value.length);
+          }
+        }
+      : undefined
+  );
 
   return (
     <div
@@ -352,7 +370,7 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
           ) : null}
           {countMax != null ? (
             <span className="podo-field__count">
-              {count ?? 0}/{countMax}
+              {shownCount}/{countMax}
             </span>
           ) : null}
         </div>
@@ -389,7 +407,8 @@ function joinClass(...classes: Array<string | false | null | undefined>): string
 
 function wireReactControl(
   children: ReactNode,
-  controlProps: Record<string, string | boolean>
+  controlProps: Record<string, string | boolean>,
+  onControlChange?: (event: ChangeEvent<HTMLInputElement>) => void
 ): ReactNode {
   return React.Children.map(children, (child) => {
     if (!isValidElement<Record<string, unknown>>(child)) {
@@ -404,6 +423,30 @@ function wireReactControl(
         existing["aria-describedby"] as string | undefined,
         controlProps["aria-describedby"] as string | undefined
       ),
+      ...(onControlChange
+        ? {
+            onChange: (event: ChangeEvent<HTMLInputElement>) => {
+              (existing.onChange as ((e: ChangeEvent<HTMLInputElement>) => void) | undefined)?.(
+                event
+              );
+              onControlChange(event);
+            },
+          }
+        : {}),
     });
   });
+}
+
+/** Initial character count read from the control's value/defaultValue. */
+function initialControlLength(children: ReactNode): number {
+  let length = 0;
+  React.Children.forEach(children, (child) => {
+    if (isValidElement<Record<string, unknown>>(child)) {
+      const value = child.props.value ?? child.props.defaultValue;
+      if (typeof value === "string") {
+        length = value.length;
+      }
+    }
+  });
+  return length;
 }

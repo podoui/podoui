@@ -640,8 +640,33 @@ function createFieldElement(): CustomElementConstructor {
 
     readonly shadow = this.attachShadow({ mode: "open" });
 
+    // Auto character count: without an explicit `count` attribute the field
+    // tracks the slotted control's value itself. `input` events are composed,
+    // so they bubble here from light-DOM inputs and podo-input shadows alike.
+    private autoCount = 0;
+
+    private readonly trackCount = (event: Event): void => {
+      if (this.hasAttribute("count") || !this.hasAttribute("count-max")) {
+        return;
+      }
+      const value = (event.target as { value?: unknown } | null)?.value;
+      if (typeof value !== "string") {
+        return;
+      }
+      this.autoCount = value.length;
+      const span = this.shadow.querySelector(".podo-field__count");
+      if (span) {
+        span.textContent = `${this.autoCount}/${attr(this, "count-max", "")}`;
+      }
+    };
+
     connectedCallback(): void {
+      this.addEventListener("input", this.trackCount);
       this.render();
+    }
+
+    disconnectedCallback(): void {
+      this.removeEventListener("input", this.trackCount);
     }
 
     attributeChangedCallback(): void {
@@ -674,7 +699,7 @@ function createFieldElement(): CustomElementConstructor {
         : "";
       const count = countMax
         ? `<span class="podo-field__count" part="count">${escapeHtml(
-            attr(this, "count", "0")
+            attr(this, "count", String(this.autoCount))
           )}/${escapeHtml(countMax)}</span>`
         : "";
 
