@@ -6,6 +6,7 @@ import React, {
   isValidElement,
   useContext,
   useId,
+  useRef,
   useState,
   type ButtonHTMLAttributes,
   type ChangeEvent,
@@ -528,11 +529,19 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
 // unavailable rows with data-disabled; hover/pressed row states are CSS.
 // checkbox injects the design's selection column: a select-all box in the
 // first header row and one box per tbody row; selected rows get data-selected.
+// Pointer sugar on top (the checkboxes stay the accessible controls): clicking
+// anywhere in a row toggles it, and dragging along the checkbox column
+// range-selects — the range follows the anchor row's toggle direction.
 export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
   { type = "horizon", checkbox = false, defaultSelected, onSelectionChange, className, ...props },
   ref
 ) {
   const [selected, setSelected] = useState<Set<number>>(() => new Set(defaultSelected ?? []));
+  // Drag bookkeeping: anchor row, its toggle direction, and the pre-drag
+  // selection the range is applied over (so shrinking the range reverts rows).
+  const dragRef = useRef<{ anchor: number; mode: boolean; snapshot: Set<number> } | null>(null);
+  // A finished drag ends with a browser click on the anchor row — swallow it.
+  const dragMovedRef = useRef(false);
 
   if (!checkbox) {
     return (
@@ -565,6 +574,26 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
   });
   const allSelected = selectableRows.length > 0 && selectableRows.every((i) => selected.has(i));
   const someSelected = selectableRows.some((i) => selected.has(i));
+
+  const applyDragRange = (current: number) => {
+    const drag = dragRef.current;
+    if (!drag) {
+      return;
+    }
+    const next = new Set(drag.snapshot);
+    const lo = Math.min(drag.anchor, current);
+    const hi = Math.max(drag.anchor, current);
+    for (const i of selectableRows) {
+      if (i >= lo && i <= hi) {
+        if (drag.mode) {
+          next.add(i);
+        } else {
+          next.delete(i);
+        }
+      }
+    }
+    commit(next);
+  };
 
   let headerWired = false;
   let bodyIndex = 0;
@@ -602,25 +631,89 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
         const index = bodyIndex++;
         const rowDisabled = Boolean(row.props["data-disabled"]);
         const rowSelected = selected.has(index);
-        return cloneElement(row, rowSelected ? { "data-selected": "true" } : undefined, [
-          <td key="podo-check">
-            <Checkbox
-              aria-label={`행 ${index + 1} 선택`}
-              checked={rowSelected}
-              disabled={rowDisabled}
-              onCheckedChange={(next) => {
-                const draft = new Set(selected);
-                if (next) {
-                  draft.add(index);
-                } else {
-                  draft.delete(index);
+        const toggleRow = () => {
+          const draft = new Set(selected);
+          if (draft.has(index)) {
+            draft.delete(index);
+          } else {
+            draft.add(index);
+          }
+          commit(draft);
+        };
+        const rowOnClick = row.props.onClick as
+          | ((event: React.MouseEvent<HTMLTableRowElement>) => void)
+          | undefined;
+        return cloneElement(
+          row,
+          {
+            ...(rowSelected ? { "data-selected": "true" } : {}),
+            onClick: (event: React.MouseEvent<HTMLTableRowElement>) => {
+              rowOnClick?.(event);
+              if (rowDisabled || event.defaultPrevented) {
+                return;
+              }
+              if (dragMovedRef.current) {
+                dragMovedRef.current = false;
+                return;
+              }
+              // Interactive content (the checkbox, buttons, inputs...) handles
+              // itself, and a text-selection drag isn't a row click.
+              const target = event.target as Element;
+              if (target.closest("input, button, a, select, textarea, label")) {
+                return;
+              }
+              if (window.getSelection()?.toString()) {
+                return;
+              }
+              toggleRow();
+            },
+          },
+          [
+            <td
+              key="podo-check"
+              className="podo-table__check"
+              onPointerDown={(event) => {
+                if (rowDisabled || event.button !== 0 || event.pointerType === "touch") {
+                  return;
                 }
-                commit(draft);
+                dragMovedRef.current = false;
+                dragRef.current = {
+                  anchor: index,
+                  mode: !selected.has(index),
+                  snapshot: new Set(selected),
+                };
               }}
-            />
-          </td>,
-          ...React.Children.toArray(row.props.children as ReactNode),
-        ]);
+              onPointerEnter={(event) => {
+                if (!dragRef.current) {
+                  return;
+                }
+                // The primary button was released outside the table — bail out.
+                if (!(event.buttons & 1)) {
+                  dragRef.current = null;
+                  return;
+                }
+                dragMovedRef.current = true;
+                applyDragRange(index);
+              }}
+            >
+              <Checkbox
+                aria-label={`행 ${index + 1} 선택`}
+                checked={rowSelected}
+                disabled={rowDisabled}
+                onCheckedChange={(next) => {
+                  const draft = new Set(selected);
+                  if (next) {
+                    draft.add(index);
+                  } else {
+                    draft.delete(index);
+                  }
+                  commit(draft);
+                }}
+              />
+            </td>,
+            ...React.Children.toArray(row.props.children as ReactNode),
+          ]
+        );
       });
       return cloneElement(section, undefined, rows);
     }
@@ -628,7 +721,21 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
   });
 
   return (
-    <table {...rest} ref={ref} className={joinClass("podo-table", className)} data-type={type}>
+    <table
+      {...rest}
+      ref={ref}
+      className={joinClass("podo-table", className)}
+      data-type={type}
+      data-checkbox="true"
+      onPointerUp={(event) => {
+        rest.onPointerUp?.(event);
+        dragRef.current = null;
+        // The click the drag ends with fires before this timeout runs.
+        setTimeout(() => {
+          dragMovedRef.current = false;
+        }, 0);
+      }}
+    >
       {wired}
     </table>
   );

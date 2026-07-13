@@ -598,10 +598,17 @@ input {
 }
 
 /* The checkbox selection column (Figma: 50px cell with a centered box).
-   min-width — auto table layout ignores width on cells here. */
+   min-width — auto table layout ignores width on cells here. user-select
+   keeps a drag along the column from starting a text selection. */
 .podo-table .podo-table__check {
   min-width: 50px;
+  user-select: none;
   width: 50px;
+}
+
+/* Rows are click-to-select while the checkbox column is on. */
+.podo-table[data-checkbox] tbody tr:not([data-disabled]) {
+  cursor: pointer;
 }
 
 /* grid: bordered radius-8 frame with per-cell vertical rules; horizon has no

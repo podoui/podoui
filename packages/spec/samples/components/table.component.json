@@ -36,7 +36,7 @@
       "name": "checkbox",
       "type": { "kind": "boolean" },
       "default": false,
-      "description": "Checkbox selection column (Figma): select-all header + per-row boxes; selected rows get data-selected."
+      "description": "Checkbox selection column (Figma): select-all header + per-row boxes; selected rows get data-selected. Pointer sugar on top: clicking a row toggles it, and dragging along the checkbox column range-selects following the anchor row's toggle direction (mouse/pen; the checkboxes stay the accessible controls)."
     },
     {
       "name": "defaultSelected",

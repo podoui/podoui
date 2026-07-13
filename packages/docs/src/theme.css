@@ -237,7 +237,12 @@
 
 .podo-table .podo-table__check {
   min-width: 50px;
+  user-select: none;
   width: 50px;
+}
+
+.podo-table[data-checkbox] tbody tr:not([data-disabled]) {
+  cursor: pointer;
 }
 
 .podo-table[data-type="grid"] {

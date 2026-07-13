@@ -198,7 +198,7 @@ export function TablePage() {
                 <code>boolean</code>
               </span>,
               <code>false</code>,
-              "체크박스 선택 열을 자동 주입해요. 헤더는 전체 선택/해제(일부 선택 시 indeterminate), 선택된 행은 data-selected로 표시돼요",
+              "체크박스 선택 열을 자동 주입해요. 헤더는 전체 선택/해제(일부 선택 시 indeterminate), 행을 클릭해도 그 행이 토글되고, 체크박스 열을 누른 채 끌면 연속 구간이 한 번에 선택/해제돼요(마우스·펜). 선택된 행은 data-selected로 표시돼요",
             ],
             [
               <span className="prop-name">

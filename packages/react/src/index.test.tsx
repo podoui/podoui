@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import {
@@ -265,6 +265,67 @@ describe("@podo/react", () => {
     // Row boxes toggle their own row only.
     await user.click(screen.getByRole("checkbox", { name: "행 2 선택" }));
     expect(selections.at(-1)).toEqual([1]);
+  });
+
+  it("toggles rows on click and range-selects by dragging the checkbox column", async () => {
+    const user = userEvent.setup();
+    const selections: number[][] = [];
+    render(
+      <Table checkbox onSelectionChange={(next) => selections.push(next)} aria-label="드래그 표">
+        <thead>
+          <tr>
+            <th>주문</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>r0</td>
+          </tr>
+          <tr>
+            <td>r1</td>
+          </tr>
+          <tr data-disabled="true">
+            <td>r2</td>
+          </tr>
+          <tr>
+            <td>r3</td>
+          </tr>
+        </tbody>
+      </Table>
+    );
+
+    const stage = within(screen.getByRole("table", { name: "드래그 표" }));
+
+    // Clicking anywhere in a row toggles it; disabled rows ignore clicks.
+    await user.click(stage.getByText("r0"));
+    await user.click(stage.getByText("r0"));
+    await user.click(stage.getByText("r2"));
+    // The row handler defers to the checkbox itself — no double toggle.
+    await user.click(stage.getByRole("checkbox", { name: "행 2 선택" }));
+    expect(selections).toEqual([[0], [], [1]]);
+
+    // Dragging along the checkbox column selects the anchor..current range
+    // (skipping disabled rows); shrinking the range reverts rows.
+    const cell = (name: string) => stage.getByRole("checkbox", { name }).closest("td")!;
+    fireEvent.pointerDown(cell("행 1 선택"), { button: 0 });
+    fireEvent.pointerOver(cell("행 4 선택"), { buttons: 1 });
+    expect(selections.at(-1)).toEqual([0, 1, 3]);
+    fireEvent.pointerOver(cell("행 2 선택"), { buttons: 1 });
+    expect(selections.at(-1)).toEqual([0, 1]);
+    fireEvent.pointerUp(cell("행 2 선택"));
+
+    // The anchor's toggle direction rules the drag: starting on a selected
+    // row turns the pass into a range deselect.
+    const before = selections.length;
+    fireEvent.pointerDown(cell("행 1 선택"), { button: 0 });
+    fireEvent.pointerOver(cell("행 2 선택"), { buttons: 1 });
+    expect(selections.at(-1)).toEqual([]);
+    fireEvent.pointerUp(cell("행 2 선택"));
+
+    // Drags cannot start from data cells.
+    fireEvent.pointerDown(stage.getByText("r0"), { button: 0 });
+    fireEvent.pointerOver(cell("행 4 선택"), { buttons: 1 });
+    expect(selections.length).toBe(before + 1);
   });
 
   it("supports controlled and uncontrolled input value changes", async () => {
