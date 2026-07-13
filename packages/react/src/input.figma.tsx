@@ -14,6 +14,7 @@ figma.connect(
       placeholder: figma.string("label"),
       size: figma.enum("size", { md: "md", lg: "lg" }),
       invalid: figma.enum("state", { danger: true }),
+      readOnly: figma.enum("state", { "read-only": true }),
       disabled: figma.enum("state", { disabled: true }),
       prefix: figma.boolean("prefix-icon", {
         true: <Icon name="menu" />,
@@ -28,11 +29,21 @@ figma.connect(
         false: undefined,
       }),
     },
-    example: ({ placeholder, size, invalid, disabled, prefix, suffixIcon, suffixText }) => (
+    example: ({
+      placeholder,
+      size,
+      invalid,
+      readOnly,
+      disabled,
+      prefix,
+      suffixIcon,
+      suffixText,
+    }) => (
       <Input
         placeholder={placeholder}
         size={size}
         invalid={invalid}
+        readOnly={readOnly}
         disabled={disabled}
         prefix={prefix}
         suffixIcon={suffixIcon}

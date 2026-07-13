@@ -55,6 +55,8 @@ export interface HonoInputProps {
   placeholder?: string;
   /** Native input maxlength; Field injects its countMax here. */
   maxLength?: number;
+  /** Value is visible but not editable; renders without the box (Figma read-only). */
+  readOnly?: boolean;
   /** Control height, radius, and font (Figma: md 42, lg 52). */
   size?: "md" | "lg";
   /** Icon or symbol giving the value context, before the control (Figma prefix). */
@@ -295,6 +297,7 @@ export function Input({
   defaultValue,
   placeholder,
   maxLength,
+  readOnly,
   size = "md",
   prefix,
   suffixText,
@@ -309,7 +312,13 @@ export function Input({
   "aria-required": ariaRequired,
 }: HonoInputProps): JSX.Element {
   const behavior = createInputBehavior({ value, defaultValue, invalid, disabled, required });
-  const state = behavior.invalid ? "invalid" : behavior.disabled ? "disabled" : undefined;
+  const state = behavior.invalid
+    ? "invalid"
+    : behavior.disabled
+      ? "disabled"
+      : readOnly
+        ? "read-only"
+        : undefined;
 
   // Root wrapper carries the visual state so prefix/suffix content can live
   // inside the box (Figma 538:6693); the inner input keeps the aria wiring.
@@ -323,6 +332,7 @@ export function Input({
         value={value ?? defaultValue}
         placeholder={placeholder}
         maxlength={maxLength}
+        readonly={readOnly}
         disabled={disabled}
         required={required}
         aria-labelledby={ariaLabelledBy}

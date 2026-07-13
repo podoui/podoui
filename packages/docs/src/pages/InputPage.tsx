@@ -62,7 +62,7 @@ export function InputPage() {
       <DocSection
         index={2}
         title="상태 (state)"
-        description="텍스트 입력 상태는 입력 단계와 결과에 따라 normal, hover, focused, completed, danger, disabled로 구분해 표현해요. normal은 입력 전 기본 상태, hover는 마우스를 올려 상호작용 가능함을 미리 알리고, focused는 현재 입력 중임을, completed는 입력이 올바르게 끝났음을, danger는 형식 오류나 검증 실패를 알리고, disabled는 지금 입력할 수 없는 상태임을 시각적으로 구분해요. 일관된 상태 체계를 통해 사용자가 입력 과정에서 무엇이 일어나는지 즉각 인지하게 해요."
+        description="텍스트 입력 상태는 입력 단계와 결과에 따라 normal, hover, focused, completed, read-only, danger, disabled로 구분해 표현해요. normal은 입력 전 기본 상태, hover는 마우스를 올려 상호작용 가능함을 미리 알리고, focused는 현재 입력 중임을, completed는 입력이 올바르게 끝났음을, read-only는 값을 보여주되 수정할 수 없음을, danger는 형식 오류나 검증 실패를 알리고, disabled는 지금 입력할 수 없는 상태임을 시각적으로 구분해요. 일관된 상태 체계를 통해 사용자가 입력 과정에서 무엇이 일어나는지 즉각 인지하게 해요."
       >
         <Card stage>
           <div className="stage-col">
@@ -70,11 +70,14 @@ export function InputPage() {
             <Input className="is-hover" placeholder="플레이스홀더" aria-label="hover 입력" />
             <Input className="is-focus" placeholder="플레이스홀더" aria-label="focused 입력" />
             <Input defaultValue="입력한 텍스트" aria-label="completed 입력" />
+            <Input readOnly defaultValue="입력한 텍스트" aria-label="read-only 입력" />
             <Input invalid defaultValue="입력한 텍스트" aria-label="danger 입력" />
             <Input disabled placeholder="플레이스홀더" aria-label="disabled 입력" />
           </div>
         </Card>
-        <PropertyTags values={["normal", "hover", "focused", "completed", "danger", "disabled"]} />
+        <PropertyTags
+          values={["normal", "hover", "focused", "completed", "read-only", "danger", "disabled"]}
+        />
       </DocSection>
 
       <DocSection
@@ -140,6 +143,16 @@ export function InputPage() {
               </span>,
               "—",
               "입력 안 동작 아이콘 (지우기·검색·표시 전환)",
+            ],
+            [
+              <span className="prop-name">
+                <code>readOnly</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              <code>false</code>,
+              "읽기 전용. 값은 보이지만 수정할 수 없고, 박스 없이 값만 표시돼요",
             ],
             [
               <span className="prop-name">

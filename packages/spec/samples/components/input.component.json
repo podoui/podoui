@@ -5,68 +5,173 @@
   "name": "Input",
   "category": "atom",
   "status": "stable",
-  "description": "Text input (Figma 538:6693): md/lg sizes, normal/hover/focused/completed/danger/disabled states, and prefix, suffix-text, suffix-icon composition slots.",
+  "description": "Text input (Figma 538:6693): md/lg sizes, normal/hover/focused/completed/read-only/danger/disabled states, and prefix, suffix-text, suffix-icon composition slots.",
   "anatomy": [
-    { "name": "root" },
-    { "name": "prefix", "parent": "root" },
+    {
+      "name": "root"
+    },
+    {
+      "name": "prefix",
+      "parent": "root"
+    },
     {
       "name": "control",
       "parent": "root",
-      "targets": { "web": "input", "react": "input", "hono": "input", "native": "TextInput" }
+      "targets": {
+        "web": "input",
+        "react": "input",
+        "hono": "input",
+        "native": "TextInput"
+      }
     },
-    { "name": "suffix-text", "parent": "root" },
-    { "name": "suffix-icon", "parent": "root" }
+    {
+      "name": "suffix-text",
+      "parent": "root"
+    },
+    {
+      "name": "suffix-icon",
+      "parent": "root"
+    }
   ],
   "slots": [
     {
       "name": "prefix",
       "description": "Icon or symbol giving the value context, before the control.",
       "targets": {
-        "web": { "name": "prefix" },
-        "react": { "name": "prefix" },
-        "hono": { "name": "prefix" },
-        "native": { "name": "prefix" }
+        "web": {
+          "name": "prefix"
+        },
+        "react": {
+          "name": "prefix"
+        },
+        "hono": {
+          "name": "prefix"
+        },
+        "native": {
+          "name": "prefix"
+        }
       }
     },
     {
       "name": "suffix-text",
       "description": "Fixed unit/domain text after the control (원, kg, @domain).",
       "targets": {
-        "web": { "name": "suffix-text" },
-        "react": { "name": "suffixText" },
-        "hono": { "name": "suffixText" },
-        "native": { "name": "suffixText" }
+        "web": {
+          "name": "suffix-text"
+        },
+        "react": {
+          "name": "suffixText"
+        },
+        "hono": {
+          "name": "suffixText"
+        },
+        "native": {
+          "name": "suffixText"
+        }
       }
     },
     {
       "name": "suffix-icon",
       "description": "In-input action icon: clear, search, visibility toggle.",
       "targets": {
-        "web": { "name": "suffix-icon" },
-        "react": { "name": "suffixIcon" },
-        "hono": { "name": "suffixIcon" },
-        "native": { "name": "suffixIcon" }
+        "web": {
+          "name": "suffix-icon"
+        },
+        "react": {
+          "name": "suffixIcon"
+        },
+        "hono": {
+          "name": "suffixIcon"
+        },
+        "native": {
+          "name": "suffixIcon"
+        }
       }
     }
   ],
   "props": [
-    { "name": "value", "type": { "kind": "string" }, "description": "Controlled value." },
+    {
+      "name": "value",
+      "type": {
+        "kind": "string"
+      },
+      "description": "Controlled value."
+    },
     {
       "name": "default-value",
-      "type": { "kind": "string" },
+      "type": {
+        "kind": "string"
+      },
       "description": "Initial uncontrolled value."
     },
-    { "name": "placeholder", "type": { "kind": "string" } },
-    { "name": "invalid", "type": { "kind": "boolean" }, "default": false },
-    { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
-    { "name": "required", "type": { "kind": "boolean" }, "default": false },
-    { "name": "onValueChange", "type": { "kind": "event", "payload": { "value": "string" } } }
+    {
+      "name": "placeholder",
+      "type": {
+        "kind": "string"
+      }
+    },
+    {
+      "name": "invalid",
+      "type": {
+        "kind": "boolean"
+      },
+      "default": false
+    },
+    {
+      "name": "read-only",
+      "type": {
+        "kind": "boolean"
+      },
+      "default": false,
+      "description": "Value is visible but not editable; renders without the box (Figma read-only)."
+    },
+    {
+      "name": "disabled",
+      "type": {
+        "kind": "boolean"
+      },
+      "default": false
+    },
+    {
+      "name": "required",
+      "type": {
+        "kind": "boolean"
+      },
+      "default": false
+    },
+    {
+      "name": "onValueChange",
+      "type": {
+        "kind": "event",
+        "payload": {
+          "value": "string"
+        }
+      }
+    }
   ],
-  "variants": [{ "name": "size", "values": ["md", "lg"], "default": "md" }],
+  "variants": [
+    {
+      "name": "size",
+      "values": ["md", "lg"],
+      "default": "md"
+    }
+  ],
   "states": [
-    { "name": "focusVisible" },
-    { "name": "disabled" },
-    { "name": "invalid", "tokens": { "root.borderColor": "{semantic.color.text.danger}" } }
+    {
+      "name": "focusVisible"
+    },
+    {
+      "name": "disabled"
+    },
+    {
+      "name": "read-only"
+    },
+    {
+      "name": "invalid",
+      "tokens": {
+        "root.borderColor": "{semantic.color.text.danger}"
+      }
+    }
   ],
   "tokens": {
     "root.background": "{component.input.background}",
@@ -75,9 +180,18 @@
     "suffix-text.color": "{semantic.color.text.subtle}"
   },
   "targets": {
-    "web": { "supported": true, "limitations": [] },
-    "react": { "supported": true, "limitations": [] },
-    "hono": { "supported": true, "limitations": ["Value changes require client code."] },
+    "web": {
+      "supported": true,
+      "limitations": []
+    },
+    "react": {
+      "supported": true,
+      "limitations": []
+    },
+    "hono": {
+      "supported": true,
+      "limitations": ["Value changes require client code."]
+    },
     "native": {
       "supported": true,
       "limitations": ["Native keyboard options are target-specific props."]

@@ -125,6 +125,7 @@ export const componentStateSchema = z.object({
     "disabled",
     "loading",
     "invalid",
+    "read-only",
     "selected",
     "open",
     "checked",

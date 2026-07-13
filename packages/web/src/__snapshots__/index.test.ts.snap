@@ -362,6 +362,19 @@ input {
   border-color: #D1D2D6;
 }
 
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .podo-input__control {
   background: transparent;
   border: 0;
@@ -993,6 +1006,19 @@ input {
   border-color: #D1D2D6;
 }
 
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .podo-input__control {
   background: transparent;
   border: 0;
@@ -1622,6 +1648,19 @@ input {
 .podo-input[data-state="disabled"] {
   background: #E4E4E7;
   border-color: #D1D2D6;
+}
+
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .podo-input__control {
@@ -2264,6 +2303,19 @@ input {
   border-color: #D1D2D6;
 }
 
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .podo-input__control {
   background: transparent;
   border: 0;
@@ -2888,6 +2940,19 @@ input {
 .podo-input[data-state="disabled"] {
   background: #E4E4E7;
   border-color: #D1D2D6;
+}
+
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .podo-input__control {
@@ -3519,6 +3584,19 @@ input {
   border-color: #D1D2D6;
 }
 
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .podo-input__control {
   background: transparent;
   border: 0;
@@ -4148,6 +4226,19 @@ input {
   border-color: #D1D2D6;
 }
 
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .podo-input__control {
   background: transparent;
   border: 0;
@@ -4772,6 +4863,19 @@ input {
 .podo-input[data-state="disabled"] {
   background: #E4E4E7;
   border-color: #D1D2D6;
+}
+
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .podo-input__control {

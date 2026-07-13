@@ -190,6 +190,18 @@ describe("@podo/react", () => {
     expect((screen.getByLabelText("uncontrolled") as HTMLInputElement).value).toBe("done");
   });
 
+  it("shows the value without the box in the read-only state", async () => {
+    const user = userEvent.setup();
+    render(<Input aria-label="읽기전용" readOnly defaultValue="고정 값" />);
+
+    const control = screen.getByLabelText("읽기전용") as HTMLInputElement;
+    expect(control.readOnly).toBe(true);
+    expect(control.closest(".podo-input")?.getAttribute("data-state")).toBe("read-only");
+    // The platform blocks edits on readOnly inputs.
+    await user.type(control, "추가");
+    expect(control.value).toBe("고정 값");
+  });
+
   it("provides theme context and field markup", () => {
     function Probe(): React.ReactElement {
       const theme = usePodoTheme();

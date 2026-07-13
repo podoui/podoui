@@ -343,6 +343,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     suffixText,
     suffixIcon,
     invalid,
+    readOnly,
     disabled,
     required,
     className,
@@ -364,7 +365,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   // prefix/suffix content can live inside the box (Figma 538:6693); the inner
   // <input> receives every native/aria prop, including what Field wires in.
   // data-state matches the [data-state] selectors the token codegen emits.
-  const state = behavior.invalid ? "invalid" : behavior.disabled ? "disabled" : undefined;
+  const state = behavior.invalid
+    ? "invalid"
+    : behavior.disabled
+      ? "disabled"
+      : readOnly
+        ? "read-only"
+        : undefined;
 
   return (
     <div className={joinClass("podo-input", className)} data-size={size} data-state={state}>
@@ -373,6 +380,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         {...props}
         {...behavior.root}
         ref={ref}
+        readOnly={readOnly}
         className="podo-input__control"
         onChange={(event) => {
           onChange?.(event);

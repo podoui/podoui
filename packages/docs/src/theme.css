@@ -547,6 +547,19 @@
   border-color: #d1d2d6;
 }
 
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .podo-input__control {
   background: transparent;
   border: 0;

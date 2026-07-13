@@ -420,6 +420,19 @@ input {
   border-color: #D1D2D6;
 }
 
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .podo-input__control {
   background: transparent;
   border: 0;
@@ -871,6 +884,7 @@ function createInputElement(): CustomElementConstructor {
         "maxlength",
         "name",
         "placeholder",
+        "readonly",
         "required",
         "size",
         "value",
@@ -909,13 +923,16 @@ function createInputElement(): CustomElementConstructor {
       });
       const disabled = behavior.disabled ? "disabled" : "";
       const required = behavior.required ? "required" : "";
+      const readonly = this.hasAttribute("readonly") ? "readonly" : "";
       const ariaInvalid = behavior.invalid ? 'aria-invalid="true"' : "";
       // Expose state so generated [data-state] token overrides apply at runtime.
       const stateAttr = behavior.invalid
         ? 'data-state="invalid"'
         : behavior.disabled
           ? 'data-state="disabled"'
-          : "";
+          : readonly
+            ? 'data-state="read-only"'
+            : "";
 
       // Empty slot wrappers still take width/gap, so only render assigned ones.
       const prefix = hasSlot(this, "prefix")
@@ -941,7 +958,7 @@ function createInputElement(): CustomElementConstructor {
   )} ${attrString(
     "aria-describedby",
     attr(this, "aria-describedby", "")
-  )} ${attrString("aria-required", attr(this, "aria-required", ""))} ${disabled} ${required} ${ariaInvalid} />${suffixText}${suffixIcon}
+  )} ${attrString("aria-required", attr(this, "aria-required", ""))} ${disabled} ${required} ${readonly} ${ariaInvalid} />${suffixText}${suffixIcon}
 </div>`;
       this.shadow.querySelector("input")?.addEventListener("input", (event) => {
         const value = (event.currentTarget as HTMLInputElement).value;

@@ -89,6 +89,8 @@ export interface NativeInputProps {
   placeholder?: string;
   /** Native TextInput maxLength; Field injects its countMax here. */
   maxLength?: number;
+  /** Value is visible but not editable; renders without the box (Figma read-only). */
+  readOnly?: boolean;
   /** Control height and radius (Figma: md 42, lg 52). */
   size?: "md" | "lg";
   /** Icon or symbol giving the value context, before the control (Figma prefix). */
@@ -308,7 +310,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           disabled: behavior.disabled,
           invalid: behavior.invalid || Boolean(props.accessibilityState?.invalid),
         },
-        editable: !behavior.disabled,
+        editable: !behavior.disabled && !props.readOnly,
         defaultValue: props.defaultValue,
         value: props.value,
         placeholder: props.placeholder,
@@ -320,7 +322,19 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       return createElement(
         host.View,
         {
-          style: props.size === "lg" ? { ...styles.input, ...styles.inputLg } : styles.input,
+          style: {
+            ...styles.input,
+            ...(props.size === "lg" ? styles.inputLg : {}),
+            // Figma read-only: value only, no box.
+            ...(props.readOnly
+              ? {
+                  backgroundColor: "transparent",
+                  borderColor: "transparent",
+                  paddingLeft: 0,
+                  paddingRight: 0,
+                }
+              : {}),
+          },
         },
         props.prefix ? createElement(host.View, { style: styles.inputAffix }, props.prefix) : null,
         control,
