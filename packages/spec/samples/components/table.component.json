@@ -5,7 +5,7 @@
   "name": "Table",
   "category": "organism",
   "status": "experimental",
-  "description": "Data table (Figma 541:4024, component set 474:1795). Wraps native table semantics: grid draws a bordered radius-8 frame with per-cell rules for dense comparison, horizon keeps only row rules for list-like reading. Row states: normal, hover (gray.5), pressed (gray.10), disabled (gray.10 with muted text).",
+  "description": "Data table (Figma 541:4024, component set 474:1795). Wraps native table semantics inside a 1px gray.20 outer frame with gray.10 left-aligned headers: grid rounds the frame (radius 8) and adds per-cell rules for dense comparison, horizon stays square with row rules only. Row states: normal, hover (gray.5), pressed (gray.10), disabled (gray.10 with muted text). Row selection is composed with Checkbox cells.",
   "anatomy": [
     { "name": "root" },
     { "name": "thead", "parent": "root" },
@@ -43,7 +43,7 @@
   ],
   "tokens": {
     "root.borderColor": "{color.palette.gray.20}",
-    "thead.background": "{color.palette.gray.5}"
+    "thead.background": "{color.palette.gray.10}"
   },
   "targets": {
     "web": {

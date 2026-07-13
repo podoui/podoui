@@ -42,6 +42,7 @@ const ROWS = [
   ["#1024", "포도 한 상자", "32,000원"],
   ["#1025", "샤인머스캣", "45,000원"],
   ["#1026", "캠벨 포도즙", "18,000원"],
+  ["#1027", "거봉 세트", "27,000원"],
 ];
 
 function SampleTable({
@@ -90,9 +91,11 @@ export function TablePage() {
         description="표 상태는 사용자의 상호작용에 따라 normal, hover, pressed, disabled로 구분해 표현해요. hover와 pressed는 지금 조작이 일어나고 있음을 즉각적인 피드백으로 알려주고, disabled는 현재 사용할 수 없는 행임을 시각적으로 구분해 혼란을 줄이며, 일관된 상태 체계를 통해 모든 행이 예측 가능하게 반응하도록 해요."
       >
         <Card stage>
+          {/* 시안(474:1796) 순서 그대로: normal → hover → pressed → disabled. */}
           <SampleTable
-            type="grid"
+            type="horizon"
             rowProps={[
+              undefined,
               { className: "is-hover" },
               { className: "is-pressed" },
               { "data-disabled": "true" },

@@ -479,6 +479,7 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);
@@ -488,12 +489,12 @@ input {
 }
 
 .podo-table th {
-  background: var(--podo-table-thead-background, #F9F9F9);
+  background: var(--podo-table-thead-background, #F4F4F5);
   border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  text-align: center;
+  text-align: left;
 }
 
 .podo-table td {
@@ -502,9 +503,9 @@ input {
   text-align: left;
 }
 
-/* grid: bordered radius-8 frame with per-cell vertical rules. */
+/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
+   per-cell vertical rules, horizon stays square with row rules only. */
 .podo-table[data-type="grid"] {
-  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-radius: 8px;
 }
 
@@ -513,7 +514,7 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table[data-type="grid"] tbody tr:last-child td {
+.podo-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -528,11 +529,6 @@ input {
 }
 .podo-table[data-type="grid"] tbody tr:last-child td:last-child {
   border-bottom-right-radius: 7px;
-}
-
-/* horizon: row rules only, headers without fill. */
-.podo-table[data-type="horizon"] th {
-  background: transparent;
 }
 
 /* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
