@@ -606,11 +606,6 @@ input {
   width: 50px;
 }
 
-/* Rows are click-to-select while the checkbox column is on. */
-.podo-table[data-checkbox] tbody tr:not([data-disabled]) {
-  cursor: pointer;
-}
-
 /* grid: bordered radius-8 frame with per-cell vertical rules; horizon has no
    outer frame — row rules only. */
 .podo-table[data-type="grid"] {

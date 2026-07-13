@@ -241,10 +241,6 @@
   width: 50px;
 }
 
-.podo-table[data-checkbox] tbody tr:not([data-disabled]) {
-  cursor: pointer;
-}
-
 .podo-table[data-type="grid"] {
   border: 1px solid #e4e4e7;
   border-radius: 8px;
