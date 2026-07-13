@@ -15,22 +15,22 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "react",
     label: "React",
-    code: `<Switch checked={enabled} onCheckedChange={setEnabled} aria-label="알림" />`,
+    code: `<Switch label="알림 받기" checked={enabled} onCheckedChange={setEnabled} />`,
   },
   {
     target: "web",
     label: "Web",
-    code: `<podo-switch aria-label="알림"></podo-switch>\n<!-- podo-checked-change 이벤트로 값 수신 -->`,
+    code: `<podo-switch label="알림 받기"></podo-switch>\n<!-- podo-checked-change 이벤트로 값 수신 -->`,
   },
   {
     target: "hono",
     label: "Hono",
-    code: `import { Switch } from "@podo/hono";\n\n<Switch checked aria-label="알림" />`,
+    code: `import { Switch } from "@podo/hono";\n\n<Switch checked label="알림 받기" />`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Switch } from "@podo/native";\n\n<Switch checked={enabled} onCheckedChange={setEnabled} />`,
+    code: `import { Switch } from "@podo/native";\n\n<Switch label="알림 받기" checked={enabled} onCheckedChange={setEnabled} />`,
   },
 ];
 
@@ -41,7 +41,7 @@ export function SwitchPage() {
 
       <DocSection index={0} title="Usage">
         <Preview tabs={USAGE_TABS}>
-          <Switch aria-label="알림 설정" />
+          <Switch label="알림 받기" />
         </Preview>
       </DocSection>
 
@@ -51,11 +51,11 @@ export function SwitchPage() {
         description="스위치 크기는 사용 위치와 정보 밀도에 따라 sm, md(base), lg로 구분해 사용해요. sm은 목록이나 설정 행처럼 촘촘한 영역에, md는 일반적인 설정 화면에, lg는 모바일이나 터치 영역 확보·시각적 강조가 필요한 곳에 사용하며, 함께 놓이는 텍스트·요소와 균형을 맞춰 정렬을 유지해요."
       >
         <Card stage>
-          <Switch size="sm" aria-label="sm 스위치" />
+          <Switch size="sm" label="텍스트" />
           <StageItem base>
-            <Switch size="md" aria-label="md 스위치" />
+            <Switch size="md" label="텍스트" />
           </StageItem>
-          <Switch size="lg" aria-label="lg 스위치" />
+          <Switch size="lg" label="텍스트" />
         </Card>
         <PropertyTags values={["sm", "md", "lg"]} />
       </DocSection>
@@ -66,10 +66,10 @@ export function SwitchPage() {
         description="스위치 상태는 설정 값과 사용 가능 여부에 따라 off, on, disabled로 구분해 표현해요. off는 설정이 꺼진 기본 상태, on은 설정이 켜져 적용된 상태를 나타내고, disabled는 지금 변경할 수 없는 비활성 상태로 off·on 어느 쪽에서도 함께 나타나요. 켜짐과 꺼짐의 색과 핸들 위치를 뚜렷하게 구분해, 사용자가 현재 설정 상태를 즉시 인지하게 해요."
       >
         <Card stage>
-          <Switch aria-label="off 스위치" />
-          <Switch defaultChecked aria-label="on 스위치" />
-          <Switch disabled aria-label="disabled off 스위치" />
-          <Switch disabled defaultChecked aria-label="disabled on 스위치" />
+          <Switch label="텍스트" />
+          <Switch defaultChecked label="텍스트" />
+          <Switch disabled label="텍스트" />
+          <Switch disabled defaultChecked label="텍스트" />
         </Card>
         <PropertyTags values={["off", "on", "disabled"]} />
       </DocSection>
@@ -112,6 +112,16 @@ export function SwitchPage() {
               </span>,
               <code>"md"</code>,
               "트랙 크기 (sm 30×18 / md 40×24 / lg 56×32)",
+            ],
+            [
+              <span className="prop-name">
+                <code>label</code>
+              </span>,
+              <span className="prop-type">
+                <code>ReactNode</code>
+              </span>,
+              "—",
+              "트랙 옆 14px 라벨. 클릭 영역이 되고 스위치의 접근성 이름도 돼요 (없으면 aria-label 권장)",
             ],
             [
               <span className="prop-name">

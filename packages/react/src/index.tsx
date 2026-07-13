@@ -86,6 +86,8 @@ export interface SwitchProps extends Omit<
   defaultChecked?: boolean;
   /** Track size (Figma: sm 30x18, md 40x24 — base, lg 56x32). */
   size?: "sm" | "md" | "lg";
+  /** Visible label next to the track (Figma label/text); also names the switch. */
+  label?: ReactNode;
   disabled?: boolean;
   /** Fires with the next value when the switch is toggled. */
   onCheckedChange?: (checked: boolean) => void;
@@ -277,6 +279,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
     checked,
     defaultChecked = false,
     size = "md",
+    label,
     disabled,
     className,
     type = "button",
@@ -291,7 +294,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
   const isOn = checked ?? internalChecked;
   const behavior = createSwitchBehavior({ checked: isOn, disabled });
 
-  return (
+  const control = (
     <button
       {...props}
       {...behavior.root}
@@ -313,6 +316,19 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
     >
       <span className="podo-switch__handle" />
     </button>
+  );
+
+  if (label == null) {
+    return control;
+  }
+
+  // A <label> wrapper implicitly names and activates the switch button
+  // (Figma 566:12693: track + 6px gap + 14px text).
+  return (
+    <label className="podo-switch-wrap" data-disabled={disabled ? "true" : undefined}>
+      {control}
+      <span className="podo-switch__text">{label}</span>
+    </label>
   );
 });
 

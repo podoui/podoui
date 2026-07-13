@@ -559,7 +559,7 @@ a {
 
 /* Shared "base" marker (Figma 95:375): line + dot + pill. Used by Color + Button. */
 .base-marker {
-  margin-top: 1px;
+  margin-top: 5px;
   display: flex;
   flex-direction: column;
   align-items: center;

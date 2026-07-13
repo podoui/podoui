@@ -116,6 +116,17 @@ describe("@podo/react", () => {
     expect(screen.getByRole("switch", { name: "잠김" }).getAttribute("data-state")).toBe("on");
   });
 
+  it("names and toggles the switch through its visible label", async () => {
+    const user = userEvent.setup();
+    render(<Switch label="야간 모드" />);
+
+    // The label wrapper names the switch and clicking the text toggles it.
+    const toggle = screen.getByRole("switch", { name: "야간 모드" });
+    expect(screen.getByText("야간 모드").className).toBe("podo-switch__text");
+    await user.click(screen.getByText("야간 모드"));
+    expect(toggle.getAttribute("data-state")).toBe("on");
+  });
+
   it("renders the textarea states and resize toggle", async () => {
     const user = userEvent.setup();
     const values: string[] = [];

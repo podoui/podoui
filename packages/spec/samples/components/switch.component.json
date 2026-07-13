@@ -5,9 +5,20 @@
   "name": "Switch",
   "category": "atom",
   "status": "experimental",
-  "description": "On/off toggle that applies immediately (Figma 538:7226, component set 338:2464): sm 30x18 / md 40x24 (base) / lg 56x32, track colors gray.30 (off), primary.50 (on), gray.20 (disabled) with a white shadowed handle.",
-  "anatomy": [{ "name": "root" }, { "name": "handle", "parent": "root" }],
-  "slots": [],
+  "description": "On/off toggle that applies immediately (Figma 538:7226, component set 566:12693): sm 30x18 / md 40x24 (base) / lg 56x32, track colors gray.30 (off), primary.50 (on), gray.20 (disabled) with a white shadowed handle, plus an optional 14px label at a 6px gap.",
+  "anatomy": [{ "name": "root" }, { "name": "handle", "parent": "root" }, { "name": "label" }],
+  "slots": [
+    {
+      "name": "label",
+      "description": "Visible 14px label next to the track (Figma label/text); also names the switch.",
+      "targets": {
+        "web": { "name": "label" },
+        "react": { "name": "label" },
+        "hono": { "name": "label" },
+        "native": { "name": "label" }
+      }
+    }
+  ],
   "props": [
     {
       "name": "checked",
@@ -38,13 +49,15 @@
       "name": "disabled",
       "tokens": {
         "root.background": "{color.palette.gray.20}",
-        "handle.background": "{color.palette.gray.30}"
+        "handle.background": "{color.palette.gray.30}",
+        "label.color": "{semantic.color.text.muted}"
       }
     }
   ],
   "tokens": {
     "root.background": "{color.palette.gray.30}",
-    "handle.background": "{color.palette.gray.0}"
+    "handle.background": "{color.palette.gray.0}",
+    "label.color": "{semantic.color.text.subtle}"
   },
   "targets": {
     "web": { "supported": true, "limitations": [] },

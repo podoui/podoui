@@ -74,6 +74,8 @@ export interface NativeSwitchProps {
   checked?: boolean;
   /** Track size (Figma: sm 30x18, md 40x24 — base, lg 56x32). */
   size?: "sm" | "md" | "lg";
+  /** Visible label next to the track (Figma label/text). */
+  label?: ReactNode;
   disabled?: boolean;
   /** Fires with the next value when the switch is toggled. */
   onCheckedChange?: (checked: boolean) => void;
@@ -456,7 +458,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     },
     Switch: (props) => {
       const behavior = createSwitchBehavior({ checked: props.checked, disabled: props.disabled });
-      // Figma 338:2464 geometry per size: track w/h, handle diameter, edge pad.
+      // Figma 566:12693 geometry per size: track w/h, handle diameter, edge pad.
       const metrics =
         props.size === "sm"
           ? { w: 30, h: 18, handle: 14, pad: 2 }
@@ -465,6 +467,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             : { w: 40, h: 24, handle: 20, pad: 2 };
       const track = behavior.disabled ? "#E4E4E7" : behavior.checked ? "#426CED" : "#D1D2D6";
       const handle = behavior.disabled ? "#D1D2D6" : "#FFFFFF";
+      // The pressable row includes the optional label (track + 6px gap + 14px text).
       return createElement(
         host.Pressable,
         {
@@ -475,26 +478,39 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           onPress: behavior.pressable
             ? () => props.onCheckedChange?.(!behavior.checked)
             : undefined,
-          style: {
-            backgroundColor: track,
-            borderRadius: 9999,
-            height: metrics.h,
-            justifyContent: "center",
-            width: metrics.w,
-          },
+          style: { alignItems: "center", flexDirection: "row", gap: 6 },
           testID: props.testID,
           "data-state": behavior.checked ? "on" : "off",
           "data-size": props.size ?? "md",
         },
-        createElement(host.View, {
-          style: {
-            backgroundColor: handle,
-            borderRadius: 9999,
-            height: metrics.handle,
-            marginLeft: behavior.checked ? metrics.w - metrics.handle - metrics.pad : metrics.pad,
-            width: metrics.handle,
+        createElement(
+          host.View,
+          {
+            style: {
+              backgroundColor: track,
+              borderRadius: 9999,
+              height: metrics.h,
+              justifyContent: "center",
+              width: metrics.w,
+            },
           },
-        })
+          createElement(host.View, {
+            style: {
+              backgroundColor: handle,
+              borderRadius: 9999,
+              height: metrics.handle,
+              marginLeft: behavior.checked ? metrics.w - metrics.handle - metrics.pad : metrics.pad,
+              width: metrics.handle,
+            },
+          })
+        ),
+        props.label
+          ? createElement(
+              host.Text,
+              { style: { color: behavior.disabled ? "#9FA2AD" : "#50555E", fontSize: 14 } },
+              props.label
+            )
+          : null
       );
     },
   };

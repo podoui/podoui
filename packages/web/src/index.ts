@@ -349,6 +349,28 @@ input {
   box-shadow: none;
 }
 
+/* Labeled switch (Figma 566:12693): track + 6px gap + 14px text. */
+.podo-switch-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-switch__text {
+  color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-switch-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-switch-wrap[data-disabled] .podo-switch__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
    is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
@@ -762,7 +784,7 @@ function createChipElement(): CustomElementConstructor {
 function createSwitchElement(): CustomElementConstructor {
   return class PodoSwitchElement extends HTMLElement {
     static get observedAttributes(): string[] {
-      return ["checked", "disabled", "size", "aria-label"];
+      return ["checked", "disabled", "label", "size", "aria-label"];
     }
 
     readonly shadow = this.attachShadow({ mode: "open" });
@@ -789,15 +811,24 @@ function createSwitchElement(): CustomElementConstructor {
         disabled: this.hasAttribute("disabled"),
       });
       const disabled = behavior.disabled ? "disabled" : "";
+      const label = attr(this, "label", "");
 
-      this.shadow.innerHTML = `${componentStyleBlock()}
-<button class="podo-switch" part="root" type="button" role="switch" aria-checked="${
+      const control = `<button class="podo-switch" part="root" type="button" role="switch" aria-checked="${
         behavior.checked ? "true" : "false"
       }" ${attrString("aria-label", attr(this, "aria-label", ""))} data-size="${escapeHtml(
         attr(this, "size", "md")
       )}" data-state="${behavior.checked ? "on" : "off"}" ${disabled}>
   <span class="podo-switch__handle" part="handle"></span>
 </button>`;
+      // Figma 566:12693: optional visible label next to the track.
+      this.shadow.innerHTML = `${componentStyleBlock()}
+${
+  label
+    ? `<label class="podo-switch-wrap" part="wrap"${behavior.disabled ? ' data-disabled="true"' : ""}>${control}<span class="podo-switch__text" part="label">${escapeHtml(
+        label
+      )}</span></label>`
+    : control
+}`;
       this.shadow.querySelector("button")?.addEventListener("click", () => {
         if (!behavior.pressable) {
           return;
