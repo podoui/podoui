@@ -607,6 +607,79 @@
   color: #9fa2ad;
 }
 
+/* Tooltip (Figma 388:2125) — mirrors the canonical @podo/web tooltip CSS. */
+.podo-tooltip {
+  --podo-tooltip-background: #ffffff;
+  --podo-tooltip-color: #18181b;
+  display: inline-flex;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.1));
+  pointer-events: none;
+  width: max-content;
+  z-index: 2147483647;
+}
+
+.podo-tooltip[data-theme="reverse"] {
+  --podo-tooltip-background: #3e424b;
+  --podo-tooltip-color: #f9f9f9;
+}
+
+.podo-tooltip[data-position="right"] {
+  flex-direction: row;
+}
+
+.podo-tooltip[data-position="left"] {
+  flex-direction: row-reverse;
+}
+
+.podo-tooltip[data-position="bottom"] {
+  flex-direction: column;
+}
+
+.podo-tooltip[data-position="top"] {
+  flex-direction: column-reverse;
+}
+
+.podo-tooltip__bubble {
+  background: var(--podo-tooltip-background);
+  border-radius: 8px;
+  color: var(--podo-tooltip-color);
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 6px 8px;
+}
+
+.podo-tooltip__arrow {
+  color: var(--podo-tooltip-background);
+  display: flex;
+  flex: none;
+}
+
+.podo-tooltip__arrow svg {
+  display: block;
+}
+
+.podo-tooltip[data-ordinal="first"] .podo-tooltip__arrow {
+  align-self: flex-start;
+}
+
+.podo-tooltip[data-ordinal="second"] .podo-tooltip__arrow {
+  align-self: center;
+}
+
+.podo-tooltip[data-ordinal="third"] .podo-tooltip__arrow {
+  align-self: flex-end;
+}
+
+.podo-tooltip[data-position="right"] .podo-tooltip__arrow,
+.podo-tooltip[data-position="left"] .podo-tooltip__arrow {
+  margin: 4px 0;
+}
+
+.podo-tooltip[data-position="top"] .podo-tooltip__arrow,
+.podo-tooltip[data-position="bottom"] .podo-tooltip__arrow {
+  margin: 0 4px;
+}
+
 /* Toast (Figma 459:1298) — mirrors the canonical @podo/web toast CSS. */
 .podo-toast {
   align-items: flex-start;

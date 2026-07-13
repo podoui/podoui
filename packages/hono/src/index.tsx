@@ -147,6 +147,51 @@ export function Textarea({
   );
 }
 
+const HONO_TOOLTIP_ARROWS: Record<string, string> = {
+  right:
+    '<svg aria-hidden="true" width="4" height="16" viewBox="0 0 4 16"><path d="M4 0v4L0 8l4 4v4z" fill="currentColor"/></svg>',
+  left: '<svg aria-hidden="true" width="4" height="16" viewBox="0 0 4 16"><path d="M0 0v4l4 4-4 4v4z" fill="currentColor"/></svg>',
+  bottom:
+    '<svg aria-hidden="true" width="16" height="4" viewBox="0 0 16 4"><path d="M0 4h4l4-4 4 4h4z" fill="currentColor"/></svg>',
+  top: '<svg aria-hidden="true" width="16" height="4" viewBox="0 0 16 4"><path d="M0 0h4l4 4 4-4h4z" fill="currentColor"/></svg>',
+};
+
+export interface HonoTooltipProps {
+  /** 말풍선 내용 (Figma label). */
+  label: Child;
+  /** 대상 기준 표시 방향 — 화살표가 대상을 가리켜요 (Figma position). */
+  position?: "right" | "left" | "bottom" | "top";
+  /** 화살표가 말풍선의 시작/가운데/끝 어디에 붙는지 (Figma ordinal). */
+  ordinal?: "first" | "second" | "third";
+  /** 밝은 배경(default) 또는 어두운 배경(reverse) (Figma theme). */
+  theme?: "default" | "reverse";
+  class?: string;
+}
+
+// Static bubble: hover triggering and portal positioning need client code.
+export function Tooltip({
+  label,
+  position = "right",
+  ordinal = "first",
+  theme = "default",
+  class: className,
+}: HonoTooltipProps): JSX.Element {
+  return (
+    <div
+      class={joinClass("podo-tooltip", className)}
+      role="tooltip"
+      data-theme={theme}
+      data-position={position}
+      data-ordinal={ordinal}
+    >
+      <span class="podo-tooltip__arrow">
+        {raw(HONO_TOOLTIP_ARROWS[position] ?? HONO_TOOLTIP_ARROWS.right)}
+      </span>
+      <span class="podo-tooltip__bubble">{label}</span>
+    </div>
+  );
+}
+
 export type HonoToastState = "normal" | "success" | "danger" | "info" | "warning";
 
 export interface HonoToastProps {

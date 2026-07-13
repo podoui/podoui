@@ -14,6 +14,7 @@ import {
   Table,
   Textarea,
   Toast,
+  Tooltip,
   Typography,
   renderCriticalCss,
 } from "./index.js";
@@ -68,6 +69,7 @@ describe("@podo/hono", () => {
         <Toast state="warning" caption="캡션 영역" closable>
           저장 공간이 얼마 남지 않았어요
         </Toast>
+        <Tooltip label="임시 저장돼요" position="top" ordinal="second" theme="reverse" />
         <Textarea name="memo" defaultValue="메모" invalid resize={false} />
         <Table type="grid">
           <tbody>
@@ -102,6 +104,12 @@ describe("@podo/hono", () => {
     expect(html).toContain('role="status"');
     expect(html).toContain('class="podo-toast__caption"');
     expect(html).toContain('class="podo-toast__close"');
+    // SSR tooltip: static bubble with the arrowhead.
+    expect(html).toContain('class="podo-tooltip"');
+    expect(html).toContain('role="tooltip"');
+    expect(html).toContain('data-position="top"');
+    expect(html).toContain('data-ordinal="second"');
+    expect(html).toContain('class="podo-tooltip__arrow"');
     expect(html).toContain('class="podo-textarea"');
     expect(html).toContain('data-resize="false"');
     expect(html).toContain(">메모</textarea>");

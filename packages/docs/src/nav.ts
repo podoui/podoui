@@ -10,6 +10,7 @@ import { SwitchPage } from "./pages/SwitchPage.js";
 import { TablePage } from "./pages/TablePage.js";
 import { TextareaPage } from "./pages/TextareaPage.js";
 import { ToastPage } from "./pages/ToastPage.js";
+import { TooltipPage } from "./pages/TooltipPage.js";
 import { TypographyPage } from "./pages/TypographyPage.js";
 
 export interface NavItem {
@@ -37,6 +38,7 @@ export const NAV: NavItem[] = [
   { slug: "table", title: "Table", group: "Components", page: TablePage },
   { slug: "textarea", title: "Textarea", group: "Components", page: TextareaPage },
   { slug: "toast", title: "Toast", group: "Components", page: ToastPage },
+  { slug: "tooltip", title: "Tooltip", group: "Components", page: TooltipPage },
 ];
 
 export function findBySlug(slug: string): NavItem | undefined {

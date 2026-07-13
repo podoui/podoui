@@ -127,6 +127,14 @@ describe("@podo/native", () => {
     screen.getByLabelText("닫기").click();
     expect(toastClosed).toBe(1);
 
+    render(
+      <domNative.Tooltip label="임시 저장돼요" position="top" ordinal="second" testID="tooltip" />
+    );
+    const tooltip = screen.getByTestId("tooltip");
+    expect(tooltip.getAttribute("data-position")).toBe("top");
+    expect(tooltip.getAttribute("data-ordinal")).toBe("second");
+    expect(screen.getByText("임시 저장돼요")).toBeDefined();
+
     expect(screen.getByText("Required")).toBeDefined();
   });
 
@@ -241,6 +249,9 @@ function TestView({
       data-bg={styleRecord?.backgroundColor as string | undefined}
       data-testid={testID as string | undefined}
       data-state={props["data-state"] as string | undefined}
+      data-theme={props["data-theme"] as string | undefined}
+      data-position={props["data-position"] as string | undefined}
+      data-ordinal={props["data-ordinal"] as string | undefined}
       aria-label={props.accessibilityLabel as string | undefined}
     >
       {children}

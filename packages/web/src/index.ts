@@ -22,6 +22,7 @@ export const podoElementNames = {
   switch: "podo-switch",
   text: "podo-text",
   toast: "podo-toast",
+  tooltip: "podo-tooltip",
 } as const;
 
 export function registerPodoElements(options: RegisterPodoElementsOptions = {}): void {
@@ -42,6 +43,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
     [names.switch, createSwitchElement()],
     [names.text, createTextElement()],
     [names.toast, createToastElement()],
+    [names.tooltip, createTooltipElement()],
   ];
 
   for (const [name, constructor] of definitions) {
@@ -63,6 +65,7 @@ export function createElementNames(prefix = "podo"): typeof podoElementNames {
     switch: `${prefix}-switch`,
     text: `${prefix}-text`,
     toast: `${prefix}-toast`,
+    tooltip: `${prefix}-tooltip`,
   } as typeof podoElementNames;
 }
 
@@ -536,6 +539,83 @@ input {
 
 .podo-radio-wrap[data-disabled] .podo-radio__text {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Tooltip (Figma 388:2125): radius-8 bubble + 4x16 arrowhead pointing at the
+   target. DOM order is fixed (arrow, bubble); data-position picks the flex
+   direction so the arrow sits on the target-facing edge, and data-ordinal
+   aligns it to the start/center/end of that edge (4px inset). The drop shadow
+   rides filter: so it wraps the arrow too. */
+.podo-tooltip {
+  --podo-tooltip-background: #FFFFFF;
+  --podo-tooltip-color: var(--podo-semantic-color-text-default, #18181B);
+  display: inline-flex;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.1));
+  pointer-events: none;
+  width: max-content;
+  z-index: 2147483647;
+}
+
+.podo-tooltip[data-theme="reverse"] {
+  --podo-tooltip-background: #3E424B;
+  --podo-tooltip-color: #F9F9F9;
+}
+
+.podo-tooltip[data-position="right"] {
+  flex-direction: row;
+}
+
+.podo-tooltip[data-position="left"] {
+  flex-direction: row-reverse;
+}
+
+.podo-tooltip[data-position="bottom"] {
+  flex-direction: column;
+}
+
+.podo-tooltip[data-position="top"] {
+  flex-direction: column-reverse;
+}
+
+.podo-tooltip__bubble {
+  background: var(--podo-tooltip-background);
+  border-radius: 8px;
+  color: var(--podo-tooltip-color);
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 6px 8px;
+}
+
+.podo-tooltip__arrow {
+  color: var(--podo-tooltip-background);
+  display: flex;
+  flex: none;
+}
+
+.podo-tooltip__arrow svg {
+  display: block;
+}
+
+.podo-tooltip[data-ordinal="first"] .podo-tooltip__arrow {
+  align-self: flex-start;
+}
+
+.podo-tooltip[data-ordinal="second"] .podo-tooltip__arrow {
+  align-self: center;
+}
+
+.podo-tooltip[data-ordinal="third"] .podo-tooltip__arrow {
+  align-self: flex-end;
+}
+
+.podo-tooltip[data-position="right"] .podo-tooltip__arrow,
+.podo-tooltip[data-position="left"] .podo-tooltip__arrow {
+  margin: 4px 0;
+}
+
+.podo-tooltip[data-position="top"] .podo-tooltip__arrow,
+.podo-tooltip[data-position="bottom"] .podo-tooltip__arrow {
+  margin: 0 4px;
 }
 
 /* Toast (Figma 459:1298): stateful notification card — 480px, radius 10,
@@ -1451,6 +1531,50 @@ function createToastElement(): CustomElementConstructor {
       this.shadow.querySelector(".podo-toast__close")?.addEventListener("click", () => {
         this.dispatchEvent(new CustomEvent("podo-close", { bubbles: true, composed: true }));
       });
+    }
+  };
+}
+
+const TOOLTIP_ARROW_SVGS: Record<string, string> = {
+  right:
+    '<svg aria-hidden="true" width="4" height="16" viewBox="0 0 4 16"><path d="M4 0v4L0 8l4 4v4z" fill="currentColor"/></svg>',
+  left: '<svg aria-hidden="true" width="4" height="16" viewBox="0 0 4 16"><path d="M0 0v4l4 4-4 4v4z" fill="currentColor"/></svg>',
+  bottom:
+    '<svg aria-hidden="true" width="16" height="4" viewBox="0 0 16 4"><path d="M0 4h4l4-4 4 4h4z" fill="currentColor"/></svg>',
+  top: '<svg aria-hidden="true" width="16" height="4" viewBox="0 0 16 4"><path d="M0 0h4l4 4 4-4h4z" fill="currentColor"/></svg>',
+};
+
+function createTooltipElement(): CustomElementConstructor {
+  return class PodoTooltipElement extends HTMLElement {
+    static get observedAttributes(): string[] {
+      return ["label", "theme", "position", "ordinal"];
+    }
+
+    readonly shadow = this.attachShadow({ mode: "open" });
+
+    connectedCallback(): void {
+      this.render();
+    }
+
+    attributeChangedCallback(): void {
+      this.render();
+    }
+
+    // Static bubble only: hover triggering and portal positioning are the
+    // react target's job — here consumers place the bubble themselves.
+    private render(): void {
+      const theme = attr(this, "theme", "default");
+      const position = attr(this, "position", "right");
+      const ordinal = attr(this, "ordinal", "first");
+      const arrow = TOOLTIP_ARROW_SVGS[position] ?? TOOLTIP_ARROW_SVGS.right;
+
+      this.shadow.innerHTML = `${componentStyleBlock()}
+<div class="podo-tooltip" part="root" role="tooltip" data-theme="${escapeHtml(theme)}" data-position="${escapeHtml(
+        position
+      )}" data-ordinal="${escapeHtml(ordinal)}">
+  <span class="podo-tooltip__arrow" part="arrow">${arrow}</span>
+  <span class="podo-tooltip__bubble" part="bubble">${escapeHtml(attr(this, "label", ""))}</span>
+</div>`;
     }
   };
 }

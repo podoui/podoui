@@ -197,6 +197,18 @@ export interface NativeIconProps {
   testID?: string;
 }
 
+export interface NativeTooltipProps {
+  /** 말풍선 내용 (Figma label). */
+  label: ReactNode;
+  /** 대상 기준 표시 방향 — 화살표가 대상을 가리켜요 (Figma position). */
+  position?: "right" | "left" | "bottom" | "top";
+  /** 화살표가 말풍선의 시작/가운데/끝 어디에 붙는지 (Figma ordinal). */
+  ordinal?: "first" | "second" | "third";
+  /** 밝은 배경(default) 또는 어두운 배경(reverse) (Figma theme). */
+  theme?: "default" | "reverse";
+  testID?: string;
+}
+
 export interface NativeToastProps {
   children: ReactNode;
   /** 상황의 성격에 따른 색·톤 (Figma state). */
@@ -223,6 +235,7 @@ export interface NativeComponents {
   Icon: (props: NativeIconProps) => React.ReactElement;
   Switch: (props: NativeSwitchProps) => React.ReactElement;
   Toast: (props: NativeToastProps) => React.ReactElement;
+  Tooltip: (props: NativeTooltipProps) => React.ReactElement;
 }
 
 export type NativeStyle = Record<string, string | number | undefined>;
@@ -747,6 +760,76 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         )
       );
     },
+    Tooltip: (props) => {
+      const theme = props.theme ?? "default";
+      const position = props.position ?? "right";
+      const ordinal = props.ordinal ?? "first";
+      const fill = theme === "reverse" ? "#3E424B" : "#FFFFFF";
+      // Arrowhead via the RN border-triangle trick (a zero-size box whose one
+      // colored border forms the 4x16 wedge pointing at the target).
+      const wedge: Record<string, string | number> = { height: 0, width: 0 };
+      if (position === "right" || position === "left") {
+        wedge.borderBottomColor = "transparent";
+        wedge.borderBottomWidth = 8;
+        wedge.borderTopColor = "transparent";
+        wedge.borderTopWidth = 8;
+        wedge.marginBottom = 4;
+        wedge.marginTop = 4;
+        const side = position === "right" ? "Right" : "Left";
+        wedge[`border${side}Color`] = fill;
+        wedge[`border${side}Width`] = 4;
+      } else {
+        wedge.borderLeftColor = "transparent";
+        wedge.borderLeftWidth = 8;
+        wedge.borderRightColor = "transparent";
+        wedge.borderRightWidth = 8;
+        wedge.marginLeft = 4;
+        wedge.marginRight = 4;
+        const side = position === "bottom" ? "Bottom" : "Top";
+        wedge[`border${side}Color`] = fill;
+        wedge[`border${side}Width`] = 4;
+      }
+      return createElement(
+        host.View,
+        {
+          style: {
+            alignItems:
+              ordinal === "second" ? "center" : ordinal === "third" ? "flex-end" : "flex-start",
+            flexDirection:
+              position === "right"
+                ? "row"
+                : position === "left"
+                  ? "row-reverse"
+                  : position === "bottom"
+                    ? "column"
+                    : "column-reverse",
+          },
+          testID: props.testID,
+          "data-theme": theme,
+          "data-position": position,
+          "data-ordinal": ordinal,
+        },
+        createElement(host.View, { style: wedge }),
+        createElement(
+          host.View,
+          {
+            style: {
+              backgroundColor: fill,
+              borderRadius: 8,
+              paddingBottom: 6,
+              paddingLeft: 8,
+              paddingRight: 8,
+              paddingTop: 6,
+            },
+          },
+          createElement(
+            host.Text,
+            { style: { color: theme === "reverse" ? "#F9F9F9" : "#18181B", fontSize: 14 } },
+            props.label
+          )
+        )
+      );
+    },
     Radio: (props) => {
       const behavior = createRadioBehavior({ checked: props.checked, disabled: props.disabled });
       // Figma 379:3350 colors; the circle stays 18x18 for every size and the
@@ -814,8 +897,19 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
   };
 }
 
-export const { Button, Checkbox, Radio, Chip, Input, Textarea, Field, Icon, Switch, Toast } =
-  createNativeComponents();
+export const {
+  Button,
+  Checkbox,
+  Radio,
+  Chip,
+  Input,
+  Textarea,
+  Field,
+  Icon,
+  Switch,
+  Toast,
+  Tooltip,
+} = createNativeComponents();
 
 function wireNativeControl(
   children: ReactNode,

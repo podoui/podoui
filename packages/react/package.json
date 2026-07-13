@@ -25,6 +25,7 @@
     "@podo/core": "workspace:*"
   },
   "peerDependencies": {
-    "react": ">=18"
+    "react": ">=18",
+    "react-dom": ">=18"
   }
 }

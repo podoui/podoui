@@ -7,6 +7,7 @@ import React, {
   useContext,
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   useSyncExternalStore,
@@ -14,8 +15,10 @@ import React, {
   type ChangeEvent,
   type HTMLAttributes,
   type InputHTMLAttributes,
+  type ReactElement,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   createButtonBehavior,
   createCheckboxBehavior,
@@ -223,6 +226,27 @@ export interface ToastOptions {
   duration?: number;
   /** Stays until the close X is pressed — no auto-dismiss. */
   manual?: boolean;
+}
+
+export type TooltipTheme = "default" | "reverse";
+export type TooltipPosition = "right" | "left" | "bottom" | "top";
+export type TooltipOrdinal = "first" | "second" | "third";
+
+export interface TooltipProps {
+  /** 말풍선 내용 (Figma label). */
+  label: ReactNode;
+  /** 대상 기준 표시 방향 — 화살표가 대상을 가리켜요 (Figma position). */
+  position?: TooltipPosition;
+  /** 화살표가 말풍선의 시작/가운데/끝 어디에 붙는지 (Figma ordinal). */
+  ordinal?: TooltipOrdinal;
+  /** 밝은 배경(default) 또는 어두운 배경(reverse) (Figma theme). */
+  theme?: TooltipTheme;
+  /** false면 흐름 안에 그대로 렌더 — 기본은 document.body 포탈 + 좌표 배치. */
+  portal?: boolean;
+  /** Controlled visibility; 생략하면 hover/focus로 스스로 열고 닫아요. */
+  open?: boolean;
+  /** 트리거 요소 하나. hover/focus 핸들러와 aria-describedby가 주입돼요. */
+  children: ReactElement;
 }
 
 export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
@@ -651,6 +675,161 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
     />
   );
 });
+
+// Arrowheads per position, pointing at the target (Figma 4x16 rounded vector,
+// drawn straight — the 2px rounding is invisible at this size).
+const TOOLTIP_ARROWS: Record<TooltipPosition, React.ReactElement> = {
+  right: (
+    <svg aria-hidden width="4" height="16" viewBox="0 0 4 16">
+      <path d="M4 0v4L0 8l4 4v4z" fill="currentColor" />
+    </svg>
+  ),
+  left: (
+    <svg aria-hidden width="4" height="16" viewBox="0 0 4 16">
+      <path d="M0 0v4l4 4-4 4v4z" fill="currentColor" />
+    </svg>
+  ),
+  bottom: (
+    <svg aria-hidden width="16" height="4" viewBox="0 0 16 4">
+      <path d="M0 4h4l4-4 4 4h4z" fill="currentColor" />
+    </svg>
+  ),
+  top: (
+    <svg aria-hidden width="16" height="4" viewBox="0 0 16 4">
+      <path d="M0 0h4l4 4 4-4h4z" fill="currentColor" />
+    </svg>
+  ),
+};
+
+// Distance from the bubble's start edge to the arrowhead center while
+// ordinal=first/third (Figma: 4px inset + half the 16px arrow).
+const TOOLTIP_ARROW_CENTER = 12;
+
+export function Tooltip({
+  label,
+  position = "right",
+  ordinal = "first",
+  theme = "default",
+  portal = true,
+  open,
+  children,
+}: TooltipProps): React.ReactElement {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = open ?? internalOpen;
+  const id = useId();
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const bubbleRef = useRef<HTMLDivElement | null>(null);
+  const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
+
+  // Portal placement: measure the trigger and the bubble, then pin the bubble
+  // so its arrowhead points at the trigger's center.
+  useLayoutEffect(() => {
+    if (!isOpen || !portal) {
+      setCoords(null);
+      return;
+    }
+    const trigger = triggerRef.current;
+    const bubble = bubbleRef.current;
+    if (!trigger || !bubble) {
+      return;
+    }
+    const t = trigger.getBoundingClientRect();
+    const b = bubble.getBoundingClientRect();
+    const align = (size: number, start: number, length: number) =>
+      ordinal === "second"
+        ? start + length / 2 - size / 2
+        : ordinal === "third"
+          ? start + length / 2 - (size - TOOLTIP_ARROW_CENTER)
+          : start + length / 2 - TOOLTIP_ARROW_CENTER;
+    setCoords(
+      position === "top"
+        ? { top: t.top - b.height, left: align(b.width, t.left, t.width) }
+        : position === "bottom"
+          ? { top: t.bottom, left: align(b.width, t.left, t.width) }
+          : position === "left"
+            ? { top: align(b.height, t.top, t.height), left: t.left - b.width }
+            : { top: align(b.height, t.top, t.height), left: t.right }
+    );
+  }, [isOpen, portal, position, ordinal]);
+
+  // Anything that moves the trigger invalidates the pinned coords — close.
+  useEffect(() => {
+    if (!isOpen || open != null) {
+      return;
+    }
+    const close = () => setInternalOpen(false);
+    window.addEventListener("scroll", close, true);
+    window.addEventListener("resize", close);
+    return () => {
+      window.removeEventListener("scroll", close, true);
+      window.removeEventListener("resize", close);
+    };
+  }, [isOpen, open]);
+
+  const child = React.Children.only(children) as ReactElement<Record<string, unknown>> & {
+    ref?: React.Ref<HTMLElement>;
+  };
+  const childRef = child.ref;
+  const compose =
+    <E,>(theirs: unknown, ours: (event: E) => void) =>
+    (event: E) => {
+      if (typeof theirs === "function") {
+        theirs(event);
+      }
+      ours(event);
+    };
+  const trigger = cloneElement(child, {
+    ref: (node: HTMLElement | null) => {
+      triggerRef.current = node;
+      if (typeof childRef === "function") {
+        childRef(node);
+      } else if (childRef && typeof childRef === "object") {
+        (childRef as React.MutableRefObject<HTMLElement | null>).current = node;
+      }
+    },
+    "aria-describedby": isOpen
+      ? joinClass(child.props["aria-describedby"] as string | undefined, id)
+      : (child.props["aria-describedby"] as string | undefined),
+    onPointerEnter: compose(child.props.onPointerEnter, () => setInternalOpen(true)),
+    onPointerLeave: compose(child.props.onPointerLeave, () => setInternalOpen(false)),
+    onFocus: compose(child.props.onFocus, () => setInternalOpen(true)),
+    onBlur: compose(child.props.onBlur, () => setInternalOpen(false)),
+    onKeyDown: compose(child.props.onKeyDown, (event: React.KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setInternalOpen(false);
+      }
+    }),
+  } as Record<string, unknown>);
+
+  const bubble = isOpen ? (
+    <div
+      ref={bubbleRef}
+      id={id}
+      role="tooltip"
+      className="podo-tooltip"
+      data-theme={theme}
+      data-position={position}
+      data-ordinal={ordinal}
+      style={
+        portal
+          ? { position: "fixed", top: coords?.top ?? -9999, left: coords?.left ?? -9999 }
+          : undefined
+      }
+    >
+      <span className="podo-tooltip__arrow">{TOOLTIP_ARROWS[position]}</span>
+      <span className="podo-tooltip__bubble">{label}</span>
+    </div>
+  ) : null;
+
+  return (
+    <>
+      {trigger}
+      {bubble && portal && typeof document !== "undefined"
+        ? createPortal(bubble, document.body)
+        : bubble}
+    </>
+  );
+}
 
 const TOAST_CLOSE_GLYPH = (
   <svg aria-hidden viewBox="0 0 24 24" width="24" height="24" fill="none">

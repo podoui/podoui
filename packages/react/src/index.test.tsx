@@ -18,6 +18,7 @@ import {
   Textarea,
   Toast,
   Toaster,
+  Tooltip,
   Typography,
   toast,
   usePodoTheme,
@@ -389,6 +390,47 @@ describe("@podo/react", () => {
     fireEvent.pointerDown(stage.getByText("r0"), { button: 0 });
     fireEvent.pointerOver(cell("행 4 선택"), { buttons: 1 });
     expect(selections.length).toBe(before + 1);
+  });
+
+  it("shows the tooltip on hover/focus through a body portal", () => {
+    render(
+      <Tooltip label="임시 저장돼요" position="top" ordinal="second" theme="reverse">
+        <button type="button">저장</button>
+      </Tooltip>
+    );
+
+    const trigger = screen.getByRole("button", { name: "저장" });
+    expect(screen.queryByRole("tooltip")).toBeNull();
+
+    fireEvent.pointerEnter(trigger);
+    const bubble = screen.getByRole("tooltip");
+    // Portaled to document.body so overflow/stacking contexts can't clip it.
+    expect(bubble.parentElement).toBe(document.body);
+    expect(bubble.getAttribute("data-position")).toBe("top");
+    expect(bubble.getAttribute("data-ordinal")).toBe("second");
+    expect(bubble.getAttribute("data-theme")).toBe("reverse");
+    expect(bubble.textContent).toContain("임시 저장돼요");
+    expect(trigger.getAttribute("aria-describedby")).toBe(bubble.id);
+
+    // Escape closes it; leaving does too.
+    fireEvent.keyDown(trigger, { key: "Escape" });
+    expect(screen.queryByRole("tooltip")).toBeNull();
+    fireEvent.focus(trigger);
+    expect(screen.getByRole("tooltip")).toBeDefined();
+    fireEvent.blur(trigger);
+    expect(screen.queryByRole("tooltip")).toBeNull();
+  });
+
+  it("renders the tooltip in place when portal is off or open is forced", () => {
+    const { container } = render(
+      <Tooltip label="정적 말풍선" portal={false} open>
+        <span hidden />
+      </Tooltip>
+    );
+
+    const bubble = within(container).getByRole("tooltip");
+    expect(bubble.getAttribute("data-position")).toBe("right");
+    expect(bubble.getAttribute("style")).toBeNull();
   });
 
   it("renders toast states and composition slots", () => {

@@ -203,6 +203,13 @@ describe("@podo/web", () => {
         ?.shadowRoot?.querySelector("input")
         ?.getAttribute("aria-required")
     ).toBe("true");
+    const tooltipEl = document.createElement("podo-tooltip");
+    tooltipEl.setAttribute("label", "임시 저장돼요");
+    tooltipEl.setAttribute("theme", "reverse");
+    tooltipEl.setAttribute("position", "top");
+    tooltipEl.setAttribute("ordinal", "second");
+    document.body.append(tooltipEl);
+
     // The toast card: danger announces as an alert; closable emits podo-close.
     expect(toastEl.shadowRoot?.querySelector(".podo-toast")?.getAttribute("role")).toBe("alert");
     expect(toastEl.shadowRoot?.querySelector(".podo-toast")?.getAttribute("data-state")).toBe(
@@ -213,6 +220,15 @@ describe("@podo/web", () => {
     );
     expect(toastClosed).toBe(1);
     expect(toastEl.shadowRoot?.innerHTML).toMatchSnapshot("toast");
+    // The tooltip bubble: static, arrow on the target-facing edge.
+    const tooltipRoot = tooltipEl.shadowRoot?.querySelector(".podo-tooltip");
+    expect(tooltipRoot?.getAttribute("role")).toBe("tooltip");
+    expect(tooltipRoot?.getAttribute("data-position")).toBe("top");
+    expect(tooltipRoot?.getAttribute("data-ordinal")).toBe("second");
+    expect(tooltipEl.shadowRoot?.querySelector(".podo-tooltip__bubble")?.textContent).toBe(
+      "임시 저장돼요"
+    );
+    expect(tooltipEl.shadowRoot?.innerHTML).toMatchSnapshot("tooltip");
     expect(icon.shadowRoot?.innerHTML).toMatchSnapshot("icon");
     expect(text.shadowRoot?.innerHTML).toMatchSnapshot("text");
   });

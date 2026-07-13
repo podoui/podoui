@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "tooltip",
+  "name": "Tooltip",
+  "category": "molecule",
+  "status": "experimental",
+  "description": "Contextual hint bubble anchored to a target (Figma 541:8679, component set 388:2125): a radius-8 bubble (6/8 padding, 14px text, drop shadow 0 2 10 @10%) with a 4x16 arrowhead pointing at the target. theme picks the contrast pair — default is white on light with gray.90 text, reverse is gray.70 with gray.5 text; position puts the bubble right/left/bottom/top of the target; ordinal pins the arrow to the start/center/end of the facing edge (4px inset). The react target adds the behavior layer: hover/focus triggering with Escape to close, aria-describedby wiring, and document.body portal positioning by default (portal=false renders in place) so overflow/stacking contexts can't clip the bubble.",
+  "anatomy": [
+    { "name": "root" },
+    { "name": "arrow", "parent": "root" },
+    { "name": "bubble", "parent": "root" }
+  ],
+  "slots": [
+    {
+      "name": "label",
+      "description": "Bubble content (Figma label).",
+      "targets": {
+        "web": { "name": "label" },
+        "react": { "name": "label" },
+        "hono": { "name": "label" },
+        "native": { "name": "label" }
+      }
+    }
+  ],
+  "props": [
+    {
+      "name": "portal",
+      "type": { "kind": "boolean" },
+      "default": true,
+      "description": "react only: portal the bubble to document.body and pin it to the trigger (false renders in place)."
+    },
+    {
+      "name": "open",
+      "type": { "kind": "boolean" },
+      "description": "react only: controlled visibility; omitted, hover/focus manage it."
+    }
+  ],
+  "variants": [
+    {
+      "name": "theme",
+      "values": ["default", "reverse"],
+      "default": "default"
+    },
+    {
+      "name": "position",
+      "values": ["right", "left", "bottom", "top"],
+      "default": "right"
+    },
+    {
+      "name": "ordinal",
+      "values": ["first", "second", "third"],
+      "default": "first"
+    }
+  ],
+  "states": [],
+  "tokens": {
+    "bubble.background": "{color.palette.gray.0}",
+    "bubble.color": "{semantic.color.text.default}"
+  },
+  "targets": {
+    "web": {
+      "supported": true,
+      "limitations": [
+        "Static bubble only: hover triggering and portal positioning need the react target or client code."
+      ]
+    },
+    "react": { "supported": true, "limitations": [] },
+    "hono": {
+      "supported": true,
+      "limitations": ["Static bubble only; triggering needs client code."]
+    },
+    "native": {
+      "supported": true,
+      "limitations": ["Static bubble; apps anchor and toggle it themselves."]
+    }
+  },
+  "accessibility": {
+    "aria": ["role=tooltip", "trigger aria-describedby points at the bubble while open"],
+    "keyboard": ["Focus shows the tooltip", "Escape hides it"],
+    "focusManagement": "The bubble never takes focus; it describes the trigger."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Icon button hint",
+      "code": "<Tooltip label=\"임시 저장돼요\" position=\"top\" ordinal=\"second\">\n  <Button size=\"sm\">저장</Button>\n</Tooltip>"
+    }
+  ]
+}
