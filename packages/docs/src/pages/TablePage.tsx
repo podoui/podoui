@@ -174,7 +174,7 @@ export function TablePage() {
       <DocSection
         index={4}
         title="속성 (props)"
-        description="@podo/react의 Table이 받는 속성이에요. 내용은 표준 thead·tbody·tr·th·td 마크업을 그대로 사용해 표 시맨틱과 접근성이 플랫폼에서 나와요. hover·pressed 행 상태는 브라우저 상호작용으로 표현되고, 사용할 수 없는 행은 tr에 data-disabled를 표시해요. React Native에는 표 레이아웃이 없어 FlatList 사용을 권장해요."
+        description="@podo/react의 Table이 받는 속성이에요. 내용은 표준 thead·tbody·tr·th·td 마크업을 그대로 사용해 표 시맨틱과 접근성이 플랫폼에서 나와요. hover·pressed 행 상태는 브라우저 상호작용으로 표현돼요. 행·셀 단위 설정은 마크업에 data-* 속성으로 표시해요 — 아래 표의 data-align, data-disabled 항목을 참고하세요. React Native에는 표 레이아웃이 없어 FlatList 사용을 권장해요."
       >
         <SpecTable
           variant="props"
@@ -228,7 +228,27 @@ export function TablePage() {
                 <code>ReactNode</code>
               </span>,
               "— (필수)",
-              "표준 thead/tbody/tr/th/td 마크업. 비활성 행은 tr에 data-disabled (선택 대상에서도 제외돼요)",
+              "표준 thead/tbody/tr/th/td 마크업",
+            ],
+            [
+              <span className="prop-name">
+                <code>data-align</code> <small>(th·td 속성)</small>
+              </span>,
+              <span className="prop-type">
+                <code>"center" | "right"</code>
+              </span>,
+              "— (좌측)",
+              "셀 정렬 기준: 텍스트는 좌측(기본), 버튼·단일 칩·음성파일은 center, 수량·날짜·금액·퍼센트는 right (숫자 폭 고정)",
+            ],
+            [
+              <span className="prop-name">
+                <code>data-disabled</code> <small>(tr 속성)</small>
+              </span>,
+              <span className="prop-type">
+                <code>"true"</code>
+              </span>,
+              "—",
+              "사용할 수 없는 행 표시. checkbox 사용 시 선택 대상에서도 제외돼요",
             ],
           ]}
         />
