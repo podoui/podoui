@@ -80,7 +80,7 @@ export function SwitchPage() {
         description="스위치는 함께 표시되는 레이블 텍스트의 강조 정도를 bold로 조절해요. 기본은 일반 굵기로 본문과 자연스럽게 어울리게 하고, bold는 항목의 중요도가 높거나 그룹의 제목·대표 선택지처럼 강조가 필요할 때 사용해요."
       >
         <Card stage>
-          <Switch size="md" defaultChecked bold label="텍스트" />
+          <Switch defaultChecked bold label="텍스트" />
         </Card>
         <PropertyTags values={["bold"]} />
       </DocSection>
