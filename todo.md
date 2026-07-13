@@ -541,6 +541,7 @@
 ### C. 컴포넌트·품질
 
 - [ ] 다음 컴포넌트 시안 작업 계속 (Button/Chip/Input/Field 완료; 워크플로: 스펙 → 4렌더러 → 테스트 → docs → figma.tsx)
+- [ ] (대기) Chip 선택/미선택 상태 — 셋(328:14276)에 state 5종(normal=선택 base, pressed, unselected, unselected-pressed, disabled) 추가 확인했으나 디자이너가 재수정 예정이라 보류. 조사 메모: md pad 2/6·gap 2·font 14, lg pad 2/8·gap 4·font 16, 셋 size 기본값이 lg로 되어 있음(팀 기준은 md base), outline-strong normal은 여전히 solid와 동일
 - [ ] Pretendard 폰트 자산 확정
   - 토큰의 `fontAsset.dataUrl`이 `"AAAA"` 플레이스홀더. docs는 임시로 jsDelivr CDN 로드 중.
   - 완료 기준: 실제 woff2 임베드 또는 CDN 전략 확정이 토큰/빌드에 반영된다.
