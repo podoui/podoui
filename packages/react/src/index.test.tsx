@@ -65,18 +65,23 @@ describe("@podo/react", () => {
     expect(chip.getAttribute("data-size")).toBe("sm");
   });
 
-  it("tracks the character count automatically when count is not controlled", async () => {
+  it("tracks the character count automatically and caps input at countMax", async () => {
     const user = userEvent.setup();
     render(
-      <Field label="제목" countMax={500}>
+      <Field label="제목" countMax={5}>
         <Input aria-label="본문" defaultValue="ab" />
       </Field>
     );
 
     // Initial count reflects the control's defaultValue.
-    expect(screen.getByText("2/500")).toBeDefined();
+    expect(screen.getByText("2/5")).toBeDefined();
     await user.type(screen.getByLabelText("본문"), "cde");
-    expect(screen.getByText("5/500")).toBeDefined();
+    expect(screen.getByText("5/5")).toBeDefined();
+
+    // countMax maps to the native maxLength, so extra typing is blocked.
+    await user.type(screen.getByLabelText("본문"), "xyz");
+    expect((screen.getByLabelText("본문") as HTMLInputElement).value).toBe("abcde");
+    expect(screen.getByText("5/5")).toBeDefined();
   });
 
   it("supports controlled and uncontrolled input value changes", async () => {

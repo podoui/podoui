@@ -76,6 +76,7 @@ exports[`@podo/react > snapshots themed variant markup for visual regression 1`]
           aria-labelledby="email-label"
           class="podo-input__control"
           id="email-control"
+          maxlength="500"
         />
         <span
           class="podo-input__suffix-text"

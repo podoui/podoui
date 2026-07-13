@@ -546,6 +546,7 @@ function createInputElement(): CustomElementConstructor {
         "disabled",
         "id",
         "invalid",
+        "maxlength",
         "name",
         "placeholder",
         "required",
@@ -612,7 +613,10 @@ function createInputElement(): CustomElementConstructor {
     attr(this, "name", "")
   )} value="${escapeHtml(this.value)}" placeholder="${escapeHtml(
     attr(this, "placeholder", "")
-  )}" ${attrString("aria-labelledby", attr(this, "aria-labelledby", ""))} ${attrString(
+  )}" ${attrString("maxlength", attr(this, "maxlength", ""))} ${attrString(
+    "aria-labelledby",
+    attr(this, "aria-labelledby", "")
+  )} ${attrString(
     "aria-describedby",
     attr(this, "aria-describedby", "")
   )} ${attrString("aria-required", attr(this, "aria-required", ""))} ${disabled} ${required} ${ariaInvalid} />${suffixText}${suffixIcon}
@@ -722,7 +726,11 @@ function createFieldElement(): CustomElementConstructor {
     </span>${count}
   </div>
 </div>`;
-      wireDefaultSlotControl(this.shadow, a11y.control);
+      // countMax also caps the control via the platform-native maxlength.
+      wireDefaultSlotControl(
+        this.shadow,
+        countMax ? { ...a11y.control, maxlength: countMax } : a11y.control
+      );
     }
   };
 }

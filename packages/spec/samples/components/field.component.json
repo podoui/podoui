@@ -76,7 +76,7 @@
     {
       "name": "countMax",
       "type": { "kind": "number", "min": 0 },
-      "description": "Maximum character count; enables the footer counter."
+      "description": "Maximum character count; enables the footer counter and caps the control via the platform-native maxLength."
     }
   ],
   "variants": [],

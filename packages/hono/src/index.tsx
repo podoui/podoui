@@ -48,6 +48,8 @@ export interface HonoInputProps {
   value?: string;
   defaultValue?: string;
   placeholder?: string;
+  /** Native input maxlength; Field injects its countMax here. */
+  maxLength?: number;
   /** Control height, radius, and font (Figma: md 42, lg 52). */
   size?: "md" | "lg";
   /** Icon or symbol giving the value context, before the control (Figma prefix). */
@@ -161,6 +163,7 @@ export function Input({
   value,
   defaultValue,
   placeholder,
+  maxLength,
   size = "md",
   prefix,
   suffixText,
@@ -188,6 +191,7 @@ export function Input({
         name={name}
         value={value ?? defaultValue}
         placeholder={placeholder}
+        maxlength={maxLength}
         disabled={disabled}
         required={required}
         aria-labelledby={ariaLabelledBy}
@@ -247,7 +251,12 @@ export function Field({
         </label>
         {suffixIcon ? <span class="podo-field__suffix-icon">{suffixIcon}</span> : null}
       </div>
-      <div class="podo-field__control">{wireHonoControl(children, a11y.control)}</div>
+      <div class="podo-field__control">
+        {wireHonoControl(
+          children,
+          countMax != null ? { ...a11y.control, maxLength: countMax } : a11y.control
+        )}
+      </div>
       {showError || showHelper || countMax != null ? (
         <div class="podo-field__footer">
           {showError ? (
@@ -314,7 +323,10 @@ function joinClass(...classes: Array<string | false | null | undefined>): string
   return classes.filter(Boolean).join(" ");
 }
 
-function wireHonoControl(child: Child, controlAttributes: Record<string, string | boolean>): Child {
+function wireHonoControl(
+  child: Child,
+  controlAttributes: Record<string, string | boolean | number>
+): Child {
   if (Array.isArray(child)) {
     return child.map((item) => wireHonoControl(item, controlAttributes));
   }

@@ -68,6 +68,8 @@ export interface NativeInputProps {
   value?: string;
   defaultValue?: string;
   placeholder?: string;
+  /** Native TextInput maxLength; Field injects its countMax here. */
+  maxLength?: number;
   /** Control height and radius (Figma: md 42, lg 52). */
   size?: "md" | "lg";
   /** Icon or symbol giving the value context, before the control (Figma prefix). */
@@ -270,6 +272,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         defaultValue: props.defaultValue,
         value: props.value,
         placeholder: props.placeholder,
+        maxLength: props.maxLength,
         onChangeText: props.onValueChange,
         style: styles.inputControl,
         testID: props.testID,
@@ -340,7 +343,9 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         wireNativeControl(
           props.children,
           a11y,
-          trackCount ? (value) => setAutoCount(value.length) : undefined
+          trackCount ? (value) => setAutoCount(value.length) : undefined,
+          // countMax also caps the control via the platform-native maxLength.
+          props.countMax
         ),
         showError || showHelper || props.countMax != null
           ? createElement(
@@ -388,7 +393,8 @@ export const { Button, Chip, Input, Field, Icon } = createNativeComponents();
 function wireNativeControl(
   children: ReactNode,
   a11y: ReturnType<typeof createFieldA11y>,
-  onControlText?: (value: string) => void
+  onControlText?: (value: string) => void,
+  maxLength?: number
 ): ReactNode {
   return React.Children.map(children, (child) => {
     if (!isValidElement<Record<string, unknown>>(child)) {
@@ -403,6 +409,7 @@ function wireNativeControl(
         invalid: a11y.control["aria-invalid"] === "true",
         required: a11y.control["aria-required"] === "true",
       },
+      ...(maxLength != null ? { maxLength } : {}),
       ...(onControlText
         ? {
             onValueChange: (value: string) => {

@@ -321,9 +321,11 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
     hasDescription: showHelper,
     hasError: showError,
   });
+  // countMax also caps the control via the platform-native maxLength, so
+  // typing/pasting past the limit is blocked without any custom handling.
   const wiredChildren = wireReactControl(
     children,
-    a11y.control,
+    countMax != null ? { ...a11y.control, maxLength: countMax } : a11y.control,
     trackCount
       ? (event) => {
           const value = event.currentTarget?.value;
@@ -407,7 +409,7 @@ function joinClass(...classes: Array<string | false | null | undefined>): string
 
 function wireReactControl(
   children: ReactNode,
-  controlProps: Record<string, string | boolean>,
+  controlProps: Record<string, string | boolean | number>,
   onControlChange?: (event: ChangeEvent<HTMLInputElement>) => void
 ): ReactNode {
   return React.Children.map(children, (child) => {

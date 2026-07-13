@@ -184,7 +184,7 @@ export function FieldPage() {
                 <code>number</code>
               </span>,
               "—",
-              "최대 글자 수. 지정하면 footer에 글자 수 카운터가 나타나요",
+              "최대 글자 수. footer에 카운터가 나타나고, 컨트롤에 maxLength로 전달돼 초과 입력을 막아요",
             ],
             [
               <span className="prop-name">
