@@ -664,6 +664,28 @@ input {
   pointer-events: auto;
 }
 
+/* Collapsed hover target: the back cards peek out below (top) or above
+   (bottom) the front card's grid cell. Without this the pointer keeps crossing
+   the container edge in that peek band — expand shifts the layout, the pointer
+   falls outside, it collapses, and it flickers. This ::after fills the peek
+   band as one continuous hover surface so the stack stays expanded. */
+.podo-toaster:not([data-expanded])::after {
+  content: "";
+  height: calc(max(var(--podo-toast-count) - 1, 0) * var(--podo-toast-peek));
+  left: 0;
+  pointer-events: auto;
+  position: absolute;
+  right: 0;
+}
+
+.podo-toaster:not([data-expanded])[data-position^="top"]::after {
+  top: 100%;
+}
+
+.podo-toaster:not([data-expanded])[data-position^="bottom"]::after {
+  bottom: 100%;
+}
+
 .podo-toaster[data-position^="top"] {
   top: 16px;
 }
@@ -713,17 +735,15 @@ input {
   transform-origin: bottom center;
 }
 
-/* Back cards are dimmed while collapsed so the front one reads clearly. */
-.podo-toaster:not([data-expanded]) .podo-toast[data-stack]:not([data-stack="0"]) {
-  opacity: calc(1 - var(--podo-toast-index) * 0.2);
-}
-
 /* Expanded: real vertical layout with a gap, full size, newest nearest the
-   edge (top: first row; bottom: reverse so it hugs the bottom edge). */
+   edge (top: first row; bottom: reverse so it hugs the bottom edge). The
+   container itself becomes the hover surface so the gaps between cards keep it
+   expanded (its box only wraps the stack, so it doesn't block the page). */
 .podo-toaster[data-expanded] {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  pointer-events: auto;
 }
 
 .podo-toaster[data-expanded][data-position^="bottom"] {
@@ -762,18 +782,19 @@ input {
   z-index: 0;
 }
 
-/* Reduce, not remove: movement triggers vestibular issues, opacity doesn't.
-   Reduced-motion users still get the stack (back cards stay shrunk and peeking
-   so they read as "more behind") — only the sliding TRANSITION is dropped, so
-   restacking and the entrance snap instead of animating. */
+/* Reduced motion: no animation at all — toasts appear and disappear instantly.
+   The stack itself stays (back cards shrunk and peeking), but nothing moves or
+   fades when it changes; a leaving toast is simply hidden until React unmounts
+   it after TOAST_EXIT_MS. */
 @media (prefers-reduced-motion: reduce) {
   .podo-toaster .podo-toast {
     animation: none;
-    transition: opacity 0.2s ease;
+    transition: none;
   }
 
   .podo-toaster .podo-toast[data-leaving] {
-    animation: podo-toast-out 0.18s ease forwards;
+    animation: none;
+    opacity: 0;
   }
 }
 

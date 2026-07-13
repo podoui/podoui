@@ -808,11 +808,17 @@ export function Toaster({
       return;
     }
     const alive = new Set(items.map((item) => item.id));
+    // Drop timers for gone toasts, and — while the pointer/focus is on the
+    // stack — for every toast, pausing auto-dismiss. Leaving the stack re-runs
+    // this effect (expanded flips) and starts fresh timers.
     for (const [id, timer] of timers.current) {
-      if (!alive.has(id)) {
+      if (expanded || !alive.has(id)) {
         clearTimeout(timer);
         timers.current.delete(id);
       }
+    }
+    if (expanded) {
+      return;
     }
     for (const item of items) {
       if (item.leaving || item.options.manual || timers.current.has(item.id)) {

@@ -3,7 +3,7 @@
 import React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   Button,
   Checkbox,
@@ -24,6 +24,17 @@ import {
 } from "./index.js";
 
 describe("@podo/react", () => {
+  // The toast store is a module singleton — flush any leftovers between tests
+  // (dismiss marks leaving, then the 180ms exit timer unmounts) so a lingering
+  // toast can't bleed into the next test.
+  afterEach(() => {
+    vi.useFakeTimers();
+    act(() => {
+      toast.dismiss();
+      vi.advanceTimersByTime(500);
+    });
+    vi.useRealTimers();
+  });
   it("renders typed button props and emits onPress", async () => {
     const user = userEvent.setup();
     let presses = 0;
@@ -458,32 +469,62 @@ describe("@podo/react", () => {
   });
 
   it("stacks newest-first and fans the stack out on hover", () => {
-    const { container } = render(<Toaster max={3} />);
+    vi.useFakeTimers();
+    try {
+      const { container } = render(<Toaster max={3} />);
+      const stage = within(container);
+      const toaster = container.querySelector(".podo-toaster") as HTMLElement;
+
+      act(() => {
+        toast("하나", { manual: true });
+        toast("둘", { manual: true });
+        toast("셋", { manual: true });
+      });
+
+      // Rendered newest-first: 셋 is stack 0 (front), 하나 is stack 2 (back).
+      const cards = [...toaster.querySelectorAll(".podo-toast")];
+      expect(cards.map((c) => c.textContent)).toEqual(["셋", "둘", "하나"]);
+      expect(stage.getByText("셋").closest(".podo-toast")?.getAttribute("data-stack")).toBe("0");
+      expect(stage.getByText("하나").closest(".podo-toast")?.getAttribute("data-stack")).toBe("2");
+
+      // Collapsed by default; hovering fans the stack out, leaving restores it.
+      expect(toaster.getAttribute("data-expanded")).toBeNull();
+      fireEvent.pointerEnter(toaster);
+      expect(toaster.getAttribute("data-expanded")).toBe("true");
+      fireEvent.pointerLeave(toaster);
+      expect(toaster.getAttribute("data-expanded")).toBeNull();
+    } finally {
+      act(() => {
+        toast.dismiss();
+        vi.advanceTimersByTime(300);
+      });
+      vi.useRealTimers();
+    }
+  });
+
+  it("pauses auto-dismiss while the pointer is on the stack", async () => {
+    const { container } = render(<Toaster duration={40} />);
     const stage = within(container);
     const toaster = container.querySelector(".podo-toaster") as HTMLElement;
 
     act(() => {
-      toast("하나", { manual: true });
-      toast("둘", { manual: true });
-      toast("셋", { manual: true });
+      toast("머무는 토스트");
     });
-
-    // Rendered newest-first: 셋 is stack 0 (front), 하나 is stack 2 (back).
-    const cards = [...toaster.querySelectorAll(".podo-toast")];
-    expect(cards.map((c) => c.textContent)).toEqual(["셋", "둘", "하나"]);
-    expect(stage.getByText("셋").closest(".podo-toast")?.getAttribute("data-stack")).toBe("0");
-    expect(stage.getByText("하나").closest(".podo-toast")?.getAttribute("data-stack")).toBe("2");
-
-    // Collapsed by default; hovering fans the stack out, leaving restores it.
-    expect(toaster.getAttribute("data-expanded")).toBeNull();
-    fireEvent.pointerEnter(toaster);
-    expect(toaster.getAttribute("data-expanded")).toBe("true");
-    fireEvent.pointerLeave(toaster);
-    expect(toaster.getAttribute("data-expanded")).toBeNull();
-
+    // Hovering pauses auto-dismiss: the effect clears the armed timer while
+    // expanded, so the toast survives well past its 40ms duration.
     act(() => {
-      toast.dismiss();
+      fireEvent.pointerEnter(toaster);
     });
+    expect(toaster.getAttribute("data-expanded")).toBe("true");
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    expect(stage.getByText("머무는 토스트")).toBeDefined();
+
+    // Leaving re-arms the timer, so it dismisses (40ms) then unmounts (180ms).
+    act(() => {
+      fireEvent.pointerLeave(toaster);
+    });
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    expect(stage.queryByText("머무는 토스트")).toBeNull();
   });
 
   it("supports controlled and uncontrolled input value changes", async () => {

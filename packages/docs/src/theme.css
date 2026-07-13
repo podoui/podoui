@@ -727,6 +727,23 @@
   pointer-events: auto;
 }
 
+.podo-toaster:not([data-expanded])::after {
+  content: "";
+  height: calc(max(var(--podo-toast-count) - 1, 0) * var(--podo-toast-peek));
+  left: 0;
+  pointer-events: auto;
+  position: absolute;
+  right: 0;
+}
+
+.podo-toaster:not([data-expanded])[data-position^="top"]::after {
+  top: 100%;
+}
+
+.podo-toaster:not([data-expanded])[data-position^="bottom"]::after {
+  bottom: 100%;
+}
+
 .podo-toaster[data-position^="top"] {
   top: 16px;
 }
@@ -769,14 +786,11 @@
   transform-origin: bottom center;
 }
 
-.podo-toaster:not([data-expanded]) .podo-toast[data-stack]:not([data-stack="0"]) {
-  opacity: calc(1 - var(--podo-toast-index) * 0.2);
-}
-
 .podo-toaster[data-expanded] {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  pointer-events: auto;
 }
 
 .podo-toaster[data-expanded][data-position^="bottom"] {
@@ -811,11 +825,12 @@
 @media (prefers-reduced-motion: reduce) {
   .podo-toaster .podo-toast {
     animation: none;
-    transition: opacity 0.2s ease;
+    transition: none;
   }
 
   .podo-toaster .podo-toast[data-leaving] {
-    animation: podo-toast-out 0.18s ease forwards;
+    animation: none;
+    opacity: 0;
   }
 }
 
