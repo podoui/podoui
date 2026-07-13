@@ -686,10 +686,13 @@ input {
 }
 
 /* Collapsed: every card shares one grid cell (stacked); the front card sets
-   the cell height, back cards are transformed out from under it. */
+   the cell height, back cards are transformed out from under it. Opacity is
+   rule-driven (never keyframed) so a paused/throttled entrance can't leave a
+   card invisible — the entrance is a transform-only slide. */
 .podo-toaster .podo-toast {
   animation: podo-toast-in 0.18s ease;
   grid-area: 1 / 1;
+  opacity: 1;
   transition:
     transform 0.2s ease,
     opacity 0.2s ease;
@@ -732,35 +735,23 @@ input {
   transform: none;
 }
 
+/* Entrance is a short slide from just above the resting spot. It layers on top
+   of the rule-driven transform, so a paused entrance can't hide the card — it
+   only nudges its position. Opacity stays with the rules (front 1, back dimmed
+   by the collapsed rule above). */
 @keyframes podo-toast-in {
   from {
-    opacity: 0;
-    transform: translateY(-4px);
+    translate: 0 -8px;
   }
   to {
-    opacity: 1;
+    translate: 0 0;
   }
 }
 
-@keyframes podo-toast-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Exit mirrors the entrance; the duration must match TOAST_EXIT_MS (180ms)
-   in the react toaster, which removes the node when the animation is done. */
+/* Exit is opacity-only so it never fights the stack transform; the duration
+   must match TOAST_EXIT_MS (180ms) in the react toaster, which removes the
+   node when the animation is done. */
 @keyframes podo-toast-out {
-  to {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-}
-
-@keyframes podo-toast-fade-out {
   to {
     opacity: 0;
   }
@@ -771,23 +762,18 @@ input {
   z-index: 0;
 }
 
-/* Reduce, not remove: movement triggers vestibular issues, opacity doesn't —
-   reduced-motion users get plain fades, and the collapsed stack drops the
-   scale/slide so nothing moves when the stack changes. */
+/* Reduce, not remove: movement triggers vestibular issues, opacity doesn't.
+   Reduced-motion users still get the stack (back cards stay shrunk and peeking
+   so they read as "more behind") — only the sliding TRANSITION is dropped, so
+   restacking and the entrance snap instead of animating. */
 @media (prefers-reduced-motion: reduce) {
   .podo-toaster .podo-toast {
-    animation-name: podo-toast-fade;
+    animation: none;
     transition: opacity 0.2s ease;
   }
 
-  .podo-toaster:not([data-expanded]) .podo-toast[data-stack]:not([data-stack="0"]) {
-    /* Collapsed back cards hide entirely rather than sliding under the front. */
-    opacity: 0;
-    pointer-events: none;
-  }
-
   .podo-toaster .podo-toast[data-leaving] {
-    animation-name: podo-toast-fade-out;
+    animation: podo-toast-out 0.18s ease forwards;
   }
 }
 
