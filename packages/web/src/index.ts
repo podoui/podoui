@@ -222,45 +222,70 @@ input {
   cursor: not-allowed;
 }
 
-/* Chip (Figma 538:6615): pill tag with prefix/suffix icon slots.
-   Sizes: md 13px (base) / lg 16px, matching the Figma set vocabulary. */
+/* Chip (Figma 538:6615): pill tag with prefix/suffix icon slots and a
+   selection model — unselected is the base look, data-state="selected" turns
+   the fill on. Sizes: md 14px/2-6 pad (base), lg 16px/2-8 pad. */
 .podo-chip {
   align-items: center;
-  background: var(--podo-chip-root-background, #3E424B);
+  background: var(--podo-chip-root-background, #F4F4F5);
   border: 1px solid var(--podo-chip-root-borderColor, transparent);
   border-radius: 9999px;
-  color: var(--podo-chip-label-color, #FFFFFF);
+  color: var(--podo-chip-label-color, #18181B);
   cursor: pointer;
   display: inline-flex;
   font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
-  gap: 4px;
+  gap: 2px;
   justify-content: center;
   line-height: 1.6;
-  padding: 2px 8px;
+  padding: 2px 6px;
 }
 
 .podo-chip[data-size="lg"] {
   font-size: 16px;
+  gap: 4px;
+  padding: 2px 8px;
 }
 
-/* Figma outline-strong currently renders identically to solid (filled
-   gray.70); mirrored as-is pending a design fix. */
-.podo-chip[data-theme="outline-strong"] {
+/* Unselected (base): solid is a light fill, outlines are transparent with a
+   hairline border; pressing nudges each one darker. */
+.podo-chip[data-theme="outline-strong"],
+.podo-chip[data-theme="outline-weak"] {
+  --podo-chip-root-background: transparent;
+  --podo-chip-root-borderColor: #E4E4E7;
+}
+
+.podo-chip[data-theme="solid"]:active:not([disabled]):not([data-state="selected"]) {
+  --podo-chip-root-background: #E4E4E7;
+}
+
+.podo-chip[data-theme="outline-strong"]:active:not([disabled]):not([data-state="selected"]),
+.podo-chip[data-theme="outline-weak"]:active:not([disabled]):not([data-state="selected"]) {
+  --podo-chip-root-borderColor: #D1D2D6;
+}
+
+/* Selected: the filled look. Figma outline-strong selected currently renders
+   identically to solid (filled gray.70); mirrored as-is pending a design fix. */
+.podo-chip[data-theme="solid"][data-state="selected"],
+.podo-chip[data-theme="outline-strong"][data-state="selected"] {
   --podo-chip-root-background: #3E424B;
+  --podo-chip-root-borderColor: transparent;
   --podo-chip-label-color: #FFFFFF;
 }
 
-.podo-chip[data-theme="outline-weak"] {
+.podo-chip[data-theme="outline-weak"][data-state="selected"] {
   --podo-chip-root-background: #F9F9F9;
   --podo-chip-root-borderColor: #767985;
-  --podo-chip-label-color: #18181B;
 }
 
-.podo-chip[data-theme="solid"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
   --podo-chip-root-background: #767985;
+}
+
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+  --podo-chip-root-background: #F4F4F5;
 }
 
 .podo-chip:focus-visible {

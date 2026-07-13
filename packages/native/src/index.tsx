@@ -60,10 +60,12 @@ export interface NativeButtonProps {
 
 export interface NativeChipProps {
   children: ReactNode;
+  /** 선택 여부 (Figma state) — 비선택이 기본 모습이에요. */
+  selected?: boolean;
   disabled?: boolean;
   /** Background contrast (Figma: solid, outline-strong, outline-weak). */
   theme?: "solid" | "outline-strong" | "outline-weak";
-  /** Label/icon scale (Figma: md 13px — base, lg 16px). */
+  /** Label/icon scale (Figma: md 14px — base, lg 16px). */
   size?: "md" | "lg";
   /** Category/status icon before the label (Figma prefix-icon). */
   prefix?: ReactNode;
@@ -331,32 +333,42 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const behavior = createButtonBehavior({ disabled: props.disabled });
       const themeName = props.theme ?? "solid";
       const size = props.size ?? "md";
-      // Figma outline-strong currently renders identically to solid; mirrored
-      // as-is pending a design fix.
-      const themed =
-        themeName === "outline-weak"
-          ? { ...styles.chip, ...styles.chipOutlineWeak }
-          : props.disabled
-            ? { ...styles.chip, ...styles.chipDisabled }
-            : styles.chip;
-      const labelColor =
-        themeName === "outline-weak" ? "#18181B" : props.disabled ? "#9FA2AD" : "#FFFFFF";
+      const selected = props.selected === true;
+      // Figma 538:6615 selection colors — unselected is the base look.
+      // outline-strong selected renders identically to solid (pending fix).
+      const box = props.disabled
+        ? { fill: "#E4E4E7", border: "transparent", label: "#9FA2AD" }
+        : selected
+          ? themeName === "outline-weak"
+            ? { fill: "#F9F9F9", border: "#767985", label: "#18181B" }
+            : { fill: "#3E424B", border: "transparent", label: "#FFFFFF" }
+          : themeName === "solid"
+            ? { fill: "#F4F4F5", border: "transparent", label: "#18181B" }
+            : { fill: "transparent", border: "#E4E4E7", label: "#18181B" };
       return createElement(
         host.Pressable,
         {
           accessibilityRole: "button",
-          accessibilityState: { disabled: !behavior.pressable },
+          accessibilityState: {
+            disabled: !behavior.pressable,
+            ...(props.selected == null ? {} : { selected: props.selected }),
+          },
           disabled: !behavior.pressable,
           onPress: behavior.pressable ? props.onPress : undefined,
-          style: themed,
+          style: {
+            ...styles.chip,
+            backgroundColor: box.fill,
+            borderColor: box.border,
+          },
           testID: props.testID,
           "data-theme": themeName,
           "data-size": size,
+          "data-state": selected ? "selected" : undefined,
         },
         props.prefix,
         createElement(
           host.Text,
-          { style: { ...styles.chipLabel, color: labelColor, fontSize: size === "lg" ? 16 : 13 } },
+          { style: { ...styles.chipLabel, color: box.label, fontSize: size === "lg" ? 16 : 14 } },
           props.children
         ),
         props.suffix
@@ -966,9 +978,7 @@ function createNativeThemeStyles(
   | "button"
   | "buttonLabel"
   | "chip"
-  | "chipDisabled"
   | "chipLabel"
-  | "chipOutlineWeak"
   | "error"
   | "field"
   | "fieldCount"
@@ -1051,21 +1061,17 @@ function createNativeThemeStyles(
       paddingVertical: 8,
     },
     buttonLabel: { color: theme.colorScheme === "dark" ? "#101828" : "#FFFFFF", fontWeight: "600" },
-    // Chip (Figma 538:6615): pill, gap 4, padding 2/8, content-sized.
+    // Chip (Figma 538:6615): pill, content-sized; md gap 2/pad 6 (base).
     chip: {
       alignItems: "center",
-      backgroundColor: "#3E424B",
-      borderColor: "transparent",
       borderRadius: 9999,
       borderWidth: 1,
       flexDirection: "row",
-      gap: 4,
+      gap: 2,
       justifyContent: "center",
-      paddingHorizontal: 8,
+      paddingHorizontal: 6,
       paddingVertical: 2,
     },
-    chipOutlineWeak: { backgroundColor: "#F9F9F9", borderColor: "#767985" },
-    chipDisabled: { backgroundColor: "#E4E4E7" },
     chipLabel: { color: "#FFFFFF" },
     icon: { color: textColor },
   };

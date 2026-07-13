@@ -149,44 +149,72 @@
   cursor: not-allowed;
 }
 
-/* Chip (Figma 538:6615) — mirrors the canonical @podo/web chip CSS. */
+/* Chip (Figma 538:6615) — mirrors the canonical @podo/web chip CSS.
+   Unselected is the base look; data-state="selected" turns the fill on. */
 .podo-chip {
   align-items: center;
-  background: #3e424b;
+  background: #f4f4f5;
   border: 1px solid transparent;
   border-radius: 9999px;
-  color: #ffffff;
+  color: #18181b;
   cursor: pointer;
   display: inline-flex;
   font: inherit;
-  font-size: 13px;
-  gap: 4px;
+  font-size: 14px;
+  gap: 2px;
   justify-content: center;
   line-height: 1.6;
-  padding: 2px 8px;
+  padding: 2px 6px;
 }
 
 .podo-chip[data-size="lg"] {
   font-size: 16px;
+  gap: 4px;
+  padding: 2px 8px;
 }
 
-/* Figma outline-strong currently renders identically to solid — pending a design fix. */
-.podo-chip[data-theme="outline-strong"] {
+.podo-chip[data-theme="outline-strong"],
+.podo-chip[data-theme="outline-weak"] {
+  background: transparent;
+  border-color: #e4e4e7;
+}
+
+.podo-chip[data-theme="solid"]:active:not([disabled]):not([data-state="selected"]),
+.podo-chip[data-theme="solid"].is-pressed:not([data-state="selected"]) {
+  background: #e4e4e7;
+}
+
+.podo-chip[data-theme="outline-strong"]:active:not([disabled]):not([data-state="selected"]),
+.podo-chip[data-theme="outline-weak"]:active:not([disabled]):not([data-state="selected"]),
+.podo-chip[data-theme="outline-strong"].is-pressed:not([data-state="selected"]),
+.podo-chip[data-theme="outline-weak"].is-pressed:not([data-state="selected"]) {
+  border-color: #d1d2d6;
+}
+
+/* Figma outline-strong selected renders identically to solid — pending a design fix. */
+.podo-chip[data-theme="solid"][data-state="selected"],
+.podo-chip[data-theme="outline-strong"][data-state="selected"] {
   background: #3e424b;
+  border-color: transparent;
   color: #ffffff;
 }
 
-.podo-chip[data-theme="outline-weak"] {
+.podo-chip[data-theme="outline-weak"][data-state="selected"] {
   background: #f9f9f9;
   border-color: #767985;
   color: #18181b;
 }
 
-.podo-chip[data-theme="solid"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"]:active:not([disabled]),
-.podo-chip.is-pressed {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]),
+.podo-chip[data-theme="solid"][data-state="selected"].is-pressed,
+.podo-chip[data-theme="outline-strong"][data-state="selected"].is-pressed {
   background: #767985;
-  color: #ffffff;
+}
+
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]),
+.podo-chip[data-theme="outline-weak"][data-state="selected"].is-pressed {
+  background: #f4f4f5;
 }
 
 .podo-chip[disabled] {

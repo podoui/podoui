@@ -529,7 +529,7 @@
   - `.figma.tsx` 8개(button/chip/input/field/switch/textarea/table/checkbox) 작성·parse 검증 완료. 남은 것: 팀 Figma 플랜(Org/Enterprise) 확인 → 토큰 발급 → `npx figma connect publish`.
 - [ ] AGENTS.md에 어휘 규칙 명문화 + 컴포넌트 작업 체크리스트에 figma.tsx 갱신 단계 추가
 - [ ] 디자이너에게 시안 수정 요청 (코드는 시안 픽셀 그대로 반영해 둔 상태)
-  - Chip `outline-strong`이 solid와 동일 렌더 (외곽선 없음) — 수정되면 web CSS/theme.css/native의 "pending a design fix" 주석 지점 갱신
+  - Chip `outline-strong`의 selected가 solid와 동일 렌더 (외곽선 없음) — 수정되면 web CSS/theme.css/native의 "pending a design fix" 주석 지점 갱신
   - Chip 문서(538:6615) size 태그가 `sm/md` ↔ 컴포넌트셋·코드는 `md/lg` — 문서 태그 정리 필요 (코드는 md(base)/lg로 셋과 정렬 완료)
   - Chip 테마 태그 오타 `soild`
   - Input state 태그에 `hover` 누락 (본문·프리뷰엔 있음)
@@ -541,7 +541,6 @@
 ### C. 컴포넌트·품질
 
 - [ ] 다음 컴포넌트 시안 작업 계속 (Button/Chip/Input/Field 완료; 워크플로: 스펙 → 4렌더러 → 테스트 → docs → figma.tsx)
-- [ ] (대기) Chip 선택/미선택 상태 — 셋(328:14276)에 state 5종(normal=선택 base, pressed, unselected, unselected-pressed, disabled) 추가 확인했으나 디자이너가 재수정 예정이라 보류. 조사 메모: md pad 2/6·gap 2·font 14, lg pad 2/8·gap 4·font 16, 셋 size 기본값이 lg로 되어 있음(팀 기준은 md base), outline-strong normal은 여전히 solid와 동일
 - [ ] Pretendard 폰트 자산 확정
   - 토큰의 `fontAsset.dataUrl`이 `"AAAA"` 플레이스홀더. docs는 임시로 jsDelivr CDN 로드 중.
   - 완료 기준: 실제 woff2 임베드 또는 CDN 전략 확정이 토큰/빌드에 반영된다.

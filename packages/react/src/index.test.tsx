@@ -83,6 +83,25 @@ describe("@podo/react", () => {
     expect(chip.className).toBe("podo-chip");
     expect(chip.getAttribute("data-theme")).toBe("outline-weak");
     expect(chip.getAttribute("data-size")).toBe("lg");
+    // Selection is opt-in: no selected prop → a plain button, not a toggle.
+    expect(chip.getAttribute("aria-pressed")).toBeNull();
+    expect(chip.getAttribute("data-state")).toBeNull();
+  });
+
+  it("marks selected chips as pressed toggles", () => {
+    render(
+      <>
+        <Chip selected>켜짐</Chip>
+        <Chip selected={false}>꺼짐</Chip>
+      </>
+    );
+
+    const on = screen.getByRole("button", { name: "켜짐" });
+    expect(on.getAttribute("aria-pressed")).toBe("true");
+    expect(on.getAttribute("data-state")).toBe("selected");
+    const off = screen.getByRole("button", { name: "꺼짐" });
+    expect(off.getAttribute("aria-pressed")).toBe("false");
+    expect(off.getAttribute("data-state")).toBeNull();
   });
 
   it("tracks the character count automatically and caps input at countMax", async () => {

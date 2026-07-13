@@ -5,39 +5,92 @@
   "name": "Chip",
   "category": "atom",
   "status": "experimental",
-  "description": "Compact selectable/removable tag (Figma 538:6615): solid/outline-strong/outline-weak themes, md (base)/lg sizes, enabled/pressed/disabled states, prefix and suffix icon slots. NOTE: the Figma outline-strong variant currently renders identically to solid (filled gray.70, no outline); mirrored as-is pending a design fix.",
+  "description": "Compact selectable tag (Figma 538:6615) with a selection model — unselected is the base look. solid: gray.10 fill unselected, gray.70 fill with gray.0 text selected; outline-strong/weak: transparent with a gray.20 hairline unselected (outline-strong selected currently renders identically to solid, pending a design fix; outline-weak selected is gray.5 with a gray.50 border). Pressing nudges each state darker (unselected-pressed, selected-pressed) and disabled flattens to gray.20/gray.40. Sizes: md 14px/2-6 padding (base), lg 16px/2-8. prefix and suffix icon slots compose category and remove actions.",
   "anatomy": [
-    { "name": "root" },
-    { "name": "prefix-icon", "parent": "root" },
-    { "name": "label", "parent": "root" },
-    { "name": "suffix-icon", "parent": "root" }
+    {
+      "name": "root"
+    },
+    {
+      "name": "prefix-icon",
+      "parent": "root"
+    },
+    {
+      "name": "label",
+      "parent": "root"
+    },
+    {
+      "name": "suffix-icon",
+      "parent": "root"
+    }
   ],
   "slots": [
     {
       "name": "prefix-icon",
       "description": "Category/status icon before the label.",
       "targets": {
-        "web": { "name": "prefix" },
-        "react": { "name": "prefix" },
-        "hono": { "name": "prefix" },
-        "native": { "name": "prefix" }
+        "web": {
+          "name": "prefix"
+        },
+        "react": {
+          "name": "prefix"
+        },
+        "hono": {
+          "name": "prefix"
+        },
+        "native": {
+          "name": "prefix"
+        }
       }
     },
-    { "name": "children", "required": true, "fallback": "Label" },
+    {
+      "name": "children",
+      "required": true,
+      "fallback": "Label"
+    },
     {
       "name": "suffix-icon",
       "description": "Removal/action icon after the label (e.g. close).",
       "targets": {
-        "web": { "name": "suffix" },
-        "react": { "name": "suffix" },
-        "hono": { "name": "suffix" },
-        "native": { "name": "suffix" }
+        "web": {
+          "name": "suffix"
+        },
+        "react": {
+          "name": "suffix"
+        },
+        "hono": {
+          "name": "suffix"
+        },
+        "native": {
+          "name": "suffix"
+        }
       }
     }
   ],
   "props": [
-    { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
-    { "name": "onPress", "type": { "kind": "event", "payload": { "source": "chip" } } }
+    {
+      "name": "selected",
+      "type": {
+        "kind": "boolean"
+      },
+      "default": false,
+      "description": "선택 여부 (Figma state) — 비선택이 기본 모습. 지정하면 aria-pressed로 안내."
+    },
+    {
+      "name": "disabled",
+      "type": {
+        "kind": "boolean"
+      },
+      "default": false
+    },
+    {
+      "name": "onPress",
+      "type": {
+        "kind": "event",
+        "payload": {
+          "source": "chip"
+        }
+      }
+    }
   ],
   "variants": [
     {
@@ -60,14 +113,23 @@
         }
       }
     },
-    { "name": "size", "values": ["md", "lg"], "default": "md" }
+    {
+      "name": "size",
+      "values": ["md", "lg"],
+      "default": "md"
+    }
   ],
   "states": [
-    { "name": "focusVisible" },
+    {
+      "name": "focusVisible"
+    },
+    {
+      "name": "selected",
+      "description": "Figma selected: the filled look (solid/outline-strong gray.70 + gray.0 text, outline-weak gray.5 + gray.50 border)."
+    },
     {
       "name": "active",
-      "description": "Figma pressed state.",
-      "tokens": { "root.background": "{color.palette.gray.50}" }
+      "description": "Figma unselected-pressed/selected-pressed press feedback per theme."
     },
     {
       "name": "disabled",
@@ -78,17 +140,29 @@
     }
   ],
   "tokens": {
-    "root.background": "{color.palette.gray.70}",
-    "label.color": "{color.palette.gray.0}"
+    "root.background": "{color.palette.gray.10}",
+    "label.color": "{color.palette.gray.90}"
   },
   "targets": {
-    "web": { "supported": true, "limitations": [] },
-    "react": { "supported": true, "limitations": [] },
-    "hono": { "supported": true, "limitations": ["Press handling requires client code."] },
-    "native": { "supported": true, "limitations": [] }
+    "web": {
+      "supported": true,
+      "limitations": []
+    },
+    "react": {
+      "supported": true,
+      "limitations": []
+    },
+    "hono": {
+      "supported": true,
+      "limitations": ["Press handling requires client code."]
+    },
+    "native": {
+      "supported": true,
+      "limitations": []
+    }
   },
   "accessibility": {
-    "aria": ["aria-disabled"],
+    "aria": ["aria-disabled", "aria-pressed when selected is provided"],
     "keyboard": ["Enter/Space activates the chip"],
     "focusManagement": "Chip is a native button; focus follows the platform."
   },

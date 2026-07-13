@@ -12,7 +12,11 @@ const INTRO =
   "동작을 즉시 처리할 수 있어요.";
 
 const USAGE_TABS: CodeTab[] = [
-  { target: "react", label: "React", code: `<Chip onPress={toggle}>Label</Chip>` },
+  {
+    target: "react",
+    label: "React",
+    code: `<Chip selected={isOn} onPress={toggle}>Label</Chip>`,
+  },
   { target: "web", label: "Web", code: `<podo-chip>Label</podo-chip>` },
   {
     target: "hono",
@@ -54,7 +58,7 @@ export function ChipPage() {
       <DocSection
         index={1}
         title="크기 (size)"
-        description="칩은 사용 화면의 정보 밀도와 중요도에 따라 md(base), lg로 구분해 사용해요. lg는 클릭 영역이 충분해 터치 환경에서도 조작하기 편하고, 레이블이 명확하게 읽혀야 하는 필터·카테고리 선택·태그 입력 등 주요 인터랙션 맥락에 써요. md는 공간이 제한적이거나 칩이 보조적인 역할을 할 때 적합해요. 테이블 셀 안, 리스트 아이템 내부, 인풋 필드 안에 선택값이 쌓이는 멀티 셀렉트 등 밀도가 높은 UI에서 콘텐츠와 균형을 맞출 때 써요."
+        description="칩은 사용 화면의 정보 밀도와 중요도에 따라 md(base), lg로 구분해 사용해요. md는 공간이 제한적이거나 칩이 보조적인 역할을 할 때 적합해요. 테이블 셀 안, 리스트 아이템 내부, 인풋 필드 안에 선택값이 쌓이는 멀티 셀렉트 등 밀도가 높은 UI에서 콘텐츠와 균형을 맞출 때 쓰이고, lg는 클릭 영역이 충분해 터치 환경 및 레이블이 명확하게 읽혀야 하는 필터·카테고리 선택·태그 입력 등 주요 인터랙션 맥락에 써요."
       >
         <Card stage>
           <StageItem base>
@@ -71,9 +75,15 @@ export function ChipPage() {
         description="칩 테마는 배경 대비와 강조 정도에 따라 solid, outline-strong, outline-weak로 구분해요. solid는 진한 배경으로 선택·활성 상태를 뚜렷하게 강조할 때, outline-strong는 한 단계 낮은 대비로 여러 칩이 함께 놓여 보조적으로 쓰일 때, outline-weak는 밝은 배경에 얇은 외곽선으로 주변과 자연스럽게 어울려야 할 때 사용해요. 맥락에 맞는 테마를 선택하면 칩의 위계가 분명해지고 화면 전체의 강약이 정돈돼요."
       >
         <Card stage>
-          <Chip theme="solid">Label</Chip>
-          <Chip theme="outline-strong">Label</Chip>
-          <Chip theme="outline-weak">Label</Chip>
+          <Chip theme="solid" selected>
+            Label
+          </Chip>
+          <Chip theme="outline-strong" selected>
+            Label
+          </Chip>
+          <Chip theme="outline-weak" selected>
+            Label
+          </Chip>
         </Card>
         <PropertyTags values={["solid", "outline-strong", "outline-weak"]} />
       </DocSection>
@@ -81,14 +91,20 @@ export function ChipPage() {
       <DocSection
         index={3}
         title="상태 (state)"
-        description="칩 상태는 사용자의 조작 단계에 따라 enabled, pressed, disabled로 구분해 표현해요. enabled는 선택하거나 조작할 수 있는 기본 상태, pressed는 눌리는 순간의 피드백을 주어 상호작용이 전달됐음을 알리고, disabled는 지금 선택할 수 없는 상태임을 낮은 대비로 시각적으로 구분해요. 일관된 상태 체계를 통해 사용자가 칩을 누를 수 있는지, 지금 어떤 반응이 일어나는지를 즉각 인지하게 해요."
+        description="칩 상태는 선택 여부와 사용자의 조작 단계에 따라 unselected, unselected-pressed, selected, selected-pressed, disabled로 구분해 표현해요. unselected는 아직 선택되지 않은 기본 상태, selected는 선택·활성된 상태를 나타내고, 각 pressed는 누르는 순간의 피드백을 줘요. disabled는 지금 조작할 수 없는 비활성 상태를 낮은 대비로 구분해요. 선택·미선택과 눌림 피드백을 뚜렷하게 나눠, 사용자가 어떤 칩이 켜져 있고 지금 어떤 반응이 일어나는지 즉각 인지하게 해요."
       >
         <Card stage>
           <Chip>Label</Chip>
           <Chip className="is-pressed">Label</Chip>
+          <Chip selected>Label</Chip>
+          <Chip selected className="is-pressed">
+            Label
+          </Chip>
           <Chip disabled>Label</Chip>
         </Card>
-        <PropertyTags values={["enabled", "pressed", "disabled"]} />
+        <PropertyTags
+          values={["unselected", "unselected-pressed", "selected", "selected-pressed", "disabled"]}
+        />
       </DocSection>
 
       <DocSection
@@ -106,7 +122,7 @@ export function ChipPage() {
       <DocSection
         index={5}
         title="속성 (props)"
-        description="@podo/react의 Chip이 받는 속성이에요. pressed는 누르는 동안(:active) 자동으로 표현돼요. 이 밖에 표준 button 속성(className, type, aria-* 등)도 그대로 전달돼요."
+        description="@podo/react의 Chip이 받는 속성이에요. pressed 계열은 누르는 동안(:active) 자동으로 표현되고, 선택 여부만 selected로 제어해요. 이 밖에 표준 button 속성(className, type, aria-* 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"
@@ -130,7 +146,7 @@ export function ChipPage() {
                 <code>"md" | "lg"</code>
               </span>,
               <code>"md"</code>,
-              "레이블·아이콘 크기 (md 13px / lg 16px)",
+              "레이블·아이콘 크기 (md 14px / lg 16px)",
             ],
             [
               <span className="prop-name">
@@ -151,6 +167,16 @@ export function ChipPage() {
               </span>,
               "—",
               "레이블 뒤 동작 아이콘 (삭제 등)",
+            ],
+            [
+              <span className="prop-name">
+                <code>selected</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              "— (비선택)",
+              "선택 여부 (시안 state). 비선택이 기본 모습이고, 지정하면 aria-pressed로 안내돼요",
             ],
             [
               <span className="prop-name">

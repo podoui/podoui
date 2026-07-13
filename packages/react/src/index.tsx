@@ -74,8 +74,10 @@ export interface ChipProps extends Omit<
 > {
   /** Background contrast (Figma: solid, outline-strong, outline-weak). */
   theme?: ChipTheme;
-  /** Label/icon scale (Figma: md 13px — base, lg 16px). */
+  /** Label/icon scale (Figma: md 14px — base, lg 16px). */
   size?: "md" | "lg";
+  /** 선택 여부 (Figma state) — 비선택이 기본 모습이에요. 지정하면 aria-pressed로 안내돼요. */
+  selected?: boolean;
   disabled?: boolean;
   /** Category/status icon before the label (Figma prefix-icon). */
   prefix?: ReactNode;
@@ -355,6 +357,7 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
   {
     theme = "solid",
     size = "md",
+    selected,
     disabled,
     prefix,
     suffix,
@@ -378,6 +381,10 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
       disabled={behavior.root.disabled}
       aria-disabled={behavior.root.ariaDisabled}
       tabIndex={behavior.root.tabIndex}
+      // Selection is opt-in: an explicit selected prop makes the chip a
+      // toggle (aria-pressed); without it the chip reads as a plain button.
+      aria-pressed={selected == null ? undefined : selected}
+      data-state={selected ? "selected" : undefined}
       className={joinClass("podo-chip", className)}
       data-size={size}
       data-theme={theme}
