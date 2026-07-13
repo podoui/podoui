@@ -127,7 +127,7 @@ export function ToastPage() {
       <DocSection
         index={3}
         title="토스터 (toaster)"
-        description="토스트를 화면에 쌓고 자동으로 정리하는 행동 레이어예요. 앱 루트에 Toaster를 한 번 두면 어디서든 toast()로 띄울 수 있어요. 기본값은 상단 중앙(top-center), 3초 자동 소멸, 최대 3개이며 위치는 여섯 모서리 중 선택할 수 있어요. 넘치면 오래된 것부터 정리되고, manual 토스트는 X를 눌러야 닫혀요. 이 데모는 시안에 없는 동작 규칙이라 기본값으로 구현돼 있어요."
+        description="토스트를 화면에 쌓고 자동으로 정리하는 행동 레이어예요. 앱 루트에 Toaster를 한 번 두면 어디서든 toast()로 띄울 수 있어요. 기본값은 상단 중앙(top-center), 3초 자동 소멸, 최대 3개이며 위치는 여섯 모서리 중 선택할 수 있어요. 여러 개가 뜨면 최신 토스트가 앞에 원래 크기로 보이고 이전 것들은 살짝 작아지며 겹쳐 쌓여요. 스택에 마우스를 올리거나 포커스하면 모두 원래 크기로 펼쳐져요. 넘치면 오래된 것부터 정리되고, manual 토스트는 X를 눌러야 닫혀요. 아래 '3개 연속' 버튼으로 쌓임을, 스택에 호버해서 펼침을 확인해 보세요. 이 동작 규칙은 시안에 없어 기본값으로 구현돼 있어요."
       >
         <Card stage>
           <div className="stage-col">
@@ -150,17 +150,16 @@ export function ToastPage() {
               size="sm"
               theme="outline-assistive"
               onPress={() => {
-                toast("첫 번째");
-                toast.success("두 번째");
-                toast.warning("세 번째");
-                toast.info("네 번째 — 첫 번째가 정리돼요");
+                toast("첫 번째", { manual: true });
+                toast.success("두 번째", { manual: true });
+                toast.warning("세 번째 — 스택에 호버해 펼쳐 보세요", { manual: true });
               }}
             >
-              4개 연속 (최대 3개 유지)
+              3개 연속 (쌓임 → 호버하면 펼쳐져요)
             </Button>
           </div>
         </Card>
-        <PropertyTags values={["top-center (기본)", "3000ms", "max 3", "manual"]} />
+        <PropertyTags values={["top-center (기본)", "3000ms", "max 3", "manual", "쌓임/펼침"]} />
       </DocSection>
 
       <DocSection

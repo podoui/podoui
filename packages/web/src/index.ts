@@ -644,14 +644,19 @@ input {
   outline-offset: 2px;
 }
 
-/* Toaster stack (design-less plumbing): fixed to a screen edge, newest next
-   to the edge. Defaults live in the react Toaster: top-center, 3s, 3 toasts. */
+/* Toaster stack (design-less plumbing): fixed to a screen edge, newest in
+   front. Cards render newest-first, so [data-stack] 0/1/2 is front→back.
+   Collapsed, back cards shrink 5%/step and peek 14px below the front; hover
+   or focus (data-expanded) fans them into a real gap layout. Defaults live in
+   the react Toaster: top-center, 3s, 3 toasts. */
 .podo-toaster {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  --podo-toast-peek: 14px;
+  --podo-toast-shrink: 0.05;
+  display: grid;
   pointer-events: none;
   position: fixed;
+  width: 480px;
+  max-width: calc(100vw - 32px);
   z-index: 9999;
 }
 
@@ -665,23 +670,66 @@ input {
 
 .podo-toaster[data-position^="bottom"] {
   bottom: 16px;
-  flex-direction: column-reverse;
 }
 
 .podo-toaster[data-position$="left"] {
-  align-items: flex-start;
   left: 16px;
 }
 
 .podo-toaster[data-position$="right"] {
-  align-items: flex-end;
   right: 16px;
 }
 
 .podo-toaster[data-position$="center"] {
-  align-items: center;
   left: 50%;
   transform: translateX(-50%);
+}
+
+/* Collapsed: every card shares one grid cell (stacked); the front card sets
+   the cell height, back cards are transformed out from under it. */
+.podo-toaster .podo-toast {
+  animation: podo-toast-in 0.18s ease;
+  grid-area: 1 / 1;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+  width: 100%;
+  will-change: transform;
+  /* Front card (index 0) is fully shown on top; each step back scales down and
+     slides toward the screen edge by peek. z-index keeps the newest in front. */
+  transform: translateY(calc(var(--podo-toast-index) * var(--podo-toast-peek)))
+    scale(calc(1 - var(--podo-toast-index) * var(--podo-toast-shrink)));
+  transform-origin: top center;
+  z-index: calc(100 - var(--podo-toast-index));
+}
+
+/* bottom-anchored stacks peek upward and scale from the bottom. */
+.podo-toaster[data-position^="bottom"] .podo-toast {
+  transform: translateY(calc(var(--podo-toast-index) * var(--podo-toast-peek) * -1))
+    scale(calc(1 - var(--podo-toast-index) * var(--podo-toast-shrink)));
+  transform-origin: bottom center;
+}
+
+/* Back cards are dimmed while collapsed so the front one reads clearly. */
+.podo-toaster:not([data-expanded]) .podo-toast[data-stack]:not([data-stack="0"]) {
+  opacity: calc(1 - var(--podo-toast-index) * 0.2);
+}
+
+/* Expanded: real vertical layout with a gap, full size, newest nearest the
+   edge (top: first row; bottom: reverse so it hugs the bottom edge). */
+.podo-toaster[data-expanded] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.podo-toaster[data-expanded][data-position^="bottom"] {
+  flex-direction: column-reverse;
+}
+
+.podo-toaster[data-expanded] .podo-toast {
+  opacity: 1;
+  transform: none;
 }
 
 @keyframes podo-toast-in {
@@ -691,7 +739,6 @@ input {
   }
   to {
     opacity: 1;
-    transform: none;
   }
 }
 
@@ -719,19 +766,24 @@ input {
   }
 }
 
-.podo-toaster .podo-toast {
-  animation: podo-toast-in 0.18s ease;
-}
-
 .podo-toaster .podo-toast[data-leaving] {
   animation: podo-toast-out 0.18s ease forwards;
+  z-index: 0;
 }
 
 /* Reduce, not remove: movement triggers vestibular issues, opacity doesn't —
-   reduced-motion users still get the appearance feedback as a plain fade. */
+   reduced-motion users get plain fades, and the collapsed stack drops the
+   scale/slide so nothing moves when the stack changes. */
 @media (prefers-reduced-motion: reduce) {
   .podo-toaster .podo-toast {
     animation-name: podo-toast-fade;
+    transition: opacity 0.2s ease;
+  }
+
+  .podo-toaster:not([data-expanded]) .podo-toast[data-stack]:not([data-stack="0"]) {
+    /* Collapsed back cards hide entirely rather than sliding under the front. */
+    opacity: 0;
+    pointer-events: none;
   }
 
   .podo-toaster .podo-toast[data-leaving] {

@@ -457,6 +457,35 @@ describe("@podo/react", () => {
     }
   });
 
+  it("stacks newest-first and fans the stack out on hover", () => {
+    const { container } = render(<Toaster max={3} />);
+    const stage = within(container);
+    const toaster = container.querySelector(".podo-toaster") as HTMLElement;
+
+    act(() => {
+      toast("하나", { manual: true });
+      toast("둘", { manual: true });
+      toast("셋", { manual: true });
+    });
+
+    // Rendered newest-first: 셋 is stack 0 (front), 하나 is stack 2 (back).
+    const cards = [...toaster.querySelectorAll(".podo-toast")];
+    expect(cards.map((c) => c.textContent)).toEqual(["셋", "둘", "하나"]);
+    expect(stage.getByText("셋").closest(".podo-toast")?.getAttribute("data-stack")).toBe("0");
+    expect(stage.getByText("하나").closest(".podo-toast")?.getAttribute("data-stack")).toBe("2");
+
+    // Collapsed by default; hovering fans the stack out, leaving restores it.
+    expect(toaster.getAttribute("data-expanded")).toBeNull();
+    fireEvent.pointerEnter(toaster);
+    expect(toaster.getAttribute("data-expanded")).toBe("true");
+    fireEvent.pointerLeave(toaster);
+    expect(toaster.getAttribute("data-expanded")).toBeNull();
+
+    act(() => {
+      toast.dismiss();
+    });
+  });
+
   it("supports controlled and uncontrolled input value changes", async () => {
     const user = userEvent.setup();
     const values: string[] = [];

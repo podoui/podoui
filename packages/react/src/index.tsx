@@ -793,6 +793,8 @@ export function Toaster({
 }: ToasterProps): React.ReactElement {
   const items = useSyncExternalStore(subscribeToToasts, readToasts, readToasts);
   const timers = useRef(new Map<number, ReturnType<typeof setTimeout>>());
+  // Collapsed by default; hover or keyboard focus fans the stack out.
+  const [expanded, setExpanded] = useState(false);
   // Leaving toasts stay rendered for their exit animation but stop counting
   // toward max, so a new arrival fades in while the evicted one fades out.
   const active = items.filter((item) => !item.leaving);
@@ -832,16 +834,45 @@ export function Toaster({
     };
   }, []);
 
+  useEffect(() => {
+    if (visible.length === 0 && expanded) {
+      setExpanded(false);
+    }
+  }, [visible.length, expanded]);
+
+  // The front card is the newest; render newest-first so it paints on top and
+  // stacks index 0/1/2 from front to back (collapsed: back cards shrink and
+  // peek below; expanded: real gap layout). Rendering order is only visual —
+  // aria-live still announces in insertion order because each Toast keeps its
+  // own live region.
+  const ordered = [...visible].reverse();
+
   // position: fixed does the anchoring — mount once near the app root
   // (a transformed ancestor would re-anchor the stack).
   return (
-    <div className="podo-toaster" data-position={position}>
-      {visible.map((item) => (
+    <div
+      className="podo-toaster"
+      data-position={position}
+      data-expanded={expanded ? "true" : undefined}
+      style={{ "--podo-toast-count": ordered.length } as React.CSSProperties}
+      onPointerEnter={() => setExpanded(true)}
+      onPointerLeave={() => setExpanded(false)}
+      onFocusCapture={() => setExpanded(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setExpanded(false);
+        }
+      }}
+    >
+      {ordered.map((item, index) => (
         <Toast
           key={item.id}
           state={item.options.state ?? "normal"}
           caption={item.options.caption}
           data-leaving={item.leaving ? "true" : undefined}
+          // 0 = front (newest); back cards read it to shrink and offset.
+          data-stack={index}
+          style={{ "--podo-toast-index": index } as React.CSSProperties}
           onClose={() => toast.dismiss(item.id)}
         >
           {item.title}

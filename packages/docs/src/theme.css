@@ -713,11 +713,13 @@
 }
 
 .podo-toaster {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  --podo-toast-peek: 14px;
+  --podo-toast-shrink: 0.05;
+  display: grid;
   pointer-events: none;
   position: fixed;
+  width: 480px;
+  max-width: calc(100vw - 32px);
   z-index: 9999;
 }
 
@@ -731,23 +733,58 @@
 
 .podo-toaster[data-position^="bottom"] {
   bottom: 16px;
-  flex-direction: column-reverse;
 }
 
 .podo-toaster[data-position$="left"] {
-  align-items: flex-start;
   left: 16px;
 }
 
 .podo-toaster[data-position$="right"] {
-  align-items: flex-end;
   right: 16px;
 }
 
 .podo-toaster[data-position$="center"] {
-  align-items: center;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.podo-toaster .podo-toast {
+  animation: podo-toast-in 0.18s ease;
+  grid-area: 1 / 1;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+  width: 100%;
+  will-change: transform;
+  transform: translateY(calc(var(--podo-toast-index) * var(--podo-toast-peek)))
+    scale(calc(1 - var(--podo-toast-index) * var(--podo-toast-shrink)));
+  transform-origin: top center;
+  z-index: calc(100 - var(--podo-toast-index));
+}
+
+.podo-toaster[data-position^="bottom"] .podo-toast {
+  transform: translateY(calc(var(--podo-toast-index) * var(--podo-toast-peek) * -1))
+    scale(calc(1 - var(--podo-toast-index) * var(--podo-toast-shrink)));
+  transform-origin: bottom center;
+}
+
+.podo-toaster:not([data-expanded]) .podo-toast[data-stack]:not([data-stack="0"]) {
+  opacity: calc(1 - var(--podo-toast-index) * 0.2);
+}
+
+.podo-toaster[data-expanded] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.podo-toaster[data-expanded][data-position^="bottom"] {
+  flex-direction: column-reverse;
+}
+
+.podo-toaster[data-expanded] .podo-toast {
+  opacity: 1;
+  transform: none;
 }
 
 @keyframes podo-toast-in {
@@ -757,7 +794,6 @@
   }
   to {
     opacity: 1;
-    transform: none;
   }
 }
 
@@ -783,17 +819,20 @@
   }
 }
 
-.podo-toaster .podo-toast {
-  animation: podo-toast-in 0.18s ease;
-}
-
 .podo-toaster .podo-toast[data-leaving] {
   animation: podo-toast-out 0.18s ease forwards;
+  z-index: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .podo-toaster .podo-toast {
     animation-name: podo-toast-fade;
+    transition: opacity 0.2s ease;
+  }
+
+  .podo-toaster:not([data-expanded]) .podo-toast[data-stack]:not([data-stack="0"]) {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .podo-toaster .podo-toast[data-leaving] {
