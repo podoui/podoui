@@ -159,7 +159,7 @@ export function TablePage() {
                 <tr key={name}>
                   <td>{name}</td>
                   <td data-align="center">
-                    <Chip size="sm">{status}</Chip>
+                    <Chip size="md">{status}</Chip>
                   </td>
                   <td data-align="right">{count}</td>
                   <td data-align="right">{amount}</td>

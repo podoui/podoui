@@ -202,7 +202,8 @@ input {
   cursor: not-allowed;
 }
 
-/* Chip (Figma 538:6615): pill tag with prefix/suffix icon slots. */
+/* Chip (Figma 538:6615): pill tag with prefix/suffix icon slots.
+   Sizes: md 13px (base) / lg 16px, matching the Figma set vocabulary. */
 .podo-chip {
   align-items: center;
   background: var(--podo-chip-root-background, #3E424B);
@@ -212,7 +213,7 @@ input {
   cursor: pointer;
   display: inline-flex;
   font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 400;
   gap: 4px;
   justify-content: center;
@@ -220,8 +221,8 @@ input {
   padding: 2px 8px;
 }
 
-.podo-chip[data-size="sm"] {
-  font-size: 13px;
+.podo-chip[data-size="lg"] {
+  font-size: 16px;
 }
 
 /* Figma outline-strong currently renders identically to solid (filled
@@ -262,20 +263,20 @@ input {
   justify-content: center;
 }
 
-.podo-chip__prefix {
+.podo-chip__prefix,
+.podo-chip__suffix {
+  height: 16px;
+  width: 16px;
+}
+
+.podo-chip[data-size="lg"] .podo-chip__prefix {
   height: 24px;
   width: 24px;
 }
 
-.podo-chip__suffix {
+.podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
-}
-
-.podo-chip[data-size="sm"] .podo-chip__prefix,
-.podo-chip[data-size="sm"] .podo-chip__suffix {
-  height: 16px;
-  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.

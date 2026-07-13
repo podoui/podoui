@@ -61,8 +61,8 @@ export interface NativeChipProps {
   disabled?: boolean;
   /** Background contrast (Figma: solid, outline-strong, outline-weak). */
   theme?: "solid" | "outline-strong" | "outline-weak";
-  /** Label/icon scale (Figma: sm 13px, md 16px — md is base). */
-  size?: "sm" | "md";
+  /** Label/icon scale (Figma: md 13px — base, lg 16px). */
+  size?: "md" | "lg";
   /** Category/status icon before the label (Figma prefix-icon). */
   prefix?: ReactNode;
   /** Removal/action icon after the label, e.g. close (Figma suffix-icon). */
@@ -354,7 +354,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         props.prefix,
         createElement(
           host.Text,
-          { style: { ...styles.chipLabel, color: labelColor, fontSize: size === "sm" ? 13 : 16 } },
+          { style: { ...styles.chipLabel, color: labelColor, fontSize: size === "lg" ? 16 : 13 } },
           props.children
         ),
         props.suffix

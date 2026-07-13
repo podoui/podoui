@@ -5,7 +5,7 @@
   "name": "Chip",
   "category": "atom",
   "status": "experimental",
-  "description": "Compact selectable/removable tag (Figma 538:6615): solid/outline-strong/outline-weak themes, sm/md sizes, enabled/pressed/disabled states, prefix and suffix icon slots. NOTE: the Figma outline-strong variant currently renders identically to solid (filled gray.70, no outline); mirrored as-is pending a design fix.",
+  "description": "Compact selectable/removable tag (Figma 538:6615): solid/outline-strong/outline-weak themes, md (base)/lg sizes, enabled/pressed/disabled states, prefix and suffix icon slots. NOTE: the Figma outline-strong variant currently renders identically to solid (filled gray.70, no outline); mirrored as-is pending a design fix.",
   "anatomy": [
     { "name": "root" },
     { "name": "prefix-icon", "parent": "root" },
@@ -60,7 +60,7 @@
         }
       }
     },
-    { "name": "size", "values": ["sm", "md"], "default": "md" }
+    { "name": "size", "values": ["md", "lg"], "default": "md" }
   ],
   "states": [
     { "name": "focusVisible" },

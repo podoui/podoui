@@ -50,7 +50,7 @@ describe("@podo/native", () => {
     expect(screen.getByText("≡")).toBeDefined();
 
     render(
-      <domNative.Chip theme="outline-weak" size="sm" testID="chip">
+      <domNative.Chip theme="outline-weak" size="lg" testID="chip">
         필터
       </domNative.Chip>
     );

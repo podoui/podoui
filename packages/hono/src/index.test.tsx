@@ -60,7 +60,7 @@ describe("@podo/hono", () => {
         <Button theme="outline-primary" prefix={<Icon name="menu" />}>
           Save
         </Button>
-        <Chip size="sm" theme="outline-weak" suffix={<Icon name="menu" />}>
+        <Chip size="lg" theme="outline-weak" suffix={<Icon name="menu" />}>
           필터
         </Chip>
         <Switch checked size="lg" aria-label="알림" />

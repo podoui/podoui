@@ -72,8 +72,8 @@ export interface ChipProps extends Omit<
 > {
   /** Background contrast (Figma: solid, outline-strong, outline-weak). */
   theme?: ChipTheme;
-  /** Label/icon scale (Figma: sm 13px, md 16px — md is base). */
-  size?: "sm" | "md";
+  /** Label/icon scale (Figma: md 13px — base, lg 16px). */
+  size?: "md" | "lg";
   disabled?: boolean;
   /** Category/status icon before the label (Figma prefix-icon). */
   prefix?: ReactNode;

@@ -530,7 +530,7 @@
 - [ ] AGENTS.md에 어휘 규칙 명문화 + 컴포넌트 작업 체크리스트에 figma.tsx 갱신 단계 추가
 - [ ] 디자이너에게 시안 수정 요청 (코드는 시안 픽셀 그대로 반영해 둔 상태)
   - Chip `outline-strong`이 solid와 동일 렌더 (외곽선 없음) — 수정되면 web CSS/theme.css/native의 "pending a design fix" 주석 지점 갱신
-  - Chip 컴포넌트셋 size 어휘가 `lg/md` ↔ 문서 태그는 `sm/md` — 통일 필요
+  - Chip 문서(538:6615) size 태그가 `sm/md` ↔ 컴포넌트셋·코드는 `md/lg` — 문서 태그 정리 필요 (코드는 md(base)/lg로 셋과 정렬 완료)
   - Chip 테마 태그 오타 `soild`
   - Input state 태그에 `hover` 누락 (본문·프리뷰엔 있음)
   - Button 문서 용어 `layout` ↔ 컴포넌트 variant 실명 `type` — 통일 필요

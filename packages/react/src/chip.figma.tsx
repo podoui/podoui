@@ -1,6 +1,5 @@
 // Code Connect: Figma Chip component set (328:14276) → @podo/react Chip.
-// NOTE the size vocabulary differs: Figma lg = code md (base), Figma md =
-// code sm. This mapping is the translation table for that gap.
+// The size vocabulary now matches the set: md 13px (base) / lg 16px.
 import React from "react";
 import figma from "@figma/code-connect";
 import { Chip, Icon } from "./index.js";
@@ -15,7 +14,7 @@ figma.connect(
         "outline-strong": "outline-strong",
         "outline-weak": "outline-weak",
       }),
-      size: figma.enum("size", { lg: "md", md: "sm" }),
+      size: figma.enum("size", { md: "md", lg: "lg" }),
       disabled: figma.enum("state", { disabled: true }),
       prefix: figma.boolean("prefix-icon", {
         true: <Icon name="menu" />,

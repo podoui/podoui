@@ -54,15 +54,15 @@ export function ChipPage() {
       <DocSection
         index={1}
         title="크기 (size)"
-        description="칩은 사용 화면의 정보 밀도와 중요도에 따라 sm, md(base)로 구분해 사용해요. md는 클릭 영역이 충분해 터치 환경에서도 조작하기 편하고, 레이블이 명확하게 읽혀야 하는 필터·카테고리 선택·태그 입력 등 주요 인터랙션 맥락에 써요. sm은 공간이 제한적이거나 칩이 보조적인 역할을 할 때 적합해요. 테이블 셀 안, 리스트 아이템 내부, 인풋 필드 안에 선택값이 쌓이는 멀티 셀렉트 등 밀도가 높은 UI에서 콘텐츠와 균형을 맞출 때 써요."
+        description="칩은 사용 화면의 정보 밀도와 중요도에 따라 md(base), lg로 구분해 사용해요. lg는 클릭 영역이 충분해 터치 환경에서도 조작하기 편하고, 레이블이 명확하게 읽혀야 하는 필터·카테고리 선택·태그 입력 등 주요 인터랙션 맥락에 써요. md는 공간이 제한적이거나 칩이 보조적인 역할을 할 때 적합해요. 테이블 셀 안, 리스트 아이템 내부, 인풋 필드 안에 선택값이 쌓이는 멀티 셀렉트 등 밀도가 높은 UI에서 콘텐츠와 균형을 맞출 때 써요."
       >
         <Card stage>
-          <Chip size="sm">Label</Chip>
           <StageItem base>
             <Chip size="md">Label</Chip>
           </StageItem>
+          <Chip size="lg">Label</Chip>
         </Card>
-        <PropertyTags values={["sm", "md"]} />
+        <PropertyTags values={["md", "lg"]} />
       </DocSection>
 
       <DocSection
@@ -127,10 +127,10 @@ export function ChipPage() {
                 <code>size</code>
               </span>,
               <span className="prop-type">
-                <code>"sm" | "md"</code>
+                <code>"md" | "lg"</code>
               </span>,
               <code>"md"</code>,
-              "레이블·아이콘 크기 (sm 13px / md 16px)",
+              "레이블·아이콘 크기 (md 13px / lg 16px)",
             ],
             [
               <span className="prop-name">

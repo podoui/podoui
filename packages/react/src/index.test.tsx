@@ -62,7 +62,7 @@ describe("@podo/react", () => {
     render(
       <>
         <Chip
-          size="sm"
+          size="lg"
           theme="outline-weak"
           suffix={<Icon name="menu" />}
           onPress={() => (presses += 1)}
@@ -82,7 +82,7 @@ describe("@podo/react", () => {
     const chip = screen.getByRole("button", { name: /필터/ });
     expect(chip.className).toBe("podo-chip");
     expect(chip.getAttribute("data-theme")).toBe("outline-weak");
-    expect(chip.getAttribute("data-size")).toBe("sm");
+    expect(chip.getAttribute("data-size")).toBe("lg");
   });
 
   it("tracks the character count automatically and caps input at countMax", async () => {
