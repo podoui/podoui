@@ -99,7 +99,6 @@ input {
   gap: 6px;
   line-height: 1.6;
   min-height: 42px;
-  min-width: 80px;
   padding: 2px 16px;
 }
 
@@ -137,7 +136,7 @@ input {
   border-radius: 12px;
   font-size: 16px;
   min-height: 52px;
-  padding: 2px 20px;
+  padding: 10px 20px;
 }
 
 /* Themes (Figma solid/outline x primary/assistive/white) */
