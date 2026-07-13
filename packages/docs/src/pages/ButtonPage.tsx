@@ -77,7 +77,9 @@ export function ButtonPage() {
         description="버튼 레이아웃은 전달할 정보와 동작의 성격에 따라 text, prefix, suffix 구성으로 구분해 사용해요. text는 레이블만으로 동작이 충분히 전달될 때, prefix는 동작의 의미를 보조하는 아이콘을 텍스트 앞에 두어 인지를 빠르게 할 때, suffix는 이동·확장·다음 단계처럼 방향성이나 결과를 암시하는 아이콘을 텍스트 뒤에 둘 때 사용해요. 텍스트와 아이콘을 목적에 맞게 조합하면 버튼의 의미가 더 명확해지고, 일관된 레이아웃 체계를 통해 화면 전반의 정렬과 시각적 균형을 유지해요."
       >
         <Card stage>
-          <Button size="sm">버튼명</Button>
+          <StageItem base>
+            <Button size="sm">버튼명</Button>
+          </StageItem>
           <Button size="sm" prefix={<Dot />}>
             버튼명
           </Button>
@@ -94,10 +96,12 @@ export function ButtonPage() {
         description="동작의 위계와 사용 맥락에 따라 solid·outline의 형태와 primary·assistive·white의 테마를 조합해 사용해요. solid는 가장 중요한 주요 동작을 또렷하게 강조할 때, outline은 주요 동작을 보조하거나 부담을 줄여야 할때 쓰고, 핵심 동작에 primary, 중립적·보조적 동작에 assistive, 색상 배경이나 이미지 위에서는 white를 사용해요. 테마를 위계에 맞게 조합하면 한 화면 안에서도 동작의 중요도와 성격이 명확히 구분되어, 사용자의 선택을 자연스럽게 유도해요."
       >
         <Card stage>
-          {THEMES.map((theme) => (
-            <Button key={theme} size="sm" theme={theme}>
-              버튼명
-            </Button>
+          {THEMES.map((theme, index) => (
+            <StageItem key={theme} base={index === 0}>
+              <Button size="sm" theme={theme}>
+                버튼명
+              </Button>
+            </StageItem>
           ))}
         </Card>
         <PropertyTags values={[...THEMES]} />
