@@ -695,13 +695,24 @@ input {
   }
 }
 
+@keyframes podo-toast-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .podo-toaster .podo-toast {
   animation: podo-toast-in 0.18s ease;
 }
 
+/* Reduce, not remove: movement triggers vestibular issues, opacity doesn't —
+   reduced-motion users still get the appearance feedback as a plain fade. */
 @media (prefers-reduced-motion: reduce) {
   .podo-toaster .podo-toast {
-    animation: none;
+    animation-name: podo-toast-fade;
   }
 }
 
