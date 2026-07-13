@@ -526,7 +526,7 @@
 ### B. Figma 정합 (상세: figma-props-alignment.md)
 
 - [ ] Code Connect publish
-  - `.figma.tsx` 4개 작성·parse 검증 완료. 남은 것: 팀 Figma 플랜(Org/Enterprise) 확인 → 토큰 발급 → `npx figma connect publish`.
+  - `.figma.tsx` 8개(button/chip/input/field/switch/textarea/table/checkbox) 작성·parse 검증 완료. 남은 것: 팀 Figma 플랜(Org/Enterprise) 확인 → 토큰 발급 → `npx figma connect publish`.
 - [ ] AGENTS.md에 어휘 규칙 명문화 + 컴포넌트 작업 체크리스트에 figma.tsx 갱신 단계 추가
 - [ ] 디자이너에게 시안 수정 요청 (코드는 시안 픽셀 그대로 반영해 둔 상태)
   - Chip `outline-strong`이 solid와 동일 렌더 (외곽선 없음) — 수정되면 web CSS/theme.css/native의 "pending a design fix" 주석 지점 갱신

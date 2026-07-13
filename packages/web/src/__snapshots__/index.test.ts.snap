@@ -321,6 +321,83 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Checkbox (Figma 328:18039): fixed 18px radius-4 box — the size variant only
+   scales the label. The check/dash marks are inline SVG backgrounds so every
+   visual state renders from data-state alone (SSR included). */
+.podo-checkbox {
+  appearance: none;
+  background: var(--podo-checkbox-box-background, #FFFFFF) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-checkbox-box-borderColor, #9FA2AD);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426CED;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Labeled checkbox (Figma 328:18039): box + 6px gap + size-matched text. */
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: var(--podo-checkbox-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
    is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
@@ -421,6 +498,7 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);
@@ -430,12 +508,12 @@ input {
 }
 
 .podo-table th {
-  background: var(--podo-table-thead-background, #F9F9F9);
+  background: var(--podo-table-thead-background, #F4F4F5);
   border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  text-align: center;
+  text-align: left;
 }
 
 .podo-table td {
@@ -444,9 +522,9 @@ input {
   text-align: left;
 }
 
-/* grid: bordered radius-8 frame with per-cell vertical rules. */
+/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
+   per-cell vertical rules, horizon stays square with row rules only. */
 .podo-table[data-type="grid"] {
-  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-radius: 8px;
 }
 
@@ -455,7 +533,7 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table[data-type="grid"] tbody tr:last-child td {
+.podo-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -472,11 +550,6 @@ input {
   border-bottom-right-radius: 7px;
 }
 
-/* horizon: row rules only, headers without fill. */
-.podo-table[data-type="horizon"] th {
-  background: transparent;
-}
-
 /* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
 .podo-table tbody tr:hover:not([data-disabled]) td {
   background: #F9F9F9;
@@ -484,6 +557,11 @@ input {
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
+.podo-table tbody tr[data-selected] td {
   background: #F4F4F5;
 }
 
@@ -642,6 +720,724 @@ input {
   <span part="label"><slot></slot></span>
   <span class="podo-button__icon" part="suffix"><slot name="suffix"></slot></span>
 </button>"
+`;
+
+exports[`@podo/web > renders input, field, icon, and typography components > checkbox 1`] = `
+"<style>:host {
+  box-sizing: border-box;
+  font: inherit;
+}
+
+:host([fill]) {
+  display: block;
+  width: 100%;
+}
+
+button,
+input {
+  box-sizing: border-box;
+  font: inherit;
+}
+
+.podo-button {
+  align-items: center;
+  justify-content: center;
+  background: var(--podo-button-root-background, #426CED);
+  border: 1px solid var(--podo-button-root-borderColor, transparent);
+  border-radius: 10px;
+  color: var(--podo-button-label-color, #FFFFFF);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  font-weight: 400;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 80px;
+  padding: 2px 16px;
+}
+
+.podo-button__icon {
+  align-items: center;
+  color: var(--podo-button-icon-color, var(--podo-button-label-color, currentColor));
+  display: inline-flex;
+}
+
+/* fill stretches the button to the parent's full width (auto-layout fill). */
+.podo-button[data-fill="true"] {
+  width: 100%;
+}
+
+/* Sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) */
+.podo-button[data-size="xs"] {
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 32px;
+  padding: 2px 10px;
+}
+.podo-button[data-size="sm"] {
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 36px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="md"] {
+  border-radius: 10px;
+  font-size: 16px;
+  min-height: 42px;
+  padding: 2px 16px;
+}
+.podo-button[data-size="lg"] {
+  border-radius: 12px;
+  font-size: 16px;
+  min-height: 52px;
+  padding: 2px 20px;
+}
+
+/* Themes (Figma solid/outline x primary/assistive/white) */
+.podo-button[data-theme="solid-primary"] {
+  --podo-button-root-background: #426CED;
+  --podo-button-label-color: #FFFFFF;
+}
+.podo-button[data-theme="solid-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #1245E2;
+}
+.podo-button[data-theme="solid-primary"]:active:not([disabled]) {
+  --podo-button-root-background: #123BBA;
+}
+.podo-button[data-theme="solid-assistive"] {
+  --podo-button-root-background: #F4F4F5;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #E4E4E7;
+}
+.podo-button[data-theme="solid-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="solid-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-primary"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #426CED;
+  --podo-button-label-color: #426CED;
+}
+.podo-button[data-theme="outline-primary"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F7FE;
+}
+.podo-button[data-theme="outline-assistive"] {
+  --podo-button-root-background: #F9F9F9;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-assistive"]:hover:not([disabled]) {
+  --podo-button-root-background: #F4F4F5;
+}
+.podo-button[data-theme="outline-white"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #D1D2D6;
+  --podo-button-label-color: #18181B;
+}
+.podo-button[data-theme="outline-white"]:hover:not([disabled]) {
+  --podo-button-root-background: #F9F9F9;
+}
+
+.podo-button:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-button[disabled] {
+  --podo-button-root-background: #E4E4E7;
+  --podo-button-root-borderColor: transparent;
+  --podo-button-label-color: #9FA2AD;
+  cursor: not-allowed;
+}
+
+/* Chip (Figma 538:6615): pill tag with prefix/suffix icon slots. */
+.podo-chip {
+  align-items: center;
+  background: var(--podo-chip-root-background, #3E424B);
+  border: 1px solid var(--podo-chip-root-borderColor, transparent);
+  border-radius: 9999px;
+  color: var(--podo-chip-label-color, #FFFFFF);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  font-size: 16px;
+  font-weight: 400;
+  gap: 4px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 55px;
+  padding: 2px 8px;
+}
+
+.podo-chip[data-size="sm"] {
+  font-size: 13px;
+}
+
+/* Figma outline-strong currently renders identically to solid (filled
+   gray.70); mirrored as-is pending a design fix. */
+.podo-chip[data-theme="outline-strong"] {
+  --podo-chip-root-background: #3E424B;
+  --podo-chip-label-color: #FFFFFF;
+}
+
+.podo-chip[data-theme="outline-weak"] {
+  --podo-chip-root-background: #F9F9F9;
+  --podo-chip-root-borderColor: #767985;
+  --podo-chip-label-color: #18181B;
+}
+
+.podo-chip[data-theme="solid"]:active:not([disabled]),
+.podo-chip[data-theme="outline-strong"]:active:not([disabled]) {
+  --podo-chip-root-background: #767985;
+}
+
+.podo-chip:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-chip[disabled] {
+  --podo-chip-root-background: #E4E4E7;
+  --podo-chip-root-borderColor: transparent;
+  --podo-chip-label-color: #9FA2AD;
+  cursor: not-allowed;
+}
+
+.podo-chip__prefix,
+.podo-chip__suffix {
+  align-items: center;
+  color: var(--podo-chip-label-color, currentColor);
+  display: inline-flex;
+  justify-content: center;
+}
+
+.podo-chip__prefix {
+  height: 24px;
+  width: 24px;
+}
+
+.podo-chip__suffix {
+  height: 20px;
+  width: 20px;
+}
+
+.podo-chip[data-size="sm"] .podo-chip__prefix,
+.podo-chip[data-size="sm"] .podo-chip__suffix {
+  height: 16px;
+  width: 16px;
+}
+
+/* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
+   sm 30x18/handle 14 (base), md 40x24/handle 20, lg 56x32/handle 25. */
+.podo-switch {
+  background: var(--podo-switch-root-background, #D1D2D6);
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0;
+  position: relative;
+  transition: background 0.15s ease;
+}
+
+.podo-switch__handle {
+  background: var(--podo-switch-handle-background, #FFFFFF);
+  border-radius: 9999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  left: 2px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: left 0.15s ease;
+}
+
+.podo-switch[data-size="sm"] {
+  height: 18px;
+  width: 30px;
+}
+.podo-switch[data-size="sm"] .podo-switch__handle {
+  height: 14px;
+  width: 14px;
+}
+.podo-switch[data-size="sm"][data-state="on"] .podo-switch__handle {
+  left: 14px;
+}
+
+.podo-switch[data-size="md"] {
+  height: 24px;
+  width: 40px;
+}
+.podo-switch[data-size="md"] .podo-switch__handle {
+  height: 20px;
+  width: 20px;
+}
+.podo-switch[data-size="md"][data-state="on"] .podo-switch__handle {
+  left: 18px;
+}
+
+.podo-switch[data-size="lg"] {
+  height: 32px;
+  width: 56px;
+}
+.podo-switch[data-size="lg"] .podo-switch__handle {
+  height: 25px;
+  left: 4px;
+  width: 25px;
+}
+.podo-switch[data-size="lg"][data-state="on"] .podo-switch__handle {
+  left: 27px;
+}
+
+.podo-switch[data-state="on"] {
+  --podo-switch-root-background: #426CED;
+}
+
+.podo-switch:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-switch[disabled] {
+  --podo-switch-root-background: #E4E4E7;
+  --podo-switch-handle-background: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-switch[disabled] .podo-switch__handle {
+  box-shadow: none;
+}
+
+/* Labeled switch (Figma 566:12693): track + 6px gap + size-matched text. */
+.podo-switch-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-switch__text {
+  color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
+}
+
+.podo-switch-wrap[data-size="lg"] .podo-switch__text {
+  font-size: 18px;
+}
+
+.podo-switch-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-switch-wrap[data-disabled] .podo-switch__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Checkbox (Figma 328:18039): fixed 18px radius-4 box — the size variant only
+   scales the label. The check/dash marks are inline SVG backgrounds so every
+   visual state renders from data-state alone (SSR included). */
+.podo-checkbox {
+  appearance: none;
+  background: var(--podo-checkbox-box-background, #FFFFFF) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-checkbox-box-borderColor, #9FA2AD);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426CED;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Labeled checkbox (Figma 328:18039): box + 6px gap + size-matched text. */
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: var(--podo-checkbox-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Input (Figma 538:6693): wrapper carries the box + states, the inner control
+   is borderless so prefix/suffix content can live inside the input. */
+.podo-input {
+  align-items: center;
+  background: var(--podo-input-root-background, var(--podo-component-input-background, #FFFFFF));
+  border: 1px solid
+    var(--podo-input-root-borderColor, var(--podo-component-input-border, #E4E4E7));
+  border-radius: 10px;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-input[data-size="lg"] {
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.podo-input:hover:not([data-state]):not(:focus-within) {
+  border-color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-input:focus-within:not([data-state="disabled"]) {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-input[data-state="invalid"] {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
+.podo-input[data-state="disabled"] {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+}
+
+/* Figma read-only: the value stays visible without the box. */
+.podo-input[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.podo-input[data-state="read-only"]:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.podo-input__control {
+  background: transparent;
+  border: 0;
+  color: var(--podo-input-text-color, var(--podo-semantic-color-text-default, #18181B));
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-input__control::placeholder {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+.podo-input[data-state="disabled"] .podo-input__control {
+  color: #9FA2AD;
+  cursor: not-allowed;
+}
+
+.podo-input__prefix,
+.podo-input__suffix-icon {
+  align-items: center;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+/* Icons sharpen from muted to gray.50 while the value is being edited
+   (Figma icon/subtil #767985). */
+.podo-input:focus-within .podo-input__prefix,
+.podo-input:focus-within .podo-input__suffix-icon {
+  color: #767985;
+}
+
+.podo-input__suffix-text {
+  color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
+}
+
+/* Table (Figma 474:1795): native table markup styled by classes. NOTE: unlike
+   the other components this has no custom element — shadow slots would break
+   table semantics (tr/td parsing) — so consumers put class="podo-table" on a
+   native <table> and inject this stylesheet into the light DOM. */
+.podo-table {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--podo-table-text-color, #18181B);
+  font-size: 16px;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.podo-table th {
+  background: var(--podo-table-thead-background, #F4F4F5);
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.podo-table td {
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  padding: 12px;
+  text-align: left;
+}
+
+/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
+   per-cell vertical rules, horizon stays square with row rules only. */
+.podo-table[data-type="grid"] {
+  border-radius: 8px;
+}
+
+.podo-table[data-type="grid"] th:not(:last-child),
+.podo-table[data-type="grid"] td:not(:last-child) {
+  border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+}
+
+.podo-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.podo-table[data-type="grid"] thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+.podo-table[data-type="grid"] thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 7px;
+}
+
+/* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
+.podo-table tbody tr:hover:not([data-disabled]) td {
+  background: #F9F9F9;
+}
+
+.podo-table tbody tr:active:not([data-disabled]) td,
+.podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
+.podo-table tbody tr[data-selected] td {
+  background: #F4F4F5;
+}
+
+.podo-table tbody tr[data-disabled] td {
+  background: #F4F4F5;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
+   and radius 10; the resize grip is the platform's, restyled to the design. */
+.podo-textarea {
+  background: var(--podo-textarea-root-background, var(--podo-component-input-background, #FFFFFF));
+  border: 1px solid
+    var(--podo-textarea-root-borderColor, var(--podo-component-input-border, #E4E4E7));
+  border-radius: 10px;
+  color: var(--podo-textarea-text-color, var(--podo-semantic-color-text-default, #18181B));
+  display: block;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 78px;
+  outline: none;
+  padding: 12px 16px;
+  resize: vertical;
+  width: 300px;
+}
+
+.podo-textarea::placeholder {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+.podo-textarea[data-resize="false"] {
+  resize: none;
+}
+
+.podo-textarea:hover:not([data-state]):not(:focus) {
+  border-color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-textarea:focus:not([data-state="disabled"]) {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-textarea[data-state="invalid"] {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
+.podo-textarea[data-state="disabled"] {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  color: #9FA2AD;
+  cursor: not-allowed;
+  resize: none;
+}
+
+/* Figma resize-grip: two diagonal strokes in the corner (WebKit-only restyle). */
+.podo-textarea::-webkit-resizer {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M9 1 1 9M9 6 6 9' stroke='%239FA2AD' stroke-width='1.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
+  background-position: bottom 2px right 2px;
+  background-repeat: no-repeat;
+}
+
+/* Field (Figma 538:6691): heading(label + requirement + sub-label + suffix-icon),
+   free control slot, footer(helper-text/error + character count). */
+.podo-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--podo-spacing-component-field-gap, 6px);
+}
+
+.podo-field__heading {
+  align-items: center;
+  display: flex;
+  gap: 2px;
+}
+
+.podo-field__label {
+  align-items: baseline;
+  color: var(--podo-field-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  display: inline-flex;
+  flex: 1 1 0;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 2px;
+  line-height: 1.6;
+}
+
+.podo-field__requirement {
+  color: var(--podo-field-requirement-color, var(--podo-semantic-color-text-danger, #F23B3B));
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.podo-field__sub-label {
+  color: var(--podo-field-sub-label-color, var(--podo-semantic-color-text-muted, #9FA2AD));
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.podo-field__suffix-icon {
+  align-items: center;
+  color: var(--podo-semantic-color-text-subtle, #50555E);
+  display: inline-flex;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+}
+
+.podo-field__footer {
+  align-items: center;
+  display: flex;
+  font-size: 14px;
+  gap: 2px;
+  line-height: 1.6;
+}
+
+.podo-field__helper-text {
+  color: var(--podo-field-helper-text-color, var(--podo-semantic-color-text-muted, #9FA2AD));
+  flex: 1 1 0;
+}
+
+.podo-field__error {
+  color: var(--podo-field-error-color, var(--podo-semantic-color-text-danger, #F23B3B));
+  flex: 1 1 0;
+}
+
+.podo-field__count {
+  color: var(--podo-field-count-color, var(--podo-semantic-color-text-muted, #9FA2AD));
+  margin-left: auto;
+}
+
+.podo-icon {
+  color: var(--podo-icon-glyph-color, var(--podo-semantic-color-text-default, currentColor));
+  font-family: "PodoIcons";
+  line-height: 1;
+}
+
+.podo-text {
+  color: var(--podo-typography-root-color, var(--podo-semantic-color-text-default, #14151A));
+  font-family: var(--podo-typography-body-medium-fontFamily, inherit);
+  font-size: var(--podo-typography-body-medium-fontSize, 1rem);
+  line-height: var(--podo-typography-body-medium-lineHeight, 1.5);
+}
+
+.podo-text[data-as="h1"] {
+  font-family: var(--podo-typography-heading-xlarge-fontFamily, inherit);
+  font-size: var(--podo-typography-heading-xlarge-fontSize, 2rem);
+  font-weight: var(--podo-typography-heading-xlarge-fontWeight, 700);
+  line-height: var(--podo-typography-heading-xlarge-lineHeight, 1.2);
+}</style>
+<label class="podo-checkbox-wrap" part="wrap" data-size="md"><input class="podo-checkbox" part="box" type="checkbox" data-state="checked" checked=""><span class="podo-checkbox__text" part="label">이용약관</span></label>"
 `;
 
 exports[`@podo/web > renders input, field, icon, and typography components > chip 1`] = `
@@ -965,6 +1761,83 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Checkbox (Figma 328:18039): fixed 18px radius-4 box — the size variant only
+   scales the label. The check/dash marks are inline SVG backgrounds so every
+   visual state renders from data-state alone (SSR included). */
+.podo-checkbox {
+  appearance: none;
+  background: var(--podo-checkbox-box-background, #FFFFFF) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-checkbox-box-borderColor, #9FA2AD);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426CED;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Labeled checkbox (Figma 328:18039): box + 6px gap + size-matched text. */
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: var(--podo-checkbox-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
    is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
@@ -1065,6 +1938,7 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);
@@ -1074,12 +1948,12 @@ input {
 }
 
 .podo-table th {
-  background: var(--podo-table-thead-background, #F9F9F9);
+  background: var(--podo-table-thead-background, #F4F4F5);
   border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  text-align: center;
+  text-align: left;
 }
 
 .podo-table td {
@@ -1088,9 +1962,9 @@ input {
   text-align: left;
 }
 
-/* grid: bordered radius-8 frame with per-cell vertical rules. */
+/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
+   per-cell vertical rules, horizon stays square with row rules only. */
 .podo-table[data-type="grid"] {
-  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-radius: 8px;
 }
 
@@ -1099,7 +1973,7 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table[data-type="grid"] tbody tr:last-child td {
+.podo-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -1116,11 +1990,6 @@ input {
   border-bottom-right-radius: 7px;
 }
 
-/* horizon: row rules only, headers without fill. */
-.podo-table[data-type="horizon"] th {
-  background: transparent;
-}
-
 /* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
 .podo-table tbody tr:hover:not([data-disabled]) td {
   background: #F9F9F9;
@@ -1128,6 +1997,11 @@ input {
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
+.podo-table tbody tr[data-selected] td {
   background: #F4F4F5;
 }
 
@@ -1609,6 +2483,83 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Checkbox (Figma 328:18039): fixed 18px radius-4 box — the size variant only
+   scales the label. The check/dash marks are inline SVG backgrounds so every
+   visual state renders from data-state alone (SSR included). */
+.podo-checkbox {
+  appearance: none;
+  background: var(--podo-checkbox-box-background, #FFFFFF) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-checkbox-box-borderColor, #9FA2AD);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426CED;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Labeled checkbox (Figma 328:18039): box + 6px gap + size-matched text. */
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: var(--podo-checkbox-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
    is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
@@ -1709,6 +2660,7 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);
@@ -1718,12 +2670,12 @@ input {
 }
 
 .podo-table th {
-  background: var(--podo-table-thead-background, #F9F9F9);
+  background: var(--podo-table-thead-background, #F4F4F5);
   border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  text-align: center;
+  text-align: left;
 }
 
 .podo-table td {
@@ -1732,9 +2684,9 @@ input {
   text-align: left;
 }
 
-/* grid: bordered radius-8 frame with per-cell vertical rules. */
+/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
+   per-cell vertical rules, horizon stays square with row rules only. */
 .podo-table[data-type="grid"] {
-  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-radius: 8px;
 }
 
@@ -1743,7 +2695,7 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table[data-type="grid"] tbody tr:last-child td {
+.podo-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -1760,11 +2712,6 @@ input {
   border-bottom-right-radius: 7px;
 }
 
-/* horizon: row rules only, headers without fill. */
-.podo-table[data-type="horizon"] th {
-  background: transparent;
-}
-
 /* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
 .podo-table tbody tr:hover:not([data-disabled]) td {
   background: #F9F9F9;
@@ -1772,6 +2719,11 @@ input {
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
+.podo-table tbody tr[data-selected] td {
   background: #F4F4F5;
 }
 
@@ -2262,6 +3214,83 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Checkbox (Figma 328:18039): fixed 18px radius-4 box — the size variant only
+   scales the label. The check/dash marks are inline SVG backgrounds so every
+   visual state renders from data-state alone (SSR included). */
+.podo-checkbox {
+  appearance: none;
+  background: var(--podo-checkbox-box-background, #FFFFFF) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-checkbox-box-borderColor, #9FA2AD);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426CED;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Labeled checkbox (Figma 328:18039): box + 6px gap + size-matched text. */
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: var(--podo-checkbox-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
    is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
@@ -2362,6 +3391,7 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);
@@ -2371,12 +3401,12 @@ input {
 }
 
 .podo-table th {
-  background: var(--podo-table-thead-background, #F9F9F9);
+  background: var(--podo-table-thead-background, #F4F4F5);
   border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  text-align: center;
+  text-align: left;
 }
 
 .podo-table td {
@@ -2385,9 +3415,9 @@ input {
   text-align: left;
 }
 
-/* grid: bordered radius-8 frame with per-cell vertical rules. */
+/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
+   per-cell vertical rules, horizon stays square with row rules only. */
 .podo-table[data-type="grid"] {
-  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-radius: 8px;
 }
 
@@ -2396,7 +3426,7 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table[data-type="grid"] tbody tr:last-child td {
+.podo-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -2413,11 +3443,6 @@ input {
   border-bottom-right-radius: 7px;
 }
 
-/* horizon: row rules only, headers without fill. */
-.podo-table[data-type="horizon"] th {
-  background: transparent;
-}
-
 /* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
 .podo-table tbody tr:hover:not([data-disabled]) td {
   background: #F9F9F9;
@@ -2425,6 +3450,11 @@ input {
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
+.podo-table tbody tr[data-selected] td {
   background: #F4F4F5;
 }
 
@@ -2901,6 +3931,83 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Checkbox (Figma 328:18039): fixed 18px radius-4 box — the size variant only
+   scales the label. The check/dash marks are inline SVG backgrounds so every
+   visual state renders from data-state alone (SSR included). */
+.podo-checkbox {
+  appearance: none;
+  background: var(--podo-checkbox-box-background, #FFFFFF) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-checkbox-box-borderColor, #9FA2AD);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426CED;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Labeled checkbox (Figma 328:18039): box + 6px gap + size-matched text. */
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: var(--podo-checkbox-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
    is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
@@ -3001,6 +4108,7 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);
@@ -3010,12 +4118,12 @@ input {
 }
 
 .podo-table th {
-  background: var(--podo-table-thead-background, #F9F9F9);
+  background: var(--podo-table-thead-background, #F4F4F5);
   border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  text-align: center;
+  text-align: left;
 }
 
 .podo-table td {
@@ -3024,9 +4132,9 @@ input {
   text-align: left;
 }
 
-/* grid: bordered radius-8 frame with per-cell vertical rules. */
+/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
+   per-cell vertical rules, horizon stays square with row rules only. */
 .podo-table[data-type="grid"] {
-  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-radius: 8px;
 }
 
@@ -3035,7 +4143,7 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table[data-type="grid"] tbody tr:last-child td {
+.podo-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -3052,11 +4160,6 @@ input {
   border-bottom-right-radius: 7px;
 }
 
-/* horizon: row rules only, headers without fill. */
-.podo-table[data-type="horizon"] th {
-  background: transparent;
-}
-
 /* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
 .podo-table tbody tr:hover:not([data-disabled]) td {
   background: #F9F9F9;
@@ -3064,6 +4167,11 @@ input {
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
+.podo-table tbody tr[data-selected] td {
   background: #F4F4F5;
 }
 
@@ -3543,6 +4651,83 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Checkbox (Figma 328:18039): fixed 18px radius-4 box — the size variant only
+   scales the label. The check/dash marks are inline SVG backgrounds so every
+   visual state renders from data-state alone (SSR included). */
+.podo-checkbox {
+  appearance: none;
+  background: var(--podo-checkbox-box-background, #FFFFFF) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-checkbox-box-borderColor, #9FA2AD);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426CED;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Labeled checkbox (Figma 328:18039): box + 6px gap + size-matched text. */
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: var(--podo-checkbox-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
    is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
@@ -3643,6 +4828,7 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);
@@ -3652,12 +4838,12 @@ input {
 }
 
 .podo-table th {
-  background: var(--podo-table-thead-background, #F9F9F9);
+  background: var(--podo-table-thead-background, #F4F4F5);
   border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  text-align: center;
+  text-align: left;
 }
 
 .podo-table td {
@@ -3666,9 +4852,9 @@ input {
   text-align: left;
 }
 
-/* grid: bordered radius-8 frame with per-cell vertical rules. */
+/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
+   per-cell vertical rules, horizon stays square with row rules only. */
 .podo-table[data-type="grid"] {
-  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-radius: 8px;
 }
 
@@ -3677,7 +4863,7 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table[data-type="grid"] tbody tr:last-child td {
+.podo-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -3694,11 +4880,6 @@ input {
   border-bottom-right-radius: 7px;
 }
 
-/* horizon: row rules only, headers without fill. */
-.podo-table[data-type="horizon"] th {
-  background: transparent;
-}
-
 /* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
 .podo-table tbody tr:hover:not([data-disabled]) td {
   background: #F9F9F9;
@@ -3706,6 +4887,11 @@ input {
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
+.podo-table tbody tr[data-selected] td {
   background: #F4F4F5;
 }
 
@@ -4185,6 +5371,83 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Checkbox (Figma 328:18039): fixed 18px radius-4 box — the size variant only
+   scales the label. The check/dash marks are inline SVG backgrounds so every
+   visual state renders from data-state alone (SSR included). */
+.podo-checkbox {
+  appearance: none;
+  background: var(--podo-checkbox-box-background, #FFFFFF) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-checkbox-box-borderColor, #9FA2AD);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426CED;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Labeled checkbox (Figma 328:18039): box + 6px gap + size-matched text. */
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: var(--podo-checkbox-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
    is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
@@ -4285,6 +5548,7 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);
@@ -4294,12 +5558,12 @@ input {
 }
 
 .podo-table th {
-  background: var(--podo-table-thead-background, #F9F9F9);
+  background: var(--podo-table-thead-background, #F4F4F5);
   border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  text-align: center;
+  text-align: left;
 }
 
 .podo-table td {
@@ -4308,9 +5572,9 @@ input {
   text-align: left;
 }
 
-/* grid: bordered radius-8 frame with per-cell vertical rules. */
+/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
+   per-cell vertical rules, horizon stays square with row rules only. */
 .podo-table[data-type="grid"] {
-  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-radius: 8px;
 }
 
@@ -4319,7 +5583,7 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table[data-type="grid"] tbody tr:last-child td {
+.podo-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -4336,11 +5600,6 @@ input {
   border-bottom-right-radius: 7px;
 }
 
-/* horizon: row rules only, headers without fill. */
-.podo-table[data-type="horizon"] th {
-  background: transparent;
-}
-
 /* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
 .podo-table tbody tr:hover:not([data-disabled]) td {
   background: #F9F9F9;
@@ -4348,6 +5607,11 @@ input {
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
+.podo-table tbody tr[data-selected] td {
   background: #F4F4F5;
 }
 
@@ -4824,6 +6088,83 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Checkbox (Figma 328:18039): fixed 18px radius-4 box — the size variant only
+   scales the label. The check/dash marks are inline SVG backgrounds so every
+   visual state renders from data-state alone (SSR included). */
+.podo-checkbox {
+  appearance: none;
+  background: var(--podo-checkbox-box-background, #FFFFFF) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-checkbox-box-borderColor, #9FA2AD);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426CED;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Labeled checkbox (Figma 328:18039): box + 6px gap + size-matched text. */
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: var(--podo-checkbox-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
    is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
@@ -4924,6 +6265,7 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);
@@ -4933,12 +6275,12 @@ input {
 }
 
 .podo-table th {
-  background: var(--podo-table-thead-background, #F9F9F9);
+  background: var(--podo-table-thead-background, #F4F4F5);
   border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  text-align: center;
+  text-align: left;
 }
 
 .podo-table td {
@@ -4947,9 +6289,9 @@ input {
   text-align: left;
 }
 
-/* grid: bordered radius-8 frame with per-cell vertical rules. */
+/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
+   per-cell vertical rules, horizon stays square with row rules only. */
 .podo-table[data-type="grid"] {
-  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-radius: 8px;
 }
 
@@ -4958,7 +6300,7 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table[data-type="grid"] tbody tr:last-child td {
+.podo-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -4975,11 +6317,6 @@ input {
   border-bottom-right-radius: 7px;
 }
 
-/* horizon: row rules only, headers without fill. */
-.podo-table[data-type="horizon"] th {
-  background: transparent;
-}
-
 /* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
 .podo-table tbody tr:hover:not([data-disabled]) td {
   background: #F9F9F9;
@@ -4987,6 +6324,11 @@ input {
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
+.podo-table tbody tr[data-selected] td {
   background: #F4F4F5;
 }
 

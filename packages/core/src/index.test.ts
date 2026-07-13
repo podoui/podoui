@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { parseComponentDocument, type ComponentDocument } from "@podo/spec";
 import {
   createButtonBehavior,
+  createCheckboxBehavior,
   createComponentRegistry,
   createFieldA11y,
   createInputBehavior,
@@ -55,6 +56,19 @@ describe("@podo/core", () => {
       tabIndex: -1,
     });
     expect(createInputBehavior({ value: "a", invalid: true }).controlled).toBe(true);
+    // Checkbox: indeterminate wins the announced/data state over checked.
+    expect(createCheckboxBehavior({ checked: true, indeterminate: true }).root).toMatchObject({
+      role: "checkbox",
+      "aria-checked": "mixed",
+    });
+    expect(createCheckboxBehavior({ checked: true, indeterminate: true }).dataState).toEqual({
+      "data-state": "indeterminate",
+    });
+    expect(createCheckboxBehavior({ checked: true, disabled: true }).dataState).toEqual({
+      "data-state": "checked",
+      "data-disabled": "true",
+    });
+    expect(createCheckboxBehavior({ disabled: true }).pressable).toBe(false);
     expect(isActivationKey("Enter")).toBe(true);
     expect(isActivationKey("Escape")).toBe(false);
     expect(partClass("button", "label")).toBe("podo-button__label");

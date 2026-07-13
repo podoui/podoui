@@ -15,6 +15,7 @@ import React, {
 } from "react";
 import {
   createButtonBehavior,
+  createCheckboxBehavior,
   createFieldA11y,
   createInputBehavior,
   createSwitchBehavior,
@@ -92,6 +93,28 @@ export interface SwitchProps extends Omit<
   /** Fires with the next value when the switch is toggled. */
   onCheckedChange?: (checked: boolean) => void;
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
+}
+
+export interface CheckboxProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "checked" | "defaultChecked" | "disabled" | "onChange" | "size" | "type"
+> {
+  /** Controlled value (Figma state=checked/unchecked). */
+  checked?: boolean;
+  /** Initial uncontrolled value. */
+  defaultChecked?: boolean;
+  /** Partial-selection look for parent checkboxes (Figma state=indeterminate); announced as mixed. */
+  indeterminate?: boolean;
+  /** Label size only — the 18px box is fixed (Figma: md 14 — base, lg 16). */
+  size?: "md" | "lg";
+  /** SemiBold label for emphasized items (Figma bold). */
+  bold?: boolean;
+  /** Visible label next to the box (Figma label/text); also names the checkbox. */
+  label?: ReactNode;
+  disabled?: boolean;
+  /** Fires with the next value when the checkbox is toggled. */
+  onCheckedChange?: (checked: boolean) => void;
+  onChange?: InputHTMLAttributes<HTMLInputElement>["onChange"];
 }
 
 export interface InputProps extends Omit<
@@ -332,6 +355,78 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
     >
       {control}
       <span className="podo-switch__text">{label}</span>
+    </label>
+  );
+});
+
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
+  {
+    checked,
+    defaultChecked = false,
+    indeterminate = false,
+    size = "md",
+    bold,
+    label,
+    disabled,
+    className,
+    onChange,
+    onCheckedChange,
+    ...props
+  },
+  ref
+) {
+  // Uncontrolled fallback: without a checked prop the checkbox tracks itself.
+  const [internalChecked, setInternalChecked] = useState(defaultChecked);
+  const isOn = checked ?? internalChecked;
+  const behavior = createCheckboxBehavior({ checked: isOn, indeterminate, disabled });
+
+  const control = (
+    <input
+      {...props}
+      {...behavior.dataState}
+      ref={(element) => {
+        // The mixed state only exists as a DOM property.
+        if (element) {
+          element.indeterminate = indeterminate;
+        }
+        if (typeof ref === "function") {
+          ref(element);
+        } else if (ref) {
+          ref.current = element;
+        }
+      }}
+      type="checkbox"
+      className={joinClass("podo-checkbox", className)}
+      checked={isOn}
+      disabled={disabled}
+      onChange={(event) => {
+        onChange?.(event);
+        if (event.defaultPrevented) {
+          return;
+        }
+        if (checked == null) {
+          setInternalChecked(event.target.checked);
+        }
+        onCheckedChange?.(event.target.checked);
+      }}
+    />
+  );
+
+  if (label == null) {
+    return control;
+  }
+
+  // A <label> wrapper implicitly names and activates the checkbox
+  // (Figma 328:18039: 18px box + 6px gap + size-matched text: md 14/lg 16).
+  return (
+    <label
+      className="podo-checkbox-wrap"
+      data-size={size}
+      data-bold={bold ? "true" : undefined}
+      data-disabled={disabled ? "true" : undefined}
+    >
+      {control}
+      <span className="podo-checkbox__text">{label}</span>
     </label>
   );
 });

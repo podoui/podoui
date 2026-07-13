@@ -6,6 +6,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import {
   Button,
+  Checkbox,
   Chip,
   Field,
   Icon,
@@ -114,6 +115,47 @@ describe("@podo/react", () => {
     await user.click(screen.getByRole("switch", { name: "잠김" }));
     expect(changes).toEqual([true]);
     expect(screen.getByRole("switch", { name: "잠김" }).getAttribute("data-state")).toBe("on");
+  });
+
+  it("toggles the checkbox uncontrolled and announces indeterminate as mixed", async () => {
+    const user = userEvent.setup();
+    const changes: boolean[] = [];
+    render(
+      <>
+        <Checkbox label="이용약관" onCheckedChange={(next) => changes.push(next)} />
+        <Checkbox aria-label="전체 선택" indeterminate />
+        <Checkbox
+          aria-label="잠김"
+          disabled
+          defaultChecked
+          onCheckedChange={() => changes.push(false)}
+        />
+      </>
+    );
+
+    // The label wrapper names the checkbox and clicking the text toggles it.
+    const box = screen.getByRole("checkbox", { name: "이용약관" }) as HTMLInputElement;
+    expect(box.getAttribute("data-state")).toBe("unchecked");
+    await user.click(screen.getByText("이용약관"));
+    expect(box.checked).toBe(true);
+    expect(box.getAttribute("data-state")).toBe("checked");
+
+    // indeterminate only exists as a DOM property, plus the data/aria state.
+    const parent = screen.getByRole("checkbox", { name: "전체 선택" }) as HTMLInputElement;
+    expect(parent.indeterminate).toBe(true);
+    expect(parent.getAttribute("data-state")).toBe("indeterminate");
+
+    await user.click(screen.getByRole("checkbox", { name: "잠김" }));
+    expect(changes).toEqual([true]);
+  });
+
+  it("scales and emphasizes the checkbox label with size and bold", () => {
+    render(<Checkbox size="lg" bold label="강조" />);
+
+    const wrap = screen.getByText("강조").closest("label");
+    expect(screen.getByText("강조").className).toBe("podo-checkbox__text");
+    expect(wrap?.getAttribute("data-size")).toBe("lg");
+    expect(wrap?.getAttribute("data-bold")).toBe("true");
   });
 
   it("names and toggles the switch through its visible label", async () => {

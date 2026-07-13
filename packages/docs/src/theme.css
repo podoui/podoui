@@ -262,6 +262,10 @@
   background: #f4f4f5;
 }
 
+.podo-table tbody tr[data-selected] td {
+  background: #f4f4f5;
+}
+
 .podo-table tbody tr[data-disabled] td {
   background: #f4f4f5;
   color: #9fa2ad;
@@ -430,6 +434,81 @@
 }
 
 .podo-switch-wrap[data-disabled] .podo-switch__text {
+  color: #9fa2ad;
+}
+
+/* Checkbox (Figma 328:18039) — mirrors the canonical @podo/web checkbox CSS.
+   Fixed 18px radius-4 box; the size variant only scales the label. */
+.podo-checkbox {
+  appearance: none;
+  background: #ffffff center / 12px 12px no-repeat;
+  border: 1px solid #9fa2ad;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426ced;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426ced;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #e4e4e7;
+  border-color: #d1d2d6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: #50555e;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
   color: #9fa2ad;
 }
 

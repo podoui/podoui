@@ -74,6 +74,29 @@ describe("@podo/native", () => {
     expect(toggle.getAttribute("data-state")).toBe("on");
     toggle.click();
     expect(changes).toEqual([false]);
+
+    const checks: boolean[] = [];
+    render(
+      <>
+        <domNative.Checkbox
+          indeterminate
+          label="전체 선택"
+          testID="check-parent"
+          onCheckedChange={(next) => checks.push(next)}
+        />
+        <domNative.Checkbox checked disabled testID="check-locked" />
+      </>
+    );
+    const parent = screen.getByTestId("check-parent");
+    expect(parent.getAttribute("data-state")).toBe("indeterminate");
+    expect(screen.getByText("–")).toBeDefined();
+    parent.click();
+    expect(checks).toEqual([true]);
+    const locked = screen.getByTestId("check-locked");
+    expect(locked.getAttribute("data-state")).toBe("checked");
+    locked.click();
+    expect(checks).toEqual([true]);
+
     expect(screen.getByText("Required")).toBeDefined();
   });
 

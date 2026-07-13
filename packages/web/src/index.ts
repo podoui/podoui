@@ -1,5 +1,6 @@
 import {
   createButtonBehavior,
+  createCheckboxBehavior,
   createFieldA11y,
   createInputBehavior,
   createSwitchBehavior,
@@ -12,6 +13,7 @@ export interface RegisterPodoElementsOptions {
 
 export const podoElementNames = {
   button: "podo-button",
+  checkbox: "podo-checkbox",
   chip: "podo-chip",
   input: "podo-input",
   textarea: "podo-textarea",
@@ -30,6 +32,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
   const names = createElementNames(options.prefix);
   const definitions: Array<[string, CustomElementConstructor]> = [
     [names.button, createButtonElement()],
+    [names.checkbox, createCheckboxElement()],
     [names.chip, createChipElement()],
     [names.input, createInputElement()],
     [names.textarea, createTextareaElement()],
@@ -49,6 +52,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
 export function createElementNames(prefix = "podo"): typeof podoElementNames {
   return {
     button: `${prefix}-button`,
+    checkbox: `${prefix}-checkbox`,
     chip: `${prefix}-chip`,
     input: `${prefix}-input`,
     textarea: `${prefix}-textarea`,
@@ -379,6 +383,83 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Checkbox (Figma 328:18039): fixed 18px radius-4 box — the size variant only
+   scales the label. The check/dash marks are inline SVG backgrounds so every
+   visual state renders from data-state alone (SSR included). */
+.podo-checkbox {
+  appearance: none;
+  background: var(--podo-checkbox-box-background, #FFFFFF) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-checkbox-box-borderColor, #9FA2AD);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  flex: none;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  width: 18px;
+}
+
+.podo-checkbox[data-state="checked"] {
+  background-color: #426CED;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%2327272A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.podo-checkbox:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-checkbox[disabled] {
+  background-color: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-checkbox[disabled][data-state="checked"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: transparent;
+}
+
+.podo-checkbox[disabled][data-state="indeterminate"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Labeled checkbox (Figma 328:18039): box + 6px gap + size-matched text. */
+.podo-checkbox-wrap {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.podo-checkbox__text {
+  color: var(--podo-checkbox-label-color, var(--podo-semantic-color-text-subtle, #50555E));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-checkbox-wrap[data-size="lg"] .podo-checkbox__text {
+  font-size: 16px;
+}
+
+.podo-checkbox-wrap[data-bold] .podo-checkbox__text {
+  font-weight: 600;
+}
+
+.podo-checkbox-wrap[data-disabled] {
+  cursor: not-allowed;
+}
+
+.podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
    is borderless so prefix/suffix content can live inside the input. */
 .podo-input {
@@ -538,6 +619,11 @@ input {
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
+.podo-table tbody tr[data-selected] td {
   background: #F4F4F5;
 }
 
@@ -853,6 +939,87 @@ ${
           return;
         }
         const next = !this.checked;
+        this.checked = next;
+        this.dispatchEvent(
+          new CustomEvent("podo-checked-change", {
+            bubbles: true,
+            composed: true,
+            detail: { checked: next },
+          })
+        );
+      });
+    }
+  };
+}
+
+function createCheckboxElement(): CustomElementConstructor {
+  return class PodoCheckboxElement extends HTMLElement {
+    static get observedAttributes(): string[] {
+      return ["checked", "indeterminate", "disabled", "label", "size", "bold", "aria-label"];
+    }
+
+    readonly shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
+
+    get checked(): boolean {
+      return this.hasAttribute("checked");
+    }
+
+    set checked(value: boolean) {
+      this.toggleAttribute("checked", value);
+    }
+
+    get indeterminate(): boolean {
+      return this.hasAttribute("indeterminate");
+    }
+
+    set indeterminate(value: boolean) {
+      this.toggleAttribute("indeterminate", value);
+    }
+
+    connectedCallback(): void {
+      this.render();
+    }
+
+    attributeChangedCallback(): void {
+      this.render();
+    }
+
+    private render(): void {
+      const behavior = createCheckboxBehavior({
+        checked: this.checked,
+        indeterminate: this.indeterminate,
+        disabled: this.hasAttribute("disabled"),
+      });
+      const label = attr(this, "label", "");
+
+      const control = `<input class="podo-checkbox" part="box" type="checkbox" ${attrString(
+        "aria-label",
+        attr(this, "aria-label", "")
+      )} data-state="${behavior.dataState["data-state"]}"${behavior.checked ? " checked" : ""}${
+        behavior.disabled ? " disabled" : ""
+      }>`;
+      // Figma 328:18039: optional visible label next to the box.
+      this.shadow.innerHTML = `${componentStyleBlock()}
+${
+  label
+    ? `<label class="podo-checkbox-wrap" part="wrap" data-size="${escapeHtml(
+        attr(this, "size", "md")
+      )}"${this.hasAttribute("bold") ? ' data-bold="true"' : ""}${
+        behavior.disabled ? ' data-disabled="true"' : ""
+      }>${control}<span class="podo-checkbox__text" part="label">${escapeHtml(
+        label
+      )}</span></label>`
+    : control
+}`;
+      const input = this.shadow.querySelector("input");
+      if (!input) {
+        return;
+      }
+      // The mixed state only exists as a DOM property.
+      input.indeterminate = behavior.indeterminate;
+      input.addEventListener("change", () => {
+        const next = input.checked;
+        this.removeAttribute("indeterminate");
         this.checked = next;
         this.dispatchEvent(
           new CustomEvent("podo-checked-change", {

@@ -4,6 +4,7 @@ import { renderToString } from "hono/jsx/dom/server";
 import { describe, expect, it } from "vitest";
 import {
   Button,
+  Checkbox,
   Chip,
   Field,
   Icon,
@@ -60,6 +61,7 @@ describe("@podo/hono", () => {
           필터
         </Chip>
         <Switch checked size="lg" aria-label="알림" />
+        <Checkbox indeterminate bold label="전체 선택" />
         <Textarea name="memo" defaultValue="메모" invalid resize={false} />
         <Table type="grid">
           <tbody>
@@ -80,6 +82,10 @@ describe("@podo/hono", () => {
     expect(html).toContain('role="switch"');
     expect(html).toContain('aria-checked="true"');
     expect(html).toContain('data-state="on"');
+    // SSR checkbox: every visual state renders from data-state alone.
+    expect(html).toContain('class="podo-checkbox"');
+    expect(html).toContain('data-state="indeterminate"');
+    expect(html).toContain('data-bold="true"');
     expect(html).toContain('class="podo-textarea"');
     expect(html).toContain('data-resize="false"');
     expect(html).toContain(">메모</textarea>");

@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "checkbox",
+  "name": "Checkbox",
+  "category": "atom",
+  "status": "experimental",
+  "description": "Independent multi-select toggle (Figma 541:6305, component set 328:18039). The box is a fixed 18px radius-4 square regardless of size: white with a gray.40 border when unchecked, primary.50 with a light check when checked, and a gray.80 dash for the indeterminate partial selection shown on parent checkboxes. An optional label sits at a 6px gap; size only scales the label (md 14 — base, lg 16) and bold renders it SemiBold.",
+  "anatomy": [{ "name": "box" }, { "name": "label" }],
+  "slots": [
+    {
+      "name": "label",
+      "description": "Visible label next to the box, sized by the size variant (md 14/lg 16); also names the checkbox.",
+      "targets": {
+        "web": { "name": "label" },
+        "react": { "name": "label" },
+        "hono": { "name": "label" },
+        "native": { "name": "label" }
+      }
+    }
+  ],
+  "props": [
+    {
+      "name": "checked",
+      "type": { "kind": "boolean" },
+      "description": "Controlled value (Figma state=checked/unchecked)."
+    },
+    {
+      "name": "defaultChecked",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "Initial uncontrolled value."
+    },
+    {
+      "name": "indeterminate",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "Partial-selection look for parent checkboxes (Figma state=indeterminate); announced as mixed."
+    },
+    {
+      "name": "bold",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "SemiBold label for emphasized items (Figma bold)."
+    },
+    {
+      "name": "disabled",
+      "type": { "kind": "boolean" },
+      "default": false
+    },
+    {
+      "name": "onCheckedChange",
+      "type": {
+        "kind": "event",
+        "payload": { "checked": "boolean" }
+      },
+      "description": "Fires with the next value when the checkbox is toggled."
+    }
+  ],
+  "variants": [
+    {
+      "name": "size",
+      "values": ["md", "lg"],
+      "default": "md"
+    }
+  ],
+  "states": [
+    { "name": "focusVisible" },
+    {
+      "name": "checked",
+      "tokens": {
+        "box.background": "{color.palette.primary.50}"
+      }
+    },
+    {
+      "name": "indeterminate",
+      "tokens": {
+        "icon.color": "{color.palette.gray.80}"
+      }
+    },
+    {
+      "name": "disabled",
+      "tokens": {
+        "box.background": "{color.palette.gray.20}",
+        "box.borderColor": "{color.palette.gray.30}",
+        "label.color": "{semantic.color.text.muted}"
+      }
+    }
+  ],
+  "tokens": {
+    "box.background": "{color.palette.gray.0}",
+    "box.borderColor": "{color.palette.gray.40}",
+    "label.color": "{semantic.color.text.subtle}"
+  },
+  "targets": {
+    "web": { "supported": true, "limitations": [] },
+    "react": { "supported": true, "limitations": [] },
+    "hono": {
+      "supported": true,
+      "limitations": [
+        "Toggling requires client code.",
+        "indeterminate renders the dash via data-state; the DOM mixed property needs client code."
+      ]
+    },
+    "native": { "supported": true, "limitations": [] }
+  },
+  "accessibility": {
+    "aria": ["native input[type=checkbox] semantics", "aria-checked=mixed when indeterminate"],
+    "keyboard": ["Space toggles the checkbox"],
+    "focusManagement": "Checkbox is a native input; focus follows the platform."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Terms agreement",
+      "code": "<Checkbox label=\"이용약관 동의\" checked={agreed} onCheckedChange={setAgreed} />"
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import type { JSX } from "hono/jsx/jsx-runtime";
 import { raw } from "hono/html";
 import {
   createButtonBehavior,
+  createCheckboxBehavior,
   createFieldA11y,
   createInputBehavior,
   createSwitchBehavior,
@@ -286,6 +287,69 @@ export function Switch({
     <label class="podo-switch-wrap" data-size={size} data-disabled={disabled ? "true" : undefined}>
       {control}
       <span class="podo-switch__text">{label}</span>
+    </label>
+  );
+}
+
+export interface HonoCheckboxProps {
+  /** Value rendered statically (Figma state=checked/unchecked). */
+  checked?: boolean;
+  /** Partial-selection look (Figma state=indeterminate); the DOM mixed property needs client code. */
+  indeterminate?: boolean;
+  /** Label size only — the 18px box is fixed (Figma: md 14 — base, lg 16). */
+  size?: "md" | "lg";
+  /** SemiBold label for emphasized items (Figma bold). */
+  bold?: boolean;
+  /** Visible label next to the box (Figma label/text); also names the checkbox. */
+  label?: Child;
+  disabled?: boolean;
+  name?: string;
+  value?: string;
+  "aria-label"?: string;
+  class?: string;
+}
+
+export function Checkbox({
+  checked,
+  indeterminate,
+  size = "md",
+  bold,
+  label,
+  disabled,
+  name,
+  value,
+  "aria-label": ariaLabel,
+  class: className,
+}: HonoCheckboxProps): JSX.Element {
+  const behavior = createCheckboxBehavior({ checked, indeterminate, disabled });
+
+  const control = (
+    <input
+      class={joinClass("podo-checkbox", className)}
+      type="checkbox"
+      name={name}
+      value={value}
+      checked={behavior.checked}
+      disabled={behavior.disabled}
+      aria-label={ariaLabel}
+      data-state={behavior.dataState["data-state"]}
+    />
+  );
+
+  if (label == null) {
+    return control;
+  }
+
+  // Figma 328:18039: 18px box + 6px gap + size-matched text (md 14/lg 16).
+  return (
+    <label
+      class="podo-checkbox-wrap"
+      data-size={size}
+      data-bold={bold ? "true" : undefined}
+      data-disabled={disabled ? "true" : undefined}
+    >
+      {control}
+      <span class="podo-checkbox__text">{label}</span>
     </label>
   );
 }

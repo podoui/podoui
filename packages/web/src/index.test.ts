@@ -14,6 +14,7 @@ describe("@podo/web", () => {
     registerPodoElements();
 
     expect(customElements.get("podo-button")).toBeDefined();
+    expect(customElements.get("podo-checkbox")).toBeDefined();
     expect(customElements.get("podo-chip")).toBeDefined();
     expect(customElements.get("podo-input")).toBeDefined();
     expect(customElements.get("podo-switch")).toBeDefined();
@@ -103,6 +104,24 @@ describe("@podo/web", () => {
     });
     toggle.shadowRoot?.querySelector("button")?.click();
 
+    const check = document.createElement("podo-checkbox") as HTMLElement & {
+      checked: boolean;
+      indeterminate: boolean;
+    };
+    check.setAttribute("label", "이용약관");
+    check.setAttribute("indeterminate", "");
+    document.body.append(check);
+    const checkInput = check.shadowRoot?.querySelector("input");
+    // The mixed state only exists as a DOM property on the inner input.
+    expect(checkInput?.indeterminate).toBe(true);
+    expect(checkInput?.getAttribute("data-state")).toBe("indeterminate");
+    let checkedNext: boolean | undefined;
+    check.addEventListener("podo-checked-change", (event) => {
+      checkedNext = (event as CustomEvent<{ checked: boolean }>).detail.checked;
+    });
+    // Clicking resolves the mixed state to checked and emits the change event.
+    checkInput?.click();
+
     const area = document.createElement("podo-textarea") as HTMLElement & { value: string };
     area.setAttribute("invalid", "");
     area.setAttribute("resize", "false");
@@ -128,6 +147,12 @@ describe("@podo/web", () => {
     expect(toggle.checked).toBe(true);
     expect(toggle.shadowRoot?.querySelector("button")?.getAttribute("data-state")).toBe("on");
     expect(toggle.shadowRoot?.innerHTML).toMatchSnapshot("switch");
+    expect(checkedNext).toBe(true);
+    expect(check.checked).toBe(true);
+    expect(check.indeterminate).toBe(false);
+    expect(check.shadowRoot?.querySelector("input")?.getAttribute("data-state")).toBe("checked");
+    expect(check.shadowRoot?.querySelector(".podo-checkbox-wrap")).toBeDefined();
+    expect(check.shadowRoot?.innerHTML).toMatchSnapshot("checkbox");
     expect(area.shadowRoot?.querySelector("textarea")?.getAttribute("data-state")).toBe("invalid");
     expect(area.shadowRoot?.querySelector("textarea")?.getAttribute("data-resize")).toBe("false");
     expect(area.shadowRoot?.innerHTML).toMatchSnapshot("textarea");

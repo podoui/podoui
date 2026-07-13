@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import {
   createButtonBehavior,
+  createCheckboxBehavior,
   createFieldA11y,
   createInputBehavior,
   createSwitchBehavior,
@@ -78,6 +79,24 @@ export interface NativeSwitchProps {
   label?: ReactNode;
   disabled?: boolean;
   /** Fires with the next value when the switch is toggled. */
+  onCheckedChange?: (checked: boolean) => void;
+  accessibilityLabel?: string;
+  testID?: string;
+}
+
+export interface NativeCheckboxProps {
+  /** Controlled value (Figma state=checked/unchecked). */
+  checked?: boolean;
+  /** Partial-selection look for parent checkboxes (Figma state=indeterminate); announced as mixed. */
+  indeterminate?: boolean;
+  /** Label size only — the 18px box is fixed (Figma: md 14 — base, lg 16). */
+  size?: "md" | "lg";
+  /** SemiBold label for emphasized items (Figma bold). */
+  bold?: boolean;
+  /** Visible label next to the box (Figma label/text). */
+  label?: ReactNode;
+  disabled?: boolean;
+  /** Fires with the next value when the checkbox is toggled. */
   onCheckedChange?: (checked: boolean) => void;
   accessibilityLabel?: string;
   testID?: string;
@@ -159,6 +178,7 @@ export interface NativeIconProps {
 
 export interface NativeComponents {
   Button: (props: NativeButtonProps) => React.ReactElement;
+  Checkbox: (props: NativeCheckboxProps) => React.ReactElement;
   Chip: (props: NativeChipProps) => React.ReactElement;
   Input: (props: NativeInputProps) => React.ReactElement;
   Textarea: (props: NativeTextareaProps) => React.ReactElement;
@@ -533,10 +553,82 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           : null
       );
     },
+    Checkbox: (props) => {
+      const behavior = createCheckboxBehavior({
+        checked: props.checked,
+        indeterminate: props.indeterminate,
+        disabled: props.disabled,
+      });
+      // Figma 328:18039 colors; the box stays 18x18 radius 4 for every size.
+      const solid = behavior.checked && !behavior.indeterminate;
+      const box = behavior.disabled
+        ? { fill: "#E4E4E7", border: solid ? undefined : "#D1D2D6", mark: "#9FA2AD" }
+        : solid
+          ? { fill: "#426CED", border: undefined, mark: "#F9F9F9" }
+          : { fill: "#FFFFFF", border: "#9FA2AD", mark: "#27272A" };
+      const mark = behavior.indeterminate ? "–" : behavior.checked ? "✓" : null;
+      // The pressable row includes the optional label (box + 6px gap + text).
+      return createElement(
+        host.Pressable,
+        {
+          accessibilityRole: "checkbox",
+          accessibilityState: {
+            checked: behavior.indeterminate ? "mixed" : behavior.checked,
+            disabled: behavior.disabled,
+          },
+          accessibilityLabel: props.accessibilityLabel,
+          disabled: !behavior.pressable,
+          onPress: behavior.pressable
+            ? () => props.onCheckedChange?.(!behavior.checked)
+            : undefined,
+          style: { alignItems: "center", flexDirection: "row", gap: 6 },
+          testID: props.testID,
+          "data-state": behavior.dataState["data-state"],
+          "data-size": props.size ?? "md",
+        },
+        createElement(
+          host.View,
+          {
+            style: {
+              alignItems: "center",
+              backgroundColor: box.fill,
+              borderColor: box.border,
+              borderRadius: 4,
+              borderWidth: box.border ? 1 : 0,
+              height: 18,
+              justifyContent: "center",
+              width: 18,
+            },
+          },
+          mark
+            ? createElement(
+                host.Text,
+                { style: { color: box.mark, fontSize: 12, fontWeight: "700", lineHeight: 14 } },
+                mark
+              )
+            : null
+        ),
+        props.label
+          ? createElement(
+              host.Text,
+              {
+                style: {
+                  color: behavior.disabled ? "#9FA2AD" : "#50555E",
+                  // Figma: label size follows the size variant (md 14/lg 16).
+                  fontSize: props.size === "lg" ? 16 : 14,
+                  fontWeight: props.bold ? "600" : undefined,
+                },
+              },
+              props.label
+            )
+          : null
+      );
+    },
   };
 }
 
-export const { Button, Chip, Input, Textarea, Field, Icon, Switch } = createNativeComponents();
+export const { Button, Checkbox, Chip, Input, Textarea, Field, Icon, Switch } =
+  createNativeComponents();
 
 function wireNativeControl(
   children: ReactNode,

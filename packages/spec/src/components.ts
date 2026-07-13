@@ -129,6 +129,7 @@ export const componentStateSchema = z.object({
     "selected",
     "open",
     "checked",
+    "indeterminate",
   ]),
   description: z.string().optional(),
   selector: z.string().optional(),

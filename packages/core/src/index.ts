@@ -107,6 +107,22 @@ export interface SwitchBehavior {
   dataState: Record<string, string>;
 }
 
+export interface CheckboxBehaviorInput {
+  checked?: boolean | undefined;
+  indeterminate?: boolean | undefined;
+  disabled?: boolean | undefined;
+}
+
+export interface CheckboxBehavior {
+  checked: boolean;
+  indeterminate: boolean;
+  disabled: boolean;
+  pressable: boolean;
+  root: Record<string, string | boolean>;
+  /** data-state: "unchecked" | "checked" | "indeterminate" plus data-disabled, matching the Figma vocabulary. */
+  dataState: Record<string, string>;
+}
+
 export interface FieldBehaviorInput {
   disabled?: boolean | undefined;
   invalid?: boolean | undefined;
@@ -231,6 +247,29 @@ export function createSwitchBehavior(input: SwitchBehaviorInput = {}): SwitchBeh
   }
 
   return { checked, disabled, pressable: !disabled, root, dataState };
+}
+
+export function createCheckboxBehavior(input: CheckboxBehaviorInput = {}): CheckboxBehavior {
+  const checked = Boolean(input.checked);
+  const indeterminate = Boolean(input.indeterminate);
+  const disabled = Boolean(input.disabled);
+  const root: CheckboxBehavior["root"] = {
+    role: "checkbox",
+    "aria-checked": indeterminate ? "mixed" : checked ? "true" : "false",
+  };
+  if (disabled) {
+    root.disabled = true;
+    root["aria-disabled"] = "true";
+  }
+
+  const dataState: Record<string, string> = {
+    "data-state": indeterminate ? "indeterminate" : checked ? "checked" : "unchecked",
+  };
+  if (disabled) {
+    dataState["data-disabled"] = "true";
+  }
+
+  return { checked, indeterminate, disabled, pressable: !disabled, root, dataState };
 }
 
 export function createInputBehavior(input: InputBehaviorInput = {}): InputBehavior {

@@ -1,4 +1,4 @@
-import { Table } from "@podo/react";
+import { Checkbox, Table } from "@podo/react";
 import { Card } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -16,8 +16,18 @@ const USAGE_TABS: CodeTab[] = [
     label: "React",
     code:
       `<Table type="grid">\n` +
-      `  <thead>\n    <tr><th>주문</th><th>상품</th><th>금액</th></tr>\n  </thead>\n` +
-      `  <tbody>\n    <tr><td>#1024</td><td>포도 한 상자</td><td>32,000원</td></tr>\n  </tbody>\n` +
+      `  <thead>\n` +
+      `    <tr>\n` +
+      `      <th><Checkbox aria-label="전체 선택" /></th>\n` +
+      `      <th>주문</th><th>상품</th><th>금액</th>\n` +
+      `    </tr>\n` +
+      `  </thead>\n` +
+      `  <tbody>\n` +
+      `    <tr data-selected="true">\n` +
+      `      <td><Checkbox aria-label="#1024 선택" checked /></td>\n` +
+      `      <td>#1024</td><td>포도 한 상자</td><td>32,000원</td>\n` +
+      `    </tr>\n` +
+      `  </tbody>\n` +
       `</Table>`,
   },
   {
@@ -45,30 +55,54 @@ const ROWS = [
   ["#1027", "거봉 세트", "27,000원"],
 ];
 
+interface SampleRowState {
+  /** Extra tr attributes (is-hover, is-pressed, data-selected, data-disabled...). */
+  tr?: Record<string, string>;
+  /** The row checkbox's value; 시안처럼 선택된 행은 체크와 함께 표시돼요. */
+  checked?: boolean;
+  disabled?: boolean;
+}
+
 function SampleTable({
   type,
-  rowProps = [],
+  states = [],
+  headerIndeterminate,
 }: {
   type: "grid" | "horizon";
-  rowProps?: Array<Record<string, string> | undefined>;
+  states?: SampleRowState[];
+  headerIndeterminate?: boolean;
 }) {
   return (
     <Table type={type} aria-label={`${type} 표 예시`}>
       <thead>
         <tr>
+          {/* 시안(474:1795)의 체크박스 열: 헤더는 전체 선택. */}
+          <th style={{ width: 50 }}>
+            <Checkbox aria-label="전체 선택" indeterminate={headerIndeterminate ?? false} />
+          </th>
           <th>주문</th>
           <th>상품</th>
           <th>금액</th>
         </tr>
       </thead>
       <tbody>
-        {ROWS.map((row, i) => (
-          <tr key={row[0]} {...(rowProps[i] ?? {})}>
-            {row.map((cell) => (
-              <td key={cell}>{cell}</td>
-            ))}
-          </tr>
-        ))}
+        {ROWS.map((row, i) => {
+          const state = states[i] ?? {};
+          return (
+            <tr key={row[0]} {...(state.tr ?? {})}>
+              <td>
+                <Checkbox
+                  aria-label={`${row[0]} 선택`}
+                  defaultChecked={state.checked ?? false}
+                  disabled={state.disabled ?? false}
+                />
+              </td>
+              {row.map((cell) => (
+                <td key={cell}>{cell}</td>
+              ))}
+            </tr>
+          );
+        })}
       </tbody>
     </Table>
   );
@@ -91,14 +125,14 @@ export function TablePage() {
         description="표 상태는 사용자의 상호작용에 따라 normal, hover, pressed, disabled로 구분해 표현해요. hover와 pressed는 지금 조작이 일어나고 있음을 즉각적인 피드백으로 알려주고, disabled는 현재 사용할 수 없는 행임을 시각적으로 구분해 혼란을 줄이며, 일관된 상태 체계를 통해 모든 행이 예측 가능하게 반응하도록 해요."
       >
         <Card stage>
-          {/* 시안(474:1796) 순서 그대로: normal → hover → pressed → disabled. */}
+          {/* 시안(474:1796) 순서 그대로: normal → hover → pressed(선택) → disabled. */}
           <SampleTable
             type="horizon"
-            rowProps={[
-              undefined,
-              { className: "is-hover" },
-              { className: "is-pressed" },
-              { "data-disabled": "true" },
+            states={[
+              {},
+              { tr: { className: "is-hover" } },
+              { tr: { className: "is-pressed" }, checked: true },
+              { tr: { "data-disabled": "true" }, disabled: true },
             ]}
           />
         </Card>
@@ -112,8 +146,17 @@ export function TablePage() {
       >
         <Card stage>
           <div className="stage-col" style={{ width: "100%" }}>
-            <SampleTable type="horizon" />
-            <SampleTable type="grid" />
+            {/* 시안처럼 일부 행이 선택된 모습: 선택 행은 data-selected, 헤더는 부분 선택. */}
+            <SampleTable
+              type="horizon"
+              headerIndeterminate
+              states={[{}, {}, { tr: { "data-selected": "true" }, checked: true }, {}]}
+            />
+            <SampleTable
+              type="grid"
+              headerIndeterminate
+              states={[{}, {}, { tr: { "data-selected": "true" }, checked: true }, {}]}
+            />
           </div>
         </Card>
         <PropertyTags values={["horizon", "grid"]} />
@@ -146,7 +189,7 @@ export function TablePage() {
                 <code>ReactNode</code>
               </span>,
               "— (필수)",
-              "표준 thead/tbody/tr/th/td 마크업. 비활성 행은 tr에 data-disabled",
+              "표준 thead/tbody/tr/th/td 마크업. 선택 열은 셀에 Checkbox를 조합하고, 선택된 행은 tr에 data-selected, 비활성 행은 data-disabled",
             ],
           ]}
         />
