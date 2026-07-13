@@ -603,7 +603,8 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table[data-type="grid"] tbody tr:last-child td {
+/* The frame (grid) or nothing (horizon) closes the table — no bottom rule. */
+.podo-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -627,11 +628,6 @@ input {
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
-  background: #F4F4F5;
-}
-
-/* Selected rows share the pressed fill (Figma: the checked row is gray.10). */
-.podo-table tbody tr[data-selected] td {
   background: #F4F4F5;
 }
 

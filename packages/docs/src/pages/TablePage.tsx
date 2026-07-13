@@ -1,4 +1,5 @@
 import { Table } from "@podo/react";
+import { BaseMarker } from "../components/BaseMarker.js";
 import { Card } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -126,6 +127,8 @@ export function TablePage() {
           <div className="stage-col" style={{ width: "100%" }}>
             {/* 시안처럼 일부 행이 선택된 모습 — 헤더는 자동으로 부분 선택 표시. */}
             <SampleTable type="horizon" defaultSelected={[2]} />
+            {/* horizon이 기본(base) 타입 — 시안처럼 두 표 사이에 마커를 둬요. */}
+            <BaseMarker />
             <SampleTable type="grid" defaultSelected={[2]} />
           </div>
         </Card>

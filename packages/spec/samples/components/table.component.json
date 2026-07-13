@@ -57,11 +57,6 @@
     { "name": "hover", "tokens": { "root.background": "{color.palette.gray.5}" } },
     { "name": "active", "tokens": { "root.background": "{color.palette.gray.10}" } },
     {
-      "name": "selected",
-      "description": "Checked rows share the pressed fill; mark them with data-selected on the tr.",
-      "tokens": { "root.background": "{color.palette.gray.10}" }
-    },
-    {
       "name": "disabled",
       "tokens": { "root.background": "{color.palette.gray.10}" }
     }
