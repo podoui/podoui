@@ -226,6 +226,15 @@
   text-align: left;
 }
 
+.podo-table [data-align="center"] {
+  text-align: center;
+}
+
+.podo-table [data-align="right"] {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
 .podo-table .podo-table__check {
   min-width: 50px;
   width: 50px;

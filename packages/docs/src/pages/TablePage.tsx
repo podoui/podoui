@@ -1,4 +1,4 @@
-import { Table } from "@podo/react";
+import { Chip, Table } from "@podo/react";
 import { BaseMarker } from "../components/BaseMarker.js";
 import { Card } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
@@ -137,6 +137,42 @@ export function TablePage() {
 
       <DocSection
         index={3}
+        title="정렬 (align)"
+        description="셀 정렬은 내용 성격에 따라 세 가지로 나눠요. 단일 텍스트(전화번호·이메일·생년월일 포함)와 텍스트+칩은 좌측, 버튼(상태에 따라 나타나는 경우 포함)·단일 칩·음성파일은 중앙, 수량·날짜·건수·금액·퍼센트·n명은 우측 정렬이 기준이에요. 기본은 좌측이고 th/td에 data-align을 붙여 지정하며, 우측 정렬 셀은 숫자 폭이 고정(tabular numbers)되어 자릿수가 세로로 나란히 맞아요."
+      >
+        <Card stage>
+          <Table aria-label="정렬 예시">
+            <thead>
+              <tr>
+                <th>이름</th>
+                <th data-align="center">상태</th>
+                <th data-align="right">주문 수</th>
+                <th data-align="right">금액</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["김포도", "결제완료", "3건", "32,000원"],
+                ["이머루", "배송중", "12건", "145,000원"],
+                ["박캠벨", "취소", "1건", "8,500원"],
+              ].map(([name, status, count, amount]) => (
+                <tr key={name}>
+                  <td>{name}</td>
+                  <td data-align="center">
+                    <Chip size="sm">{status}</Chip>
+                  </td>
+                  <td data-align="right">{count}</td>
+                  <td data-align="right">{amount}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Card>
+        <PropertyTags values={["left", "center", "right"]} />
+      </DocSection>
+
+      <DocSection
+        index={4}
         title="속성 (props)"
         description="@podo/react의 Table이 받는 속성이에요. 내용은 표준 thead·tbody·tr·th·td 마크업을 그대로 사용해 표 시맨틱과 접근성이 플랫폼에서 나와요. hover·pressed 행 상태는 브라우저 상호작용으로 표현되고, 사용할 수 없는 행은 tr에 data-disabled를 표시해요. React Native에는 표 레이아웃이 없어 FlatList 사용을 권장해요."
       >

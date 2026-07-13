@@ -584,6 +584,19 @@ input {
   text-align: left;
 }
 
+/* Cell alignment convention — left is the default: plain text (incl. phone/
+   email/birthdate) and text+chip stay left; buttons, a lone chip, or audio
+   center; counts, dates, amounts, percents, and n명 go right with fixed-width
+   digits so magnitudes line up. */
+.podo-table [data-align="center"] {
+  text-align: center;
+}
+
+.podo-table [data-align="right"] {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
 /* The checkbox selection column (Figma: 50px cell with a centered box).
    min-width — auto table layout ignores width on cells here. */
 .podo-table .podo-table__check {

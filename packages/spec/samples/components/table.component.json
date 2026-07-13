@@ -23,7 +23,7 @@
     },
     {
       "name": "tbody",
-      "description": "Body rows: native tbody/tr/td markup. Mark unavailable rows with data-disabled.",
+      "description": "Body rows: native tbody/tr/td markup. Mark unavailable rows with data-disabled. Cells align left by default (plain text, text+chip); data-align=center for buttons/a lone chip/audio, data-align=right (with tabular numbers) for counts, dates, amounts, percents.",
       "targets": {
         "web": { "name": "default" },
         "react": { "name": "children" },

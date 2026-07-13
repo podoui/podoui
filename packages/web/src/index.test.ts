@@ -23,6 +23,7 @@ describe("@podo/web", () => {
     expect(podoWebComponentCss).toContain('.podo-chip[data-theme="outline-weak"]');
     // Table ships as classes only (no shadow element — table semantics).
     expect(podoWebComponentCss).toContain('.podo-table[data-type="grid"]');
+    expect(podoWebComponentCss).toContain('.podo-table [data-align="right"]');
     expect(customElements.get("podo-table")).toBeUndefined();
   });
 
