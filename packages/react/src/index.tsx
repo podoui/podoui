@@ -718,7 +718,12 @@ interface ToastItem {
   id: number;
   title: ReactNode;
   options: ToastOptions;
+  /** Mid-exit: still rendered for the leave animation, no longer counted. */
+  leaving?: boolean;
 }
+
+// Must match the podo-toast-out animation duration in the CSS.
+const TOAST_EXIT_MS = 180;
 
 let toastSequence = 0;
 let toastItems: readonly ToastItem[] = [];
@@ -759,10 +764,25 @@ export const toast = Object.assign(pushToast, {
   danger: toastShortcut("danger"),
   info: toastShortcut("info"),
   warning: toastShortcut("warning"),
-  /** Removes one toast by id, or every toast without one. */
+  /** Dismisses one toast by id, or every toast without one — the card plays
+   *  its leave animation before it's actually removed. */
   dismiss(id?: number): void {
-    toastItems = id == null ? [] : toastItems.filter((item) => item.id !== id);
+    const leavingIds: number[] = [];
+    toastItems = toastItems.map((item) => {
+      if (item.leaving || (id != null && item.id !== id)) {
+        return item;
+      }
+      leavingIds.push(item.id);
+      return { ...item, leaving: true };
+    });
+    if (leavingIds.length === 0) {
+      return;
+    }
     notifyToastListeners();
+    setTimeout(() => {
+      toastItems = toastItems.filter((item) => !leavingIds.includes(item.id));
+      notifyToastListeners();
+    }, TOAST_EXIT_MS);
   },
 });
 
@@ -773,12 +793,16 @@ export function Toaster({
 }: ToasterProps): React.ReactElement {
   const items = useSyncExternalStore(subscribeToToasts, readToasts, readToasts);
   const timers = useRef(new Map<number, ReturnType<typeof setTimeout>>());
-  const visible = items.slice(-max);
+  // Leaving toasts stay rendered for their exit animation but stop counting
+  // toward max, so a new arrival fades in while the evicted one fades out.
+  const active = items.filter((item) => !item.leaving);
+  const shownActive = new Set(active.slice(-max).map((item) => item.id));
+  const visible = items.filter((item) => item.leaving || shownActive.has(item.id));
 
   useEffect(() => {
     // Overflow evicts the oldest toast for good (cascades until <= max).
-    if (items.length > max && items[0]) {
-      toast.dismiss(items[0].id);
+    if (active.length > max && active[0]) {
+      toast.dismiss(active[0].id);
       return;
     }
     const alive = new Set(items.map((item) => item.id));
@@ -789,7 +813,7 @@ export function Toaster({
       }
     }
     for (const item of items) {
-      if (item.options.manual || timers.current.has(item.id)) {
+      if (item.leaving || item.options.manual || timers.current.has(item.id)) {
         continue;
       }
       timers.current.set(
@@ -817,6 +841,7 @@ export function Toaster({
           key={item.id}
           state={item.options.state ?? "normal"}
           caption={item.options.caption}
+          data-leaving={item.leaving ? "true" : undefined}
           onClose={() => toast.dismiss(item.id)}
         >
           {item.title}

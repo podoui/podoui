@@ -423,24 +423,35 @@ describe("@podo/react", () => {
         "success"
       );
 
-      // Overflow evicts the oldest for good (max 2).
+      // Overflow evicts the oldest: it lingers through the 180ms leave
+      // animation (data-leaving), then unmounts for good (max 2).
       act(() => {
         toast.danger("셋", { manual: true });
+      });
+      expect(stage.getByText("하나").closest(".podo-toast")?.getAttribute("data-leaving")).toBe(
+        "true"
+      );
+      act(() => {
+        vi.advanceTimersByTime(200);
       });
       expect(stage.queryByText("하나")).toBeNull();
 
       // "둘" auto-dismisses after its own duration; manual "셋" survives.
       act(() => {
-        vi.advanceTimersByTime(5100);
+        vi.advanceTimersByTime(5300);
       });
       expect(stage.queryByText("둘")).toBeNull();
       expect(stage.getByText("셋")).toBeDefined();
 
       fireEvent.click(stage.getByRole("button", { name: "닫기" }));
+      act(() => {
+        vi.advanceTimersByTime(200);
+      });
       expect(stage.queryByText("셋")).toBeNull();
     } finally {
       act(() => {
         toast.dismiss();
+        vi.advanceTimersByTime(300);
       });
       vi.useRealTimers();
     }

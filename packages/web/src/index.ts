@@ -704,8 +704,27 @@ input {
   }
 }
 
+/* Exit mirrors the entrance; the duration must match TOAST_EXIT_MS (180ms)
+   in the react toaster, which removes the node when the animation is done. */
+@keyframes podo-toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes podo-toast-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
 .podo-toaster .podo-toast {
   animation: podo-toast-in 0.18s ease;
+}
+
+.podo-toaster .podo-toast[data-leaving] {
+  animation: podo-toast-out 0.18s ease forwards;
 }
 
 /* Reduce, not remove: movement triggers vestibular issues, opacity doesn't —
@@ -713,6 +732,10 @@ input {
 @media (prefers-reduced-motion: reduce) {
   .podo-toaster .podo-toast {
     animation-name: podo-toast-fade;
+  }
+
+  .podo-toaster .podo-toast[data-leaving] {
+    animation-name: podo-toast-fade-out;
   }
 }
 
