@@ -21,6 +21,7 @@ export const podoElementNames = {
   icon: "podo-icon",
   switch: "podo-switch",
   text: "podo-text",
+  toast: "podo-toast",
 } as const;
 
 export function registerPodoElements(options: RegisterPodoElementsOptions = {}): void {
@@ -40,6 +41,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
     [names.icon, createIconElement()],
     [names.switch, createSwitchElement()],
     [names.text, createTextElement()],
+    [names.toast, createToastElement()],
   ];
 
   for (const [name, constructor] of definitions) {
@@ -60,6 +62,7 @@ export function createElementNames(prefix = "podo"): typeof podoElementNames {
     icon: `${prefix}-icon`,
     switch: `${prefix}-switch`,
     text: `${prefix}-text`,
+    toast: `${prefix}-toast`,
   } as typeof podoElementNames;
 }
 
@@ -533,6 +536,173 @@ input {
 
 .podo-radio-wrap[data-disabled] .podo-radio__text {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Toast (Figma 459:1298): stateful notification card — 480px, radius 10,
+   12/16 padding, 1px state border over a tinted fill, soft shadow. */
+.podo-toast {
+  align-items: flex-start;
+  background: var(--podo-toast-root-background, #F4F4F5);
+  border: 1px solid var(--podo-toast-root-borderColor, #D1D2D6);
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  color: var(--podo-toast-title-color, var(--podo-semantic-color-text-default, #18181B));
+  display: flex;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  padding: 12px 16px;
+  width: 480px;
+}
+
+.podo-toast[data-state="success"] {
+  --podo-toast-root-background: #ECF8EF;
+  --podo-toast-root-borderColor: #3EA856;
+}
+
+.podo-toast[data-state="danger"] {
+  --podo-toast-root-background: #FEF1F1;
+  --podo-toast-root-borderColor: #F23B3B;
+}
+
+.podo-toast[data-state="info"] {
+  --podo-toast-root-background: #EBF5FF;
+  --podo-toast-root-borderColor: #0095FF;
+}
+
+.podo-toast[data-state="warning"] {
+  --podo-toast-root-background: #FFF7E6;
+  --podo-toast-root-borderColor: #FFAA00;
+}
+
+.podo-toast__prefix {
+  align-items: center;
+  display: inline-flex;
+  flex: none;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.podo-toast__contents {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.podo-toast__title-row {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-toast__title {
+  flex: 1 1 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.podo-toast__caption {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-toast__suffix {
+  align-items: center;
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+}
+
+.podo-toast__suffix-text {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.podo-toast__suffix-icon,
+.podo-toast__close {
+  align-items: center;
+  display: inline-flex;
+  flex: none;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.podo-toast__close {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.podo-toast__close:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+/* Toaster stack (design-less plumbing): fixed to a screen edge, newest next
+   to the edge. Defaults live in the react Toaster: top-center, 3s, 3 toasts. */
+.podo-toaster {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  position: fixed;
+  z-index: 9999;
+}
+
+.podo-toaster > * {
+  pointer-events: auto;
+}
+
+.podo-toaster[data-position^="top"] {
+  top: 16px;
+}
+
+.podo-toaster[data-position^="bottom"] {
+  bottom: 16px;
+  flex-direction: column-reverse;
+}
+
+.podo-toaster[data-position$="left"] {
+  align-items: flex-start;
+  left: 16px;
+}
+
+.podo-toaster[data-position$="right"] {
+  align-items: flex-end;
+  right: 16px;
+}
+
+.podo-toaster[data-position$="center"] {
+  align-items: center;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@keyframes podo-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.podo-toaster .podo-toast {
+  animation: podo-toast-in 0.18s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .podo-toaster .podo-toast {
+    animation: none;
+  }
 }
 
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
@@ -1137,6 +1307,54 @@ ${
             detail: { checked: next },
           })
         );
+      });
+    }
+  };
+}
+
+function createToastElement(): CustomElementConstructor {
+  return class PodoToastElement extends HTMLElement {
+    static get observedAttributes(): string[] {
+      return ["state", "caption", "closable"];
+    }
+
+    readonly shadow = this.attachShadow({ mode: "open" });
+
+    connectedCallback(): void {
+      this.render();
+    }
+
+    attributeChangedCallback(): void {
+      this.render();
+    }
+
+    private render(): void {
+      const state = attr(this, "state", "normal");
+      const caption = attr(this, "caption", "");
+      const closable = this.hasAttribute("closable");
+
+      const suffixIcon = hasSlot(this, "suffix-icon")
+        ? '<span class="podo-toast__suffix-icon" part="suffix-icon"><slot name="suffix-icon"></slot></span>'
+        : closable
+          ? `<button class="podo-toast__close" part="close" type="button" aria-label="닫기"><svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>`
+          : "";
+      const suffixText = hasSlot(this, "suffix-text")
+        ? '<span class="podo-toast__suffix-text" part="suffix-text"><slot name="suffix-text"></slot></span>'
+        : "";
+
+      this.shadow.innerHTML = `${componentStyleBlock()}
+<div class="podo-toast" part="root" role="${state === "danger" ? "alert" : "status"}" data-state="${escapeHtml(state)}">
+  ${hasSlot(this, "prefix") ? '<span class="podo-toast__prefix" part="prefix"><slot name="prefix"></slot></span>' : ""}
+  <div class="podo-toast__contents">
+    <div class="podo-toast__title-row">
+      <span class="podo-toast__title" part="title"><slot></slot></span>
+      ${suffixText || suffixIcon ? `<span class="podo-toast__suffix">${suffixText}${suffixIcon}</span>` : ""}
+    </div>
+    ${caption ? `<span class="podo-toast__caption" part="caption">${escapeHtml(caption)}</span>` : ""}
+  </div>
+</div>`;
+      this.shadow.querySelector(".podo-toast__close")?.addEventListener("click", () => {
+        this.dispatchEvent(new CustomEvent("podo-close", { bubbles: true, composed: true }));
       });
     }
   };

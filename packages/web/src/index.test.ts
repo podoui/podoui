@@ -132,6 +132,18 @@ describe("@podo/web", () => {
     area.setAttribute("placeholder", "메모");
     document.body.append(area);
 
+    const toastEl = document.createElement("podo-toast");
+    toastEl.setAttribute("state", "danger");
+    toastEl.setAttribute("caption", "다시 시도해 주세요");
+    toastEl.setAttribute("closable", "");
+    toastEl.textContent = "저장에 실패했어요";
+    document.body.append(toastEl);
+    let toastClosed = 0;
+    toastEl.addEventListener("podo-close", () => {
+      toastClosed += 1;
+    });
+    (toastEl.shadowRoot?.querySelector(".podo-toast__close") as HTMLButtonElement)?.click();
+
     const icon = document.createElement("podo-icon");
     icon.setAttribute("name", "menu");
     document.body.append(icon);
@@ -191,6 +203,16 @@ describe("@podo/web", () => {
         ?.shadowRoot?.querySelector("input")
         ?.getAttribute("aria-required")
     ).toBe("true");
+    // The toast card: danger announces as an alert; closable emits podo-close.
+    expect(toastEl.shadowRoot?.querySelector(".podo-toast")?.getAttribute("role")).toBe("alert");
+    expect(toastEl.shadowRoot?.querySelector(".podo-toast")?.getAttribute("data-state")).toBe(
+      "danger"
+    );
+    expect(toastEl.shadowRoot?.querySelector(".podo-toast__caption")?.textContent).toBe(
+      "다시 시도해 주세요"
+    );
+    expect(toastClosed).toBe(1);
+    expect(toastEl.shadowRoot?.innerHTML).toMatchSnapshot("toast");
     expect(icon.shadowRoot?.innerHTML).toMatchSnapshot("icon");
     expect(text.shadowRoot?.innerHTML).toMatchSnapshot("text");
   });

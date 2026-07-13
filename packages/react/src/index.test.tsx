@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 
 import React from "react";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   Button,
   Checkbox,
@@ -16,7 +16,10 @@ import {
   Switch,
   Table,
   Textarea,
+  Toast,
+  Toaster,
   Typography,
+  toast,
   usePodoTheme,
 } from "./index.js";
 
@@ -375,6 +378,72 @@ describe("@podo/react", () => {
     fireEvent.pointerDown(stage.getByText("r0"), { button: 0 });
     fireEvent.pointerOver(cell("행 4 선택"), { buttons: 1 });
     expect(selections.length).toBe(before + 1);
+  });
+
+  it("renders toast states and composition slots", () => {
+    let closed = 0;
+    render(
+      <>
+        <Toast
+          state="danger"
+          caption="다시 시도해 주세요"
+          suffixText="실행 취소"
+          onClose={() => (closed += 1)}
+        >
+          저장에 실패했어요
+        </Toast>
+        <Toast prefix={<Icon name="menu" />}>기본 안내예요</Toast>
+      </>
+    );
+
+    // danger interrupts; everything else politely waits.
+    const danger = screen.getByRole("alert");
+    expect(danger.className).toBe("podo-toast");
+    expect(danger.getAttribute("data-state")).toBe("danger");
+    expect(screen.getByText("다시 시도해 주세요").className).toBe("podo-toast__caption");
+    expect(screen.getByText("실행 취소").className).toBe("podo-toast__suffix-text");
+    expect(screen.getByRole("status").getAttribute("data-state")).toBe("normal");
+
+    fireEvent.click(screen.getByRole("button", { name: "닫기" }));
+    expect(closed).toBe(1);
+  });
+
+  it("stacks toasts, auto-dismisses, and keeps manual ones until closed", () => {
+    vi.useFakeTimers();
+    try {
+      const { container } = render(<Toaster duration={1000} max={2} />);
+      const stage = within(container);
+
+      act(() => {
+        toast("하나");
+        toast.success("둘", { duration: 5000 });
+      });
+      expect(stage.getByText("하나")).toBeDefined();
+      expect(stage.getByText("둘").closest(".podo-toast")?.getAttribute("data-state")).toBe(
+        "success"
+      );
+
+      // Overflow evicts the oldest for good (max 2).
+      act(() => {
+        toast.danger("셋", { manual: true });
+      });
+      expect(stage.queryByText("하나")).toBeNull();
+
+      // "둘" auto-dismisses after its own duration; manual "셋" survives.
+      act(() => {
+        vi.advanceTimersByTime(5100);
+      });
+      expect(stage.queryByText("둘")).toBeNull();
+      expect(stage.getByText("셋")).toBeDefined();
+
+      fireEvent.click(stage.getByRole("button", { name: "닫기" }));
+      expect(stage.queryByText("셋")).toBeNull();
+    } finally {
+      act(() => {
+        toast.dismiss();
+      });
+      vi.useRealTimers();
+    }
   });
 
   it("supports controlled and uncontrolled input value changes", async () => {

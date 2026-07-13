@@ -5,9 +5,11 @@ import React, {
   forwardRef,
   isValidElement,
   useContext,
+  useEffect,
   useId,
   useRef,
   useState,
+  useSyncExternalStore,
   type ButtonHTMLAttributes,
   type ChangeEvent,
   type HTMLAttributes,
@@ -177,6 +179,50 @@ export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> 
   defaultSelected?: number[];
   /** Fires with the selected row indexes whenever the selection changes. */
   onSelectionChange?: (selected: number[]) => void;
+}
+
+export type ToastState = "normal" | "success" | "danger" | "info" | "warning";
+
+export interface ToastProps extends Omit<HTMLAttributes<HTMLDivElement>, "prefix"> {
+  /** 상황의 성격에 따른 색·톤 (Figma state). */
+  state?: ToastState;
+  /** State icon before the title (Figma prefix-icon). */
+  prefix?: ReactNode;
+  /** Follow-up action text, e.g. 실행 취소 (Figma suffix-text). */
+  suffixText?: ReactNode;
+  /** Custom action icon after the title (Figma suffix-icon — the close X by default). */
+  suffixIcon?: ReactNode;
+  /** Extra line under the title (Figma caption). */
+  caption?: ReactNode;
+  /** Renders the close X button and fires when it's pressed. */
+  onClose?: () => void;
+  children: ReactNode;
+}
+
+export type ToasterPosition =
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
+
+export interface ToasterProps {
+  /** Screen edge the stack anchors to. */
+  position?: ToasterPosition;
+  /** Auto-dismiss delay (ms) for toasts without their own duration. */
+  duration?: number;
+  /** Most toasts shown at once; the oldest is dismissed when it overflows. */
+  max?: number;
+}
+
+export interface ToastOptions {
+  state?: ToastState;
+  caption?: ReactNode;
+  /** Auto-dismiss delay (ms); overrides the Toaster default. */
+  duration?: number;
+  /** Stays until the close X is pressed — no auto-dismiss. */
+  manual?: boolean;
 }
 
 export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
@@ -605,6 +651,180 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
     />
   );
 });
+
+const TOAST_CLOSE_GLYPH = (
+  <svg aria-hidden viewBox="0 0 24 24" width="24" height="24" fill="none">
+    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+export const Toast = forwardRef<HTMLDivElement, ToastProps>(function Toast(
+  {
+    state = "normal",
+    prefix,
+    suffixText,
+    suffixIcon,
+    caption,
+    onClose,
+    className,
+    children,
+    ...props
+  },
+  ref
+) {
+  return (
+    <div
+      {...props}
+      ref={ref}
+      // danger interrupts the screen reader; everything else politely waits.
+      role={state === "danger" ? "alert" : "status"}
+      className={joinClass("podo-toast", className)}
+      data-state={state}
+    >
+      {prefix != null ? <span className="podo-toast__prefix">{prefix}</span> : null}
+      <div className="podo-toast__contents">
+        <div className="podo-toast__title-row">
+          <span className="podo-toast__title">{children}</span>
+          {suffixText != null || suffixIcon != null || onClose ? (
+            <span className="podo-toast__suffix">
+              {suffixText != null ? (
+                <span className="podo-toast__suffix-text">{suffixText}</span>
+              ) : null}
+              {onClose ? (
+                <button
+                  type="button"
+                  className="podo-toast__close"
+                  aria-label="닫기"
+                  onClick={onClose}
+                >
+                  {suffixIcon ?? TOAST_CLOSE_GLYPH}
+                </button>
+              ) : suffixIcon != null ? (
+                <span className="podo-toast__suffix-icon">{suffixIcon}</span>
+              ) : null}
+            </span>
+          ) : null}
+        </div>
+        {caption != null ? <span className="podo-toast__caption">{caption}</span> : null}
+      </div>
+    </div>
+  );
+});
+
+// The toaster layer is design-less plumbing (the Figma set covers the card
+// only): a module store the imperative toast() API pushes into, and a Toaster
+// that renders the stack. Defaults: top-center, 3s, 3 toasts.
+interface ToastItem {
+  id: number;
+  title: ReactNode;
+  options: ToastOptions;
+}
+
+let toastSequence = 0;
+let toastItems: readonly ToastItem[] = [];
+const toastListeners = new Set<() => void>();
+
+function notifyToastListeners(): void {
+  for (const listener of toastListeners) {
+    listener();
+  }
+}
+
+function subscribeToToasts(listener: () => void): () => void {
+  toastListeners.add(listener);
+  return () => toastListeners.delete(listener);
+}
+
+function readToasts(): readonly ToastItem[] {
+  return toastItems;
+}
+
+function pushToast(title: ReactNode, options: ToastOptions = {}): number {
+  const id = ++toastSequence;
+  toastItems = [...toastItems, { id, title, options }];
+  notifyToastListeners();
+  return id;
+}
+
+type ToastShortcut = (title: ReactNode, options?: Omit<ToastOptions, "state">) => number;
+
+function toastShortcut(state: ToastState): ToastShortcut {
+  return (title, options = {}) => pushToast(title, { ...options, state });
+}
+
+/** Imperative API — render one <Toaster /> near the app root, then toast("..."). */
+export const toast = Object.assign(pushToast, {
+  normal: toastShortcut("normal"),
+  success: toastShortcut("success"),
+  danger: toastShortcut("danger"),
+  info: toastShortcut("info"),
+  warning: toastShortcut("warning"),
+  /** Removes one toast by id, or every toast without one. */
+  dismiss(id?: number): void {
+    toastItems = id == null ? [] : toastItems.filter((item) => item.id !== id);
+    notifyToastListeners();
+  },
+});
+
+export function Toaster({
+  position = "top-center",
+  duration = 3000,
+  max = 3,
+}: ToasterProps): React.ReactElement {
+  const items = useSyncExternalStore(subscribeToToasts, readToasts, readToasts);
+  const timers = useRef(new Map<number, ReturnType<typeof setTimeout>>());
+  const visible = items.slice(-max);
+
+  useEffect(() => {
+    // Overflow evicts the oldest toast for good (cascades until <= max).
+    if (items.length > max && items[0]) {
+      toast.dismiss(items[0].id);
+      return;
+    }
+    const alive = new Set(items.map((item) => item.id));
+    for (const [id, timer] of timers.current) {
+      if (!alive.has(id)) {
+        clearTimeout(timer);
+        timers.current.delete(id);
+      }
+    }
+    for (const item of items) {
+      if (item.options.manual || timers.current.has(item.id)) {
+        continue;
+      }
+      timers.current.set(
+        item.id,
+        setTimeout(() => toast.dismiss(item.id), item.options.duration ?? duration)
+      );
+    }
+  });
+
+  useEffect(() => {
+    const map = timers.current;
+    return () => {
+      for (const timer of map.values()) {
+        clearTimeout(timer);
+      }
+    };
+  }, []);
+
+  // position: fixed does the anchoring — mount once near the app root
+  // (a transformed ancestor would re-anchor the stack).
+  return (
+    <div className="podo-toaster" data-position={position}>
+      {visible.map((item) => (
+        <Toast
+          key={item.id}
+          state={item.options.state ?? "normal"}
+          caption={item.options.caption}
+          onClose={() => toast.dismiss(item.id)}
+        >
+          {item.title}
+        </Toast>
+      ))}
+    </div>
+  );
+}
 
 // Table keeps native table semantics: children are standard thead/tbody/tr
 // markup, so accessibility and column layout come from the platform. Mark

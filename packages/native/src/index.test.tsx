@@ -111,6 +111,22 @@ describe("@podo/native", () => {
     // Radios select — they never untoggle themselves.
     expect(radioPicks).toEqual([true]);
 
+    let toastClosed = 0;
+    render(
+      <domNative.Toast
+        state="success"
+        caption="캡션 영역"
+        testID="toast"
+        onClose={() => (toastClosed += 1)}
+      >
+        저장됐어요
+      </domNative.Toast>
+    );
+    expect(screen.getByTestId("toast").getAttribute("data-state")).toBe("success");
+    expect(screen.getByText("캡션 영역")).toBeDefined();
+    screen.getByLabelText("닫기").click();
+    expect(toastClosed).toBe(1);
+
     expect(screen.getByText("Required")).toBeDefined();
   });
 
@@ -162,6 +178,7 @@ function TestPressable({
   const styleRecord = style as Record<string, unknown> | undefined;
   return (
     <button
+      aria-label={props.accessibilityLabel as string | undefined}
       data-bg={styleRecord?.backgroundColor as string | undefined}
       data-testid={testID as string | undefined}
       data-size={props["data-size"] as string | undefined}
@@ -215,6 +232,7 @@ function TestView({
   children,
   style,
   testID,
+  ...props
 }: Record<string, unknown> & { children?: React.ReactNode }): React.ReactElement {
   const styleRecord = style as Record<string, unknown> | undefined;
   return (
@@ -222,6 +240,8 @@ function TestView({
       data-gap={String(styleRecord?.gap ?? "")}
       data-bg={styleRecord?.backgroundColor as string | undefined}
       data-testid={testID as string | undefined}
+      data-state={props["data-state"] as string | undefined}
+      aria-label={props.accessibilityLabel as string | undefined}
     >
       {children}
     </div>

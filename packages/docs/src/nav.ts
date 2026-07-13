@@ -9,6 +9,7 @@ import { RadioPage } from "./pages/RadioPage.js";
 import { SwitchPage } from "./pages/SwitchPage.js";
 import { TablePage } from "./pages/TablePage.js";
 import { TextareaPage } from "./pages/TextareaPage.js";
+import { ToastPage } from "./pages/ToastPage.js";
 import { TypographyPage } from "./pages/TypographyPage.js";
 
 export interface NavItem {
@@ -35,6 +36,7 @@ export const NAV: NavItem[] = [
   { slug: "switch", title: "Switch", group: "Components", page: SwitchPage },
   { slug: "table", title: "Table", group: "Components", page: TablePage },
   { slug: "textarea", title: "Textarea", group: "Components", page: TextareaPage },
+  { slug: "toast", title: "Toast", group: "Components", page: ToastPage },
 ];
 
 export function findBySlug(slug: string): NavItem | undefined {

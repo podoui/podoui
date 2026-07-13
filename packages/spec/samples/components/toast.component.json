@@ -1,0 +1,118 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "toast",
+  "name": "Toast",
+  "category": "molecule",
+  "status": "experimental",
+  "description": "Transient notification card (Figma 541:7521, component set 459:1298): 480px, radius 10, 12/16 padding, a soft shadow, and a per-state tinted fill with a 1px border — normal gray.10/gray.30, success success.5/50, danger error.5/50, info info.5/50, warning warning.5/50. A SemiBold 16px title composes with prefix-icon, suffix-text, suffix-icon (the close X by default), and a 14px caption. The react target adds the design-less toaster layer: one Toaster (position top-center, duration 3000ms, max 3 by default — six screen edges available) plus the imperative toast() API; per-toast manual disables auto-dismiss so only the X closes it. danger announces as an alert, other states as status.",
+  "anatomy": [
+    { "name": "root" },
+    { "name": "prefix", "parent": "root" },
+    { "name": "title", "parent": "root" },
+    { "name": "caption", "parent": "root" },
+    { "name": "suffix", "parent": "root" }
+  ],
+  "slots": [
+    {
+      "name": "title",
+      "description": "SemiBold 16px message line.",
+      "targets": {
+        "web": { "name": "default" },
+        "react": { "name": "children" },
+        "hono": { "name": "children" },
+        "native": { "name": "children" }
+      }
+    },
+    {
+      "name": "prefix-icon",
+      "description": "State icon before the title.",
+      "targets": {
+        "web": { "name": "prefix" },
+        "react": { "name": "prefix" },
+        "hono": { "name": "prefix" },
+        "native": { "name": "prefix" }
+      }
+    },
+    {
+      "name": "suffix-text",
+      "description": "Follow-up action text after the title, e.g. 실행 취소.",
+      "targets": {
+        "web": { "name": "suffix-text" },
+        "react": { "name": "suffixText" },
+        "hono": { "name": "suffixText" },
+        "native": { "name": "suffixText" }
+      }
+    },
+    {
+      "name": "suffix-icon",
+      "description": "Action icon after the title — the close X by default.",
+      "targets": {
+        "web": { "name": "suffix-icon" },
+        "react": { "name": "suffixIcon" },
+        "hono": { "name": "suffixIcon" }
+      }
+    },
+    {
+      "name": "caption",
+      "description": "Regular 14px extra line under the title.",
+      "targets": {
+        "web": { "name": "caption" },
+        "react": { "name": "caption" },
+        "hono": { "name": "caption" },
+        "native": { "name": "caption" }
+      }
+    }
+  ],
+  "props": [
+    {
+      "name": "onClose",
+      "type": {
+        "kind": "event"
+      },
+      "description": "Renders the close X and fires when it's pressed (web: closable attribute + podo-close event)."
+    }
+  ],
+  "variants": [
+    {
+      "name": "state",
+      "values": ["normal", "success", "danger", "info", "warning"],
+      "default": "normal"
+    }
+  ],
+  "states": [],
+  "tokens": {
+    "root.background": "{color.palette.gray.10}",
+    "root.borderColor": "{color.palette.gray.30}",
+    "title.color": "{semantic.color.text.default}"
+  },
+  "targets": {
+    "web": {
+      "supported": true,
+      "limitations": ["The toaster stack/queue is react-only; place podo-toast yourself."]
+    },
+    "react": { "supported": true, "limitations": [] },
+    "hono": {
+      "supported": true,
+      "limitations": ["Static card only; dismissal and the toaster queue need client code."]
+    },
+    "native": {
+      "supported": true,
+      "limitations": [
+        "Card only — apps place it in their own overlay; no suffix-icon slot (onClose renders the X)."
+      ]
+    }
+  },
+  "accessibility": {
+    "aria": ["role=status (normal/success/info/warning)", "role=alert (danger)"],
+    "keyboard": ["Tab reaches the close X / action content"],
+    "focusManagement": "Toasts never steal focus; announcements ride aria-live."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Save feedback",
+      "code": "<Toaster />\n...\ntoast.success(\"저장됐어요\");\ntoast.danger(\"저장에 실패했어요\", { manual: true });"
+    }
+  ]
+}

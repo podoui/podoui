@@ -147,6 +147,69 @@ export function Textarea({
   );
 }
 
+export type HonoToastState = "normal" | "success" | "danger" | "info" | "warning";
+
+export interface HonoToastProps {
+  children: Child;
+  /** 상황의 성격에 따른 색·톤 (Figma state). */
+  state?: HonoToastState;
+  /** State icon before the title (Figma prefix-icon). */
+  prefix?: Child;
+  /** Follow-up action text, e.g. 실행 취소 (Figma suffix-text). */
+  suffixText?: Child;
+  /** Custom action icon after the title (Figma suffix-icon). */
+  suffixIcon?: Child;
+  /** Extra line under the title (Figma caption). */
+  caption?: Child;
+  /** Renders the close X; dismissing needs client code. */
+  closable?: boolean;
+  class?: string;
+}
+
+export function Toast({
+  children,
+  state = "normal",
+  prefix,
+  suffixText,
+  suffixIcon,
+  caption,
+  closable,
+  class: className,
+}: HonoToastProps): JSX.Element {
+  const suffix =
+    suffixText != null || suffixIcon != null || closable ? (
+      <span class="podo-toast__suffix">
+        {suffixText != null ? <span class="podo-toast__suffix-text">{suffixText}</span> : null}
+        {closable ? (
+          <button class="podo-toast__close" type="button" aria-label="닫기">
+            {raw(
+              '<svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
+            )}
+          </button>
+        ) : suffixIcon != null ? (
+          <span class="podo-toast__suffix-icon">{suffixIcon}</span>
+        ) : null}
+      </span>
+    ) : null;
+
+  return (
+    <div
+      class={joinClass("podo-toast", className)}
+      role={state === "danger" ? "alert" : "status"}
+      data-state={state}
+    >
+      {prefix != null ? <span class="podo-toast__prefix">{prefix}</span> : null}
+      <div class="podo-toast__contents">
+        <div class="podo-toast__title-row">
+          <span class="podo-toast__title">{children}</span>
+          {suffix}
+        </div>
+        {caption != null ? <span class="podo-toast__caption">{caption}</span> : null}
+      </div>
+    </div>
+  );
+}
+
 export interface HonoTableProps {
   children: Child;
   /** grid: bordered frame with per-cell rules; horizon: row rules only. */

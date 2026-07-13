@@ -607,6 +607,170 @@
   color: #9fa2ad;
 }
 
+/* Toast (Figma 459:1298) — mirrors the canonical @podo/web toast CSS. */
+.podo-toast {
+  align-items: flex-start;
+  background: #f4f4f5;
+  border: 1px solid #d1d2d6;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  color: #18181b;
+  display: flex;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  padding: 12px 16px;
+  width: 480px;
+}
+
+.podo-toast[data-state="success"] {
+  background: #ecf8ef;
+  border-color: #3ea856;
+}
+
+.podo-toast[data-state="danger"] {
+  background: #fef1f1;
+  border-color: #f23b3b;
+}
+
+.podo-toast[data-state="info"] {
+  background: #ebf5ff;
+  border-color: #0095ff;
+}
+
+.podo-toast[data-state="warning"] {
+  background: #fff7e6;
+  border-color: #ffaa00;
+}
+
+.podo-toast__prefix {
+  align-items: center;
+  display: inline-flex;
+  flex: none;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.podo-toast__contents {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.podo-toast__title-row {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-toast__title {
+  flex: 1 1 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.podo-toast__caption {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.podo-toast__suffix {
+  align-items: center;
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+}
+
+.podo-toast__suffix-text {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.podo-toast__suffix-icon,
+.podo-toast__close {
+  align-items: center;
+  display: inline-flex;
+  flex: none;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.podo-toast__close {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.podo-toast__close:focus-visible {
+  outline: 2px solid #426ced;
+  outline-offset: 2px;
+}
+
+.podo-toaster {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  position: fixed;
+  z-index: 9999;
+}
+
+.podo-toaster > * {
+  pointer-events: auto;
+}
+
+.podo-toaster[data-position^="top"] {
+  top: 16px;
+}
+
+.podo-toaster[data-position^="bottom"] {
+  bottom: 16px;
+  flex-direction: column-reverse;
+}
+
+.podo-toaster[data-position$="left"] {
+  align-items: flex-start;
+  left: 16px;
+}
+
+.podo-toaster[data-position$="right"] {
+  align-items: flex-end;
+  right: 16px;
+}
+
+.podo-toaster[data-position$="center"] {
+  align-items: center;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@keyframes podo-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.podo-toaster .podo-toast {
+  animation: podo-toast-in 0.18s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .podo-toaster .podo-toast {
+    animation: none;
+  }
+}
+
 /* Field (Figma 538:6691) — mirrors the canonical @podo/web field CSS. */
 .podo-field {
   display: flex;

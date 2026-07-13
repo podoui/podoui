@@ -13,6 +13,7 @@ import {
   Switch,
   Table,
   Textarea,
+  Toast,
   Typography,
   renderCriticalCss,
 } from "./index.js";
@@ -64,6 +65,9 @@ describe("@podo/hono", () => {
         <Switch checked size="lg" aria-label="알림" />
         <Checkbox indeterminate bold label="전체 선택" />
         <Radio name="plan" value="basic" checked size="lg" label="베이직" />
+        <Toast state="warning" caption="캡션 영역" closable>
+          저장 공간이 얼마 남지 않았어요
+        </Toast>
         <Textarea name="memo" defaultValue="메모" invalid resize={false} />
         <Table type="grid">
           <tbody>
@@ -92,6 +96,12 @@ describe("@podo/hono", () => {
     expect(html).toContain('class="podo-radio"');
     expect(html).toContain('type="radio"');
     expect(html).toContain('class="podo-radio-wrap"');
+    // SSR toast: static card with the close X (dismissal is client code).
+    expect(html).toContain('class="podo-toast"');
+    expect(html).toContain('data-state="warning"');
+    expect(html).toContain('role="status"');
+    expect(html).toContain('class="podo-toast__caption"');
+    expect(html).toContain('class="podo-toast__close"');
     expect(html).toContain('class="podo-textarea"');
     expect(html).toContain('data-resize="false"');
     expect(html).toContain(">메모</textarea>");

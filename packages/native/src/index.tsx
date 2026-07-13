@@ -197,6 +197,21 @@ export interface NativeIconProps {
   testID?: string;
 }
 
+export interface NativeToastProps {
+  children: ReactNode;
+  /** 상황의 성격에 따른 색·톤 (Figma state). */
+  state?: "normal" | "success" | "danger" | "info" | "warning";
+  /** State icon before the title (Figma prefix-icon). */
+  prefix?: ReactNode;
+  /** Follow-up action text, e.g. 실행 취소 (Figma suffix-text). */
+  suffixText?: ReactNode;
+  /** Extra line under the title (Figma caption). */
+  caption?: ReactNode;
+  /** Renders the close X and fires when it's pressed. */
+  onClose?: () => void;
+  testID?: string;
+}
+
 export interface NativeComponents {
   Button: (props: NativeButtonProps) => React.ReactElement;
   Checkbox: (props: NativeCheckboxProps) => React.ReactElement;
@@ -207,6 +222,7 @@ export interface NativeComponents {
   Field: (props: NativeFieldProps) => React.ReactElement;
   Icon: (props: NativeIconProps) => React.ReactElement;
   Switch: (props: NativeSwitchProps) => React.ReactElement;
+  Toast: (props: NativeToastProps) => React.ReactElement;
 }
 
 export type NativeStyle = Record<string, string | number | undefined>;
@@ -658,6 +674,79 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           : null
       );
     },
+    Toast: (props) => {
+      // Figma 459:1298 per-state tinted fill + border; the toaster stack is a
+      // web affordance — apps place the card in their own overlay.
+      const palette = {
+        success: { fill: "#ECF8EF", border: "#3EA856" },
+        danger: { fill: "#FEF1F1", border: "#F23B3B" },
+        info: { fill: "#EBF5FF", border: "#0095FF" },
+        warning: { fill: "#FFF7E6", border: "#FFAA00" },
+        normal: { fill: "#F4F4F5", border: "#D1D2D6" },
+      }[props.state ?? "normal"];
+      return createElement(
+        host.View,
+        {
+          accessibilityRole: "alert",
+          style: {
+            alignItems: "flex-start",
+            backgroundColor: palette.fill,
+            borderColor: palette.border,
+            borderRadius: 10,
+            borderWidth: 1,
+            flexDirection: "row",
+            gap: 8,
+            paddingBottom: 12,
+            paddingLeft: 16,
+            paddingRight: 16,
+            paddingTop: 12,
+          },
+          testID: props.testID,
+          "data-state": props.state ?? "normal",
+        },
+        props.prefix ?? null,
+        createElement(
+          host.View,
+          { style: { flex: 1, gap: 4 } },
+          createElement(
+            host.View,
+            { style: { alignItems: "center", flexDirection: "row", gap: 4 } },
+            createElement(
+              host.Text,
+              { style: { color: "#18181B", flex: 1, fontSize: 16, fontWeight: "600" } },
+              props.children
+            ),
+            props.suffixText
+              ? createElement(
+                  host.Text,
+                  { style: { color: "#18181B", fontSize: 16 } },
+                  props.suffixText
+                )
+              : null,
+            props.onClose
+              ? createElement(
+                  host.Pressable,
+                  {
+                    accessibilityRole: "button",
+                    accessibilityLabel: "닫기",
+                    onPress: props.onClose,
+                    style: {
+                      alignItems: "center",
+                      height: 24,
+                      justifyContent: "center",
+                      width: 24,
+                    },
+                  },
+                  createElement(host.Text, { style: { color: "#18181B", fontSize: 16 } }, "✕")
+                )
+              : null
+          ),
+          props.caption
+            ? createElement(host.Text, { style: { color: "#18181B", fontSize: 14 } }, props.caption)
+            : null
+        )
+      );
+    },
     Radio: (props) => {
       const behavior = createRadioBehavior({ checked: props.checked, disabled: props.disabled });
       // Figma 379:3350 colors; the circle stays 18x18 for every size and the
@@ -725,7 +814,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
   };
 }
 
-export const { Button, Checkbox, Radio, Chip, Input, Textarea, Field, Icon, Switch } =
+export const { Button, Checkbox, Radio, Chip, Input, Textarea, Field, Icon, Switch, Toast } =
   createNativeComponents();
 
 function wireNativeControl(
