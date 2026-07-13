@@ -217,7 +217,6 @@ input {
   gap: 4px;
   justify-content: center;
   line-height: 1.6;
-  min-width: 55px;
   padding: 2px 8px;
 }
 

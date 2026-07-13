@@ -1049,7 +1049,7 @@ function createNativeThemeStyles(
       paddingVertical: 8,
     },
     buttonLabel: { color: theme.colorScheme === "dark" ? "#101828" : "#FFFFFF", fontWeight: "600" },
-    // Chip (Figma 538:6615): pill, gap 4, padding 2/8, min-width 55.
+    // Chip (Figma 538:6615): pill, gap 4, padding 2/8, content-sized.
     chip: {
       alignItems: "center",
       backgroundColor: "#3E424B",
@@ -1059,7 +1059,6 @@ function createNativeThemeStyles(
       flexDirection: "row",
       gap: 4,
       justifyContent: "center",
-      minWidth: 55,
       paddingHorizontal: 8,
       paddingVertical: 2,
     },
