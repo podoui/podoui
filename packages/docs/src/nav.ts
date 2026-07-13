@@ -5,6 +5,7 @@ import { ColorPage } from "./pages/ColorPage.js";
 import { FieldPage } from "./pages/FieldPage.js";
 import { InputPage } from "./pages/InputPage.js";
 import { SwitchPage } from "./pages/SwitchPage.js";
+import { TablePage } from "./pages/TablePage.js";
 import { TextareaPage } from "./pages/TextareaPage.js";
 import { TypographyPage } from "./pages/TypographyPage.js";
 
@@ -28,6 +29,7 @@ export const NAV: NavItem[] = [
   { slug: "field", title: "Field", group: "Components", page: FieldPage },
   { slug: "input", title: "Input", group: "Components", page: InputPage },
   { slug: "switch", title: "Switch", group: "Components", page: SwitchPage },
+  { slug: "table", title: "Table", group: "Components", page: TablePage },
   { slug: "textarea", title: "Textarea", group: "Components", page: TextareaPage },
 ];
 

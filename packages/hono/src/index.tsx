@@ -134,6 +134,21 @@ export function Textarea({
   );
 }
 
+export interface HonoTableProps {
+  children: Child;
+  /** grid: bordered frame with per-cell rules; horizon: row rules only. */
+  type?: "grid" | "horizon";
+  class?: string;
+}
+
+export function Table({ children, type = "grid", class: className }: HonoTableProps): JSX.Element {
+  return (
+    <table class={joinClass("podo-table", className)} data-type={type}>
+      {children}
+    </table>
+  );
+}
+
 export interface HonoFieldProps {
   children: Child;
   id?: string;

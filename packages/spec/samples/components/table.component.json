@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "table",
+  "name": "Table",
+  "category": "organism",
+  "status": "experimental",
+  "description": "Data table (Figma 541:4024, component set 474:1795). Wraps native table semantics: grid draws a bordered radius-8 frame with per-cell rules for dense comparison, horizon keeps only row rules for list-like reading. Row states: normal, hover (gray.5), pressed (gray.10), disabled (gray.10 with muted text).",
+  "anatomy": [
+    { "name": "root" },
+    { "name": "thead", "parent": "root" },
+    { "name": "tbody", "parent": "root" }
+  ],
+  "slots": [
+    {
+      "name": "thead",
+      "description": "Header rows: native thead/tr/th markup.",
+      "targets": {
+        "web": { "name": "default" },
+        "react": { "name": "children" },
+        "hono": { "name": "children" }
+      }
+    },
+    {
+      "name": "tbody",
+      "description": "Body rows: native tbody/tr/td markup. Mark unavailable rows with data-disabled.",
+      "targets": {
+        "web": { "name": "default" },
+        "react": { "name": "children" },
+        "hono": { "name": "children" }
+      }
+    }
+  ],
+  "props": [],
+  "variants": [{ "name": "type", "values": ["grid", "horizon"], "default": "grid" }],
+  "states": [
+    { "name": "hover", "tokens": { "root.background": "{color.palette.gray.5}" } },
+    { "name": "active", "tokens": { "root.background": "{color.palette.gray.10}" } },
+    {
+      "name": "disabled",
+      "tokens": { "root.background": "{color.palette.gray.10}" }
+    }
+  ],
+  "tokens": {
+    "root.borderColor": "{color.palette.gray.20}",
+    "thead.background": "{color.palette.gray.5}"
+  },
+  "targets": {
+    "web": {
+      "supported": true,
+      "limitations": [
+        "Ships as podo-table CSS classes on native table markup; a shadow-DOM element would break table semantics."
+      ]
+    },
+    "react": { "supported": true, "limitations": [] },
+    "hono": { "supported": true, "limitations": [] },
+    "native": {
+      "supported": false,
+      "limitations": ["React Native has no table layout; use FlatList/SectionList."]
+    }
+  },
+  "accessibility": {
+    "aria": ["native table semantics"],
+    "keyboard": [],
+    "focusManagement": "Interactive cells manage their own focus."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Order list",
+      "code": "<Table type=\"horizon\"><thead><tr><th>주문</th><th>금액</th></tr></thead><tbody><tr><td>#1024</td><td>32,000원</td></tr></tbody></Table>"
+    }
+  ]
+}

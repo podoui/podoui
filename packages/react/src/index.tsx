@@ -122,6 +122,11 @@ export interface TextareaProps extends Omit<
   onValueChange?: (value: string, event: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
+export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
+  /** grid: bordered frame with per-cell rules; horizon: row rules only. */
+  type?: "grid" | "horizon";
+}
+
 export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
   label: ReactNode;
   /** Supplementary text next to the label (Figma sub-label, e.g. "선택"). */
@@ -386,6 +391,18 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         onValueChange?.(event.currentTarget.value, event);
       }}
     />
+  );
+});
+
+// Table keeps native table semantics: children are standard thead/tbody/tr
+// markup, so accessibility and column layout come from the platform. Mark
+// unavailable rows with data-disabled; hover/pressed row states are CSS.
+export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
+  { type = "grid", className, ...props },
+  ref
+) {
+  return (
+    <table {...props} ref={ref} className={joinClass("podo-table", className)} data-type={type} />
   );
 });
 

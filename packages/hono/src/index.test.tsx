@@ -9,6 +9,7 @@ import {
   Icon,
   Input,
   Switch,
+  Table,
   Textarea,
   Typography,
   renderCriticalCss,
@@ -60,6 +61,13 @@ describe("@podo/hono", () => {
         </Chip>
         <Switch checked size="lg" aria-label="알림" />
         <Textarea name="memo" defaultValue="메모" invalid resize={false} />
+        <Table type="grid">
+          <tbody>
+            <tr>
+              <td>#1024</td>
+            </tr>
+          </tbody>
+        </Table>
         <Typography as="h1">Dashboard</Typography>
       </>
     );
@@ -75,6 +83,8 @@ describe("@podo/hono", () => {
     expect(html).toContain('class="podo-textarea"');
     expect(html).toContain('data-resize="false"');
     expect(html).toContain(">메모</textarea>");
+    expect(html).toContain('class="podo-table"');
+    expect(html).toContain('data-type="grid"');
     expect(html).toContain("podo-icon-menu");
     expect(html).toContain("podo-text--h1");
     expect(html).toMatchSnapshot();

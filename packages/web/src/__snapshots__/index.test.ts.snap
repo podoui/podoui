@@ -373,6 +373,82 @@ input {
   color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
+/* Table (Figma 474:1795): native table markup styled by classes. NOTE: unlike
+   the other components this has no custom element — shadow slots would break
+   table semantics (tr/td parsing) — so consumers put class="podo-table" on a
+   native <table> and inject this stylesheet into the light DOM. */
+.podo-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--podo-table-text-color, #18181B);
+  font-size: 16px;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.podo-table th {
+  background: var(--podo-table-thead-background, #F9F9F9);
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.podo-table td {
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  padding: 12px;
+  text-align: left;
+}
+
+/* grid: bordered radius-8 frame with per-cell vertical rules. */
+.podo-table[data-type="grid"] {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  border-radius: 8px;
+}
+
+.podo-table[data-type="grid"] th:not(:last-child),
+.podo-table[data-type="grid"] td:not(:last-child) {
+  border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+}
+
+.podo-table[data-type="grid"] tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.podo-table[data-type="grid"] thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+.podo-table[data-type="grid"] thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 7px;
+}
+
+/* horizon: row rules only, headers without fill. */
+.podo-table[data-type="horizon"] th {
+  background: transparent;
+}
+
+/* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
+.podo-table tbody tr:hover:not([data-disabled]) td {
+  background: #F9F9F9;
+}
+
+.podo-table tbody tr:active:not([data-disabled]) td,
+.podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+.podo-table tbody tr[data-disabled] td {
+  background: #F4F4F5;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -898,6 +974,82 @@ input {
   color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
+/* Table (Figma 474:1795): native table markup styled by classes. NOTE: unlike
+   the other components this has no custom element — shadow slots would break
+   table semantics (tr/td parsing) — so consumers put class="podo-table" on a
+   native <table> and inject this stylesheet into the light DOM. */
+.podo-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--podo-table-text-color, #18181B);
+  font-size: 16px;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.podo-table th {
+  background: var(--podo-table-thead-background, #F9F9F9);
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.podo-table td {
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  padding: 12px;
+  text-align: left;
+}
+
+/* grid: bordered radius-8 frame with per-cell vertical rules. */
+.podo-table[data-type="grid"] {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  border-radius: 8px;
+}
+
+.podo-table[data-type="grid"] th:not(:last-child),
+.podo-table[data-type="grid"] td:not(:last-child) {
+  border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+}
+
+.podo-table[data-type="grid"] tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.podo-table[data-type="grid"] thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+.podo-table[data-type="grid"] thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 7px;
+}
+
+/* horizon: row rules only, headers without fill. */
+.podo-table[data-type="horizon"] th {
+  background: transparent;
+}
+
+/* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
+.podo-table tbody tr:hover:not([data-disabled]) td {
+  background: #F9F9F9;
+}
+
+.podo-table tbody tr:active:not([data-disabled]) td,
+.podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+.podo-table tbody tr[data-disabled] td {
+  background: #F4F4F5;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -1421,6 +1573,82 @@ input {
 
 .podo-input__suffix-text {
   color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
+}
+
+/* Table (Figma 474:1795): native table markup styled by classes. NOTE: unlike
+   the other components this has no custom element — shadow slots would break
+   table semantics (tr/td parsing) — so consumers put class="podo-table" on a
+   native <table> and inject this stylesheet into the light DOM. */
+.podo-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--podo-table-text-color, #18181B);
+  font-size: 16px;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.podo-table th {
+  background: var(--podo-table-thead-background, #F9F9F9);
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.podo-table td {
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  padding: 12px;
+  text-align: left;
+}
+
+/* grid: bordered radius-8 frame with per-cell vertical rules. */
+.podo-table[data-type="grid"] {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  border-radius: 8px;
+}
+
+.podo-table[data-type="grid"] th:not(:last-child),
+.podo-table[data-type="grid"] td:not(:last-child) {
+  border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+}
+
+.podo-table[data-type="grid"] tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.podo-table[data-type="grid"] thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+.podo-table[data-type="grid"] thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 7px;
+}
+
+/* horizon: row rules only, headers without fill. */
+.podo-table[data-type="horizon"] th {
+  background: transparent;
+}
+
+/* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
+.podo-table tbody tr:hover:not([data-disabled]) td {
+  background: #F9F9F9;
+}
+
+.podo-table tbody tr:active:not([data-disabled]) td,
+.podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+.podo-table tbody tr[data-disabled] td {
+  background: #F4F4F5;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
@@ -1957,6 +2185,82 @@ input {
   color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
+/* Table (Figma 474:1795): native table markup styled by classes. NOTE: unlike
+   the other components this has no custom element — shadow slots would break
+   table semantics (tr/td parsing) — so consumers put class="podo-table" on a
+   native <table> and inject this stylesheet into the light DOM. */
+.podo-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--podo-table-text-color, #18181B);
+  font-size: 16px;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.podo-table th {
+  background: var(--podo-table-thead-background, #F9F9F9);
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.podo-table td {
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  padding: 12px;
+  text-align: left;
+}
+
+/* grid: bordered radius-8 frame with per-cell vertical rules. */
+.podo-table[data-type="grid"] {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  border-radius: 8px;
+}
+
+.podo-table[data-type="grid"] th:not(:last-child),
+.podo-table[data-type="grid"] td:not(:last-child) {
+  border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+}
+
+.podo-table[data-type="grid"] tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.podo-table[data-type="grid"] thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+.podo-table[data-type="grid"] thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 7px;
+}
+
+/* horizon: row rules only, headers without fill. */
+.podo-table[data-type="horizon"] th {
+  background: transparent;
+}
+
+/* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
+.podo-table tbody tr:hover:not([data-disabled]) td {
+  background: #F9F9F9;
+}
+
+.podo-table tbody tr:active:not([data-disabled]) td,
+.podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+.podo-table tbody tr[data-disabled] td {
+  background: #F4F4F5;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -2475,6 +2779,82 @@ input {
 
 .podo-input__suffix-text {
   color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
+}
+
+/* Table (Figma 474:1795): native table markup styled by classes. NOTE: unlike
+   the other components this has no custom element — shadow slots would break
+   table semantics (tr/td parsing) — so consumers put class="podo-table" on a
+   native <table> and inject this stylesheet into the light DOM. */
+.podo-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--podo-table-text-color, #18181B);
+  font-size: 16px;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.podo-table th {
+  background: var(--podo-table-thead-background, #F9F9F9);
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.podo-table td {
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  padding: 12px;
+  text-align: left;
+}
+
+/* grid: bordered radius-8 frame with per-cell vertical rules. */
+.podo-table[data-type="grid"] {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  border-radius: 8px;
+}
+
+.podo-table[data-type="grid"] th:not(:last-child),
+.podo-table[data-type="grid"] td:not(:last-child) {
+  border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+}
+
+.podo-table[data-type="grid"] tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.podo-table[data-type="grid"] thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+.podo-table[data-type="grid"] thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 7px;
+}
+
+/* horizon: row rules only, headers without fill. */
+.podo-table[data-type="horizon"] th {
+  background: transparent;
+}
+
+/* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
+.podo-table tbody tr:hover:not([data-disabled]) td {
+  background: #F9F9F9;
+}
+
+.podo-table tbody tr:active:not([data-disabled]) td,
+.podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+.podo-table tbody tr[data-disabled] td {
+  background: #F4F4F5;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
@@ -3000,6 +3380,82 @@ input {
   color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
+/* Table (Figma 474:1795): native table markup styled by classes. NOTE: unlike
+   the other components this has no custom element — shadow slots would break
+   table semantics (tr/td parsing) — so consumers put class="podo-table" on a
+   native <table> and inject this stylesheet into the light DOM. */
+.podo-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--podo-table-text-color, #18181B);
+  font-size: 16px;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.podo-table th {
+  background: var(--podo-table-thead-background, #F9F9F9);
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.podo-table td {
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  padding: 12px;
+  text-align: left;
+}
+
+/* grid: bordered radius-8 frame with per-cell vertical rules. */
+.podo-table[data-type="grid"] {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  border-radius: 8px;
+}
+
+.podo-table[data-type="grid"] th:not(:last-child),
+.podo-table[data-type="grid"] td:not(:last-child) {
+  border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+}
+
+.podo-table[data-type="grid"] tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.podo-table[data-type="grid"] thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+.podo-table[data-type="grid"] thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 7px;
+}
+
+/* horizon: row rules only, headers without fill. */
+.podo-table[data-type="horizon"] th {
+  background: transparent;
+}
+
+/* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
+.podo-table tbody tr:hover:not([data-disabled]) td {
+  background: #F9F9F9;
+}
+
+.podo-table tbody tr:active:not([data-disabled]) td,
+.podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+.podo-table tbody tr[data-disabled] td {
+  background: #F4F4F5;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -3523,6 +3979,82 @@ input {
   color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
+/* Table (Figma 474:1795): native table markup styled by classes. NOTE: unlike
+   the other components this has no custom element — shadow slots would break
+   table semantics (tr/td parsing) — so consumers put class="podo-table" on a
+   native <table> and inject this stylesheet into the light DOM. */
+.podo-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--podo-table-text-color, #18181B);
+  font-size: 16px;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.podo-table th {
+  background: var(--podo-table-thead-background, #F9F9F9);
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.podo-table td {
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  padding: 12px;
+  text-align: left;
+}
+
+/* grid: bordered radius-8 frame with per-cell vertical rules. */
+.podo-table[data-type="grid"] {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  border-radius: 8px;
+}
+
+.podo-table[data-type="grid"] th:not(:last-child),
+.podo-table[data-type="grid"] td:not(:last-child) {
+  border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+}
+
+.podo-table[data-type="grid"] tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.podo-table[data-type="grid"] thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+.podo-table[data-type="grid"] thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 7px;
+}
+
+/* horizon: row rules only, headers without fill. */
+.podo-table[data-type="horizon"] th {
+  background: transparent;
+}
+
+/* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
+.podo-table tbody tr:hover:not([data-disabled]) td {
+  background: #F9F9F9;
+}
+
+.podo-table tbody tr:active:not([data-disabled]) td,
+.podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+.podo-table tbody tr[data-disabled] td {
+  background: #F4F4F5;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -4041,6 +4573,82 @@ input {
 
 .podo-input__suffix-text {
   color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
+}
+
+/* Table (Figma 474:1795): native table markup styled by classes. NOTE: unlike
+   the other components this has no custom element — shadow slots would break
+   table semantics (tr/td parsing) — so consumers put class="podo-table" on a
+   native <table> and inject this stylesheet into the light DOM. */
+.podo-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--podo-table-text-color, #18181B);
+  font-size: 16px;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.podo-table th {
+  background: var(--podo-table-thead-background, #F9F9F9);
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.podo-table td {
+  border-bottom: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  padding: 12px;
+  text-align: left;
+}
+
+/* grid: bordered radius-8 frame with per-cell vertical rules. */
+.podo-table[data-type="grid"] {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+  border-radius: 8px;
+}
+
+.podo-table[data-type="grid"] th:not(:last-child),
+.podo-table[data-type="grid"] td:not(:last-child) {
+  border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
+}
+
+.podo-table[data-type="grid"] tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.podo-table[data-type="grid"] thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+.podo-table[data-type="grid"] thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 7px;
+}
+.podo-table[data-type="grid"] tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 7px;
+}
+
+/* horizon: row rules only, headers without fill. */
+.podo-table[data-type="horizon"] th {
+  background: transparent;
+}
+
+/* Row states (Figma: hover gray.5, pressed gray.10, disabled gray.10 + muted). */
+.podo-table tbody tr:hover:not([data-disabled]) td {
+  background: #F9F9F9;
+}
+
+.podo-table tbody tr:active:not([data-disabled]) td,
+.podo-table tbody tr.is-pressed td {
+  background: #F4F4F5;
+}
+
+.podo-table tbody tr[data-disabled] td {
+  background: #F4F4F5;
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding

@@ -20,6 +20,9 @@ describe("@podo/web", () => {
     expect(customElements.get("podo-textarea")).toBeDefined();
     expect(podoWebComponentCss).toContain('.podo-button[data-theme="solid-primary"]');
     expect(podoWebComponentCss).toContain('.podo-chip[data-theme="outline-weak"]');
+    // Table ships as classes only (no shadow element — table semantics).
+    expect(podoWebComponentCss).toContain('.podo-table[data-type="grid"]');
+    expect(customElements.get("podo-table")).toBeUndefined();
   });
 
   it("reads binding-key vars, exposes data-state, and consumes the registered token CSS", () => {

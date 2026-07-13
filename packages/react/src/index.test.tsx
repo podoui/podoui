@@ -12,6 +12,7 @@ import {
   Input,
   PodoThemeProvider,
   Switch,
+  Table,
   Textarea,
   Typography,
   usePodoTheme,
@@ -136,6 +137,28 @@ describe("@podo/react", () => {
     expect(screen.getByLabelText("오류").getAttribute("data-state")).toBe("invalid");
     expect(screen.getByLabelText("오류").getAttribute("aria-invalid")).toBe("true");
     expect(screen.getByLabelText("잠긴 메모").getAttribute("data-state")).toBe("disabled");
+  });
+
+  it("wraps native table semantics with the type variant", () => {
+    render(
+      <Table type="horizon" aria-label="주문 목록">
+        <thead>
+          <tr>
+            <th>주문</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-disabled="true">
+            <td>#1024</td>
+          </tr>
+        </tbody>
+      </Table>
+    );
+
+    const table = screen.getByRole("table", { name: "주문 목록" });
+    expect(table.className).toBe("podo-table");
+    expect(table.getAttribute("data-type")).toBe("horizon");
+    expect(screen.getByText("#1024").closest("tr")?.getAttribute("data-disabled")).toBe("true");
   });
 
   it("supports controlled and uncontrolled input value changes", async () => {
