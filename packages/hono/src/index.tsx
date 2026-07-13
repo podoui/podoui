@@ -41,7 +41,7 @@ export interface HonoChipProps {
   theme?: "solid" | "outline-strong" | "outline-weak";
   /** Label/icon scale (Figma: md 14px — base, lg 16px). */
   size?: "md" | "lg";
-  /** 선택 여부 (Figma state) — 비선택이 기본 모습이에요. 지정하면 aria-pressed로 안내돼요. */
+  /** 선택 여부 (Figma state) — 비선택이 기본 모습. 토글은 클라이언트 코드 몫이에요. */
   selected?: boolean;
   disabled?: boolean;
   /** Category/status icon before the label (Figma prefix-icon). */
@@ -357,7 +357,7 @@ export function Chip({
       disabled={behavior.root.disabled}
       aria-disabled={behavior.root.ariaDisabled}
       tabIndex={behavior.root.tabIndex}
-      aria-pressed={selected == null ? undefined : selected ? "true" : "false"}
+      aria-pressed={selected ? "true" : "false"}
       data-state={selected ? "selected" : undefined}
       data-theme={theme}
       data-size={size}

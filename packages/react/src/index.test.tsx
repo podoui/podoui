@@ -83,25 +83,35 @@ describe("@podo/react", () => {
     expect(chip.className).toBe("podo-chip");
     expect(chip.getAttribute("data-theme")).toBe("outline-weak");
     expect(chip.getAttribute("data-size")).toBe("lg");
-    // Selection is opt-in: no selected prop → a plain button, not a toggle.
-    expect(chip.getAttribute("aria-pressed")).toBeNull();
-    expect(chip.getAttribute("data-state")).toBeNull();
+    // Chips toggle: the click above selected it.
+    expect(chip.getAttribute("aria-pressed")).toBe("true");
+    expect(chip.getAttribute("data-state")).toBe("selected");
   });
 
-  it("marks selected chips as pressed toggles", () => {
+  it("toggles chip selection on click, controlled or not", async () => {
+    const user = userEvent.setup();
+    const changes: boolean[] = [];
     render(
       <>
-        <Chip selected>켜짐</Chip>
-        <Chip selected={false}>꺼짐</Chip>
+        <Chip onSelectedChange={(next) => changes.push(next)}>토글</Chip>
+        <Chip selected={false}>제어형</Chip>
       </>
     );
 
-    const on = screen.getByRole("button", { name: "켜짐" });
-    expect(on.getAttribute("aria-pressed")).toBe("true");
-    expect(on.getAttribute("data-state")).toBe("selected");
-    const off = screen.getByRole("button", { name: "꺼짐" });
-    expect(off.getAttribute("aria-pressed")).toBe("false");
-    expect(off.getAttribute("data-state")).toBeNull();
+    // Uncontrolled: clicking flips the selection itself.
+    const toggle = screen.getByRole("button", { name: "토글" });
+    expect(toggle.getAttribute("aria-pressed")).toBe("false");
+    await user.click(toggle);
+    expect(toggle.getAttribute("aria-pressed")).toBe("true");
+    expect(toggle.getAttribute("data-state")).toBe("selected");
+    await user.click(toggle);
+    expect(toggle.getAttribute("data-state")).toBeNull();
+    expect(changes).toEqual([true, false]);
+
+    // Controlled: the prop wins — clicking doesn't change the look.
+    const controlled = screen.getByRole("button", { name: "제어형" });
+    await user.click(controlled);
+    expect(controlled.getAttribute("aria-pressed")).toBe("false");
   });
 
   it("tracks the character count automatically and caps input at countMax", async () => {

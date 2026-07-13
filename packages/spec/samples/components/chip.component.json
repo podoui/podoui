@@ -72,8 +72,25 @@
       "type": {
         "kind": "boolean"
       },
+      "description": "Controlled 선택 값 (Figma state) — 비선택이 기본 모습. 생략하면 클릭 시 스스로 토글 (react)."
+    },
+    {
+      "name": "defaultSelected",
+      "type": {
+        "kind": "boolean"
+      },
       "default": false,
-      "description": "선택 여부 (Figma state) — 비선택이 기본 모습. 지정하면 aria-pressed로 안내."
+      "description": "Initial uncontrolled selection."
+    },
+    {
+      "name": "onSelectedChange",
+      "type": {
+        "kind": "event",
+        "payload": {
+          "selected": "boolean"
+        }
+      },
+      "description": "Fires with the next value when the chip is toggled."
     },
     {
       "name": "disabled",
@@ -162,7 +179,7 @@
     }
   },
   "accessibility": {
-    "aria": ["aria-disabled", "aria-pressed when selected is provided"],
+    "aria": ["aria-disabled", "aria-pressed (selection toggle)"],
     "keyboard": ["Enter/Space activates the chip"],
     "focusManagement": "Chip is a native button; focus follows the platform."
   },

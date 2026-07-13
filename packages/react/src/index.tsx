@@ -76,8 +76,10 @@ export interface ChipProps extends Omit<
   theme?: ChipTheme;
   /** Label/icon scale (Figma: md 14px — base, lg 16px). */
   size?: "md" | "lg";
-  /** 선택 여부 (Figma state) — 비선택이 기본 모습이에요. 지정하면 aria-pressed로 안내돼요. */
+  /** Controlled 선택 값 (Figma state) — 비선택이 기본 모습이에요. */
   selected?: boolean;
+  /** Initial uncontrolled selection. */
+  defaultSelected?: boolean;
   disabled?: boolean;
   /** Category/status icon before the label (Figma prefix-icon). */
   prefix?: ReactNode;
@@ -85,6 +87,8 @@ export interface ChipProps extends Omit<
   suffix?: ReactNode;
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
   onPress?: (event: PodoPressEvent) => void;
+  /** Fires with the next value when the chip is toggled. */
+  onSelectedChange?: (selected: boolean) => void;
 }
 
 export interface SwitchProps extends Omit<
@@ -358,6 +362,7 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
     theme = "solid",
     size = "md",
     selected,
+    defaultSelected = false,
     disabled,
     prefix,
     suffix,
@@ -366,11 +371,15 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
     type = "button",
     onClick,
     onPress,
+    onSelectedChange,
     ...props
   },
   ref
 ) {
   const behavior = createButtonBehavior({ disabled, type });
+  // Uncontrolled fallback: without a selected prop the chip toggles itself.
+  const [internalSelected, setInternalSelected] = useState(defaultSelected);
+  const isSelected = selected ?? internalSelected;
 
   return (
     <button
@@ -381,10 +390,8 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
       disabled={behavior.root.disabled}
       aria-disabled={behavior.root.ariaDisabled}
       tabIndex={behavior.root.tabIndex}
-      // Selection is opt-in: an explicit selected prop makes the chip a
-      // toggle (aria-pressed); without it the chip reads as a plain button.
-      aria-pressed={selected == null ? undefined : selected}
-      data-state={selected ? "selected" : undefined}
+      aria-pressed={isSelected}
+      data-state={isSelected ? "selected" : undefined}
       className={joinClass("podo-chip", className)}
       data-size={size}
       data-theme={theme}
@@ -393,6 +400,10 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
         if (!behavior.pressable || event.defaultPrevented) {
           return;
         }
+        if (selected == null) {
+          setInternalSelected(!isSelected);
+        }
+        onSelectedChange?.(!isSelected);
         onPress?.({ source: "chip", originalEvent: event });
       }}
     >

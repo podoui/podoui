@@ -15,7 +15,9 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "react",
     label: "React",
-    code: `<Chip selected={isOn} onPress={toggle}>Label</Chip>`,
+    code:
+      `{/* 클릭하면 스스로 선택/해제 토글 — selected로 제어형 전환 */}\n` +
+      `<Chip onSelectedChange={setOn}>Label</Chip>`,
   },
   { target: "web", label: "Web", code: `<podo-chip>Label</podo-chip>` },
   {
@@ -75,15 +77,11 @@ export function ChipPage() {
         description="칩 테마는 배경 대비와 강조 정도에 따라 solid, outline-strong, outline-weak로 구분해요. solid는 진한 배경으로 선택·활성 상태를 뚜렷하게 강조할 때, outline-strong는 한 단계 낮은 대비로 여러 칩이 함께 놓여 보조적으로 쓰일 때, outline-weak는 밝은 배경에 얇은 외곽선으로 주변과 자연스럽게 어울려야 할 때 사용해요. 맥락에 맞는 테마를 선택하면 칩의 위계가 분명해지고 화면 전체의 강약이 정돈돼요."
       >
         <Card stage>
-          <Chip theme="solid" selected>
-            Label
-          </Chip>
-          <Chip theme="outline-strong" selected>
-            Label
-          </Chip>
-          <Chip theme="outline-weak" selected>
-            Label
-          </Chip>
+          <StageItem base>
+            <Chip theme="solid">Label</Chip>
+          </StageItem>
+          <Chip theme="outline-strong">Label</Chip>
+          <Chip theme="outline-weak">Label</Chip>
         </Card>
         <PropertyTags values={["solid", "outline-strong", "outline-weak"]} />
       </DocSection>
@@ -96,8 +94,8 @@ export function ChipPage() {
         <Card stage>
           <Chip>Label</Chip>
           <Chip className="is-pressed">Label</Chip>
-          <Chip selected>Label</Chip>
-          <Chip selected className="is-pressed">
+          <Chip defaultSelected>Label</Chip>
+          <Chip defaultSelected className="is-pressed">
             Label
           </Chip>
           <Chip disabled>Label</Chip>
@@ -175,8 +173,28 @@ export function ChipPage() {
               <span className="prop-type">
                 <code>boolean</code>
               </span>,
-              "— (비선택)",
-              "선택 여부 (시안 state). 비선택이 기본 모습이고, 지정하면 aria-pressed로 안내돼요",
+              "— (비제어)",
+              "선택 값 (시안 state). 지정하면 제어형으로 동작하고, 생략하면 클릭할 때 스스로 토글돼요",
+            ],
+            [
+              <span className="prop-name">
+                <code>defaultSelected</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              <code>false</code>,
+              "비제어형일 때의 초기 선택 값",
+            ],
+            [
+              <span className="prop-name">
+                <code>onSelectedChange</code>
+              </span>,
+              <span className="prop-type">
+                <code>(selected: boolean) =&gt; void</code>
+              </span>,
+              "—",
+              "토글될 때 다음 값과 함께 호출돼요",
             ],
             [
               <span className="prop-name">

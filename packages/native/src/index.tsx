@@ -60,7 +60,7 @@ export interface NativeButtonProps {
 
 export interface NativeChipProps {
   children: ReactNode;
-  /** 선택 여부 (Figma state) — 비선택이 기본 모습이에요. */
+  /** Controlled 선택 값 (Figma state) — 비선택이 기본 모습이에요. */
   selected?: boolean;
   disabled?: boolean;
   /** Background contrast (Figma: solid, outline-strong, outline-weak). */
@@ -72,6 +72,8 @@ export interface NativeChipProps {
   /** Removal/action icon after the label, e.g. close (Figma suffix-icon). */
   suffix?: ReactNode;
   onPress?: () => void;
+  /** Fires with the next value when the chip is toggled. */
+  onSelectedChange?: (selected: boolean) => void;
   testID?: string;
 }
 
@@ -349,12 +351,15 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         host.Pressable,
         {
           accessibilityRole: "button",
-          accessibilityState: {
-            disabled: !behavior.pressable,
-            ...(props.selected == null ? {} : { selected: props.selected }),
-          },
+          accessibilityState: { disabled: !behavior.pressable, selected },
           disabled: !behavior.pressable,
-          onPress: behavior.pressable ? props.onPress : undefined,
+          // Chips toggle: pressing reports the next selected value.
+          onPress: behavior.pressable
+            ? () => {
+                props.onSelectedChange?.(!selected);
+                props.onPress?.();
+              }
+            : undefined,
           style: {
             ...styles.chip,
             backgroundColor: box.fill,
