@@ -535,6 +535,7 @@
   - Input state 태그에 `hover` 누락 (본문·프리뷰엔 있음)
   - Button 문서 용어 `layout` ↔ 컴포넌트 variant 실명 `type` — 통일 필요
   - Tooltip 문서(541:8679) 인트로 문단이 토스트 설명 복붙 — 툴팁 설명으로 교체 필요 (코드 문서에는 툴팁용 인트로를 새로 작성해 둠)
+  - Tooltip 셋(388:2125) theme 어휘가 뒤집힘: 팀 기준 default는 어두운 배경인데 셋 변형명은 어두운 쪽이 `reverse`, 문서 설명 문구도 반대 — 코드가 번역 중(figma.tsx), 셋 어휘 정리 필요
 - [ ] (보류) Figma→코드 동기화 파이프라인 (`podo figma-sync`, 트리거 버튼) — 이전 논의 기록은 auto-memory 참고
 
 ### C. 컴포넌트·품질

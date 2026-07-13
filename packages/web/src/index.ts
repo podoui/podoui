@@ -547,8 +547,11 @@ input {
    aligns it to the start/center/end of that edge (4px inset). The drop shadow
    rides filter: so it wraps the arrow too. */
 .podo-tooltip {
-  --podo-tooltip-background: #FFFFFF;
-  --podo-tooltip-color: var(--podo-semantic-color-text-default, #18181B);
+  /* default is the dark pair (base); reverse flips to white for dark grounds.
+     NOTE: the Figma set names these the other way around — the code follows
+     the team's vocabulary and the Code Connect mapping translates. */
+  --podo-tooltip-background: #3E424B;
+  --podo-tooltip-color: #F9F9F9;
   display: inline-flex;
   filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.1));
   pointer-events: none;
@@ -557,8 +560,8 @@ input {
 }
 
 .podo-tooltip[data-theme="reverse"] {
-  --podo-tooltip-background: #3E424B;
-  --podo-tooltip-color: #F9F9F9;
+  --podo-tooltip-background: #FFFFFF;
+  --podo-tooltip-color: var(--podo-semantic-color-text-default, #18181B);
 }
 
 .podo-tooltip[data-position="right"] {

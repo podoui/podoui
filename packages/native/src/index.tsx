@@ -764,7 +764,8 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const theme = props.theme ?? "default";
       const position = props.position ?? "right";
       const ordinal = props.ordinal ?? "first";
-      const fill = theme === "reverse" ? "#3E424B" : "#FFFFFF";
+      // default is the dark pair (base); reverse flips to white.
+      const fill = theme === "reverse" ? "#FFFFFF" : "#3E424B";
       // Arrowhead via the RN border-triangle trick (a zero-size box whose one
       // colored border forms the 4x16 wedge pointing at the target).
       const wedge: Record<string, string | number> = { height: 0, width: 0 };
@@ -824,7 +825,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           },
           createElement(
             host.Text,
-            { style: { color: theme === "reverse" ? "#F9F9F9" : "#18181B", fontSize: 14 } },
+            { style: { color: theme === "reverse" ? "#18181B" : "#F9F9F9", fontSize: 14 } },
             props.label
           )
         )

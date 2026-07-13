@@ -1,7 +1,9 @@
 // Code Connect: Figma Tooltip component set (388:2125) → @podo/react Tooltip.
-// theme/position/ordinal pass through and the label text becomes the label
-// prop. The trigger child, hover behavior, and portal are code-side concerns
-// with no Figma counterpart — the example shows a representative trigger.
+// position/ordinal pass through and the label text becomes the label prop.
+// The theme vocabulary is SWAPPED between the set and the code: the team's
+// default is the dark bubble, which the Figma set names "reverse" — this
+// mapping translates. The trigger child, hover behavior, and portal are
+// code-side concerns with no Figma counterpart.
 import React from "react";
 import figma from "@figma/code-connect";
 import { Button, Tooltip } from "./index.js";
@@ -12,7 +14,7 @@ figma.connect(
   {
     props: {
       label: figma.string("label"),
-      theme: figma.enum("theme", { default: "default", reverse: "reverse" }),
+      theme: figma.enum("theme", { default: "reverse", reverse: "default" }),
       position: figma.enum("position", {
         right: "right",
         left: "left",

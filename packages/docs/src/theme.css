@@ -609,8 +609,8 @@
 
 /* Tooltip (Figma 388:2125) — mirrors the canonical @podo/web tooltip CSS. */
 .podo-tooltip {
-  --podo-tooltip-background: #ffffff;
-  --podo-tooltip-color: #18181b;
+  --podo-tooltip-background: #3e424b;
+  --podo-tooltip-color: #f9f9f9;
   display: inline-flex;
   filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.1));
   pointer-events: none;
@@ -619,8 +619,8 @@
 }
 
 .podo-tooltip[data-theme="reverse"] {
-  --podo-tooltip-background: #3e424b;
-  --podo-tooltip-color: #f9f9f9;
+  --podo-tooltip-background: #ffffff;
+  --podo-tooltip-color: #18181b;
 }
 
 .podo-tooltip[data-position="right"] {

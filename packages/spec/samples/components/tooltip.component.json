@@ -5,7 +5,7 @@
   "name": "Tooltip",
   "category": "molecule",
   "status": "experimental",
-  "description": "Contextual hint bubble anchored to a target (Figma 541:8679, component set 388:2125): a radius-8 bubble (6/8 padding, 14px text, drop shadow 0 2 10 @10%) with a 4x16 arrowhead pointing at the target. theme picks the contrast pair — default is white on light with gray.90 text, reverse is gray.70 with gray.5 text; position puts the bubble right/left/bottom/top of the target; ordinal pins the arrow to the start/center/end of the facing edge (4px inset). The react target adds the behavior layer: hover/focus triggering with Escape to close, aria-describedby wiring, and document.body portal positioning by default (portal=false renders in place) so overflow/stacking contexts can't clip the bubble.",
+  "description": "Contextual hint bubble anchored to a target (Figma 541:8679, component set 388:2125): a radius-8 bubble (6/8 padding, 14px text, drop shadow 0 2 10 @10%) with a 4x16 arrowhead pointing at the target. theme picks the contrast pair — default (base) is the dark gray.70 bubble with gray.5 text, reverse flips to white with gray.90 text for dark grounds (NOTE: the Figma set names these the other way around; Code Connect translates). position puts the bubble right/left/bottom/top of the target; ordinal pins the arrow to the start/center/end of the facing edge (4px inset). The react target adds the behavior layer: hover/focus triggering with Escape to close, aria-describedby wiring, and document.body portal positioning by default (portal=false renders in place) so overflow/stacking contexts can't clip the bubble.",
   "anatomy": [
     { "name": "root" },
     { "name": "arrow", "parent": "root" },
@@ -55,8 +55,8 @@
   ],
   "states": [],
   "tokens": {
-    "bubble.background": "{color.palette.gray.0}",
-    "bubble.color": "{semantic.color.text.default}"
+    "bubble.background": "{color.palette.gray.70}",
+    "bubble.color": "{color.palette.gray.5}"
   },
   "targets": {
     "web": {

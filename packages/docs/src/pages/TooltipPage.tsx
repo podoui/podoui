@@ -78,7 +78,7 @@ export function TooltipPage() {
       <DocSection
         index={1}
         title="테마 (theme)"
-        description="툴팁의 배경과 글자 색 조합을 정하는 속성이에요. default는 밝은 배경에 어두운 글자로, reverse는 어두운 배경에 밝은 글자로 표시돼요. 툴팁이 놓이는 화면 배경과 대비되는 쪽을 골라 내용이 잘 읽히도록 해요."
+        description="툴팁의 배경과 글자 색 조합을 정하는 속성이에요. default는 어두운 배경에 밝은 글자로, reverse는 밝은 배경에 어두운 글자로 표시돼요. 툴팁이 놓이는 화면 배경과 대비되는 쪽을 골라 내용이 잘 읽히도록 해요."
       >
         <Card stage>
           <StageItem base>
@@ -173,7 +173,7 @@ export function TooltipPage() {
                 <code>"default" | "reverse"</code>
               </span>,
               <code>"default"</code>,
-              "밝은 배경(default) / 어두운 배경(reverse)",
+              "어두운 배경(default) / 밝은 배경(reverse)",
             ],
             [
               <span className="prop-name">
