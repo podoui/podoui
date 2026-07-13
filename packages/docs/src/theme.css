@@ -454,6 +454,10 @@
   font-size: 18px;
 }
 
+.podo-switch-wrap[data-bold] .podo-switch__text {
+  font-weight: 600;
+}
+
 .podo-switch-wrap[data-disabled] {
   cursor: not-allowed;
 }

@@ -88,6 +88,8 @@ export interface SwitchProps extends Omit<
   defaultChecked?: boolean;
   /** Track size (Figma: sm 30x18 — base, md 40x24, lg 56x32). */
   size?: "sm" | "md" | "lg";
+  /** SemiBold label for emphasized items (Figma bold). */
+  bold?: boolean;
   /** Visible label next to the track (Figma label/text); also names the switch. */
   label?: ReactNode;
   disabled?: boolean;
@@ -311,6 +313,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
     checked,
     defaultChecked = false,
     size = "sm",
+    bold,
     label,
     disabled,
     className,
@@ -360,6 +363,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
     <label
       className="podo-switch-wrap"
       data-size={size}
+      data-bold={bold ? "true" : undefined}
       data-disabled={disabled ? "true" : undefined}
     >
       {control}

@@ -160,11 +160,12 @@ describe("@podo/react", () => {
 
   it("names and toggles the switch through its visible label", async () => {
     const user = userEvent.setup();
-    render(<Switch label="야간 모드" />);
+    render(<Switch bold label="야간 모드" />);
 
     // The label wrapper names the switch and clicking the text toggles it.
     const toggle = screen.getByRole("switch", { name: "야간 모드" });
     expect(screen.getByText("야간 모드").className).toBe("podo-switch__text");
+    expect(screen.getByText("야간 모드").closest("label")?.getAttribute("data-bold")).toBe("true");
     await user.click(screen.getByText("야간 모드"));
     expect(toggle.getAttribute("data-state")).toBe("on");
   });

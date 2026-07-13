@@ -76,6 +76,17 @@ export function SwitchPage() {
 
       <DocSection
         index={3}
+        title="강조 (bold)"
+        description="스위치는 함께 표시되는 레이블 텍스트의 강조 정도를 bold로 조절해요. 기본은 일반 굵기로 본문과 자연스럽게 어울리게 하고, bold는 항목의 중요도가 높거나 그룹의 제목·대표 선택지처럼 강조가 필요할 때 사용해요."
+      >
+        <Card stage>
+          <Switch size="md" defaultChecked bold label="텍스트" />
+        </Card>
+        <PropertyTags values={["bold"]} />
+      </DocSection>
+
+      <DocSection
+        index={4}
         title="속성 (props)"
         description="@podo/react의 Switch가 받는 속성이에요. 시안의 state(on·off)는 코드에서 웹 표준(role=switch, aria-checked)에 맞춘 checked로 표현돼요. checked를 생략하면 스스로 상태를 관리하는 비제어형으로 동작해요. 이 밖에 표준 button 속성(className, aria-* 등)도 그대로 전달돼요."
       >
@@ -112,6 +123,16 @@ export function SwitchPage() {
               </span>,
               <code>"sm"</code>,
               "트랙 크기 (sm 30×18 / md 40×24 / lg 56×32)",
+            ],
+            [
+              <span className="prop-name">
+                <code>bold</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              <code>false</code>,
+              "라벨을 SemiBold로 강조해요",
             ],
             [
               <span className="prop-name">

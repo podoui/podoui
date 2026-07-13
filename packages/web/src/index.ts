@@ -375,6 +375,10 @@ input {
   font-size: 18px;
 }
 
+.podo-switch-wrap[data-bold] .podo-switch__text {
+  font-weight: 600;
+}
+
 .podo-switch-wrap[data-disabled] {
   cursor: not-allowed;
 }
@@ -921,7 +925,7 @@ function createChipElement(): CustomElementConstructor {
 function createSwitchElement(): CustomElementConstructor {
   return class PodoSwitchElement extends HTMLElement {
     static get observedAttributes(): string[] {
-      return ["checked", "disabled", "label", "size", "aria-label"];
+      return ["checked", "disabled", "label", "size", "bold", "aria-label"];
     }
 
     readonly shadow = this.attachShadow({ mode: "open" });
@@ -963,9 +967,9 @@ ${
   label
     ? `<label class="podo-switch-wrap" part="wrap" data-size="${escapeHtml(
         attr(this, "size", "sm")
-      )}"${behavior.disabled ? ' data-disabled="true"' : ""}>${control}<span class="podo-switch__text" part="label">${escapeHtml(
-        label
-      )}</span></label>`
+      )}"${this.hasAttribute("bold") ? ' data-bold="true"' : ""}${
+        behavior.disabled ? ' data-disabled="true"' : ""
+      }>${control}<span class="podo-switch__text" part="label">${escapeHtml(label)}</span></label>`
     : control
 }`;
       this.shadow.querySelector("button")?.addEventListener("click", () => {

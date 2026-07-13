@@ -14,14 +14,15 @@ figma.connect(
     props: {
       checked: figma.enum("state", { on: true, off: false }),
       size: figma.enum("size", { sm: "sm", md: "md", lg: "lg" }),
+      bold: figma.enum("bold", { true: true }),
       disabled: figma.enum("disable", { true: true }),
       label: figma.boolean("text", {
         true: figma.string("label"),
         false: undefined,
       }),
     },
-    example: ({ checked, size, disabled, label }) => (
-      <Switch checked={checked} size={size} disabled={disabled} label={label} />
+    example: ({ checked, size, bold, disabled, label }) => (
+      <Switch checked={checked} size={size} bold={bold} disabled={disabled} label={label} />
     ),
   }
 );

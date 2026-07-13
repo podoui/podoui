@@ -75,6 +75,8 @@ export interface NativeSwitchProps {
   checked?: boolean;
   /** Track size (Figma: sm 30x18 — base, md 40x24, lg 56x32). */
   size?: "sm" | "md" | "lg";
+  /** SemiBold label for emphasized items (Figma bold). */
+  bold?: boolean;
   /** Visible label next to the track (Figma label/text). */
   label?: ReactNode;
   disabled?: boolean;
@@ -559,6 +561,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                   color: behavior.disabled ? "#9FA2AD" : "#50555E",
                   // Figma: label size follows the track size (sm 14/md 16/lg 18).
                   fontSize: props.size === "md" ? 16 : props.size === "lg" ? 18 : 14,
+                  fontWeight: props.bold ? "600" : undefined,
                 },
               },
               props.label

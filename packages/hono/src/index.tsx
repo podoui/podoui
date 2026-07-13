@@ -260,6 +260,8 @@ export interface HonoSwitchProps {
   checked?: boolean;
   /** Track size (Figma: sm 30x18 — base, md 40x24, lg 56x32). */
   size?: "sm" | "md" | "lg";
+  /** SemiBold label for emphasized items (Figma bold). */
+  bold?: boolean;
   /** Visible label next to the track (Figma label/text); also names the switch. */
   label?: Child;
   disabled?: boolean;
@@ -270,6 +272,7 @@ export interface HonoSwitchProps {
 export function Switch({
   checked,
   size = "sm",
+  bold,
   label,
   disabled,
   "aria-label": ariaLabel,
@@ -298,7 +301,12 @@ export function Switch({
 
   // Figma 566:12693: track + 6px gap + size-matched text (sm 14/md 16/lg 18).
   return (
-    <label class="podo-switch-wrap" data-size={size} data-disabled={disabled ? "true" : undefined}>
+    <label
+      class="podo-switch-wrap"
+      data-size={size}
+      data-bold={bold ? "true" : undefined}
+      data-disabled={disabled ? "true" : undefined}
+    >
       {control}
       <span class="podo-switch__text">{label}</span>
     </label>
