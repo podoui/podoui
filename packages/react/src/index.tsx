@@ -150,6 +150,12 @@ export interface TextareaProps extends Omit<
 export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
   /** grid: bordered frame with per-cell rules; horizon: row rules only. */
   type?: "grid" | "horizon";
+  /** Checkbox selection column (Figma): select-all header + per-row boxes. */
+  checkbox?: boolean;
+  /** Initially selected tbody row indexes (0-based) when checkbox is on. */
+  defaultSelected?: number[];
+  /** Fires with the selected row indexes whenever the selection changes. */
+  onSelectionChange?: (selected: number[]) => void;
 }
 
 export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
@@ -520,12 +526,111 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
 // Table keeps native table semantics: children are standard thead/tbody/tr
 // markup, so accessibility and column layout come from the platform. Mark
 // unavailable rows with data-disabled; hover/pressed row states are CSS.
+// checkbox injects the design's selection column: a select-all box in the
+// first header row and one box per tbody row; selected rows get data-selected.
 export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
-  { type = "grid", className, ...props },
+  { type = "grid", checkbox = false, defaultSelected, onSelectionChange, className, ...props },
   ref
 ) {
+  const [selected, setSelected] = useState<Set<number>>(() => new Set(defaultSelected ?? []));
+
+  if (!checkbox) {
+    return (
+      <table {...props} ref={ref} className={joinClass("podo-table", className)} data-type={type} />
+    );
+  }
+
+  const { children, ...rest } = props;
+  const commit = (next: Set<number>) => {
+    setSelected(next);
+    onSelectionChange?.([...next].sort((a, b) => a - b));
+  };
+
+  // First pass: rows with data-disabled are excluded from selection.
+  const selectableRows: number[] = [];
+  let scanIndex = 0;
+  React.Children.forEach(children, (section) => {
+    if (!isValidElement<Record<string, unknown>>(section) || section.type !== "tbody") {
+      return;
+    }
+    React.Children.forEach(section.props.children as ReactNode, (row) => {
+      if (!isValidElement<Record<string, unknown>>(row)) {
+        return;
+      }
+      const index = scanIndex++;
+      if (!row.props["data-disabled"]) {
+        selectableRows.push(index);
+      }
+    });
+  });
+  const allSelected = selectableRows.length > 0 && selectableRows.every((i) => selected.has(i));
+  const someSelected = selectableRows.some((i) => selected.has(i));
+
+  let headerWired = false;
+  let bodyIndex = 0;
+  const wired = React.Children.map(children, (section) => {
+    if (!isValidElement<Record<string, unknown>>(section)) {
+      return section;
+    }
+    if (section.type === "thead" && !headerWired) {
+      headerWired = true;
+      let firstRow = true;
+      const rows = React.Children.map(section.props.children as ReactNode, (row) => {
+        if (!isValidElement<Record<string, unknown>>(row) || !firstRow) {
+          return row;
+        }
+        firstRow = false;
+        return cloneElement(row, undefined, [
+          <th key="podo-check" className="podo-table__check">
+            <Checkbox
+              aria-label="전체 선택"
+              checked={allSelected}
+              indeterminate={!allSelected && someSelected}
+              onCheckedChange={() => commit(allSelected ? new Set() : new Set(selectableRows))}
+            />
+          </th>,
+          ...React.Children.toArray(row.props.children as ReactNode),
+        ]);
+      });
+      return cloneElement(section, undefined, rows);
+    }
+    if (section.type === "tbody") {
+      const rows = React.Children.map(section.props.children as ReactNode, (row) => {
+        if (!isValidElement<Record<string, unknown>>(row)) {
+          return row;
+        }
+        const index = bodyIndex++;
+        const rowDisabled = Boolean(row.props["data-disabled"]);
+        const rowSelected = selected.has(index);
+        return cloneElement(row, rowSelected ? { "data-selected": "true" } : undefined, [
+          <td key="podo-check">
+            <Checkbox
+              aria-label={`행 ${index + 1} 선택`}
+              checked={rowSelected}
+              disabled={rowDisabled}
+              onCheckedChange={(next) => {
+                const draft = new Set(selected);
+                if (next) {
+                  draft.add(index);
+                } else {
+                  draft.delete(index);
+                }
+                commit(draft);
+              }}
+            />
+          </td>,
+          ...React.Children.toArray(row.props.children as ReactNode),
+        ]);
+      });
+      return cloneElement(section, undefined, rows);
+    }
+    return section;
+  });
+
   return (
-    <table {...props} ref={ref} className={joinClass("podo-table", className)} data-type={type} />
+    <table {...rest} ref={ref} className={joinClass("podo-table", className)} data-type={type}>
+      {wired}
+    </table>
   );
 });
 

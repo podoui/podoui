@@ -123,7 +123,7 @@ describe("@podo/react", () => {
     render(
       <>
         <Checkbox label="이용약관" onCheckedChange={(next) => changes.push(next)} />
-        <Checkbox aria-label="전체 선택" indeterminate />
+        <Checkbox aria-label="그룹 전체" indeterminate />
         <Checkbox
           aria-label="잠김"
           disabled
@@ -141,7 +141,7 @@ describe("@podo/react", () => {
     expect(box.getAttribute("data-state")).toBe("checked");
 
     // indeterminate only exists as a DOM property, plus the data/aria state.
-    const parent = screen.getByRole("checkbox", { name: "전체 선택" }) as HTMLInputElement;
+    const parent = screen.getByRole("checkbox", { name: "그룹 전체" }) as HTMLInputElement;
     expect(parent.indeterminate).toBe(true);
     expect(parent.getAttribute("data-state")).toBe("indeterminate");
 
@@ -212,6 +212,59 @@ describe("@podo/react", () => {
     expect(table.className).toBe("podo-table");
     expect(table.getAttribute("data-type")).toBe("horizon");
     expect(screen.getByText("#1024").closest("tr")?.getAttribute("data-disabled")).toBe("true");
+  });
+
+  it("injects the checkbox column and toggles select-all from the header", async () => {
+    const user = userEvent.setup();
+    const selections: number[][] = [];
+    render(
+      <Table
+        checkbox
+        defaultSelected={[0]}
+        onSelectionChange={(next) => selections.push(next)}
+        aria-label="선택 표"
+      >
+        <thead>
+          <tr>
+            <th>주문</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#1</td>
+          </tr>
+          <tr>
+            <td>#2</td>
+          </tr>
+          <tr data-disabled="true">
+            <td>#3</td>
+          </tr>
+        </tbody>
+      </Table>
+    );
+
+    // Row 0 is preselected: its tr is marked and the header shows partial.
+    expect(screen.getByText("#1").closest("tr")?.getAttribute("data-selected")).toBe("true");
+    const selectAll = screen.getByRole("checkbox", { name: "전체 선택" }) as HTMLInputElement;
+    expect(selectAll.indeterminate).toBe(true);
+    expect((screen.getByRole("checkbox", { name: "행 3 선택" }) as HTMLInputElement).disabled).toBe(
+      true
+    );
+
+    // Select-all picks every selectable row (data-disabled rows are skipped)...
+    await user.click(selectAll);
+    expect(selections.at(-1)).toEqual([0, 1]);
+    expect(screen.getByText("#2").closest("tr")?.getAttribute("data-selected")).toBe("true");
+    expect(screen.getByText("#3").closest("tr")?.getAttribute("data-selected")).toBeNull();
+
+    // ...and clears them all on the next press.
+    await user.click(selectAll);
+    expect(selections.at(-1)).toEqual([]);
+    expect(screen.getByText("#1").closest("tr")?.getAttribute("data-selected")).toBeNull();
+
+    // Row boxes toggle their own row only.
+    await user.click(screen.getByRole("checkbox", { name: "행 2 선택" }));
+    expect(selections.at(-1)).toEqual([1]);
   });
 
   it("supports controlled and uncontrolled input value changes", async () => {

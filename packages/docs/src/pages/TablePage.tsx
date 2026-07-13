@@ -1,4 +1,4 @@
-import { Checkbox, Table } from "@podo/react";
+import { Table } from "@podo/react";
 import { Card } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -15,19 +15,10 @@ const USAGE_TABS: CodeTab[] = [
     target: "react",
     label: "React",
     code:
-      `<Table type="grid">\n` +
-      `  <thead>\n` +
-      `    <tr>\n` +
-      `      <th><Checkbox aria-label="전체 선택" /></th>\n` +
-      `      <th>주문</th><th>상품</th><th>금액</th>\n` +
-      `    </tr>\n` +
-      `  </thead>\n` +
-      `  <tbody>\n` +
-      `    <tr data-selected="true">\n` +
-      `      <td><Checkbox aria-label="#1024 선택" checked /></td>\n` +
-      `      <td>#1024</td><td>포도 한 상자</td><td>32,000원</td>\n` +
-      `    </tr>\n` +
-      `  </tbody>\n` +
+      `{/* checkbox: 선택 열 자동 주입 — 헤더는 전체 선택/해제 */}\n` +
+      `<Table type="grid" checkbox onSelectionChange={setSelected}>\n` +
+      `  <thead>\n    <tr><th>주문</th><th>상품</th><th>금액</th></tr>\n  </thead>\n` +
+      `  <tbody>\n    <tr><td>#1024</td><td>포도 한 상자</td><td>32,000원</td></tr>\n  </tbody>\n` +
       `</Table>`,
   },
   {
@@ -35,6 +26,7 @@ const USAGE_TABS: CodeTab[] = [
     label: "Web",
     code:
       `<!-- 표 시맨틱 보존을 위해 커스텀 엘리먼트 대신 클래스로 제공돼요 -->\n` +
+      `<!-- 선택 열은 셀에 podo-checkbox를 직접 조합해요 -->\n` +
       `<table class="podo-table" data-type="grid">\n` +
       `  <thead>...</thead>\n  <tbody>...</tbody>\n` +
       `</table>`,
@@ -44,6 +36,7 @@ const USAGE_TABS: CodeTab[] = [
     label: "Hono",
     code:
       `import { Table } from "@podo/hono";\n\n` +
+      `{/* 선택 열은 셀에 Checkbox를 직접 조합해요 (SSR) */}\n` +
       `<Table type="grid">\n  <thead>...</thead>\n  <tbody>...</tbody>\n</Table>`,
   },
 ];
@@ -55,54 +48,38 @@ const ROWS = [
   ["#1027", "거봉 세트", "27,000원"],
 ];
 
-interface SampleRowState {
-  /** Extra tr attributes (is-hover, is-pressed, data-selected, data-disabled...). */
-  tr?: Record<string, string>;
-  /** The row checkbox's value; 시안처럼 선택된 행은 체크와 함께 표시돼요. */
-  checked?: boolean;
-  disabled?: boolean;
-}
-
 function SampleTable({
   type,
-  states = [],
-  headerIndeterminate,
+  rowProps = [],
+  defaultSelected,
 }: {
   type: "grid" | "horizon";
-  states?: SampleRowState[];
-  headerIndeterminate?: boolean;
+  /** Extra tr attributes (is-hover, is-pressed, data-disabled...). */
+  rowProps?: Array<Record<string, string> | undefined>;
+  defaultSelected?: number[];
 }) {
   return (
-    <Table type={type} aria-label={`${type} 표 예시`}>
+    <Table
+      type={type}
+      checkbox
+      defaultSelected={defaultSelected ?? []}
+      aria-label={`${type} 표 예시`}
+    >
       <thead>
         <tr>
-          {/* 시안(474:1795)의 체크박스 열: 헤더는 전체 선택. */}
-          <th style={{ width: 50 }}>
-            <Checkbox aria-label="전체 선택" indeterminate={headerIndeterminate ?? false} />
-          </th>
           <th>주문</th>
           <th>상품</th>
           <th>금액</th>
         </tr>
       </thead>
       <tbody>
-        {ROWS.map((row, i) => {
-          const state = states[i] ?? {};
-          return (
-            <tr key={row[0]} {...(state.tr ?? {})}>
-              <td>
-                <Checkbox
-                  aria-label={`${row[0]} 선택`}
-                  defaultChecked={state.checked ?? false}
-                  disabled={state.disabled ?? false}
-                />
-              </td>
-              {row.map((cell) => (
-                <td key={cell}>{cell}</td>
-              ))}
-            </tr>
-          );
-        })}
+        {ROWS.map((row, i) => (
+          <tr key={row[0]} {...(rowProps[i] ?? {})}>
+            {row.map((cell) => (
+              <td key={cell}>{cell}</td>
+            ))}
+          </tr>
+        ))}
       </tbody>
     </Table>
   );
@@ -128,11 +105,12 @@ export function TablePage() {
           {/* 시안(474:1796) 순서 그대로: normal → hover → pressed(선택) → disabled. */}
           <SampleTable
             type="horizon"
-            states={[
-              {},
-              { tr: { className: "is-hover" } },
-              { tr: { className: "is-pressed" }, checked: true },
-              { tr: { "data-disabled": "true" }, disabled: true },
+            defaultSelected={[2]}
+            rowProps={[
+              undefined,
+              { className: "is-hover" },
+              { className: "is-pressed" },
+              { "data-disabled": "true" },
             ]}
           />
         </Card>
@@ -146,17 +124,9 @@ export function TablePage() {
       >
         <Card stage>
           <div className="stage-col" style={{ width: "100%" }}>
-            {/* 시안처럼 일부 행이 선택된 모습: 선택 행은 data-selected, 헤더는 부분 선택. */}
-            <SampleTable
-              type="horizon"
-              headerIndeterminate
-              states={[{}, {}, { tr: { "data-selected": "true" }, checked: true }, {}]}
-            />
-            <SampleTable
-              type="grid"
-              headerIndeterminate
-              states={[{}, {}, { tr: { "data-selected": "true" }, checked: true }, {}]}
-            />
+            {/* 시안처럼 일부 행이 선택된 모습 — 헤더는 자동으로 부분 선택 표시. */}
+            <SampleTable type="horizon" defaultSelected={[2]} />
+            <SampleTable type="grid" defaultSelected={[2]} />
           </div>
         </Card>
         <PropertyTags values={["horizon", "grid"]} />
@@ -183,13 +153,43 @@ export function TablePage() {
             ],
             [
               <span className="prop-name">
+                <code>checkbox</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              <code>false</code>,
+              "체크박스 선택 열을 자동 주입해요. 헤더는 전체 선택/해제(일부 선택 시 indeterminate), 선택된 행은 data-selected로 표시돼요",
+            ],
+            [
+              <span className="prop-name">
+                <code>defaultSelected</code>
+              </span>,
+              <span className="prop-type">
+                <code>number[]</code>
+              </span>,
+              <code>[]</code>,
+              "checkbox 사용 시 초기 선택 행 인덱스 (tbody 순서, 0부터)",
+            ],
+            [
+              <span className="prop-name">
+                <code>onSelectionChange</code>
+              </span>,
+              <span className="prop-type">
+                <code>(selected: number[]) =&gt; void</code>
+              </span>,
+              "—",
+              "선택이 바뀔 때 선택된 행 인덱스 목록과 함께 호출돼요",
+            ],
+            [
+              <span className="prop-name">
                 <code>children</code>
               </span>,
               <span className="prop-type">
                 <code>ReactNode</code>
               </span>,
               "— (필수)",
-              "표준 thead/tbody/tr/th/td 마크업. 선택 열은 셀에 Checkbox를 조합하고, 선택된 행은 tr에 data-selected, 비활성 행은 data-disabled",
+              "표준 thead/tbody/tr/th/td 마크업. 비활성 행은 tr에 data-disabled (선택 대상에서도 제외돼요)",
             ],
           ]}
         />

@@ -560,7 +560,6 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
-  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);
@@ -584,9 +583,17 @@ input {
   text-align: left;
 }
 
-/* Both types share the 1px outer frame; grid rounds it to radius 8 and adds
-   per-cell vertical rules, horizon stays square with row rules only. */
+/* The checkbox selection column (Figma: 50px cell with a centered box).
+   min-width — auto table layout ignores width on cells here. */
+.podo-table .podo-table__check {
+  min-width: 50px;
+  width: 50px;
+}
+
+/* grid: bordered radius-8 frame with per-cell vertical rules; horizon has no
+   outer frame — row rules only. */
 .podo-table[data-type="grid"] {
+  border: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
   border-radius: 8px;
 }
 
@@ -595,7 +602,7 @@ input {
   border-right: 1px solid var(--podo-table-root-borderColor, #E4E4E7);
 }
 
-.podo-table tbody tr:last-child td {
+.podo-table[data-type="grid"] tbody tr:last-child td {
   border-bottom: 0;
 }
 
