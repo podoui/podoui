@@ -279,9 +279,9 @@ export function Switch({
     return control;
   }
 
-  // Figma 566:12693: track + 6px gap + 14px text.
+  // Figma 566:12693: track + 6px gap + size-matched text (sm 14/md 16/lg 18).
   return (
-    <label class="podo-switch-wrap" data-disabled={disabled ? "true" : undefined}>
+    <label class="podo-switch-wrap" data-size={size} data-disabled={disabled ? "true" : undefined}>
       {control}
       <span class="podo-switch__text">{label}</span>
     </label>

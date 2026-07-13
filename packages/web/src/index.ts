@@ -349,7 +349,7 @@ input {
   box-shadow: none;
 }
 
-/* Labeled switch (Figma 566:12693): track + 6px gap + 14px text. */
+/* Labeled switch (Figma 566:12693): track + 6px gap + size-matched text. */
 .podo-switch-wrap {
   align-items: center;
   cursor: pointer;
@@ -359,8 +359,16 @@ input {
 
 .podo-switch__text {
   color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
+}
+
+.podo-switch-wrap[data-size="sm"] .podo-switch__text {
+  font-size: 14px;
+}
+
+.podo-switch-wrap[data-size="lg"] .podo-switch__text {
+  font-size: 18px;
 }
 
 .podo-switch-wrap[data-disabled] {
@@ -824,7 +832,9 @@ function createSwitchElement(): CustomElementConstructor {
       this.shadow.innerHTML = `${componentStyleBlock()}
 ${
   label
-    ? `<label class="podo-switch-wrap" part="wrap"${behavior.disabled ? ' data-disabled="true"' : ""}>${control}<span class="podo-switch__text" part="label">${escapeHtml(
+    ? `<label class="podo-switch-wrap" part="wrap" data-size="${escapeHtml(
+        attr(this, "size", "md")
+      )}"${behavior.disabled ? ' data-disabled="true"' : ""}>${control}<span class="podo-switch__text" part="label">${escapeHtml(
         label
       )}</span></label>`
     : control

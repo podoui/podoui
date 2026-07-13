@@ -121,7 +121,7 @@ export function SwitchPage() {
                 <code>ReactNode</code>
               </span>,
               "—",
-              "트랙 옆 14px 라벨. 클릭 영역이 되고 스위치의 접근성 이름도 돼요 (없으면 aria-label 권장)",
+              "트랙 옆 라벨(크기 연동: sm 14 / md 16 / lg 18). 클릭 영역이 되고 스위치의 접근성 이름도 돼요 (없으면 aria-label 권장)",
             ],
             [
               <span className="prop-name">

@@ -507,7 +507,13 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         props.label
           ? createElement(
               host.Text,
-              { style: { color: behavior.disabled ? "#9FA2AD" : "#50555E", fontSize: 14 } },
+              {
+                style: {
+                  color: behavior.disabled ? "#9FA2AD" : "#50555E",
+                  // Figma: label size follows the track size (sm 14/md 16/lg 18).
+                  fontSize: props.size === "sm" ? 14 : props.size === "lg" ? 18 : 16,
+                },
+              },
               props.label
             )
           : null

@@ -5,45 +5,89 @@
   "name": "Switch",
   "category": "atom",
   "status": "experimental",
-  "description": "On/off toggle that applies immediately (Figma 538:7226, component set 566:12693): sm 30x18 / md 40x24 (base) / lg 56x32, track colors gray.30 (off), primary.50 (on), gray.20 (disabled) with a white shadowed handle, plus an optional 14px label at a 6px gap.",
-  "anatomy": [{ "name": "root" }, { "name": "handle", "parent": "root" }, { "name": "label" }],
+  "description": "On/off toggle that applies immediately (Figma 538:7226, component set 566:12693): sm 30x18 / md 40x24 (base) / lg 56x32, track colors gray.30 (off), primary.50 (on), gray.20 (disabled) with a white shadowed handle, plus an optional label at a 6px gap whose size follows the track (sm 14/md 16/lg 18).",
+  "anatomy": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "handle",
+      "parent": "root"
+    },
+    {
+      "name": "label"
+    }
+  ],
   "slots": [
     {
       "name": "label",
-      "description": "Visible 14px label next to the track (Figma label/text); also names the switch.",
+      "description": "Visible label next to the track, sized with it (sm 14/md 16/lg 18); also names the switch.",
       "targets": {
-        "web": { "name": "label" },
-        "react": { "name": "label" },
-        "hono": { "name": "label" },
-        "native": { "name": "label" }
+        "web": {
+          "name": "label"
+        },
+        "react": {
+          "name": "label"
+        },
+        "hono": {
+          "name": "label"
+        },
+        "native": {
+          "name": "label"
+        }
       }
     }
   ],
   "props": [
     {
       "name": "checked",
-      "type": { "kind": "boolean" },
+      "type": {
+        "kind": "boolean"
+      },
       "description": "Controlled on/off value (Figma state=on/off)."
     },
     {
       "name": "defaultChecked",
-      "type": { "kind": "boolean" },
+      "type": {
+        "kind": "boolean"
+      },
       "default": false,
       "description": "Initial uncontrolled value."
     },
-    { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
+    {
+      "name": "disabled",
+      "type": {
+        "kind": "boolean"
+      },
+      "default": false
+    },
     {
       "name": "onCheckedChange",
-      "type": { "kind": "event", "payload": { "checked": "boolean" } },
+      "type": {
+        "kind": "event",
+        "payload": {
+          "checked": "boolean"
+        }
+      },
       "description": "Fires with the next value when the switch is toggled."
     }
   ],
-  "variants": [{ "name": "size", "values": ["sm", "md", "lg"], "default": "md" }],
+  "variants": [
+    {
+      "name": "size",
+      "values": ["sm", "md", "lg"],
+      "default": "md"
+    }
+  ],
   "states": [
-    { "name": "focusVisible" },
+    {
+      "name": "focusVisible"
+    },
     {
       "name": "checked",
-      "tokens": { "root.background": "{color.palette.primary.50}" }
+      "tokens": {
+        "root.background": "{color.palette.primary.50}"
+      }
     },
     {
       "name": "disabled",
@@ -60,10 +104,22 @@
     "label.color": "{semantic.color.text.subtle}"
   },
   "targets": {
-    "web": { "supported": true, "limitations": [] },
-    "react": { "supported": true, "limitations": [] },
-    "hono": { "supported": true, "limitations": ["Toggling requires client code."] },
-    "native": { "supported": true, "limitations": [] }
+    "web": {
+      "supported": true,
+      "limitations": []
+    },
+    "react": {
+      "supported": true,
+      "limitations": []
+    },
+    "hono": {
+      "supported": true,
+      "limitations": ["Toggling requires client code."]
+    },
+    "native": {
+      "supported": true,
+      "limitations": []
+    }
   },
   "accessibility": {
     "aria": ["role=switch", "aria-checked", "aria-disabled"],

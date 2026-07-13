@@ -323,9 +323,13 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
   }
 
   // A <label> wrapper implicitly names and activates the switch button
-  // (Figma 566:12693: track + 6px gap + 14px text).
+  // (Figma 566:12693: track + 6px gap + size-matched text: sm 14/md 16/lg 18).
   return (
-    <label className="podo-switch-wrap" data-disabled={disabled ? "true" : undefined}>
+    <label
+      className="podo-switch-wrap"
+      data-size={size}
+      data-disabled={disabled ? "true" : undefined}
+    >
       {control}
       <span className="podo-switch__text">{label}</span>
     </label>

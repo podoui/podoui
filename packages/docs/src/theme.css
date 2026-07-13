@@ -407,7 +407,7 @@
   box-shadow: none;
 }
 
-/* Labeled switch (Figma 566:12693): track + 6px gap + 14px text. */
+/* Labeled switch (Figma 566:12693): track + 6px gap + size-matched text. */
 .podo-switch-wrap {
   align-items: center;
   cursor: pointer;
@@ -417,8 +417,16 @@
 
 .podo-switch__text {
   color: #50555e;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
+}
+
+.podo-switch-wrap[data-size="sm"] .podo-switch__text {
+  font-size: 14px;
+}
+
+.podo-switch-wrap[data-size="lg"] .podo-switch__text {
+  font-size: 18px;
 }
 
 .podo-switch-wrap[data-disabled] {
