@@ -142,6 +142,8 @@ export interface TextareaProps extends Omit<
 > {
   /** Show the resize grip and allow vertical resizing (Figma resize). */
   resize?: boolean;
+  /** Value is visible but not editable; renders without the box (Figma read-only). */
+  readOnly?: boolean;
   invalid?: boolean;
   disabled?: boolean;
   onChange?: React.TextareaHTMLAttributes<HTMLTextAreaElement>["onChange"];
@@ -496,7 +498,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 });
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
-  { resize = true, invalid, disabled, required, className, onChange, onValueChange, ...props },
+  {
+    resize = true,
+    readOnly,
+    invalid,
+    disabled,
+    required,
+    className,
+    onChange,
+    onValueChange,
+    ...props
+  },
   ref
 ) {
   const behavior = createInputBehavior({
@@ -506,13 +518,20 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
     value: typeof props.value === "string" ? props.value : undefined,
     defaultValue: typeof props.defaultValue === "string" ? props.defaultValue : undefined,
   });
-  const state = behavior.invalid ? "invalid" : behavior.disabled ? "disabled" : undefined;
+  const state = behavior.invalid
+    ? "invalid"
+    : behavior.disabled
+      ? "disabled"
+      : readOnly
+        ? "read-only"
+        : undefined;
 
   return (
     <textarea
       {...props}
       {...behavior.root}
       ref={ref}
+      readOnly={readOnly}
       className={joinClass("podo-textarea", className)}
       data-state={state}
       data-resize={resize ? undefined : "false"}

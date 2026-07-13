@@ -43,7 +43,7 @@ export function TextareaPage() {
       <DocSection
         index={1}
         title="상태 (state)"
-        description="텍스트 영역 상태는 입력 단계와 결과에 따라 normal, hover, focused, completed, danger, disabled로 구분해 표현해요. normal은 기본 상태, hover는 마우스를 올린 상태, focused는 입력 중인 상태, completed는 값이 올바르게 입력된 상태를 나타내요. danger는 오류나 유효하지 않은 입력을, disabled는 입력할 수 없는 비활성 상태를 뜻하며, 일관된 상태 체계로 사용자가 현재 입력 상황을 즉각 인지하게 해요."
+        description="텍스트 영역 상태는 입력 단계와 결과에 따라 normal, hover, focused, completed, read-only, danger, disabled로 구분해 표현해요. normal은 기본 상태, hover는 마우스를 올린 상태, focused는 입력 중인 상태, completed는 값이 올바르게 입력된 상태를 나타내요. read-only는 값을 보여주기만 하는 읽기 전용 상태로 박스 없이 내용만 표시돼요. danger는 오류나 유효하지 않은 입력을, disabled는 입력할 수 없는 비활성 상태를 뜻하며, 일관된 상태 체계로 사용자가 현재 입력 상황을 즉각 인지하게 해요."
       >
         <Card stage>
           <div className="stage-col">
@@ -59,11 +59,14 @@ export function TextareaPage() {
               aria-label="focused 텍스트 영역"
             />
             <Textarea defaultValue="입력한 텍스트" aria-label="completed 텍스트 영역" />
+            <Textarea readOnly defaultValue="입력한 텍스트" aria-label="read-only 텍스트 영역" />
             <Textarea invalid defaultValue="입력한 텍스트" aria-label="danger 텍스트 영역" />
             <Textarea disabled placeholder="플레이스홀더" aria-label="disabled 텍스트 영역" />
           </div>
         </Card>
-        <PropertyTags values={["normal", "hover", "focused", "completed", "danger", "disabled"]} />
+        <PropertyTags
+          values={["normal", "hover", "focused", "completed", "read-only", "danger", "disabled"]}
+        />
       </DocSection>
 
       <DocSection
@@ -87,7 +90,7 @@ export function TextareaPage() {
       <DocSection
         index={3}
         title="속성 (props)"
-        description="@podo/react의 Textarea가 받는 속성이에요. hover·focused는 브라우저 상호작용으로, completed는 값이 채워진 상태로 자연스럽게 표현되고, danger는 invalid 속성으로 켜요. Field 안에 넣으면 레이블·글자 수 연결이 자동으로 처리돼요. 이 밖에 표준 textarea 속성(value, placeholder, rows, aria-* 등)도 그대로 전달돼요."
+        description="@podo/react의 Textarea가 받는 속성이에요. hover·focused는 브라우저 상호작용으로, completed는 값이 채워진 상태로 자연스럽게 표현되고, read-only는 readOnly, danger는 invalid 속성으로 켜요. Field 안에 넣으면 레이블·글자 수 연결이 자동으로 처리돼요. 이 밖에 표준 textarea 속성(value, placeholder, rows, aria-* 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"
@@ -102,6 +105,16 @@ export function TextareaPage() {
               </span>,
               <code>true</code>,
               "resize grip 표시와 세로 크기 조절 허용 여부",
+            ],
+            [
+              <span className="prop-name">
+                <code>readOnly</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              <code>false</code>,
+              "읽기 전용. 박스 없이 값만 표시되고 수정·크기 조절이 잠겨요 (시안 read-only)",
             ],
             [
               <span className="prop-name">

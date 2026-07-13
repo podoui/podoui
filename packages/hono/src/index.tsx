@@ -86,6 +86,8 @@ export interface HonoTextareaProps {
   maxLength?: number;
   /** Show the resize grip and allow vertical resizing (Figma resize). */
   resize?: boolean;
+  /** Value is visible but not editable; renders without the box (Figma read-only). */
+  readOnly?: boolean;
   invalid?: boolean;
   disabled?: boolean;
   required?: boolean;
@@ -104,6 +106,7 @@ export function Textarea({
   placeholder,
   maxLength,
   resize = true,
+  readOnly,
   invalid,
   disabled,
   required,
@@ -114,7 +117,13 @@ export function Textarea({
   "aria-required": ariaRequired,
 }: HonoTextareaProps): JSX.Element {
   const behavior = createInputBehavior({ value, defaultValue, invalid, disabled, required });
-  const state = behavior.invalid ? "invalid" : behavior.disabled ? "disabled" : undefined;
+  const state = behavior.invalid
+    ? "invalid"
+    : behavior.disabled
+      ? "disabled"
+      : readOnly
+        ? "read-only"
+        : undefined;
 
   return (
     <textarea
@@ -123,6 +132,7 @@ export function Textarea({
       name={name}
       placeholder={placeholder}
       maxlength={maxLength}
+      readonly={readOnly}
       disabled={disabled}
       required={required}
       aria-labelledby={ariaLabelledBy}

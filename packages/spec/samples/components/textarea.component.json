@@ -5,7 +5,7 @@
   "name": "Textarea",
   "category": "atom",
   "status": "experimental",
-  "description": "Multi-line text input (Figma 541:1194, component set 380:3867). Shares the Input state system — normal/hover/focused/completed/danger/disabled — with 16/12 padding, radius 10, and an optional resize grip.",
+  "description": "Multi-line text input (Figma 541:1194, component set 380:3867). Shares the Input state system — normal/hover/focused/completed/read-only/danger/disabled — with 16/12 padding, radius 10, and an optional resize grip. read-only shows the value without the box (vertical padding kept, horizontal 0) and drops the grip.",
   "anatomy": [{ "name": "root" }],
   "slots": [],
   "props": [
@@ -22,6 +22,12 @@
       "default": true,
       "description": "Show the resize grip and allow vertical resizing (Figma resize)."
     },
+    {
+      "name": "readOnly",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "Value is visible but not editable; renders without the box (Figma read-only)."
+    },
     { "name": "invalid", "type": { "kind": "boolean" }, "default": false },
     { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
     { "name": "required", "type": { "kind": "boolean" }, "default": false },
@@ -31,6 +37,7 @@
   "states": [
     { "name": "focusVisible" },
     { "name": "disabled" },
+    { "name": "read-only" },
     { "name": "invalid", "tokens": { "root.borderColor": "{semantic.color.text.danger}" } }
   ],
   "tokens": {

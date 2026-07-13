@@ -693,6 +693,21 @@ input {
   border-color: var(--podo-semantic-color-text-danger, #F23B3B);
 }
 
+/* Figma read-only: the value stays visible without the box (12px vertical
+   padding kept, horizontal 0); no focus ring and no resize grip. */
+.podo-textarea[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+  resize: none;
+}
+
+.podo-textarea[data-state="read-only"]:focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .podo-textarea[data-state="disabled"] {
   background: #E4E4E7;
   border-color: #D1D2D6;
@@ -1171,6 +1186,7 @@ function createTextareaElement(): CustomElementConstructor {
         "maxlength",
         "name",
         "placeholder",
+        "readonly",
         "required",
         "resize",
         "value",
@@ -1208,17 +1224,20 @@ function createTextareaElement(): CustomElementConstructor {
         value: this.value,
       });
       const disabled = behavior.disabled ? "disabled" : "";
+      const readonly = this.hasAttribute("readonly") ? "readonly" : "";
       const required = behavior.required ? "required" : "";
       const ariaInvalid = behavior.invalid ? 'aria-invalid="true"' : "";
       const stateAttr = behavior.invalid
         ? 'data-state="invalid"'
         : behavior.disabled
           ? 'data-state="disabled"'
-          : "";
+          : readonly
+            ? 'data-state="read-only"'
+            : "";
       const resizeAttr = attr(this, "resize", "") === "false" ? 'data-resize="false"' : "";
 
       this.shadow.innerHTML = `${componentStyleBlock()}
-<textarea class="podo-textarea" part="root" ${stateAttr} ${resizeAttr} ${attrString(
+<textarea class="podo-textarea" part="root" ${stateAttr} ${resizeAttr} ${readonly} ${attrString(
         "id",
         attr(this, "id", "")
       )} ${attrString("name", attr(this, "name", ""))} placeholder="${escapeHtml(

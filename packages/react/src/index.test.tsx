@@ -177,6 +177,7 @@ describe("@podo/react", () => {
         <Textarea aria-label="메모장" resize={false} onValueChange={(v) => values.push(v)} />
         <Textarea aria-label="오류" invalid />
         <Textarea aria-label="잠긴 메모" disabled />
+        <Textarea aria-label="읽기전용 메모" readOnly defaultValue="고정 값" />
       </>
     );
 
@@ -190,6 +191,13 @@ describe("@podo/react", () => {
     expect(screen.getByLabelText("오류").getAttribute("data-state")).toBe("invalid");
     expect(screen.getByLabelText("오류").getAttribute("aria-invalid")).toBe("true");
     expect(screen.getByLabelText("잠긴 메모").getAttribute("data-state")).toBe("disabled");
+
+    // read-only shows the value without the box; the platform blocks edits.
+    const frozen = screen.getByLabelText("읽기전용 메모") as HTMLTextAreaElement;
+    expect(frozen.readOnly).toBe(true);
+    expect(frozen.getAttribute("data-state")).toBe("read-only");
+    await user.type(frozen, "추가");
+    expect(frozen.value).toBe("고정 값");
   });
 
   it("wraps native table semantics with the type variant", () => {

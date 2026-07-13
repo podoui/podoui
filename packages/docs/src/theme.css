@@ -326,6 +326,19 @@
   border-color: #f23b3b;
 }
 
+.podo-textarea[data-state="read-only"] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+  resize: none;
+}
+
+.podo-textarea[data-state="read-only"]:focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .podo-textarea[data-state="disabled"] {
   background: #e4e4e7;
   border-color: #d1d2d6;

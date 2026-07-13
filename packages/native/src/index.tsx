@@ -137,6 +137,8 @@ export interface NativeTextareaProps {
   maxLength?: number;
   /** Number of visible lines the box reserves (default 3). */
   numberOfLines?: number;
+  /** Value is visible but not editable; renders without the box (Figma read-only). */
+  readOnly?: boolean;
   invalid?: boolean;
   disabled?: boolean;
   required?: boolean;
@@ -385,7 +387,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           disabled: behavior.disabled,
           invalid: behavior.invalid || Boolean(props.accessibilityState?.invalid),
         },
-        editable: !behavior.disabled,
+        editable: !behavior.disabled && !props.readOnly,
         defaultValue: props.defaultValue,
         value: props.value,
         placeholder: props.placeholder,
@@ -393,7 +395,18 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         multiline: true,
         numberOfLines: props.numberOfLines ?? 3,
         onChangeText: props.onValueChange,
-        style: styles.textarea,
+        style: {
+          ...styles.textarea,
+          // Figma read-only: value only, no box (vertical padding kept).
+          ...(props.readOnly
+            ? {
+                backgroundColor: "transparent",
+                borderColor: "transparent",
+                paddingLeft: 0,
+                paddingRight: 0,
+              }
+            : {}),
+        },
         testID: props.testID,
       });
     },
