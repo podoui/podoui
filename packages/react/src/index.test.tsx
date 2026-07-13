@@ -12,6 +12,7 @@ import {
   Input,
   PodoThemeProvider,
   Switch,
+  Textarea,
   Typography,
   usePodoTheme,
 } from "./index.js";
@@ -112,6 +113,29 @@ describe("@podo/react", () => {
     await user.click(screen.getByRole("switch", { name: "잠김" }));
     expect(changes).toEqual([true]);
     expect(screen.getByRole("switch", { name: "잠김" }).getAttribute("data-state")).toBe("on");
+  });
+
+  it("renders the textarea states and resize toggle", async () => {
+    const user = userEvent.setup();
+    const values: string[] = [];
+    render(
+      <>
+        <Textarea aria-label="메모장" resize={false} onValueChange={(v) => values.push(v)} />
+        <Textarea aria-label="오류" invalid />
+        <Textarea aria-label="잠긴 메모" disabled />
+      </>
+    );
+
+    const area = screen.getByLabelText("메모장");
+    expect(area.tagName).toBe("TEXTAREA");
+    expect(area.className).toBe("podo-textarea");
+    expect(area.getAttribute("data-resize")).toBe("false");
+    await user.type(area, "메모");
+    expect(values.at(-1)).toBe("메모");
+
+    expect(screen.getByLabelText("오류").getAttribute("data-state")).toBe("invalid");
+    expect(screen.getByLabelText("오류").getAttribute("aria-invalid")).toBe("true");
+    expect(screen.getByLabelText("잠긴 메모").getAttribute("data-state")).toBe("disabled");
   });
 
   it("supports controlled and uncontrolled input value changes", async () => {

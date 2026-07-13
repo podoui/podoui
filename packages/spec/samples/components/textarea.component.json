@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "textarea",
+  "name": "Textarea",
+  "category": "atom",
+  "status": "experimental",
+  "description": "Multi-line text input (Figma 541:1194, component set 380:3867). Shares the Input state system — normal/hover/focused/completed/danger/disabled — with 16/12 padding, radius 10, and an optional resize grip.",
+  "anatomy": [{ "name": "root" }],
+  "slots": [],
+  "props": [
+    { "name": "value", "type": { "kind": "string" }, "description": "Controlled value." },
+    {
+      "name": "default-value",
+      "type": { "kind": "string" },
+      "description": "Initial uncontrolled value."
+    },
+    { "name": "placeholder", "type": { "kind": "string" } },
+    {
+      "name": "resize",
+      "type": { "kind": "boolean" },
+      "default": true,
+      "description": "Show the resize grip and allow vertical resizing (Figma resize)."
+    },
+    { "name": "invalid", "type": { "kind": "boolean" }, "default": false },
+    { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
+    { "name": "required", "type": { "kind": "boolean" }, "default": false },
+    { "name": "onValueChange", "type": { "kind": "event", "payload": { "value": "string" } } }
+  ],
+  "variants": [],
+  "states": [
+    { "name": "focusVisible" },
+    { "name": "disabled" },
+    { "name": "invalid", "tokens": { "root.borderColor": "{semantic.color.text.danger}" } }
+  ],
+  "tokens": {
+    "root.background": "{component.input.background}",
+    "root.borderColor": "{component.input.border}",
+    "text.color": "{semantic.color.text.default}"
+  },
+  "targets": {
+    "web": { "supported": true, "limitations": [] },
+    "react": { "supported": true, "limitations": [] },
+    "hono": { "supported": true, "limitations": ["Value changes require client code."] },
+    "native": {
+      "supported": true,
+      "limitations": ["Renders a multiline TextInput; resize is a web-only affordance."]
+    }
+  },
+  "accessibility": {
+    "aria": ["aria-invalid", "aria-required", "aria-describedby"],
+    "keyboard": ["Tab focuses the textarea"],
+    "focusManagement": "Expose focus ref on React and native targets."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Inquiry message",
+      "code": "<Textarea placeholder=\"문의 내용을 입력해 주세요\" resize={false} />"
+    }
+  ]
+}

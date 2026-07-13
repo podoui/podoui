@@ -14,6 +14,7 @@ export const podoElementNames = {
   button: "podo-button",
   chip: "podo-chip",
   input: "podo-input",
+  textarea: "podo-textarea",
   field: "podo-field",
   icon: "podo-icon",
   switch: "podo-switch",
@@ -31,6 +32,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
     [names.button, createButtonElement()],
     [names.chip, createChipElement()],
     [names.input, createInputElement()],
+    [names.textarea, createTextareaElement()],
     [names.field, createFieldElement()],
     [names.icon, createIconElement()],
     [names.switch, createSwitchElement()],
@@ -49,6 +51,7 @@ export function createElementNames(prefix = "podo"): typeof podoElementNames {
     button: `${prefix}-button`,
     chip: `${prefix}-chip`,
     input: `${prefix}-input`,
+    textarea: `${prefix}-textarea`,
     field: `${prefix}-field`,
     icon: `${prefix}-icon`,
     switch: `${prefix}-switch`,
@@ -428,6 +431,63 @@ input {
   color: var(--podo-input-suffix-text-color, var(--podo-semantic-color-text-subtle, #50555E));
 }
 
+/* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
+   and radius 10; the resize grip is the platform's, restyled to the design. */
+.podo-textarea {
+  background: var(--podo-textarea-root-background, var(--podo-component-input-background, #FFFFFF));
+  border: 1px solid
+    var(--podo-textarea-root-borderColor, var(--podo-component-input-border, #E4E4E7));
+  border-radius: 10px;
+  color: var(--podo-textarea-text-color, var(--podo-semantic-color-text-default, #18181B));
+  display: block;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 78px;
+  outline: none;
+  padding: 12px 16px;
+  resize: vertical;
+  width: 300px;
+}
+
+.podo-textarea::placeholder {
+  color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+.podo-textarea[data-resize="false"] {
+  resize: none;
+}
+
+.podo-textarea:hover:not([data-state]):not(:focus) {
+  border-color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-textarea:focus:not([data-state="disabled"]) {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-textarea[data-state="invalid"] {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
+.podo-textarea[data-state="disabled"] {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  color: #9FA2AD;
+  cursor: not-allowed;
+  resize: none;
+}
+
+/* Figma resize-grip: two diagonal strokes in the corner (WebKit-only restyle). */
+.podo-textarea::-webkit-resizer {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M9 1 1 9M9 6 6 9' stroke='%239FA2AD' stroke-width='1.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
+  background-position: bottom 2px right 2px;
+  background-repeat: no-repeat;
+}
+
 /* Field (Figma 538:6691): heading(label + requirement + sub-label + suffix-icon),
    free control slot, footer(helper-text/error + character count). */
 .podo-field {
@@ -768,6 +828,96 @@ function createInputElement(): CustomElementConstructor {
 </div>`;
       this.shadow.querySelector("input")?.addEventListener("input", (event) => {
         const value = (event.currentTarget as HTMLInputElement).value;
+        this.setAttribute("value", value);
+        this.dispatchEvent(
+          new CustomEvent("podo-value-change", {
+            bubbles: true,
+            composed: true,
+            detail: { value },
+          })
+        );
+      });
+    }
+  };
+}
+
+function createTextareaElement(): CustomElementConstructor {
+  return class PodoTextareaElement extends HTMLElement {
+    static get observedAttributes(): string[] {
+      return [
+        "aria-describedby",
+        "aria-invalid",
+        "aria-labelledby",
+        "aria-required",
+        "disabled",
+        "id",
+        "invalid",
+        "maxlength",
+        "name",
+        "placeholder",
+        "required",
+        "resize",
+        "value",
+      ];
+    }
+
+    readonly shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
+
+    get value(): string {
+      return attr(this, "value", "");
+    }
+
+    set value(value: string) {
+      this.setAttribute("value", value);
+    }
+
+    connectedCallback(): void {
+      this.render();
+    }
+
+    attributeChangedCallback(): void {
+      this.render();
+    }
+
+    override focus(options?: FocusOptions): void {
+      this.shadow.querySelector("textarea")?.focus(options);
+    }
+
+    private render(): void {
+      const invalid = this.hasAttribute("invalid") || attr(this, "aria-invalid", "") === "true";
+      const behavior = createInputBehavior({
+        disabled: this.hasAttribute("disabled"),
+        invalid,
+        required: this.hasAttribute("required"),
+        value: this.value,
+      });
+      const disabled = behavior.disabled ? "disabled" : "";
+      const required = behavior.required ? "required" : "";
+      const ariaInvalid = behavior.invalid ? 'aria-invalid="true"' : "";
+      const stateAttr = behavior.invalid
+        ? 'data-state="invalid"'
+        : behavior.disabled
+          ? 'data-state="disabled"'
+          : "";
+      const resizeAttr = attr(this, "resize", "") === "false" ? 'data-resize="false"' : "";
+
+      this.shadow.innerHTML = `${componentStyleBlock()}
+<textarea class="podo-textarea" part="root" ${stateAttr} ${resizeAttr} ${attrString(
+        "id",
+        attr(this, "id", "")
+      )} ${attrString("name", attr(this, "name", ""))} placeholder="${escapeHtml(
+        attr(this, "placeholder", "")
+      )}" ${attrString("maxlength", attr(this, "maxlength", ""))} ${attrString(
+        "aria-labelledby",
+        attr(this, "aria-labelledby", "")
+      )} ${attrString(
+        "aria-describedby",
+        attr(this, "aria-describedby", "")
+      )} ${attrString("aria-required", attr(this, "aria-required", ""))} ${disabled} ${required} ${ariaInvalid}>${escapeHtml(
+        this.value
+      )}</textarea>`;
+      this.shadow.querySelector("textarea")?.addEventListener("input", (event) => {
+        const value = (event.currentTarget as HTMLTextAreaElement).value;
         this.setAttribute("value", value);
         this.dispatchEvent(
           new CustomEvent("podo-value-change", {

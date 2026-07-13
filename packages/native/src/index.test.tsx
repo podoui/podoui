@@ -57,6 +57,10 @@ describe("@podo/native", () => {
     expect(screen.getByTestId("chip").getAttribute("data-theme")).toBe("outline-weak");
     expect(screen.getByText("필터")).toBeDefined();
 
+    render(<domNative.Textarea accessibilityLabel="메모" defaultValue="여러 줄" testID="area" />);
+    expect(screen.getByTestId("area").tagName).toBe("INPUT"); // TestTextInput host
+    expect((screen.getByTestId("area") as HTMLInputElement).value).toBe("여러 줄");
+
     const changes: boolean[] = [];
     render(
       <domNative.Switch

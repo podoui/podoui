@@ -106,6 +106,25 @@ export interface NativeInputProps {
   testID?: string;
 }
 
+export interface NativeTextareaProps {
+  value?: string;
+  defaultValue?: string;
+  placeholder?: string;
+  /** Native TextInput maxLength; Field injects its countMax here. */
+  maxLength?: number;
+  /** Number of visible lines the box reserves (default 3). */
+  numberOfLines?: number;
+  invalid?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  onValueChange?: (value: string) => void;
+  accessibilityLabel?: string;
+  accessibilityLabelledBy?: string;
+  accessibilityDescribedBy?: string;
+  accessibilityState?: Record<string, unknown>;
+  testID?: string;
+}
+
 export interface NativeFieldProps {
   children: ReactNode;
   label: ReactNode;
@@ -138,6 +157,7 @@ export interface NativeComponents {
   Button: (props: NativeButtonProps) => React.ReactElement;
   Chip: (props: NativeChipProps) => React.ReactElement;
   Input: (props: NativeInputProps) => React.ReactElement;
+  Textarea: (props: NativeTextareaProps) => React.ReactElement;
   Field: (props: NativeFieldProps) => React.ReactElement;
   Icon: (props: NativeIconProps) => React.ReactElement;
   Switch: (props: NativeSwitchProps) => React.ReactElement;
@@ -310,6 +330,37 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           : null
       );
     },
+    Textarea: (props) => {
+      const theme = usePodoNativeTheme();
+      const styles = createNativeThemeStyles(theme);
+      const behavior = createInputBehavior({
+        value: props.value,
+        defaultValue: props.defaultValue,
+        disabled: props.disabled,
+        invalid: props.invalid,
+        required: props.required,
+      });
+      return createElement(host.TextInput, {
+        accessibilityLabel: props.accessibilityLabel,
+        accessibilityLabelledBy: props.accessibilityLabelledBy,
+        accessibilityDescribedBy: props.accessibilityDescribedBy,
+        accessibilityState: {
+          ...props.accessibilityState,
+          disabled: behavior.disabled,
+          invalid: behavior.invalid || Boolean(props.accessibilityState?.invalid),
+        },
+        editable: !behavior.disabled,
+        defaultValue: props.defaultValue,
+        value: props.value,
+        placeholder: props.placeholder,
+        maxLength: props.maxLength,
+        multiline: true,
+        numberOfLines: props.numberOfLines ?? 3,
+        onChangeText: props.onValueChange,
+        style: styles.textarea,
+        testID: props.testID,
+      });
+    },
     Field: (props) => {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
@@ -449,7 +500,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
   };
 }
 
-export const { Button, Chip, Input, Field, Icon, Switch } = createNativeComponents();
+export const { Button, Chip, Input, Textarea, Field, Icon, Switch } = createNativeComponents();
 
 function wireNativeControl(
   children: ReactNode,
@@ -521,7 +572,8 @@ function createNativeThemeStyles(
   | "inputControl"
   | "inputLg"
   | "inputSuffixText"
-  | "label",
+  | "label"
+  | "textarea",
   NativeStyle
 > {
   const tokens = adaptReactNativeTokens(theme.tokens);
@@ -561,6 +613,19 @@ function createNativeThemeStyles(
     },
     inputLg: { borderRadius: 12, minHeight: 52 },
     inputControl: { color: textColor, flex: 1, fontSize: 16, padding: 0 },
+    // Figma 380:3867: multi-line box, 16/12 padding, radius 10.
+    textarea: {
+      backgroundColor,
+      borderColor,
+      borderRadius: 10,
+      borderWidth: 1,
+      color: textColor,
+      fontSize: 16,
+      minHeight: 78,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      textAlignVertical: "top",
+    },
     inputAffix: { alignItems: "center", height: 24, justifyContent: "center", width: 24 },
     inputSuffixText: { color: "#50555E", fontSize: 16 },
     button: {

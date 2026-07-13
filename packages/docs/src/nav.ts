@@ -5,6 +5,7 @@ import { ColorPage } from "./pages/ColorPage.js";
 import { FieldPage } from "./pages/FieldPage.js";
 import { InputPage } from "./pages/InputPage.js";
 import { SwitchPage } from "./pages/SwitchPage.js";
+import { TextareaPage } from "./pages/TextareaPage.js";
 import { TypographyPage } from "./pages/TypographyPage.js";
 
 export interface NavItem {
@@ -27,6 +28,7 @@ export const NAV: NavItem[] = [
   { slug: "field", title: "Field", group: "Components", page: FieldPage },
   { slug: "input", title: "Input", group: "Components", page: InputPage },
   { slug: "switch", title: "Switch", group: "Components", page: SwitchPage },
+  { slug: "textarea", title: "Textarea", group: "Components", page: TextareaPage },
 ];
 
 export function findBySlug(slug: string): NavItem | undefined {

@@ -73,6 +73,67 @@ export interface HonoInputProps {
   "aria-required"?: string;
 }
 
+export interface HonoTextareaProps {
+  id?: string;
+  name?: string;
+  value?: string;
+  defaultValue?: string;
+  placeholder?: string;
+  /** Native textarea maxlength; Field injects its countMax here. */
+  maxLength?: number;
+  /** Show the resize grip and allow vertical resizing (Figma resize). */
+  resize?: boolean;
+  invalid?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  class?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: string;
+  "aria-required"?: string;
+}
+
+export function Textarea({
+  id,
+  name,
+  value,
+  defaultValue,
+  placeholder,
+  maxLength,
+  resize = true,
+  invalid,
+  disabled,
+  required,
+  class: className,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
+}: HonoTextareaProps): JSX.Element {
+  const behavior = createInputBehavior({ value, defaultValue, invalid, disabled, required });
+  const state = behavior.invalid ? "invalid" : behavior.disabled ? "disabled" : undefined;
+
+  return (
+    <textarea
+      id={id}
+      class={joinClass("podo-textarea", className)}
+      name={name}
+      placeholder={placeholder}
+      maxlength={maxLength}
+      disabled={disabled}
+      required={required}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      aria-invalid={ariaInvalid ?? (behavior.invalid ? "true" : undefined)}
+      aria-required={ariaRequired ?? (behavior.required ? "true" : undefined)}
+      data-state={state}
+      data-resize={resize ? undefined : "false"}
+    >
+      {value ?? defaultValue ?? ""}
+    </textarea>
+  );
+}
+
 export interface HonoFieldProps {
   children: Child;
   id?: string;

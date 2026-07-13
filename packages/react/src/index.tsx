@@ -110,6 +110,18 @@ export interface InputProps extends Omit<
   onValueChange?: (value: string, event: ChangeEvent<HTMLInputElement>) => void;
 }
 
+export interface TextareaProps extends Omit<
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  "disabled" | "onChange"
+> {
+  /** Show the resize grip and allow vertical resizing (Figma resize). */
+  resize?: boolean;
+  invalid?: boolean;
+  disabled?: boolean;
+  onChange?: React.TextareaHTMLAttributes<HTMLTextAreaElement>["onChange"];
+  onValueChange?: (value: string, event: ChangeEvent<HTMLTextAreaElement>) => void;
+}
+
 export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
   label: ReactNode;
   /** Supplementary text next to the label (Figma sub-label, e.g. "선택"). */
@@ -345,6 +357,35 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       {suffixText ? <span className="podo-input__suffix-text">{suffixText}</span> : null}
       {suffixIcon ? <span className="podo-input__suffix-icon">{suffixIcon}</span> : null}
     </div>
+  );
+});
+
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
+  { resize = true, invalid, disabled, required, className, onChange, onValueChange, ...props },
+  ref
+) {
+  const behavior = createInputBehavior({
+    disabled,
+    invalid,
+    required,
+    value: typeof props.value === "string" ? props.value : undefined,
+    defaultValue: typeof props.defaultValue === "string" ? props.defaultValue : undefined,
+  });
+  const state = behavior.invalid ? "invalid" : behavior.disabled ? "disabled" : undefined;
+
+  return (
+    <textarea
+      {...props}
+      {...behavior.root}
+      ref={ref}
+      className={joinClass("podo-textarea", className)}
+      data-state={state}
+      data-resize={resize ? undefined : "false"}
+      onChange={(event) => {
+        onChange?.(event);
+        onValueChange?.(event.currentTarget.value, event);
+      }}
+    />
   );
 });
 

@@ -9,6 +9,7 @@ import {
   Icon,
   Input,
   Switch,
+  Textarea,
   Typography,
   renderCriticalCss,
 } from "./index.js";
@@ -58,6 +59,7 @@ describe("@podo/hono", () => {
           필터
         </Chip>
         <Switch checked size="lg" aria-label="알림" />
+        <Textarea name="memo" defaultValue="메모" invalid resize={false} />
         <Typography as="h1">Dashboard</Typography>
       </>
     );
@@ -70,6 +72,9 @@ describe("@podo/hono", () => {
     expect(html).toContain('role="switch"');
     expect(html).toContain('aria-checked="true"');
     expect(html).toContain('data-state="on"');
+    expect(html).toContain('class="podo-textarea"');
+    expect(html).toContain('data-resize="false"');
+    expect(html).toContain(">메모</textarea>");
     expect(html).toContain("podo-icon-menu");
     expect(html).toContain("podo-text--h1");
     expect(html).toMatchSnapshot();
