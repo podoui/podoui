@@ -503,3 +503,48 @@
 - [x] P4: 설치 프로젝트 반영 플로우 연결 검증
   - 완료 기준: `.podo` 기반 project override/build/update 흐름 경로가 CLI 문서와 테스트로 검증된다.
   - 완료 기준: dry-run, validation, diff 확인 없이 설치 프로젝트 파일을 덮어쓰지 않는다.
+
+## 백로그: 다음 작업 (2026-07-13 기준)
+
+세션 진행 중 확인된 미결 항목. 우선순위 순이 아니라 영역별 분류.
+
+### A. 배포·인프라
+
+- [ ] 원격 push 권한 해결
+  - 현재 `git push`가 403 (계정 `innerbloo`에 `podoui/podoui` 쓰기 권한 없음). 로컬 `main`이 원격보다 다수 커밋 앞선 상태.
+  - 완료 기준: 권한 부여 또는 계정 전환 후 `origin/main`이 로컬과 동기화된다.
+- [ ] npm 배포 파이프라인 가동
+  - 전 패키지가 `0.0.0` 미배포라 외부 프로젝트에서 설치 불가. Changesets 인프라는 준비됨.
+  - 완료 기준: 빈 외부 프로젝트에서 `npm install @podo/react @podo/cli`가 동작한다.
+- [ ] 배포 후 docs를 "진짜 소비자"로 전환
+  - 현재 `packages/docs`의 `theme.css`는 컴포넌트 CSS 수동 미러, `data/colors.ts`·`typography.ts`는 토큰 값 복제.
+  - 완료 기준: docs가 `podo build` 산출물(tokens.css, components.css)을 소비하고 수동 미러·값 복제가 제거된다.
+- [ ] `examples/react`를 실행 가능한 소비자 앱으로 복구
+  - 현재 옛 Button API를 쓰는 타입체크용 스텁 (dev 서버 없음, 실행 불가).
+  - 완료 기준: `podo init && podo build` 실사용 후 dev 서버에서 새 API 컴포넌트가 렌더된다.
+
+### B. Figma 정합 (상세: figma-props-alignment.md)
+
+- [ ] Code Connect publish
+  - `.figma.tsx` 4개 작성·parse 검증 완료. 남은 것: 팀 Figma 플랜(Org/Enterprise) 확인 → 토큰 발급 → `npx figma connect publish`.
+- [ ] AGENTS.md에 어휘 규칙 명문화 + 컴포넌트 작업 체크리스트에 figma.tsx 갱신 단계 추가
+- [ ] 디자이너에게 시안 수정 요청 (코드는 시안 픽셀 그대로 반영해 둔 상태)
+  - Chip `outline-strong`이 solid와 동일 렌더 (외곽선 없음) — 수정되면 web CSS/theme.css/native의 "pending a design fix" 주석 지점 갱신
+  - Chip 컴포넌트셋 size 어휘가 `lg/md` ↔ 문서 태그는 `sm/md` — 통일 필요
+  - Chip 테마 태그 오타 `soild`
+  - Input state 태그에 `hover` 누락 (본문·프리뷰엔 있음)
+  - Button 문서 용어 `layout` ↔ 컴포넌트 variant 실명 `type` — 통일 필요
+- [ ] (보류) Figma→코드 동기화 파이프라인 (`podo figma-sync`, 트리거 버튼) — 이전 논의 기록은 auto-memory 참고
+
+### C. 컴포넌트·품질
+
+- [ ] 다음 컴포넌트 시안 작업 계속 (Button/Chip/Input/Field 완료; 워크플로: 스펙 → 4렌더러 → 테스트 → docs → figma.tsx)
+- [ ] Pretendard 폰트 자산 확정
+  - 토큰의 `fontAsset.dataUrl`이 `"AAAA"` 플레이스홀더. docs는 임시로 jsDelivr CDN 로드 중.
+  - 완료 기준: 실제 woff2 임베드 또는 CDN 전략 확정이 토큰/빌드에 반영된다.
+- [ ] 옛 primary(#5B5BD6) 잔재 정리 여부 결정
+  - 남은 위치: `plan.md`(설계 기록), `packages/mcp/src/defaults.ts`, `packages/cli/src/index.ts` (bootstrap 기본 brand 색).
+  - 완료 기준: 새 프로젝트 bootstrap 기본색을 #426CED로 바꿀지 결정하고 반영한다.
+- [ ] 스펙 데이터화 (렌더러 하드코딩 제거)
+  - size 수치(xs 32/sm 36/md 42/lg 52 등)가 스펙에 설명 문자열로만 있고 실값은 각 렌더러 CSS에 중복.
+  - 완료 기준: 스펙 JSON이 수치를 데이터로 갖고 codegen이 렌더러 타입/CSS를 생성해 enum·수치 중복이 사라진다.
