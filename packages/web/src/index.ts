@@ -657,7 +657,9 @@ input {
   position: fixed;
   width: 480px;
   max-width: calc(100vw - 32px);
-  z-index: 9999;
+  /* Above modals/overlays — a toast fired from inside a dialog must still show.
+     Max 32-bit int, matching what toast libraries (sonner) settle on. */
+  z-index: 2147483647;
 }
 
 .podo-toaster > * {

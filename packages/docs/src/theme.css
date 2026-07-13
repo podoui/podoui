@@ -720,7 +720,7 @@
   position: fixed;
   width: 480px;
   max-width: calc(100vw - 32px);
-  z-index: 9999;
+  z-index: 2147483647;
 }
 
 .podo-toaster > * {

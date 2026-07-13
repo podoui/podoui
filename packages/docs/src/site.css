@@ -377,6 +377,13 @@ a {
   color: var(--gray-50);
 }
 
+/* Bridges the two tables in the toast() API section (call table → options). */
+.toast-options-intro {
+  color: var(--gray-60);
+  margin: 20px 0 8px;
+  font-size: 14px;
+}
+
 .site-content :not(pre) > code {
   background: var(--site-subtle);
   border-radius: var(--site-radius-sm);

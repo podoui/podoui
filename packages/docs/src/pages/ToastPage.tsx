@@ -164,8 +164,8 @@ export function ToastPage() {
 
       <DocSection
         index={4}
-        title="속성 (props)"
-        description="@podo/react의 Toast(카드)와 Toaster·toast()(행동 레이어)가 받는 속성이에요. 카드는 danger일 때 role=alert, 나머지는 role=status로 안내되고 포커스를 뺏지 않아요. 시안의 suffix-icon 기본값은 닫기 X라 코드에서는 onClose로 표현돼요."
+        title="Toast 속성 (props)"
+        description="@podo/react의 Toast — 카드 하나의 생김새를 정하는 속성이에요. Toast를 직접 놓거나 web·hono·native에서 카드를 배치할 때 써요. danger일 때 role=alert, 나머지는 role=status로 안내되고 포커스를 뺏지 않아요. 시안의 suffix-icon 기본값은 닫기 X라 코드에서는 onClose로 표현돼요."
       >
         <SpecTable
           variant="props"
@@ -203,13 +203,33 @@ export function ToastPage() {
             ],
             [
               <span className="prop-name">
-                <code>prefix</code> / <code>suffixText</code> / <code>suffixIcon</code>
+                <code>prefix</code>
               </span>,
               <span className="prop-type">
                 <code>ReactNode</code>
               </span>,
               "—",
-              "상태 아이콘 / 실행 취소 같은 후속 동작 텍스트 / 커스텀 후속 아이콘",
+              "타이틀 앞 상태 아이콘 (시안 prefix-icon)",
+            ],
+            [
+              <span className="prop-name">
+                <code>suffixText</code>
+              </span>,
+              <span className="prop-type">
+                <code>ReactNode</code>
+              </span>,
+              "—",
+              "타이틀 뒤 후속 동작 텍스트, 예: 실행 취소 (시안 suffix-text)",
+            ],
+            [
+              <span className="prop-name">
+                <code>suffixIcon</code>
+              </span>,
+              <span className="prop-type">
+                <code>ReactNode</code>
+              </span>,
+              "—",
+              "타이틀 뒤 커스텀 아이콘 (시안 suffix-icon)",
             ],
             [
               <span className="prop-name">
@@ -221,35 +241,136 @@ export function ToastPage() {
               "—",
               "닫기 X를 렌더하고 누르면 호출돼요 (시안 suffix-icon 기본값)",
             ],
+          ]}
+        />
+      </DocSection>
+
+      <DocSection
+        index={5}
+        title="Toaster 속성 (props)"
+        description="toast()로 띄운 알림이 화면에 쌓이는 방식을 정하는 전역 설정이에요. 앱 루트에 <Toaster /> 하나만 두면 돼요."
+      >
+        <SpecTable
+          variant="props"
+          columns={["Prop", "Type", "Default", "설명"]}
+          rows={[
             [
               <span className="prop-name">
-                <code>Toaster position</code>
+                <code>position</code>
               </span>,
               <span className="prop-type">
-                <code>"top-left" | ... | "bottom-right"</code>
+                <code>
+                  "top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" |
+                  "bottom-right"
+                </code>
               </span>,
               <code>"top-center"</code>,
               "스택이 붙는 화면 모서리 (6곳)",
             ],
             [
               <span className="prop-name">
-                <code>Toaster duration</code> / <code>max</code>
+                <code>duration</code>
               </span>,
               <span className="prop-type">
                 <code>number</code>
               </span>,
-              <code>3000 / 3</code>,
-              "자동 소멸 시간(ms)과 동시 표시 최대 개수. 넘치면 오래된 것부터 정리돼요",
+              <code>3000</code>,
+              "자동 소멸 시간(ms). toast마다 개별 지정으로 덮을 수 있어요",
             ],
             [
               <span className="prop-name">
-                <code>toast(title, options)</code>
+                <code>max</code>
               </span>,
               <span className="prop-type">
-                <code>{"{ state, caption, duration, manual }"}</code>
+                <code>number</code>
               </span>,
-              "—",
-              "호출 API. state별 단축(toast.success 등), manual: true면 X로만 닫혀요, toast.dismiss(id)로 코드에서 제거",
+              <code>3</code>,
+              "동시 표시 최대 개수. 넘치면 오래된 것부터 정리돼요",
+            ],
+          ]}
+        />
+      </DocSection>
+
+      <DocSection
+        index={6}
+        title="toast() 호출 API"
+        description="알림을 띄우는 함수예요. 컴포넌트가 아니라 어디서든 부르면 돼요. 반환값은 알림 id로, toast.dismiss(id)에 넘겨 코드에서 특정 알림을 닫을 수 있어요."
+      >
+        <SpecTable
+          variant="props"
+          columns={["호출", "반환", "설명"]}
+          rows={[
+            [
+              <span className="prop-name">
+                <code>toast(title, options?)</code>
+              </span>,
+              <span className="prop-type">
+                <code>number</code>
+              </span>,
+              "알림을 띄우고 id를 돌려줘요",
+            ],
+            [
+              <span className="prop-name">
+                <code>toast.success(title, options?)</code>
+              </span>,
+              <span className="prop-type">
+                <code>number</code>
+              </span>,
+              "state를 success로 고정한 단축 (danger·info·warning·normal도 동일)",
+            ],
+            [
+              <span className="prop-name">
+                <code>toast.dismiss(id?)</code>
+              </span>,
+              <span className="prop-type">
+                <code>void</code>
+              </span>,
+              "id를 주면 그 알림을, 없으면 전부 제거해요",
+            ],
+          ]}
+        />
+        <p className="toast-options-intro">
+          <code>options</code> = <code>{"{ state?, caption?, duration?, manual? }"}</code>
+        </p>
+        <SpecTable
+          variant="props"
+          columns={["옵션", "Type", "설명"]}
+          rows={[
+            [
+              <span className="prop-name">
+                <code>state</code>
+              </span>,
+              <span className="prop-type">
+                <code>ToastState</code>
+              </span>,
+              "색·톤 (단축 호출 toast.success 등을 쓰면 불필요)",
+            ],
+            [
+              <span className="prop-name">
+                <code>caption</code>
+              </span>,
+              <span className="prop-type">
+                <code>ReactNode</code>
+              </span>,
+              "타이틀 아래 추가 정보",
+            ],
+            [
+              <span className="prop-name">
+                <code>duration</code>
+              </span>,
+              <span className="prop-type">
+                <code>number</code>
+              </span>,
+              "이 알림만의 소멸 시간(ms). Toaster 기본값을 덮어요",
+            ],
+            [
+              <span className="prop-name">
+                <code>manual</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              "true면 자동 소멸 없이 X로만 닫혀요",
             ],
           ]}
         />
