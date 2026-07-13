@@ -149,6 +149,111 @@
   cursor: not-allowed;
 }
 
+/* Badge (Figma 474:3218) — mirrors the canonical @podo/web badge CSS.
+   natural~info are strong system fills (natural — base); gray~orange are
+   soft color labels; data-dot collapses to a 6px presence dot. */
+.podo-badge {
+  align-items: center;
+  background: #3e424b;
+  border-radius: 9999px;
+  color: #f9f9f9;
+  display: inline-flex;
+  font: inherit;
+  font-size: 14px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 22px;
+  padding: 0 6px;
+}
+
+.podo-badge[data-theme="danger"] {
+  background: #f23b3b;
+}
+
+.podo-badge[data-theme="success"] {
+  background: #3ea856;
+}
+
+.podo-badge[data-theme="warning"] {
+  background: #ffaa00;
+}
+
+.podo-badge[data-theme="info"] {
+  background: #0095ff;
+}
+
+.podo-badge[data-theme="gray"] {
+  background: #f4f4f5;
+  color: #18181b;
+}
+
+.podo-badge[data-theme="red"] {
+  background: #fef1f1;
+  color: #f23b3b;
+}
+
+.podo-badge[data-theme="green"] {
+  background: #ecf8ef;
+  color: #3ea856;
+}
+
+.podo-badge[data-theme="yellow"] {
+  background: #fff7e6;
+  color: #ffaa00;
+}
+
+.podo-badge[data-theme="blue"] {
+  background: #ebf5ff;
+  color: #0095ff;
+}
+
+.podo-badge[data-theme="purple"] {
+  background: #f8f5ff;
+  color: #8e51ff;
+}
+
+.podo-badge[data-theme="orange"] {
+  background: #fff4f0;
+  color: #ff6a33;
+}
+
+.podo-badge[data-dot] {
+  height: 6px;
+  min-width: 6px;
+  padding: 0;
+  width: 6px;
+}
+
+.podo-badge[data-theme="gray"][data-dot] {
+  background: #3e424b;
+}
+
+/* Figma red dot is accent.50 (#f15764), not the label's error.50 —
+   mirrored as-is pending a design check. */
+.podo-badge[data-theme="red"][data-dot] {
+  background: #f15764;
+}
+
+.podo-badge[data-theme="green"][data-dot] {
+  background: #3ea856;
+}
+
+.podo-badge[data-theme="yellow"][data-dot] {
+  background: #ffaa00;
+}
+
+.podo-badge[data-theme="blue"][data-dot] {
+  background: #0095ff;
+}
+
+.podo-badge[data-theme="purple"][data-dot] {
+  background: #8e51ff;
+}
+
+.podo-badge[data-theme="orange"][data-dot] {
+  background: #ff6a33;
+}
+
 /* Chip (Figma 538:6615) — mirrors the canonical @podo/web chip CSS.
    Unselected is the base look; data-state="selected" turns the fill on. */
 .podo-chip {

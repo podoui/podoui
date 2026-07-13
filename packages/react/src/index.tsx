@@ -91,6 +91,30 @@ export interface ChipProps extends Omit<
   onSelectedChange?: (selected: boolean) => void;
 }
 
+export type BadgeTheme =
+  | "natural"
+  | "danger"
+  | "success"
+  | "warning"
+  | "info"
+  | "gray"
+  | "red"
+  | "green"
+  | "yellow"
+  | "blue"
+  | "purple"
+  | "orange";
+
+export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
+  /**
+   * 상태·의미 색상 (Figma theme) — natural이 base. natural~info는 진한 배경의
+   * 시스템 상태, gray~orange는 연한 배경의 색상 표기예요.
+   */
+  theme?: BadgeTheme;
+  /** 숫자·텍스트 없이 6px 점만 표시 (Figma dot). children은 무시돼요. */
+  dot?: boolean;
+}
+
 export interface SwitchProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "disabled" | "onClick" | "value"
@@ -411,6 +435,23 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
       <span className="podo-chip__label">{children}</span>
       {suffix ? <span className="podo-chip__suffix">{suffix}</span> : null}
     </button>
+  );
+});
+
+export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
+  { theme = "natural", dot, children, className, ...props },
+  ref
+) {
+  return (
+    <span
+      {...props}
+      ref={ref}
+      className={joinClass("podo-badge", className)}
+      data-theme={theme}
+      data-dot={dot ? "true" : undefined}
+    >
+      {dot ? null : children}
+    </span>
   );
 });
 

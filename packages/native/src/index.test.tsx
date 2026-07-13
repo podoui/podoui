@@ -57,6 +57,21 @@ describe("@podo/native", () => {
     expect(screen.getByTestId("chip").getAttribute("data-theme")).toBe("outline-weak");
     expect(screen.getByText("필터")).toBeDefined();
 
+    render(
+      <>
+        <domNative.Badge theme="red" testID="badge">
+          99
+        </domNative.Badge>
+        <domNative.Badge theme="red" dot accessibilityLabel="새 알림" testID="badge-dot" />
+      </>
+    );
+    const badge = screen.getByTestId("badge");
+    expect(badge.getAttribute("data-theme")).toBe("red");
+    expect(badge.getAttribute("data-bg")).toBe("#FEF1F1");
+    expect(badge.textContent).toBe("99");
+    // The dot mode swaps to the 6px dot fill (Figma accent.50 for red).
+    expect(screen.getByTestId("badge-dot").getAttribute("data-bg")).toBe("#F15764");
+
     render(<domNative.Textarea accessibilityLabel="메모" defaultValue="여러 줄" testID="area" />);
     expect(screen.getByTestId("area").tagName).toBe("INPUT"); // TestTextInput host
     expect((screen.getByTestId("area") as HTMLInputElement).value).toBe("여러 줄");

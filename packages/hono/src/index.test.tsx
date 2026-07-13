@@ -3,6 +3,7 @@
 import { renderToString } from "hono/jsx/dom/server";
 import { describe, expect, it } from "vitest";
 import {
+  Badge,
   Button,
   Checkbox,
   Chip,
@@ -63,6 +64,10 @@ describe("@podo/hono", () => {
         <Chip size="lg" theme="outline-weak" suffix={<Icon name="menu" />}>
           필터
         </Chip>
+        <Badge theme="red">99</Badge>
+        <Badge theme="green" dot aria-label="온라인">
+          무시되는 텍스트
+        </Badge>
         <Switch checked size="lg" aria-label="알림" />
         <Checkbox indeterminate bold label="전체 선택" />
         <Radio name="plan" value="basic" checked size="lg" label="베이직" />
@@ -87,6 +92,11 @@ describe("@podo/hono", () => {
     expect(html).toContain('data-theme="outline-primary"');
     expect(html).toContain('class="podo-chip"');
     expect(html).toContain('data-theme="outline-weak"');
+    // SSR badge: static pill; dot renders empty with only the aria-label.
+    expect(html).toContain('class="podo-badge"');
+    expect(html).toContain('data-theme="red"');
+    expect(html).toContain('data-dot="true"');
+    expect(html).not.toContain("무시되는 텍스트");
     expect(html).toContain('role="switch"');
     expect(html).toContain('aria-checked="true"');
     expect(html).toContain('data-state="on"');

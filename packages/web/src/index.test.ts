@@ -13,6 +13,7 @@ describe("@podo/web", () => {
     registerPodoElements();
     registerPodoElements();
 
+    expect(customElements.get("podo-badge")).toBeDefined();
     expect(customElements.get("podo-button")).toBeDefined();
     expect(customElements.get("podo-checkbox")).toBeDefined();
     expect(customElements.get("podo-chip")).toBeDefined();
@@ -21,6 +22,7 @@ describe("@podo/web", () => {
     expect(customElements.get("podo-textarea")).toBeDefined();
     expect(podoWebComponentCss).toContain('.podo-button[data-theme="solid-primary"]');
     expect(podoWebComponentCss).toContain('.podo-chip[data-theme="outline-weak"]');
+    expect(podoWebComponentCss).toContain(".podo-badge[data-dot]");
     // Table ships as classes only (no shadow element — table semantics).
     expect(podoWebComponentCss).toContain('.podo-table[data-type="grid"]');
     expect(podoWebComponentCss).toContain('.podo-table [data-align="right"]');
@@ -69,6 +71,24 @@ describe("@podo/web", () => {
 
     expect(pressed).toBe(1);
     expect(button.shadowRoot?.innerHTML).toMatchSnapshot();
+  });
+
+  it("renders the badge pill and its dot mode", () => {
+    registerPodoElements();
+    const badge = document.createElement("podo-badge");
+    badge.setAttribute("theme", "red");
+    badge.textContent = "99";
+    document.body.append(badge);
+
+    let html = badge.shadowRoot?.innerHTML ?? "";
+    expect(html).toContain('data-theme="red"');
+    expect(html).toContain("<slot></slot>");
+
+    // dot drops the slot entirely — only the 6px dot renders.
+    badge.setAttribute("dot", "");
+    html = badge.shadowRoot?.innerHTML ?? "";
+    expect(html).toContain("data-dot");
+    expect(html).not.toContain("<slot>");
   });
 
   it("renders input, field, icon, and typography components", async () => {

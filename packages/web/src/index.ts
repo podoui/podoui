@@ -12,6 +12,7 @@ export interface RegisterPodoElementsOptions {
 }
 
 export const podoElementNames = {
+  badge: "podo-badge",
   button: "podo-button",
   checkbox: "podo-checkbox",
   chip: "podo-chip",
@@ -33,6 +34,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
 
   const names = createElementNames(options.prefix);
   const definitions: Array<[string, CustomElementConstructor]> = [
+    [names.badge, createBadgeElement()],
     [names.button, createButtonElement()],
     [names.checkbox, createCheckboxElement()],
     [names.chip, createChipElement()],
@@ -55,6 +57,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
 
 export function createElementNames(prefix = "podo"): typeof podoElementNames {
   return {
+    badge: `${prefix}-badge`,
     button: `${prefix}-button`,
     checkbox: `${prefix}-checkbox`,
     chip: `${prefix}-chip`,
@@ -220,6 +223,92 @@ input {
   --podo-button-root-borderColor: transparent;
   --podo-button-label-color: #9FA2AD;
   cursor: not-allowed;
+}
+
+/* Badge (Figma 474:3218): count/status pill. natural~info are strong system
+   fills with light text (natural — base); gray~orange are soft color labels;
+   data-dot collapses the badge to a 6px presence dot. */
+.podo-badge {
+  align-items: center;
+  background: var(--podo-badge-root-background, #3E424B);
+  border-radius: 9999px;
+  color: var(--podo-badge-label-color, #F9F9F9);
+  display: inline-flex;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  font-size: 14px;
+  font-weight: 400;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 22px;
+  padding: 0 6px;
+}
+
+.podo-badge[data-theme="danger"] {
+  --podo-badge-root-background: #F23B3B;
+}
+
+.podo-badge[data-theme="success"] {
+  --podo-badge-root-background: #3EA856;
+}
+
+.podo-badge[data-theme="warning"] {
+  --podo-badge-root-background: #FFAA00;
+}
+
+.podo-badge[data-theme="info"] {
+  --podo-badge-root-background: #0095FF;
+}
+
+.podo-badge[data-theme="gray"] {
+  --podo-badge-root-background: #F4F4F5;
+  --podo-badge-label-color: #18181B;
+  --podo-badge-dot-color: #3E424B;
+}
+
+/* Figma red dot is accent.50 (#F15764), not the label's error.50 —
+   mirrored as-is pending a design check. */
+.podo-badge[data-theme="red"] {
+  --podo-badge-root-background: #FEF1F1;
+  --podo-badge-label-color: #F23B3B;
+  --podo-badge-dot-color: #F15764;
+}
+
+.podo-badge[data-theme="green"] {
+  --podo-badge-root-background: #ECF8EF;
+  --podo-badge-label-color: #3EA856;
+  --podo-badge-dot-color: #3EA856;
+}
+
+.podo-badge[data-theme="yellow"] {
+  --podo-badge-root-background: #FFF7E6;
+  --podo-badge-label-color: #FFAA00;
+  --podo-badge-dot-color: #FFAA00;
+}
+
+.podo-badge[data-theme="blue"] {
+  --podo-badge-root-background: #EBF5FF;
+  --podo-badge-label-color: #0095FF;
+  --podo-badge-dot-color: #0095FF;
+}
+
+.podo-badge[data-theme="purple"] {
+  --podo-badge-root-background: #F8F5FF;
+  --podo-badge-label-color: #8E51FF;
+  --podo-badge-dot-color: #8E51FF;
+}
+
+.podo-badge[data-theme="orange"] {
+  --podo-badge-root-background: #FFF4F0;
+  --podo-badge-label-color: #FF6A33;
+  --podo-badge-dot-color: #FF6A33;
+}
+
+.podo-badge[data-dot] {
+  background: var(--podo-badge-dot-color, var(--podo-badge-root-background, #3E424B));
+  height: 6px;
+  min-width: 6px;
+  padding: 0;
+  width: 6px;
 }
 
 /* Chip (Figma 538:6615): pill tag with prefix/suffix icon slots and a
@@ -1340,6 +1429,32 @@ function createButtonElement(): CustomElementConstructor {
         }
         this.dispatchEvent(new CustomEvent("podo-press", { bubbles: true, composed: true }));
       });
+    }
+  };
+}
+
+function createBadgeElement(): CustomElementConstructor {
+  return class PodoBadgeElement extends HTMLElement {
+    static get observedAttributes(): string[] {
+      return ["theme", "dot"];
+    }
+
+    readonly shadow = this.attachShadow({ mode: "open" });
+
+    connectedCallback(): void {
+      this.render();
+    }
+
+    attributeChangedCallback(): void {
+      this.render();
+    }
+
+    private render(): void {
+      const dot = this.hasAttribute("dot");
+      this.shadow.innerHTML = `${componentStyleBlock()}
+<span class="podo-badge" part="root" data-theme="${escapeHtml(
+        attr(this, "theme", "natural")
+      )}"${dot ? " data-dot" : ""}>${dot ? "" : "<slot></slot>"}</span>`;
     }
   };
 }

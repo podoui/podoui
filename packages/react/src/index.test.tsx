@@ -5,6 +5,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  Badge,
   Button,
   Checkbox,
   Chip,
@@ -54,6 +55,31 @@ describe("@podo/react", () => {
   it("stretches to the parent width with fill", () => {
     render(<Button fill>Submit</Button>);
     expect(screen.getByRole("button", { name: "Submit" }).getAttribute("data-fill")).toBe("true");
+  });
+
+  it("renders badge themes and collapses to a dot without children", () => {
+    render(
+      <>
+        <Badge aria-label="기본">99</Badge>
+        <Badge theme="red" aria-label="빨강">
+          99
+        </Badge>
+        <Badge theme="green" dot aria-label="온라인">
+          무시되는 텍스트
+        </Badge>
+      </>
+    );
+
+    const natural = screen.getByLabelText("기본");
+    expect(natural.className).toBe("podo-badge");
+    expect(natural.getAttribute("data-theme")).toBe("natural");
+    expect(natural.textContent).toBe("99");
+
+    expect(screen.getByLabelText("빨강").getAttribute("data-theme")).toBe("red");
+
+    const dot = screen.getByLabelText("온라인");
+    expect(dot.getAttribute("data-dot")).toBe("true");
+    expect(dot.textContent).toBe("");
   });
 
   it("renders chip themes/sizes and blocks presses while disabled", async () => {

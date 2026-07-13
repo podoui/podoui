@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { BadgePage } from "./pages/BadgePage.js";
 import { ButtonPage } from "./pages/ButtonPage.js";
 import { CheckboxPage } from "./pages/CheckboxPage.js";
 import { ChipPage } from "./pages/ChipPage.js";
@@ -28,6 +29,7 @@ export interface NavItem {
 export const NAV: NavItem[] = [
   { slug: "color", title: "Color", group: "Foundation", page: ColorPage },
   { slug: "typography", title: "Typography", group: "Foundation", page: TypographyPage },
+  { slug: "badge", title: "Badge", group: "Components", page: BadgePage },
   { slug: "button", title: "Button", group: "Components", page: ButtonPage },
   { slug: "checkbox", title: "Checkbox", group: "Components", page: CheckboxPage },
   { slug: "chip", title: "Chip", group: "Components", page: ChipPage },

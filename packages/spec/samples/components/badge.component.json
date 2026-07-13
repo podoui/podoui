@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "badge",
+  "name": "Badge",
+  "category": "atom",
+  "status": "experimental",
+  "description": "Count/status pill attached next to icons, menus, and list items (Figma 474:3218). System-state themes (natural — base, danger, success, warning, info) use a strong fill with light text for alerts the user must notice; color-label themes (gray, red, green, yellow, blue, purple, orange) use a soft fill with matching text to tag categories without competing with content. dot collapses the badge to a 6px presence dot (color themes only in the spec). Layout: min-width 22, 0/6 padding, 14px/1.6 text, fully rounded.",
+  "anatomy": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "label",
+      "parent": "root"
+    },
+    {
+      "name": "dot",
+      "parent": "root"
+    }
+  ],
+  "slots": [
+    {
+      "name": "children",
+      "fallback": "99",
+      "description": "Count or short status text. Ignored when dot is set."
+    }
+  ],
+  "props": [
+    {
+      "name": "dot",
+      "type": {
+        "kind": "boolean"
+      },
+      "default": false,
+      "description": "숫자·텍스트 없이 6px 점만 표시 (Figma dot). 정확한 값이 필요 없는 알림 유무·상태 표시용."
+    }
+  ],
+  "variants": [
+    {
+      "name": "theme",
+      "values": [
+        "natural",
+        "danger",
+        "success",
+        "warning",
+        "info",
+        "gray",
+        "red",
+        "green",
+        "yellow",
+        "blue",
+        "purple",
+        "orange"
+      ],
+      "default": "natural",
+      "valueTokens": {
+        "natural": {
+          "root.background": "{color.palette.gray.70}",
+          "label.color": "{color.palette.gray.5}"
+        },
+        "danger": {
+          "root.background": "{color.palette.error.50}",
+          "label.color": "{color.palette.gray.5}"
+        },
+        "success": {
+          "root.background": "{color.palette.success.50}",
+          "label.color": "{color.palette.gray.5}"
+        },
+        "warning": {
+          "root.background": "{color.palette.warning.50}",
+          "label.color": "{color.palette.gray.5}"
+        },
+        "info": {
+          "root.background": "{color.palette.info.50}",
+          "label.color": "{color.palette.gray.5}"
+        },
+        "gray": {
+          "root.background": "{color.palette.gray.10}",
+          "label.color": "{color.palette.gray.90}",
+          "dot.color": "{color.palette.gray.70}"
+        },
+        "red": {
+          "root.background": "{color.palette.error.5}",
+          "label.color": "{color.palette.error.50}",
+          "dot.color": "{color.palette.accent.50}"
+        },
+        "green": {
+          "root.background": "{color.palette.success.5}",
+          "label.color": "{color.palette.success.50}",
+          "dot.color": "{color.palette.success.50}"
+        },
+        "yellow": {
+          "root.background": "{color.palette.warning.5}",
+          "label.color": "{color.palette.warning.50}",
+          "dot.color": "{color.palette.warning.50}"
+        },
+        "blue": {
+          "root.background": "{color.palette.info.5}",
+          "label.color": "{color.palette.info.50}",
+          "dot.color": "{color.palette.info.50}"
+        },
+        "purple": {
+          "root.background": "{color.palette.purple.5}",
+          "label.color": "{color.palette.purple.50}",
+          "dot.color": "{color.palette.purple.50}"
+        },
+        "orange": {
+          "root.background": "{color.palette.orange.5}",
+          "label.color": "{color.palette.orange.50}",
+          "dot.color": "{color.palette.orange.50}"
+        }
+      }
+    }
+  ],
+  "tokens": {
+    "root.background": "{color.palette.gray.70}",
+    "label.color": "{color.palette.gray.5}"
+  },
+  "targets": {
+    "web": {
+      "supported": true,
+      "limitations": []
+    },
+    "react": {
+      "supported": true,
+      "limitations": []
+    },
+    "hono": {
+      "supported": true,
+      "limitations": []
+    },
+    "native": {
+      "supported": true,
+      "limitations": []
+    }
+  },
+  "accessibility": {
+    "aria": ["aria-label (dot처럼 텍스트가 없을 때 의미를 이름으로 제공)"],
+    "keyboard": [],
+    "focusManagement": "Badge is a static display element and never receives focus."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Unread count on a menu item",
+      "code": "<Badge theme=\"danger\">99</Badge>"
+    },
+    {
+      "target": "react",
+      "title": "Presence dot",
+      "code": "<Badge theme=\"green\" dot aria-label=\"온라인\" />"
+    }
+  ]
+}

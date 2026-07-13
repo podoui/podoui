@@ -77,6 +77,33 @@ export interface NativeChipProps {
   testID?: string;
 }
 
+export interface NativeBadgeProps {
+  /** Count or short status text. Ignored when dot is set. */
+  children?: ReactNode;
+  /**
+   * 상태·의미 색상 (Figma theme) — natural이 base. natural~info는 진한 배경의
+   * 시스템 상태, gray~orange는 연한 배경의 색상 표기예요.
+   */
+  theme?:
+    | "natural"
+    | "danger"
+    | "success"
+    | "warning"
+    | "info"
+    | "gray"
+    | "red"
+    | "green"
+    | "yellow"
+    | "blue"
+    | "purple"
+    | "orange";
+  /** 숫자·텍스트 없이 6px 점만 표시 (Figma dot). */
+  dot?: boolean;
+  /** dot처럼 텍스트가 없을 때 의미를 이름으로 제공해요. */
+  accessibilityLabel?: string;
+  testID?: string;
+}
+
 export interface NativeSwitchProps {
   /** Controlled on/off value (Figma state=on/off). */
   checked?: boolean;
@@ -235,6 +262,7 @@ export interface NativeComponents {
   Checkbox: (props: NativeCheckboxProps) => React.ReactElement;
   Radio: (props: NativeRadioProps) => React.ReactElement;
   Chip: (props: NativeChipProps) => React.ReactElement;
+  Badge: (props: NativeBadgeProps) => React.ReactElement;
   Input: (props: NativeInputProps) => React.ReactElement;
   Textarea: (props: NativeTextareaProps) => React.ReactElement;
   Field: (props: NativeFieldProps) => React.ReactElement;
@@ -301,6 +329,27 @@ export function adaptReactNativeTokens(value: unknown): unknown {
 
   return value;
 }
+
+// Badge (Figma 474:3218) colors — natural~info strong fills, gray~orange soft
+// labels. The red dot mirrors the Figma accent.50 pick (#F15764), which differs
+// from the label's error.50 — pending a design check.
+const BADGE_COLORS: Record<
+  NonNullable<NativeBadgeProps["theme"]>,
+  { fill: string; label: string; dot: string }
+> = {
+  natural: { fill: "#3E424B", label: "#F9F9F9", dot: "#3E424B" },
+  danger: { fill: "#F23B3B", label: "#F9F9F9", dot: "#F23B3B" },
+  success: { fill: "#3EA856", label: "#F9F9F9", dot: "#3EA856" },
+  warning: { fill: "#FFAA00", label: "#F9F9F9", dot: "#FFAA00" },
+  info: { fill: "#0095FF", label: "#F9F9F9", dot: "#0095FF" },
+  gray: { fill: "#F4F4F5", label: "#18181B", dot: "#3E424B" },
+  red: { fill: "#FEF1F1", label: "#F23B3B", dot: "#F15764" },
+  green: { fill: "#ECF8EF", label: "#3EA856", dot: "#3EA856" },
+  yellow: { fill: "#FFF7E6", label: "#FFAA00", dot: "#FFAA00" },
+  blue: { fill: "#EBF5FF", label: "#0095FF", dot: "#0095FF" },
+  purple: { fill: "#F8F5FF", label: "#8E51FF", dot: "#8E51FF" },
+  orange: { fill: "#FFF4F0", label: "#FF6A33", dot: "#FF6A33" },
+};
 
 export function createNativeComponents(host: NativeHost = defaultNativeHost): NativeComponents {
   return {
@@ -377,6 +426,35 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           props.children
         ),
         props.suffix
+      );
+    },
+    Badge: (props) => {
+      const theme = usePodoNativeTheme();
+      const styles = createNativeThemeStyles(theme);
+      const themeName = props.theme ?? "natural";
+      const box = BADGE_COLORS[themeName];
+      if (props.dot) {
+        return createElement(host.View, {
+          accessibilityLabel: props.accessibilityLabel,
+          style: { backgroundColor: box.dot, borderRadius: 3, height: 6, width: 6 },
+          testID: props.testID,
+          "data-theme": themeName,
+          "data-dot": "true",
+        });
+      }
+      return createElement(
+        host.View,
+        {
+          accessibilityLabel: props.accessibilityLabel,
+          style: { ...styles.badge, backgroundColor: box.fill },
+          testID: props.testID,
+          "data-theme": themeName,
+        },
+        createElement(
+          host.Text,
+          { style: { ...styles.badgeLabel, color: box.label } },
+          props.children
+        )
       );
     },
     Input: (props) => {
@@ -922,6 +1000,7 @@ export const {
   Checkbox,
   Radio,
   Chip,
+  Badge,
   Input,
   Textarea,
   Field,
@@ -980,6 +1059,8 @@ function initialNativeControlLength(children: ReactNode): number {
 function createNativeThemeStyles(
   theme: NativeTheme
 ): Record<
+  | "badge"
+  | "badgeLabel"
   | "button"
   | "buttonLabel"
   | "chip"
@@ -1066,6 +1147,16 @@ function createNativeThemeStyles(
       paddingVertical: 8,
     },
     buttonLabel: { color: theme.colorScheme === "dark" ? "#101828" : "#FFFFFF", fontWeight: "600" },
+    // Badge (Figma 474:3218): count pill, min-width 22, 0/6 padding.
+    badge: {
+      alignItems: "center",
+      borderRadius: 9999,
+      flexDirection: "row",
+      justifyContent: "center",
+      minWidth: 22,
+      paddingHorizontal: 6,
+    },
+    badgeLabel: { fontSize: 14, lineHeight: 22 },
     // Chip (Figma 538:6615): pill, content-sized; md gap 2/pad 6 (base).
     chip: {
       alignItems: "center",

@@ -52,6 +52,32 @@ export interface HonoChipProps {
   class?: string;
 }
 
+export interface HonoBadgeProps {
+  /** Count or short status text. Ignored when dot is set. */
+  children?: Child;
+  /**
+   * 상태·의미 색상 (Figma theme) — natural이 base. natural~info는 진한 배경의
+   * 시스템 상태, gray~orange는 연한 배경의 색상 표기예요.
+   */
+  theme?:
+    | "natural"
+    | "danger"
+    | "success"
+    | "warning"
+    | "info"
+    | "gray"
+    | "red"
+    | "green"
+    | "yellow"
+    | "blue"
+    | "purple"
+    | "orange";
+  /** 숫자·텍스트 없이 6px 점만 표시 (Figma dot). */
+  dot?: boolean;
+  class?: string;
+  "aria-label"?: string;
+}
+
 export interface HonoInputProps {
   id?: string;
   name?: string;
@@ -367,6 +393,25 @@ export function Chip({
       <span class="podo-chip__label">{children}</span>
       {suffix ? <span class="podo-chip__suffix">{suffix}</span> : null}
     </button>
+  );
+}
+
+export function Badge({
+  children,
+  theme = "natural",
+  dot,
+  class: className,
+  "aria-label": ariaLabel,
+}: HonoBadgeProps): JSX.Element {
+  return (
+    <span
+      class={joinClass("podo-badge", className)}
+      data-theme={theme}
+      data-dot={dot ? "true" : undefined}
+      aria-label={ariaLabel}
+    >
+      {dot ? null : children}
+    </span>
   );
 }
 

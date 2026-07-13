@@ -526,7 +526,7 @@
 ### B. Figma 정합 (상세: figma-props-alignment.md)
 
 - [ ] Code Connect publish
-  - `.figma.tsx` 8개(button/chip/input/field/switch/textarea/table/checkbox) 작성·parse 검증 완료. 남은 것: 팀 Figma 플랜(Org/Enterprise) 확인 → 토큰 발급 → `npx figma connect publish`.
+  - `.figma.tsx` 12개(button/chip/input/field/switch/textarea/table/checkbox/radio/toast/tooltip/badge) 작성·parse 검증 완료. 남은 것: 팀 Figma 플랜(Org/Enterprise) 확인 → 토큰 발급 → `npx figma connect publish`.
 - [ ] AGENTS.md에 어휘 규칙 명문화 + 컴포넌트 작업 체크리스트에 figma.tsx 갱신 단계 추가
 - [ ] 디자이너에게 시안 수정 요청 (코드는 시안 픽셀 그대로 반영해 둔 상태)
   - Chip `outline-strong`의 selected가 solid와 동일 렌더 (외곽선 없음) — 수정되면 web CSS/theme.css/native의 "pending a design fix" 주석 지점 갱신
@@ -536,6 +536,9 @@
   - Button 문서 용어 `layout` ↔ 컴포넌트 variant 실명 `type` — 통일 필요
   - Tooltip 문서(541:8679) 인트로 문단이 토스트 설명 복붙 — 툴팁 설명으로 교체 필요 (코드 문서에는 툴팁용 인트로를 새로 작성해 둠)
   - Tooltip 셋(388:2125) theme 어휘가 뒤집힘: 팀 기준 default는 어두운 배경인데 셋 변형명은 어두운 쪽이 `reverse`, 문서 설명 문구도 반대 — 코드가 번역 중(figma.tsx), 셋 어휘 정리 필요
+  - Badge 문서(541:11262) 색상 표기·도트 두 곳의 properties 태그 오타 `rad` → `red`
+  - Badge red 도트 색이 accent.50(#F15764) ↔ 같은 테마의 텍스트는 error.50(#F23B3B) — 다른 도트는 모두 자기 테마의 50 강도를 쓰는데 red만 어긋남. 의도 확인 필요 (코드는 시안 그대로 accent.50 반영, "pending a design check" 주석 지점: web CSS/theme.css/native)
+  - Badge 셋(474:3218)의 `state` 불리언이 theme에서 유도되는 중복 속성 (natural~info는 항상 true, gray~orange는 항상 false) — 셋에서 제거하면 변형 관리가 단순해짐 (코드는 theme+dot만 매핑)
 - [ ] (보류) Figma→코드 동기화 파이프라인 (`podo figma-sync`, 트리거 버튼) — 이전 논의 기록은 auto-memory 참고
 
 ### C. 컴포넌트·품질
