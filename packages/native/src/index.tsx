@@ -7,7 +7,12 @@ import React, {
   useState,
   type ReactNode,
 } from "react";
-import { createButtonBehavior, createFieldA11y, createInputBehavior } from "@podo/core";
+import {
+  createButtonBehavior,
+  createFieldA11y,
+  createInputBehavior,
+  createSwitchBehavior,
+} from "@podo/core";
 
 export type NativeHostComponent = string | React.ComponentType<Record<string, unknown>>;
 
@@ -61,6 +66,18 @@ export interface NativeChipProps {
   /** Removal/action icon after the label, e.g. close (Figma suffix-icon). */
   suffix?: ReactNode;
   onPress?: () => void;
+  testID?: string;
+}
+
+export interface NativeSwitchProps {
+  /** Controlled on/off value (Figma state=on/off). */
+  checked?: boolean;
+  /** Track size (Figma: sm 30x18, md 40x24 — base, lg 56x32). */
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  /** Fires with the next value when the switch is toggled. */
+  onCheckedChange?: (checked: boolean) => void;
+  accessibilityLabel?: string;
   testID?: string;
 }
 
@@ -123,6 +140,7 @@ export interface NativeComponents {
   Input: (props: NativeInputProps) => React.ReactElement;
   Field: (props: NativeFieldProps) => React.ReactElement;
   Icon: (props: NativeIconProps) => React.ReactElement;
+  Switch: (props: NativeSwitchProps) => React.ReactElement;
 }
 
 export type NativeStyle = Record<string, string | number | undefined>;
@@ -385,10 +403,53 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         props.glyph ?? props.name
       );
     },
+    Switch: (props) => {
+      const behavior = createSwitchBehavior({ checked: props.checked, disabled: props.disabled });
+      // Figma 338:2464 geometry per size: track w/h, handle diameter, edge pad.
+      const metrics =
+        props.size === "sm"
+          ? { w: 30, h: 18, handle: 14, pad: 2 }
+          : props.size === "lg"
+            ? { w: 56, h: 32, handle: 25, pad: 4 }
+            : { w: 40, h: 24, handle: 20, pad: 2 };
+      const track = behavior.disabled ? "#E4E4E7" : behavior.checked ? "#426CED" : "#D1D2D6";
+      const handle = behavior.disabled ? "#D1D2D6" : "#FFFFFF";
+      return createElement(
+        host.Pressable,
+        {
+          accessibilityRole: "switch",
+          accessibilityState: { checked: behavior.checked, disabled: behavior.disabled },
+          accessibilityLabel: props.accessibilityLabel,
+          disabled: !behavior.pressable,
+          onPress: behavior.pressable
+            ? () => props.onCheckedChange?.(!behavior.checked)
+            : undefined,
+          style: {
+            backgroundColor: track,
+            borderRadius: 9999,
+            height: metrics.h,
+            justifyContent: "center",
+            width: metrics.w,
+          },
+          testID: props.testID,
+          "data-state": behavior.checked ? "on" : "off",
+          "data-size": props.size ?? "md",
+        },
+        createElement(host.View, {
+          style: {
+            backgroundColor: handle,
+            borderRadius: 9999,
+            height: metrics.handle,
+            marginLeft: behavior.checked ? metrics.w - metrics.handle - metrics.pad : metrics.pad,
+            width: metrics.handle,
+          },
+        })
+      );
+    },
   };
 }
 
-export const { Button, Chip, Input, Field, Icon } = createNativeComponents();
+export const { Button, Chip, Input, Field, Icon, Switch } = createNativeComponents();
 
 function wireNativeControl(
   children: ReactNode,

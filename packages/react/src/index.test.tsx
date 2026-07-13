@@ -11,6 +11,7 @@ import {
   Icon,
   Input,
   PodoThemeProvider,
+  Switch,
   Typography,
   usePodoTheme,
 } from "./index.js";
@@ -82,6 +83,35 @@ describe("@podo/react", () => {
     await user.type(screen.getByLabelText("본문"), "xyz");
     expect((screen.getByLabelText("본문") as HTMLInputElement).value).toBe("abcde");
     expect(screen.getByText("5/5")).toBeDefined();
+  });
+
+  it("toggles the switch uncontrolled and respects disabled", async () => {
+    const user = userEvent.setup();
+    const changes: boolean[] = [];
+    render(
+      <>
+        <Switch aria-label="알림" size="lg" onCheckedChange={(next) => changes.push(next)} />
+        <Switch
+          aria-label="잠김"
+          disabled
+          defaultChecked
+          onCheckedChange={() => changes.push(false)}
+        />
+      </>
+    );
+
+    const toggle = screen.getByRole("switch", { name: "알림" });
+    expect(toggle.getAttribute("aria-checked")).toBe("false");
+    expect(toggle.getAttribute("data-state")).toBe("off");
+    expect(toggle.getAttribute("data-size")).toBe("lg");
+
+    await user.click(toggle);
+    expect(toggle.getAttribute("aria-checked")).toBe("true");
+    expect(toggle.getAttribute("data-state")).toBe("on");
+
+    await user.click(screen.getByRole("switch", { name: "잠김" }));
+    expect(changes).toEqual([true]);
+    expect(screen.getByRole("switch", { name: "잠김" }).getAttribute("data-state")).toBe("on");
   });
 
   it("supports controlled and uncontrolled input value changes", async () => {

@@ -4,6 +4,7 @@ import { ChipPage } from "./pages/ChipPage.js";
 import { ColorPage } from "./pages/ColorPage.js";
 import { FieldPage } from "./pages/FieldPage.js";
 import { InputPage } from "./pages/InputPage.js";
+import { SwitchPage } from "./pages/SwitchPage.js";
 import { TypographyPage } from "./pages/TypographyPage.js";
 
 export interface NavItem {
@@ -25,6 +26,7 @@ export const NAV: NavItem[] = [
   { slug: "chip", title: "Chip", group: "Components", page: ChipPage },
   { slug: "field", title: "Field", group: "Components", page: FieldPage },
   { slug: "input", title: "Input", group: "Components", page: InputPage },
+  { slug: "switch", title: "Switch", group: "Components", page: SwitchPage },
 ];
 
 export function findBySlug(slug: string): NavItem | undefined {

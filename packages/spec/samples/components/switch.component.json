@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "switch",
+  "name": "Switch",
+  "category": "atom",
+  "status": "experimental",
+  "description": "On/off toggle that applies immediately (Figma 538:7226, component set 338:2464): sm 30x18 / md 40x24 (base) / lg 56x32, track colors gray.30 (off), primary.50 (on), gray.20 (disabled) with a white shadowed handle.",
+  "anatomy": [{ "name": "root" }, { "name": "handle", "parent": "root" }],
+  "slots": [],
+  "props": [
+    {
+      "name": "checked",
+      "type": { "kind": "boolean" },
+      "description": "Controlled on/off value (Figma state=on/off)."
+    },
+    {
+      "name": "defaultChecked",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "Initial uncontrolled value."
+    },
+    { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
+    {
+      "name": "onCheckedChange",
+      "type": { "kind": "event", "payload": { "checked": "boolean" } },
+      "description": "Fires with the next value when the switch is toggled."
+    }
+  ],
+  "variants": [{ "name": "size", "values": ["sm", "md", "lg"], "default": "md" }],
+  "states": [
+    { "name": "focusVisible" },
+    {
+      "name": "checked",
+      "tokens": { "root.background": "{color.palette.primary.50}" }
+    },
+    {
+      "name": "disabled",
+      "tokens": {
+        "root.background": "{color.palette.gray.20}",
+        "handle.background": "{color.palette.gray.30}"
+      }
+    }
+  ],
+  "tokens": {
+    "root.background": "{color.palette.gray.30}",
+    "handle.background": "{color.palette.gray.0}"
+  },
+  "targets": {
+    "web": { "supported": true, "limitations": [] },
+    "react": { "supported": true, "limitations": [] },
+    "hono": { "supported": true, "limitations": ["Toggling requires client code."] },
+    "native": { "supported": true, "limitations": [] }
+  },
+  "accessibility": {
+    "aria": ["role=switch", "aria-checked", "aria-disabled"],
+    "keyboard": ["Enter/Space toggles the switch"],
+    "focusManagement": "Switch is a native button; focus follows the platform."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Notification setting",
+      "code": "<Switch checked={enabled} onCheckedChange={setEnabled} aria-label=\"알림\" />"
+    }
+  ]
+}

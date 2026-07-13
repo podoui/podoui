@@ -4,7 +4,12 @@ import { cloneElement, isValidElement } from "hono/jsx";
 import type { Child } from "hono/jsx";
 import type { JSX } from "hono/jsx/jsx-runtime";
 import { raw } from "hono/html";
-import { createButtonBehavior, createFieldA11y, createInputBehavior } from "@podo/core";
+import {
+  createButtonBehavior,
+  createFieldA11y,
+  createInputBehavior,
+  createSwitchBehavior,
+} from "@podo/core";
 
 export type HonoButtonTheme =
   | "solid-primary"
@@ -153,6 +158,41 @@ export function Chip({
       {prefix ? <span class="podo-chip__prefix">{prefix}</span> : null}
       <span class="podo-chip__label">{children}</span>
       {suffix ? <span class="podo-chip__suffix">{suffix}</span> : null}
+    </button>
+  );
+}
+
+export interface HonoSwitchProps {
+  /** On/off value rendered statically (Figma state=on/off). */
+  checked?: boolean;
+  /** Track size (Figma: sm 30x18, md 40x24 — base, lg 56x32). */
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  "aria-label"?: string;
+  class?: string;
+}
+
+export function Switch({
+  checked,
+  size = "md",
+  disabled,
+  "aria-label": ariaLabel,
+  class: className,
+}: HonoSwitchProps): JSX.Element {
+  const behavior = createSwitchBehavior({ checked, disabled });
+
+  return (
+    <button
+      class={joinClass("podo-switch", className)}
+      type="button"
+      role="switch"
+      aria-checked={behavior.checked ? "true" : "false"}
+      aria-label={ariaLabel}
+      disabled={behavior.disabled}
+      data-size={size}
+      data-state={behavior.checked ? "on" : "off"}
+    >
+      <span class="podo-switch__handle" />
     </button>
   );
 }

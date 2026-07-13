@@ -16,6 +16,7 @@ describe("@podo/web", () => {
     expect(customElements.get("podo-button")).toBeDefined();
     expect(customElements.get("podo-chip")).toBeDefined();
     expect(customElements.get("podo-input")).toBeDefined();
+    expect(customElements.get("podo-switch")).toBeDefined();
     expect(podoWebComponentCss).toContain('.podo-button[data-theme="solid-primary"]');
     expect(podoWebComponentCss).toContain('.podo-chip[data-theme="outline-weak"]');
   });
@@ -88,6 +89,16 @@ describe("@podo/web", () => {
     chip.textContent = "필터";
     document.body.append(chip);
 
+    const toggle = document.createElement("podo-switch") as HTMLElement & { checked: boolean };
+    toggle.setAttribute("aria-label", "알림");
+    document.body.append(toggle);
+    // Clicking flips the checked attribute and emits podo-checked-change.
+    let toggled: boolean | undefined;
+    toggle.addEventListener("podo-checked-change", (event) => {
+      toggled = (event as CustomEvent<{ checked: boolean }>).detail.checked;
+    });
+    toggle.shadowRoot?.querySelector("button")?.click();
+
     const icon = document.createElement("podo-icon");
     icon.setAttribute("name", "menu");
     document.body.append(icon);
@@ -103,6 +114,10 @@ describe("@podo/web", () => {
     expect(chip.shadowRoot?.querySelector("button")?.getAttribute("data-theme")).toBe(
       "outline-weak"
     );
+    expect(toggled).toBe(true);
+    expect(toggle.checked).toBe(true);
+    expect(toggle.shadowRoot?.querySelector("button")?.getAttribute("data-state")).toBe("on");
+    expect(toggle.shadowRoot?.innerHTML).toMatchSnapshot("switch");
     expect(field.querySelector("podo-input")?.getAttribute("id")).toBe("email-control");
     expect(field.querySelector("podo-input")?.getAttribute("aria-describedby")).toBe(
       "email-description email-error"

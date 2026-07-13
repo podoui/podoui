@@ -200,6 +200,85 @@
   width: 16px;
 }
 
+/* Switch (Figma 338:2464) — mirrors the canonical @podo/web switch CSS. */
+.podo-switch {
+  background: #d1d2d6;
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0;
+  position: relative;
+  transition: background 0.15s ease;
+}
+
+.podo-switch__handle {
+  background: #ffffff;
+  border-radius: 9999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  left: 2px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: left 0.15s ease;
+}
+
+.podo-switch[data-size="sm"] {
+  height: 18px;
+  width: 30px;
+}
+.podo-switch[data-size="sm"] .podo-switch__handle {
+  height: 14px;
+  width: 14px;
+}
+.podo-switch[data-size="sm"][data-state="on"] .podo-switch__handle {
+  left: 14px;
+}
+
+.podo-switch[data-size="md"] {
+  height: 24px;
+  width: 40px;
+}
+.podo-switch[data-size="md"] .podo-switch__handle {
+  height: 20px;
+  width: 20px;
+}
+.podo-switch[data-size="md"][data-state="on"] .podo-switch__handle {
+  left: 18px;
+}
+
+.podo-switch[data-size="lg"] {
+  height: 32px;
+  width: 56px;
+}
+.podo-switch[data-size="lg"] .podo-switch__handle {
+  height: 25px;
+  left: 4px;
+  width: 25px;
+}
+.podo-switch[data-size="lg"][data-state="on"] .podo-switch__handle {
+  left: 27px;
+}
+
+.podo-switch[data-state="on"] {
+  background: #426ced;
+}
+
+.podo-switch:focus-visible {
+  outline: 2px solid #426ced;
+  outline-offset: 2px;
+}
+
+.podo-switch[disabled] {
+  background: #e4e4e7;
+  cursor: not-allowed;
+}
+
+.podo-switch[disabled] .podo-switch__handle {
+  background: #d1d2d6;
+  box-shadow: none;
+}
+
 /* Field (Figma 538:6691) — mirrors the canonical @podo/web field CSS. */
 .podo-field {
   display: flex;

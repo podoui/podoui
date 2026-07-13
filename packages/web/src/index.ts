@@ -1,4 +1,9 @@
-import { createButtonBehavior, createFieldA11y, createInputBehavior } from "@podo/core";
+import {
+  createButtonBehavior,
+  createFieldA11y,
+  createInputBehavior,
+  createSwitchBehavior,
+} from "@podo/core";
 
 export interface RegisterPodoElementsOptions {
   registry?: CustomElementRegistry;
@@ -11,6 +16,7 @@ export const podoElementNames = {
   input: "podo-input",
   field: "podo-field",
   icon: "podo-icon",
+  switch: "podo-switch",
   text: "podo-text",
 } as const;
 
@@ -27,6 +33,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
     [names.input, createInputElement()],
     [names.field, createFieldElement()],
     [names.icon, createIconElement()],
+    [names.switch, createSwitchElement()],
     [names.text, createTextElement()],
   ];
 
@@ -44,6 +51,7 @@ export function createElementNames(prefix = "podo"): typeof podoElementNames {
     input: `${prefix}-input`,
     field: `${prefix}-field`,
     icon: `${prefix}-icon`,
+    switch: `${prefix}-switch`,
     text: `${prefix}-text`,
   } as typeof podoElementNames;
 }
@@ -256,6 +264,86 @@ input {
 .podo-chip[data-size="sm"] .podo-chip__suffix {
   height: 16px;
   width: 16px;
+}
+
+/* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
+   sm 30x18/handle 14, md 40x24/handle 20 (base), lg 56x32/handle 25. */
+.podo-switch {
+  background: var(--podo-switch-root-background, #D1D2D6);
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0;
+  position: relative;
+  transition: background 0.15s ease;
+}
+
+.podo-switch__handle {
+  background: var(--podo-switch-handle-background, #FFFFFF);
+  border-radius: 9999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  left: 2px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: left 0.15s ease;
+}
+
+.podo-switch[data-size="sm"] {
+  height: 18px;
+  width: 30px;
+}
+.podo-switch[data-size="sm"] .podo-switch__handle {
+  height: 14px;
+  width: 14px;
+}
+.podo-switch[data-size="sm"][data-state="on"] .podo-switch__handle {
+  left: 14px;
+}
+
+.podo-switch[data-size="md"] {
+  height: 24px;
+  width: 40px;
+}
+.podo-switch[data-size="md"] .podo-switch__handle {
+  height: 20px;
+  width: 20px;
+}
+.podo-switch[data-size="md"][data-state="on"] .podo-switch__handle {
+  left: 18px;
+}
+
+.podo-switch[data-size="lg"] {
+  height: 32px;
+  width: 56px;
+}
+.podo-switch[data-size="lg"] .podo-switch__handle {
+  height: 25px;
+  left: 4px;
+  width: 25px;
+}
+.podo-switch[data-size="lg"][data-state="on"] .podo-switch__handle {
+  left: 27px;
+}
+
+.podo-switch[data-state="on"] {
+  --podo-switch-root-background: #426CED;
+}
+
+.podo-switch:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-switch[disabled] {
+  --podo-switch-root-background: #E4E4E7;
+  --podo-switch-handle-background: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-switch[disabled] .podo-switch__handle {
+  box-shadow: none;
 }
 
 /* Input (Figma 538:6693): wrapper carries the box + states, the inner control
@@ -530,6 +618,63 @@ function createChipElement(): CustomElementConstructor {
           return;
         }
         this.dispatchEvent(new CustomEvent("podo-press", { bubbles: true, composed: true }));
+      });
+    }
+  };
+}
+
+function createSwitchElement(): CustomElementConstructor {
+  return class PodoSwitchElement extends HTMLElement {
+    static get observedAttributes(): string[] {
+      return ["checked", "disabled", "size", "aria-label"];
+    }
+
+    readonly shadow = this.attachShadow({ mode: "open" });
+
+    get checked(): boolean {
+      return this.hasAttribute("checked");
+    }
+
+    set checked(value: boolean) {
+      this.toggleAttribute("checked", value);
+    }
+
+    connectedCallback(): void {
+      this.render();
+    }
+
+    attributeChangedCallback(): void {
+      this.render();
+    }
+
+    private render(): void {
+      const behavior = createSwitchBehavior({
+        checked: this.checked,
+        disabled: this.hasAttribute("disabled"),
+      });
+      const disabled = behavior.disabled ? "disabled" : "";
+
+      this.shadow.innerHTML = `${componentStyleBlock()}
+<button class="podo-switch" part="root" type="button" role="switch" aria-checked="${
+        behavior.checked ? "true" : "false"
+      }" ${attrString("aria-label", attr(this, "aria-label", ""))} data-size="${escapeHtml(
+        attr(this, "size", "md")
+      )}" data-state="${behavior.checked ? "on" : "off"}" ${disabled}>
+  <span class="podo-switch__handle" part="handle"></span>
+</button>`;
+      this.shadow.querySelector("button")?.addEventListener("click", () => {
+        if (!behavior.pressable) {
+          return;
+        }
+        const next = !this.checked;
+        this.checked = next;
+        this.dispatchEvent(
+          new CustomEvent("podo-checked-change", {
+            bubbles: true,
+            composed: true,
+            detail: { checked: next },
+          })
+        );
       });
     }
   };

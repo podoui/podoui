@@ -13,7 +13,12 @@ import React, {
   type InputHTMLAttributes,
   type ReactNode,
 } from "react";
-import { createButtonBehavior, createFieldA11y, createInputBehavior } from "@podo/core";
+import {
+  createButtonBehavior,
+  createFieldA11y,
+  createInputBehavior,
+  createSwitchBehavior,
+} from "@podo/core";
 
 export interface PodoThemeContextValue {
   theme: string;
@@ -69,6 +74,22 @@ export interface ChipProps extends Omit<
   suffix?: ReactNode;
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
   onPress?: (event: PodoPressEvent) => void;
+}
+
+export interface SwitchProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "disabled" | "onClick" | "value"
+> {
+  /** Controlled on/off value (Figma state=on/off). */
+  checked?: boolean;
+  /** Initial uncontrolled value. */
+  defaultChecked?: boolean;
+  /** Track size (Figma: sm 30x18, md 40x24 — base, lg 56x32). */
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  /** Fires with the next value when the switch is toggled. */
+  onCheckedChange?: (checked: boolean) => void;
+  onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
 }
 
 export interface InputProps extends Omit<
@@ -230,6 +251,50 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
       {prefix ? <span className="podo-chip__prefix">{prefix}</span> : null}
       <span className="podo-chip__label">{children}</span>
       {suffix ? <span className="podo-chip__suffix">{suffix}</span> : null}
+    </button>
+  );
+});
+
+export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch(
+  {
+    checked,
+    defaultChecked = false,
+    size = "md",
+    disabled,
+    className,
+    type = "button",
+    onClick,
+    onCheckedChange,
+    ...props
+  },
+  ref
+) {
+  // Uncontrolled fallback: without a checked prop the switch tracks itself.
+  const [internalChecked, setInternalChecked] = useState(defaultChecked);
+  const isOn = checked ?? internalChecked;
+  const behavior = createSwitchBehavior({ checked: isOn, disabled });
+
+  return (
+    <button
+      {...props}
+      {...behavior.root}
+      {...behavior.dataState}
+      ref={ref}
+      type={type}
+      className={joinClass("podo-switch", className)}
+      data-size={size}
+      onClick={(event) => {
+        onClick?.(event);
+        if (!behavior.pressable || event.defaultPrevented) {
+          return;
+        }
+        if (checked == null) {
+          setInternalChecked(!isOn);
+        }
+        onCheckedChange?.(!isOn);
+      }}
+    >
+      <span className="podo-switch__handle" />
     </button>
   );
 });

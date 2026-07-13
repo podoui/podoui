@@ -93,6 +93,20 @@ export interface InputBehavior {
   dataState: Record<string, string>;
 }
 
+export interface SwitchBehaviorInput {
+  checked?: boolean | undefined;
+  disabled?: boolean | undefined;
+}
+
+export interface SwitchBehavior {
+  checked: boolean;
+  disabled: boolean;
+  pressable: boolean;
+  root: Record<string, string | boolean>;
+  /** data-state: "on" | "off" plus data-disabled, matching the Figma vocabulary. */
+  dataState: Record<string, string>;
+}
+
 export interface FieldBehaviorInput {
   disabled?: boolean | undefined;
   invalid?: boolean | undefined;
@@ -197,6 +211,26 @@ export function createButtonBehavior(input: ButtonBehaviorInput = {}): ButtonBeh
     root,
     dataState: stateAttributes({ disabled, loading }),
   };
+}
+
+export function createSwitchBehavior(input: SwitchBehaviorInput = {}): SwitchBehavior {
+  const checked = Boolean(input.checked);
+  const disabled = Boolean(input.disabled);
+  const root: SwitchBehavior["root"] = {
+    role: "switch",
+    "aria-checked": checked ? "true" : "false",
+  };
+  if (disabled) {
+    root.disabled = true;
+    root["aria-disabled"] = "true";
+  }
+
+  const dataState: Record<string, string> = { "data-state": checked ? "on" : "off" };
+  if (disabled) {
+    dataState["data-disabled"] = "true";
+  }
+
+  return { checked, disabled, pressable: !disabled, root, dataState };
 }
 
 export function createInputBehavior(input: InputBehaviorInput = {}): InputBehavior {

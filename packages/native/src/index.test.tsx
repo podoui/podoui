@@ -56,6 +56,20 @@ describe("@podo/native", () => {
     );
     expect(screen.getByTestId("chip").getAttribute("data-theme")).toBe("outline-weak");
     expect(screen.getByText("필터")).toBeDefined();
+
+    const changes: boolean[] = [];
+    render(
+      <domNative.Switch
+        checked
+        size="lg"
+        testID="switch"
+        onCheckedChange={(next) => changes.push(next)}
+      />
+    );
+    const toggle = screen.getByTestId("switch");
+    expect(toggle.getAttribute("data-state")).toBe("on");
+    toggle.click();
+    expect(changes).toEqual([false]);
     expect(screen.getByText("Required")).toBeDefined();
   });
 
@@ -110,6 +124,7 @@ function TestPressable({
       data-bg={styleRecord?.backgroundColor as string | undefined}
       data-testid={testID as string | undefined}
       data-size={props["data-size"] as string | undefined}
+      data-state={props["data-state"] as string | undefined}
       data-theme={props["data-theme"] as string | undefined}
       disabled={Boolean(props.disabled)}
       onClick={() => {
