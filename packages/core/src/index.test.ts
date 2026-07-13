@@ -8,6 +8,7 @@ import {
   createComponentRegistry,
   createFieldA11y,
   createInputBehavior,
+  createRadioBehavior,
   isActivationKey,
   partClass,
 } from "./index.js";
@@ -69,6 +70,14 @@ describe("@podo/core", () => {
       "data-disabled": "true",
     });
     expect(createCheckboxBehavior({ disabled: true }).pressable).toBe(false);
+    expect(createRadioBehavior({ checked: true }).root).toMatchObject({
+      role: "radio",
+      "aria-checked": "true",
+    });
+    expect(createRadioBehavior({ disabled: true }).dataState).toEqual({
+      "data-state": "unchecked",
+      "data-disabled": "true",
+    });
     expect(isActivationKey("Enter")).toBe(true);
     expect(isActivationKey("Escape")).toBe(false);
     expect(partClass("button", "label")).toBe("podo-button__label");

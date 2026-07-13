@@ -9,6 +9,7 @@ import {
   Field,
   Icon,
   Input,
+  Radio,
   Switch,
   Table,
   Textarea,
@@ -62,6 +63,7 @@ describe("@podo/hono", () => {
         </Chip>
         <Switch checked size="lg" aria-label="알림" />
         <Checkbox indeterminate bold label="전체 선택" />
+        <Radio name="plan" value="basic" checked size="lg" label="베이직" />
         <Textarea name="memo" defaultValue="메모" invalid resize={false} />
         <Table type="grid">
           <tbody>
@@ -86,6 +88,10 @@ describe("@podo/hono", () => {
     expect(html).toContain('class="podo-checkbox"');
     expect(html).toContain('data-state="indeterminate"');
     expect(html).toContain('data-bold="true"');
+    // SSR radio: the visual rides the native checked attribute.
+    expect(html).toContain('class="podo-radio"');
+    expect(html).toContain('type="radio"');
+    expect(html).toContain('class="podo-radio-wrap"');
     expect(html).toContain('class="podo-textarea"');
     expect(html).toContain('data-resize="false"');
     expect(html).toContain(">메모</textarea>");

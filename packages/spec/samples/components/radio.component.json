@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "radio",
+  "name": "Radio",
+  "category": "atom",
+  "status": "experimental",
+  "description": "Single-select control for picking exactly one option (Figma 541:6675, component set 379:3350). The circle is a fixed 18px regardless of size: transparent with a gray.40 border when unchecked, primary.50 with a white 8px dot when checked — the dot stays white even while disabled (gray.20 fill). An optional label sits at a 6px gap; size only scales the label (md 14 — base, lg 16) and bold renders it SemiBold. Same-name radios form a native exclusive group, so the visual rides the platform checked state.",
+  "anatomy": [{ "name": "circle" }, { "name": "dot", "parent": "circle" }, { "name": "label" }],
+  "slots": [
+    {
+      "name": "label",
+      "description": "Visible label next to the circle, sized by the size variant (md 14/lg 16); also names the radio.",
+      "targets": {
+        "web": { "name": "label" },
+        "react": { "name": "label" },
+        "hono": { "name": "label" },
+        "native": { "name": "label" }
+      }
+    }
+  ],
+  "props": [
+    {
+      "name": "checked",
+      "type": { "kind": "boolean" },
+      "description": "Controlled value (Figma checked). Uncontrolled same-name radios keep exclusivity natively."
+    },
+    {
+      "name": "defaultChecked",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "Initial uncontrolled value."
+    },
+    {
+      "name": "name",
+      "type": { "kind": "string" },
+      "description": "Same-name radios form a native exclusive group."
+    },
+    {
+      "name": "bold",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "SemiBold label for emphasized items (Figma bold)."
+    },
+    {
+      "name": "disabled",
+      "type": { "kind": "boolean" },
+      "default": false
+    },
+    {
+      "name": "onCheckedChange",
+      "type": {
+        "kind": "event",
+        "payload": { "checked": "boolean" }
+      },
+      "description": "Fires with the next value when the radio is selected."
+    }
+  ],
+  "variants": [
+    {
+      "name": "size",
+      "values": ["md", "lg"],
+      "default": "md"
+    }
+  ],
+  "states": [
+    { "name": "focusVisible" },
+    {
+      "name": "checked",
+      "tokens": {
+        "circle.background": "{color.palette.primary.50}",
+        "dot.background": "{color.palette.gray.0}"
+      }
+    },
+    {
+      "name": "disabled",
+      "tokens": {
+        "circle.background": "{color.palette.gray.20}",
+        "circle.borderColor": "{color.palette.gray.30}",
+        "label.color": "{semantic.color.text.muted}"
+      }
+    }
+  ],
+  "tokens": {
+    "circle.borderColor": "{color.palette.gray.40}",
+    "label.color": "{semantic.color.text.subtle}"
+  },
+  "targets": {
+    "web": {
+      "supported": true,
+      "limitations": [
+        "Ships as podo-radio CSS classes on a native input; a shadow element would break same-name group exclusivity across shadow roots."
+      ]
+    },
+    "react": { "supported": true, "limitations": [] },
+    "hono": { "supported": true, "limitations": ["Selection requires client code."] },
+    "native": {
+      "supported": true,
+      "limitations": ["No native group: the consumer keeps exactly one checked."]
+    }
+  },
+  "accessibility": {
+    "aria": ["native input[type=radio] semantics"],
+    "keyboard": ["Arrow keys move within the same-name group", "Space selects"],
+    "focusManagement": "Radio is a native input; group roving focus follows the platform."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Plan choice",
+      "code": "<Radio name=\"plan\" value=\"basic\" label=\"베이직\" defaultChecked />\n<Radio name=\"plan\" value=\"pro\" label=\"프로\" />"
+    }
+  ]
+}

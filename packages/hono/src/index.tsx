@@ -376,6 +376,64 @@ export function Checkbox({
   );
 }
 
+export interface HonoRadioProps {
+  /** Value rendered statically; the visual rides the native checked state. */
+  checked?: boolean;
+  /** Label size only — the 18px circle is fixed (Figma: md 14 — base, lg 16). */
+  size?: "md" | "lg";
+  /** SemiBold label for emphasized items (Figma bold). */
+  bold?: boolean;
+  /** Visible label next to the circle (Figma label/text); also names the radio. */
+  label?: Child;
+  disabled?: boolean;
+  /** Same-name radios form a native exclusive group. */
+  name?: string;
+  value?: string;
+  "aria-label"?: string;
+  class?: string;
+}
+
+export function Radio({
+  checked,
+  size = "md",
+  bold,
+  label,
+  disabled,
+  name,
+  value,
+  "aria-label": ariaLabel,
+  class: className,
+}: HonoRadioProps): JSX.Element {
+  const control = (
+    <input
+      class={joinClass("podo-radio", className)}
+      type="radio"
+      name={name}
+      value={value}
+      checked={checked}
+      disabled={disabled}
+      aria-label={ariaLabel}
+    />
+  );
+
+  if (label == null) {
+    return control;
+  }
+
+  // Figma 379:3350: 18px circle + 6px gap + size-matched text (md 14/lg 16).
+  return (
+    <label
+      class="podo-radio-wrap"
+      data-size={size}
+      data-bold={bold ? "true" : undefined}
+      data-disabled={disabled ? "true" : undefined}
+    >
+      {control}
+      <span class="podo-radio__text">{label}</span>
+    </label>
+  );
+}
+
 export function Input({
   id,
   name,

@@ -120,6 +120,22 @@ export interface CheckboxProps extends Omit<
   onChange?: InputHTMLAttributes<HTMLInputElement>["onChange"];
 }
 
+export interface RadioProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "disabled" | "onChange" | "size" | "type"
+> {
+  /** Label size only — the 18px circle is fixed (Figma: md 14 — base, lg 16). */
+  size?: "md" | "lg";
+  /** SemiBold label for emphasized items (Figma bold). */
+  bold?: boolean;
+  /** Visible label next to the circle (Figma label/text); also names the radio. */
+  label?: ReactNode;
+  disabled?: boolean;
+  /** Fires with the next value when the radio is selected. */
+  onCheckedChange?: (checked: boolean) => void;
+  onChange?: InputHTMLAttributes<HTMLInputElement>["onChange"];
+}
+
 export interface InputProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "disabled" | "onChange" | "prefix" | "size"
@@ -440,6 +456,49 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
     >
       {control}
       <span className="podo-checkbox__text">{label}</span>
+    </label>
+  );
+});
+
+// Radio stays a plain native input: same-name group exclusivity lives in the
+// platform, and the browser doesn't fire events on the sibling it unchecks —
+// so the visual rides :checked (no data-state tracking, unlike Checkbox).
+export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
+  { size = "md", bold, label, disabled, className, onChange, onCheckedChange, ...props },
+  ref
+) {
+  const control = (
+    <input
+      {...props}
+      ref={ref}
+      type="radio"
+      className={joinClass("podo-radio", className)}
+      disabled={disabled}
+      onChange={(event) => {
+        onChange?.(event);
+        if (event.defaultPrevented) {
+          return;
+        }
+        onCheckedChange?.(event.target.checked);
+      }}
+    />
+  );
+
+  if (label == null) {
+    return control;
+  }
+
+  // A <label> wrapper implicitly names and activates the radio
+  // (Figma 379:3350: 18px circle + 6px gap + size-matched text: md 14/lg 16).
+  return (
+    <label
+      className="podo-radio-wrap"
+      data-size={size}
+      data-bold={bold ? "true" : undefined}
+      data-disabled={disabled ? "true" : undefined}
+    >
+      {control}
+      <span className="podo-radio__text">{label}</span>
     </label>
   );
 });

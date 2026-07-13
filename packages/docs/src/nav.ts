@@ -5,6 +5,7 @@ import { ChipPage } from "./pages/ChipPage.js";
 import { ColorPage } from "./pages/ColorPage.js";
 import { FieldPage } from "./pages/FieldPage.js";
 import { InputPage } from "./pages/InputPage.js";
+import { RadioPage } from "./pages/RadioPage.js";
 import { SwitchPage } from "./pages/SwitchPage.js";
 import { TablePage } from "./pages/TablePage.js";
 import { TextareaPage } from "./pages/TextareaPage.js";
@@ -30,6 +31,7 @@ export const NAV: NavItem[] = [
   { slug: "chip", title: "Chip", group: "Components", page: ChipPage },
   { slug: "field", title: "Field", group: "Components", page: FieldPage },
   { slug: "input", title: "Input", group: "Components", page: InputPage },
+  { slug: "radio", title: "Radio", group: "Components", page: RadioPage },
   { slug: "switch", title: "Switch", group: "Components", page: SwitchPage },
   { slug: "table", title: "Table", group: "Components", page: TablePage },
   { slug: "textarea", title: "Textarea", group: "Components", page: TextareaPage },

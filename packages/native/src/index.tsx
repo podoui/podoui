@@ -12,6 +12,7 @@ import {
   createCheckboxBehavior,
   createFieldA11y,
   createInputBehavior,
+  createRadioBehavior,
   createSwitchBehavior,
 } from "@podo/core";
 
@@ -104,6 +105,22 @@ export interface NativeCheckboxProps {
   testID?: string;
 }
 
+export interface NativeRadioProps {
+  /** Controlled value (Figma checked). Group exclusivity is the consumer's. */
+  checked?: boolean;
+  /** Label size only — the 18px circle is fixed (Figma: md 14 — base, lg 16). */
+  size?: "md" | "lg";
+  /** SemiBold label for emphasized items (Figma bold). */
+  bold?: boolean;
+  /** Visible label next to the circle (Figma label/text). */
+  label?: ReactNode;
+  disabled?: boolean;
+  /** Fires with true when the radio is selected. */
+  onCheckedChange?: (checked: boolean) => void;
+  accessibilityLabel?: string;
+  testID?: string;
+}
+
 export interface NativeInputProps {
   value?: string;
   defaultValue?: string;
@@ -183,6 +200,7 @@ export interface NativeIconProps {
 export interface NativeComponents {
   Button: (props: NativeButtonProps) => React.ReactElement;
   Checkbox: (props: NativeCheckboxProps) => React.ReactElement;
+  Radio: (props: NativeRadioProps) => React.ReactElement;
   Chip: (props: NativeChipProps) => React.ReactElement;
   Input: (props: NativeInputProps) => React.ReactElement;
   Textarea: (props: NativeTextareaProps) => React.ReactElement;
@@ -640,10 +658,74 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           : null
       );
     },
+    Radio: (props) => {
+      const behavior = createRadioBehavior({ checked: props.checked, disabled: props.disabled });
+      // Figma 379:3350 colors; the circle stays 18x18 for every size and the
+      // white 8px dot survives disabled.
+      const circle = behavior.disabled
+        ? { fill: "#E4E4E7", border: behavior.checked ? undefined : "#D1D2D6" }
+        : behavior.checked
+          ? { fill: "#426CED", border: undefined }
+          : { fill: "transparent", border: "#9FA2AD" };
+      return createElement(
+        host.Pressable,
+        {
+          accessibilityRole: "radio",
+          accessibilityState: { checked: behavior.checked, disabled: behavior.disabled },
+          accessibilityLabel: props.accessibilityLabel,
+          disabled: !behavior.pressable,
+          // Radios select — they never untoggle themselves.
+          onPress: behavior.pressable ? () => props.onCheckedChange?.(true) : undefined,
+          style: { alignItems: "center", flexDirection: "row", gap: 6 },
+          testID: props.testID,
+          "data-state": behavior.dataState["data-state"],
+          "data-size": props.size ?? "md",
+        },
+        createElement(
+          host.View,
+          {
+            style: {
+              alignItems: "center",
+              backgroundColor: circle.fill,
+              borderColor: circle.border,
+              borderRadius: 9999,
+              borderWidth: circle.border ? 1 : 0,
+              height: 18,
+              justifyContent: "center",
+              width: 18,
+            },
+          },
+          behavior.checked
+            ? createElement(host.View, {
+                style: {
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 9999,
+                  height: 8,
+                  width: 8,
+                },
+              })
+            : null
+        ),
+        props.label
+          ? createElement(
+              host.Text,
+              {
+                style: {
+                  color: behavior.disabled ? "#9FA2AD" : "#50555E",
+                  // Figma: label size follows the size variant (md 14/lg 16).
+                  fontSize: props.size === "lg" ? 16 : 14,
+                  fontWeight: props.bold ? "600" : undefined,
+                },
+              },
+              props.label
+            )
+          : null
+      );
+    },
   };
 }
 
-export const { Button, Checkbox, Chip, Input, Textarea, Field, Icon, Switch } =
+export const { Button, Checkbox, Radio, Chip, Input, Textarea, Field, Icon, Switch } =
   createNativeComponents();
 
 function wireNativeControl(

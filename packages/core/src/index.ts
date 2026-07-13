@@ -123,6 +123,20 @@ export interface CheckboxBehavior {
   dataState: Record<string, string>;
 }
 
+export interface RadioBehaviorInput {
+  checked?: boolean | undefined;
+  disabled?: boolean | undefined;
+}
+
+export interface RadioBehavior {
+  checked: boolean;
+  disabled: boolean;
+  pressable: boolean;
+  root: Record<string, string | boolean>;
+  /** data-state: "unchecked" | "checked" plus data-disabled, matching the Figma vocabulary. */
+  dataState: Record<string, string>;
+}
+
 export interface FieldBehaviorInput {
   disabled?: boolean | undefined;
   invalid?: boolean | undefined;
@@ -270,6 +284,28 @@ export function createCheckboxBehavior(input: CheckboxBehaviorInput = {}): Check
   }
 
   return { checked, indeterminate, disabled, pressable: !disabled, root, dataState };
+}
+
+export function createRadioBehavior(input: RadioBehaviorInput = {}): RadioBehavior {
+  const checked = Boolean(input.checked);
+  const disabled = Boolean(input.disabled);
+  const root: RadioBehavior["root"] = {
+    role: "radio",
+    "aria-checked": checked ? "true" : "false",
+  };
+  if (disabled) {
+    root.disabled = true;
+    root["aria-disabled"] = "true";
+  }
+
+  const dataState: Record<string, string> = {
+    "data-state": checked ? "checked" : "unchecked",
+  };
+  if (disabled) {
+    dataState["data-disabled"] = "true";
+  }
+
+  return { checked, disabled, pressable: !disabled, root, dataState };
 }
 
 export function createInputBehavior(input: InputBehaviorInput = {}): InputBehavior {

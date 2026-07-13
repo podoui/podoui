@@ -24,6 +24,9 @@ describe("@podo/web", () => {
     // Table ships as classes only (no shadow element — table semantics).
     expect(podoWebComponentCss).toContain('.podo-table[data-type="grid"]');
     expect(podoWebComponentCss).toContain('.podo-table [data-align="right"]');
+    // Radio too: shadow roots would break same-name group exclusivity.
+    expect(podoWebComponentCss).toContain(".podo-radio:checked");
+    expect(customElements.get("podo-radio")).toBeUndefined();
     expect(customElements.get("podo-table")).toBeUndefined();
   });
 

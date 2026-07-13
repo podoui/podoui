@@ -12,6 +12,7 @@ import {
   Icon,
   Input,
   PodoThemeProvider,
+  Radio,
   Switch,
   Table,
   Textarea,
@@ -147,6 +148,45 @@ describe("@podo/react", () => {
 
     await user.click(screen.getByRole("checkbox", { name: "잠김" }));
     expect(changes).toEqual([true]);
+  });
+
+  it("keeps same-name radios exclusive and fires onCheckedChange", async () => {
+    const user = userEvent.setup();
+    const picks: string[] = [];
+    render(
+      <>
+        <Radio
+          name="fruit"
+          label="포도"
+          defaultChecked
+          onCheckedChange={() => picks.push("포도")}
+        />
+        <Radio name="fruit" label="샤인머스캣" onCheckedChange={() => picks.push("샤인머스캣")} />
+        <Radio aria-label="잠긴 라디오" disabled onCheckedChange={() => picks.push("잠김")} />
+      </>
+    );
+
+    const grape = screen.getByRole("radio", { name: "포도" }) as HTMLInputElement;
+    const shine = screen.getByRole("radio", { name: "샤인머스캣" }) as HTMLInputElement;
+    expect(grape.checked).toBe(true);
+
+    // The platform keeps the group exclusive — no JS state tracking involved.
+    await user.click(screen.getByText("샤인머스캣"));
+    expect(shine.checked).toBe(true);
+    expect(grape.checked).toBe(false);
+    expect(picks).toEqual(["샤인머스캣"]);
+
+    await user.click(screen.getByRole("radio", { name: "잠긴 라디오" }));
+    expect(picks).toEqual(["샤인머스캣"]);
+  });
+
+  it("scales and emphasizes the radio label with size and bold", () => {
+    render(<Radio size="lg" bold label="강조 라디오" />);
+
+    const wrap = screen.getByText("강조 라디오").closest("label");
+    expect(screen.getByText("강조 라디오").className).toBe("podo-radio__text");
+    expect(wrap?.getAttribute("data-size")).toBe("lg");
+    expect(wrap?.getAttribute("data-bold")).toBe("true");
   });
 
   it("scales and emphasizes the checkbox label with size and bold", () => {

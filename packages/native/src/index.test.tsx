@@ -97,6 +97,20 @@ describe("@podo/native", () => {
     locked.click();
     expect(checks).toEqual([true]);
 
+    const radioPicks: boolean[] = [];
+    render(
+      <domNative.Radio
+        label="베이직"
+        testID="radio-basic"
+        onCheckedChange={(next) => radioPicks.push(next)}
+      />
+    );
+    const radio = screen.getByTestId("radio-basic");
+    expect(radio.getAttribute("data-state")).toBe("unchecked");
+    radio.click();
+    // Radios select — they never untoggle themselves.
+    expect(radioPicks).toEqual([true]);
+
     expect(screen.getByText("Required")).toBeDefined();
   });
 
