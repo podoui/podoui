@@ -313,6 +313,22 @@ describe("@podo/tokens", () => {
       }),
       expect.objectContaining({
         code: "token.duplicate",
+        path: "component.button.solid-danger.background",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-danger.background-hover",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-danger.background-pressed",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.solid-danger.text",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
         path: "component.button.outline-primary.background",
       }),
       expect.objectContaining({
@@ -346,6 +362,18 @@ describe("@podo/tokens", () => {
       expect.objectContaining({
         code: "token.duplicate",
         path: "component.button.outline-white.text",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-danger.background",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-danger.border",
+      }),
+      expect.objectContaining({
+        code: "token.duplicate",
+        path: "component.button.outline-danger.text",
       }),
       expect.objectContaining({
         code: "token.duplicate",

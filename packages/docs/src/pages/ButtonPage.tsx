@@ -11,9 +11,11 @@ const THEMES = [
   "solid-primary",
   "solid-assistive",
   "solid-white",
+  "solid-danger",
   "outline-primary",
   "outline-assistive",
   "outline-white",
+  "outline-danger",
 ] as const;
 
 const INTRO =
@@ -93,7 +95,7 @@ export function ButtonPage() {
       <DocSection
         index={3}
         title="테마 (theme)"
-        description="동작의 위계와 사용 맥락에 따라 solid·outline의 형태와 primary·assistive·white의 테마를 조합해 사용해요. solid는 가장 중요한 주요 동작을 또렷하게 강조할 때, outline은 주요 동작을 보조하거나 부담을 줄여야 할때 쓰고, 핵심 동작에 primary, 중립적·보조적 동작에 assistive, 색상 배경이나 이미지 위에서는 white를 사용해요. 테마를 위계에 맞게 조합하면 한 화면 안에서도 동작의 중요도와 성격이 명확히 구분되어, 사용자의 선택을 자연스럽게 유도해요."
+        description="동작의 위계와 사용 맥락에 따라 solid·outline의 형태와 primary·assistive·white·danger의 테마를 조합해 사용해요. solid는 가장 중요한 주요 동작을 또렷하게 강조할 때, outline은 주요 동작을 보조하거나 부담을 줄여야 할때 쓰고, 핵심 동작에 primary, 중립적·보조적 동작에 assistive, 색상 배경이나 이미지 위에서는 white, 삭제처럼 되돌리기 어려운 파괴적 동작에는 danger를 사용해요. 테마를 위계에 맞게 조합하면 한 화면 안에서도 동작의 중요도와 성격이 명확히 구분되어, 사용자의 선택을 자연스럽게 유도해요."
       >
         <Card stage>
           {THEMES.map((theme, index) => (
@@ -144,7 +146,7 @@ export function ButtonPage() {
                 <code>ButtonTheme</code>
               </span>,
               <code>"solid-primary"</code>,
-              "형태(solid·outline)와 색 위계(primary·assistive·white)를 조합한 6가지 테마",
+              "형태(solid·outline)와 색 위계(primary·assistive·white·danger)를 조합한 8가지 테마",
             ],
             [
               <span className="prop-name">

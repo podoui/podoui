@@ -1275,6 +1275,48 @@
             }
           }
         },
+        "solid-danger": {
+          "background": {
+            "$type": "color",
+            "$value": "{color.palette.error.50}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "background"]
+              }
+            }
+          },
+          "background-hover": {
+            "$type": "color",
+            "$value": "{color.palette.error.60}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "hover"]
+              }
+            }
+          },
+          "background-pressed": {
+            "$type": "color",
+            "$value": "{color.palette.error.70}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "pressed"]
+              }
+            }
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{semantic.color.text.inverse}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "text"]
+              }
+            }
+          }
+        },
         "outline-primary": {
           "background": {
             "$type": "color",
@@ -1363,6 +1405,38 @@
           "text": {
             "$type": "color",
             "$value": "{semantic.color.text.default}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "text"]
+              }
+            }
+          }
+        },
+        "outline-danger": {
+          "background": {
+            "$type": "color",
+            "$value": "{color.palette.gray.0}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "background"]
+              }
+            }
+          },
+          "border": {
+            "$type": "color",
+            "$value": "{color.palette.error.50}",
+            "$extensions": {
+              "podo": {
+                "scope": "component",
+                "roles": ["button", "border"]
+              }
+            }
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{color.palette.error.50}",
             "$extensions": {
               "podo": {
                 "scope": "component",

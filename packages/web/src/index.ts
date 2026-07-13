@@ -164,6 +164,16 @@ input {
 .podo-button[data-theme="solid-white"]:hover:not([disabled]) {
   --podo-button-root-background: #F4F4F5;
 }
+.podo-button[data-theme="solid-danger"] {
+  --podo-button-root-background: #F23B3B;
+  --podo-button-label-color: #FFFFFF;
+}
+.podo-button[data-theme="solid-danger"]:hover:not([disabled]) {
+  --podo-button-root-background: #EE1818;
+}
+.podo-button[data-theme="solid-danger"]:active:not([disabled]) {
+  --podo-button-root-background: #CD0404;
+}
 .podo-button[data-theme="outline-primary"] {
   --podo-button-root-background: #FFFFFF;
   --podo-button-root-borderColor: #426CED;
@@ -187,6 +197,17 @@ input {
 }
 .podo-button[data-theme="outline-white"]:hover:not([disabled]) {
   --podo-button-root-background: #F9F9F9;
+}
+.podo-button[data-theme="outline-danger"] {
+  --podo-button-root-background: #FFFFFF;
+  --podo-button-root-borderColor: #F23B3B;
+  --podo-button-label-color: #F23B3B;
+}
+.podo-button[data-theme="outline-danger"]:hover:not([disabled]) {
+  --podo-button-root-background: #FEF1F1;
+}
+.podo-button[data-theme="outline-danger"]:active:not([disabled]) {
+  --podo-button-root-background: #FFE0DF;
 }
 
 .podo-button:focus-visible {

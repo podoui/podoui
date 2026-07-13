@@ -45,9 +45,11 @@ export type ButtonTheme =
   | "solid-primary"
   | "solid-assistive"
   | "solid-white"
+  | "solid-danger"
   | "outline-primary"
   | "outline-assistive"
-  | "outline-white";
+  | "outline-white"
+  | "outline-danger";
 
 export interface ButtonProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
