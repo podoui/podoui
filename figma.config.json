@@ -1,0 +1,9 @@
+{
+  "codeConnect": {
+    "parser": "react",
+    "include": ["packages/react/src/**/*.figma.tsx"],
+    "importPaths": {
+      "packages/react/src/*": "@podo/react"
+    }
+  }
+}

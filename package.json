@@ -24,7 +24,8 @@
     "typecheck": "tsc -b tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm format:check",
+    "figma:check": "figma connect parse",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm format:check && pnpm figma:check",
     "release:verify": "node scripts/verify-release.mjs",
     "changeset:dry-run": "changeset status --verbose && pnpm --filter './packages/*' pack --dry-run",
     "changeset": "changeset",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
     "@eslint/js": "^9.39.1",
+    "@figma/code-connect": "^1.4.9",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
