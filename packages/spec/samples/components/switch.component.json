@@ -5,7 +5,7 @@
   "name": "Switch",
   "category": "atom",
   "status": "experimental",
-  "description": "On/off toggle that applies immediately (Figma 538:7226, component set 566:12693): sm 30x18 / md 40x24 (base) / lg 56x32, track colors gray.30 (off), primary.50 (on), gray.20 (disabled) with a white shadowed handle, plus an optional label at a 6px gap whose size follows the track (sm 14/md 16/lg 18).",
+  "description": "On/off toggle that applies immediately (Figma 538:7226, component set 566:12693): sm 30x18 (base) / md 40x24 / lg 56x32, track colors gray.30 (off), primary.50 (on), gray.20 (disabled) with a white shadowed handle, plus an optional label at a 6px gap whose size follows the track (sm 14/md 16/lg 18).",
   "anatomy": [
     {
       "name": "root"
@@ -76,7 +76,7 @@
     {
       "name": "size",
       "values": ["sm", "md", "lg"],
-      "default": "md"
+      "default": "sm"
     }
   ],
   "states": [

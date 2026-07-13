@@ -270,7 +270,7 @@ input {
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
-   sm 30x18/handle 14, md 40x24/handle 20 (base), lg 56x32/handle 25. */
+   sm 30x18/handle 14 (base), md 40x24/handle 20, lg 56x32/handle 25. */
 .podo-switch {
   background: var(--podo-switch-root-background, #D1D2D6);
   border: 0;
@@ -359,12 +359,12 @@ input {
 
 .podo-switch__text {
   color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.podo-switch-wrap[data-size="sm"] .podo-switch__text {
-  font-size: 14px;
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
 }
 
 .podo-switch-wrap[data-size="lg"] .podo-switch__text {
@@ -837,7 +837,7 @@ function createSwitchElement(): CustomElementConstructor {
       const control = `<button class="podo-switch" part="root" type="button" role="switch" aria-checked="${
         behavior.checked ? "true" : "false"
       }" ${attrString("aria-label", attr(this, "aria-label", ""))} data-size="${escapeHtml(
-        attr(this, "size", "md")
+        attr(this, "size", "sm")
       )}" data-state="${behavior.checked ? "on" : "off"}" ${disabled}>
   <span class="podo-switch__handle" part="handle"></span>
 </button>`;
@@ -846,7 +846,7 @@ function createSwitchElement(): CustomElementConstructor {
 ${
   label
     ? `<label class="podo-switch-wrap" part="wrap" data-size="${escapeHtml(
-        attr(this, "size", "md")
+        attr(this, "size", "sm")
       )}"${behavior.disabled ? ' data-disabled="true"' : ""}>${control}<span class="podo-switch__text" part="label">${escapeHtml(
         label
       )}</span></label>`

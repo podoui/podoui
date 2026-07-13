@@ -48,13 +48,13 @@ export function SwitchPage() {
       <DocSection
         index={1}
         title="크기 (size)"
-        description="스위치 크기는 사용 위치와 정보 밀도에 따라 sm, md(base), lg로 구분해 사용해요. sm은 목록이나 설정 행처럼 촘촘한 영역에, md는 일반적인 설정 화면에, lg는 모바일이나 터치 영역 확보·시각적 강조가 필요한 곳에 사용하며, 함께 놓이는 텍스트·요소와 균형을 맞춰 정렬을 유지해요."
+        description="스위치 크기는 사용 위치와 정보 밀도에 따라 sm(base), md, lg로 구분해 사용해요. sm은 목록이나 설정 행처럼 촘촘한 영역에, md는 일반적인 설정 화면에, lg는 모바일이나 터치 영역 확보·시각적 강조가 필요한 곳에 사용하며, 함께 놓이는 텍스트·요소와 균형을 맞춰 정렬을 유지해요."
       >
         <Card stage>
-          <Switch size="sm" label="텍스트" />
           <StageItem base>
-            <Switch size="md" label="텍스트" />
+            <Switch size="sm" label="텍스트" />
           </StageItem>
+          <Switch size="md" label="텍스트" />
           <Switch size="lg" label="텍스트" />
         </Card>
         <PropertyTags values={["sm", "md", "lg"]} />
@@ -110,7 +110,7 @@ export function SwitchPage() {
               <span className="prop-type">
                 <code>"sm" | "md" | "lg"</code>
               </span>,
-              <code>"md"</code>,
+              <code>"sm"</code>,
               "트랙 크기 (sm 30×18 / md 40×24 / lg 56×32)",
             ],
             [

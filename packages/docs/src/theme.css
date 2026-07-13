@@ -417,12 +417,12 @@
 
 .podo-switch__text {
   color: #50555e;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.podo-switch-wrap[data-size="sm"] .podo-switch__text {
-  font-size: 14px;
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
 }
 
 .podo-switch-wrap[data-size="lg"] .podo-switch__text {

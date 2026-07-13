@@ -72,7 +72,7 @@ export interface NativeChipProps {
 export interface NativeSwitchProps {
   /** Controlled on/off value (Figma state=on/off). */
   checked?: boolean;
-  /** Track size (Figma: sm 30x18, md 40x24 — base, lg 56x32). */
+  /** Track size (Figma: sm 30x18 — base, md 40x24, lg 56x32). */
   size?: "sm" | "md" | "lg";
   /** Visible label next to the track (Figma label/text). */
   label?: ReactNode;
@@ -474,11 +474,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const behavior = createSwitchBehavior({ checked: props.checked, disabled: props.disabled });
       // Figma 566:12693 geometry per size: track w/h, handle diameter, edge pad.
       const metrics =
-        props.size === "sm"
-          ? { w: 30, h: 18, handle: 14, pad: 2 }
+        props.size === "md"
+          ? { w: 40, h: 24, handle: 20, pad: 2 }
           : props.size === "lg"
             ? { w: 56, h: 32, handle: 25, pad: 4 }
-            : { w: 40, h: 24, handle: 20, pad: 2 };
+            : { w: 30, h: 18, handle: 14, pad: 2 };
       const track = behavior.disabled ? "#E4E4E7" : behavior.checked ? "#426CED" : "#D1D2D6";
       const handle = behavior.disabled ? "#D1D2D6" : "#FFFFFF";
       // The pressable row includes the optional label (track + 6px gap + 14px text).
@@ -495,7 +495,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           style: { alignItems: "center", flexDirection: "row", gap: 6 },
           testID: props.testID,
           "data-state": behavior.checked ? "on" : "off",
-          "data-size": props.size ?? "md",
+          "data-size": props.size ?? "sm",
         },
         createElement(
           host.View,
@@ -525,7 +525,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                 style: {
                   color: behavior.disabled ? "#9FA2AD" : "#50555E",
                   // Figma: label size follows the track size (sm 14/md 16/lg 18).
-                  fontSize: props.size === "sm" ? 14 : props.size === "lg" ? 18 : 16,
+                  fontSize: props.size === "md" ? 16 : props.size === "lg" ? 18 : 14,
                 },
               },
               props.label

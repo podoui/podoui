@@ -212,7 +212,7 @@ input {
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
-   sm 30x18/handle 14, md 40x24/handle 20 (base), lg 56x32/handle 25. */
+   sm 30x18/handle 14 (base), md 40x24/handle 20, lg 56x32/handle 25. */
 .podo-switch {
   background: var(--podo-switch-root-background, #D1D2D6);
   border: 0;
@@ -301,12 +301,12 @@ input {
 
 .podo-switch__text {
   color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.podo-switch-wrap[data-size="sm"] .podo-switch__text {
-  font-size: 14px;
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
 }
 
 .podo-switch-wrap[data-size="lg"] .podo-switch__text {
@@ -856,7 +856,7 @@ input {
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
-   sm 30x18/handle 14, md 40x24/handle 20 (base), lg 56x32/handle 25. */
+   sm 30x18/handle 14 (base), md 40x24/handle 20, lg 56x32/handle 25. */
 .podo-switch {
   background: var(--podo-switch-root-background, #D1D2D6);
   border: 0;
@@ -945,12 +945,12 @@ input {
 
 .podo-switch__text {
   color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.podo-switch-wrap[data-size="sm"] .podo-switch__text {
-  font-size: 14px;
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
 }
 
 .podo-switch-wrap[data-size="lg"] .podo-switch__text {
@@ -1500,7 +1500,7 @@ input {
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
-   sm 30x18/handle 14, md 40x24/handle 20 (base), lg 56x32/handle 25. */
+   sm 30x18/handle 14 (base), md 40x24/handle 20, lg 56x32/handle 25. */
 .podo-switch {
   background: var(--podo-switch-root-background, #D1D2D6);
   border: 0;
@@ -1589,12 +1589,12 @@ input {
 
 .podo-switch__text {
   color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.podo-switch-wrap[data-size="sm"] .podo-switch__text {
-  font-size: 14px;
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
 }
 
 .podo-switch-wrap[data-size="lg"] .podo-switch__text {
@@ -2153,7 +2153,7 @@ input {
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
-   sm 30x18/handle 14, md 40x24/handle 20 (base), lg 56x32/handle 25. */
+   sm 30x18/handle 14 (base), md 40x24/handle 20, lg 56x32/handle 25. */
 .podo-switch {
   background: var(--podo-switch-root-background, #D1D2D6);
   border: 0;
@@ -2242,12 +2242,12 @@ input {
 
 .podo-switch__text {
   color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.podo-switch-wrap[data-size="sm"] .podo-switch__text {
-  font-size: 14px;
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
 }
 
 .podo-switch-wrap[data-size="lg"] .podo-switch__text {
@@ -2792,7 +2792,7 @@ input {
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
-   sm 30x18/handle 14, md 40x24/handle 20 (base), lg 56x32/handle 25. */
+   sm 30x18/handle 14 (base), md 40x24/handle 20, lg 56x32/handle 25. */
 .podo-switch {
   background: var(--podo-switch-root-background, #D1D2D6);
   border: 0;
@@ -2881,12 +2881,12 @@ input {
 
 .podo-switch__text {
   color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.podo-switch-wrap[data-size="sm"] .podo-switch__text {
-  font-size: 14px;
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
 }
 
 .podo-switch-wrap[data-size="lg"] .podo-switch__text {
@@ -3434,7 +3434,7 @@ input {
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
-   sm 30x18/handle 14, md 40x24/handle 20 (base), lg 56x32/handle 25. */
+   sm 30x18/handle 14 (base), md 40x24/handle 20, lg 56x32/handle 25. */
 .podo-switch {
   background: var(--podo-switch-root-background, #D1D2D6);
   border: 0;
@@ -3523,12 +3523,12 @@ input {
 
 .podo-switch__text {
   color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.podo-switch-wrap[data-size="sm"] .podo-switch__text {
-  font-size: 14px;
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
 }
 
 .podo-switch-wrap[data-size="lg"] .podo-switch__text {
@@ -3859,7 +3859,7 @@ input {
   font-weight: var(--podo-typography-heading-xlarge-fontWeight, 700);
   line-height: var(--podo-typography-heading-xlarge-lineHeight, 1.2);
 }</style>
-<button class="podo-switch" part="root" type="button" role="switch" aria-checked="true" aria-label="알림" data-size="md" data-state="on">
+<button class="podo-switch" part="root" type="button" role="switch" aria-checked="true" aria-label="알림" data-size="sm" data-state="on">
   <span class="podo-switch__handle" part="handle"></span>
 </button>"
 `;
@@ -4076,7 +4076,7 @@ input {
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
-   sm 30x18/handle 14, md 40x24/handle 20 (base), lg 56x32/handle 25. */
+   sm 30x18/handle 14 (base), md 40x24/handle 20, lg 56x32/handle 25. */
 .podo-switch {
   background: var(--podo-switch-root-background, #D1D2D6);
   border: 0;
@@ -4165,12 +4165,12 @@ input {
 
 .podo-switch__text {
   color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.podo-switch-wrap[data-size="sm"] .podo-switch__text {
-  font-size: 14px;
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
 }
 
 .podo-switch-wrap[data-size="lg"] .podo-switch__text {
@@ -4715,7 +4715,7 @@ input {
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
-   sm 30x18/handle 14, md 40x24/handle 20 (base), lg 56x32/handle 25. */
+   sm 30x18/handle 14 (base), md 40x24/handle 20, lg 56x32/handle 25. */
 .podo-switch {
   background: var(--podo-switch-root-background, #D1D2D6);
   border: 0;
@@ -4804,12 +4804,12 @@ input {
 
 .podo-switch__text {
   color: var(--podo-switch-label-color, var(--podo-semantic-color-text-subtle, #50555E));
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.podo-switch-wrap[data-size="sm"] .podo-switch__text {
-  font-size: 14px;
+.podo-switch-wrap[data-size="md"] .podo-switch__text {
+  font-size: 16px;
 }
 
 .podo-switch-wrap[data-size="lg"] .podo-switch__text {

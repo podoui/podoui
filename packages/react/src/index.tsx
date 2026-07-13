@@ -84,7 +84,7 @@ export interface SwitchProps extends Omit<
   checked?: boolean;
   /** Initial uncontrolled value. */
   defaultChecked?: boolean;
-  /** Track size (Figma: sm 30x18, md 40x24 — base, lg 56x32). */
+  /** Track size (Figma: sm 30x18 — base, md 40x24, lg 56x32). */
   size?: "sm" | "md" | "lg";
   /** Visible label next to the track (Figma label/text); also names the switch. */
   label?: ReactNode;
@@ -278,7 +278,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
   {
     checked,
     defaultChecked = false,
-    size = "md",
+    size = "sm",
     label,
     disabled,
     className,
