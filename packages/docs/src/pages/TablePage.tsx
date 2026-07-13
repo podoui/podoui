@@ -15,8 +15,8 @@ const USAGE_TABS: CodeTab[] = [
     target: "react",
     label: "React",
     code:
-      `{/* checkbox: 선택 열 자동 주입 — 헤더는 전체 선택/해제 */}\n` +
-      `<Table type="grid" checkbox onSelectionChange={setSelected}>\n` +
+      `{/* 기본 타입은 horizon. checkbox: 선택 열 자동 주입 — 헤더는 전체 선택/해제 */}\n` +
+      `<Table checkbox onSelectionChange={setSelected}>\n` +
       `  <thead>\n    <tr><th>주문</th><th>상품</th><th>금액</th></tr>\n  </thead>\n` +
       `  <tbody>\n    <tr><td>#1024</td><td>포도 한 상자</td><td>32,000원</td></tr>\n  </tbody>\n` +
       `</Table>`,
@@ -27,7 +27,7 @@ const USAGE_TABS: CodeTab[] = [
     code:
       `<!-- 표 시맨틱 보존을 위해 커스텀 엘리먼트 대신 클래스로 제공돼요 -->\n` +
       `<!-- 선택 열은 셀에 podo-checkbox를 직접 조합해요 -->\n` +
-      `<table class="podo-table" data-type="grid">\n` +
+      `<table class="podo-table" data-type="horizon">\n` +
       `  <thead>...</thead>\n  <tbody>...</tbody>\n` +
       `</table>`,
   },
@@ -37,7 +37,7 @@ const USAGE_TABS: CodeTab[] = [
     code:
       `import { Table } from "@podo/hono";\n\n` +
       `{/* 선택 열은 셀에 Checkbox를 직접 조합해요 (SSR) */}\n` +
-      `<Table type="grid">\n  <thead>...</thead>\n  <tbody>...</tbody>\n</Table>`,
+      `<Table>\n  <thead>...</thead>\n  <tbody>...</tbody>\n</Table>`,
   },
 ];
 
@@ -92,7 +92,7 @@ export function TablePage() {
 
       <DocSection index={0} title="Usage">
         <Preview tabs={USAGE_TABS}>
-          <SampleTable type="grid" />
+          <SampleTable type="horizon" />
         </Preview>
       </DocSection>
 
@@ -146,10 +146,10 @@ export function TablePage() {
                 <code>type</code>
               </span>,
               <span className="prop-type">
-                <code>"grid" | "horizon"</code>
+                <code>"horizon" | "grid"</code>
               </span>,
-              <code>"grid"</code>,
-              "grid는 테두리 프레임+셀 구분선(정밀 비교), horizon은 행 구분선만(리스트성)",
+              <code>"horizon"</code>,
+              "horizon(기본)은 행 구분선만(리스트성), grid는 테두리 프레임+셀 구분선(정밀 비교)",
             ],
             [
               <span className="prop-name">

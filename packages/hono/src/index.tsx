@@ -144,7 +144,11 @@ export interface HonoTableProps {
   class?: string;
 }
 
-export function Table({ children, type = "grid", class: className }: HonoTableProps): JSX.Element {
+export function Table({
+  children,
+  type = "horizon",
+  class: className,
+}: HonoTableProps): JSX.Element {
   return (
     <table class={joinClass("podo-table", className)} data-type={type}>
       {children}

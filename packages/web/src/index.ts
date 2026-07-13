@@ -560,6 +560,7 @@ input {
    table semantics (tr/td parsing) — so consumers put class="podo-table" on a
    native <table> and inject this stylesheet into the light DOM. */
 .podo-table {
+  background: var(--podo-table-root-background, #FFFFFF);
   border-collapse: separate;
   border-spacing: 0;
   color: var(--podo-table-text-color, #18181B);

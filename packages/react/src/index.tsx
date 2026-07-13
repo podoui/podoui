@@ -529,7 +529,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
 // checkbox injects the design's selection column: a select-all box in the
 // first header row and one box per tbody row; selected rows get data-selected.
 export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
-  { type = "grid", checkbox = false, defaultSelected, onSelectionChange, className, ...props },
+  { type = "horizon", checkbox = false, defaultSelected, onSelectionChange, className, ...props },
   ref
 ) {
   const [selected, setSelected] = useState<Set<number>>(() => new Set(defaultSelected ?? []));

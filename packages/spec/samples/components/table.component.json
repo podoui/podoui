@@ -5,7 +5,7 @@
   "name": "Table",
   "category": "organism",
   "status": "experimental",
-  "description": "Data table (Figma 541:4024, component set 474:1795). Wraps native table semantics with gray.10 left-aligned headers: grid draws a bordered radius-8 frame with per-cell rules for dense comparison, horizon keeps only row rules for list-like reading. Row states: normal, hover (gray.5), pressed (gray.10), disabled (gray.10 with muted text). The checkbox prop injects the design's selection column: a select-all header box (indeterminate on partial selection) plus per-row boxes, marking selected rows with data-selected.",
+  "description": "Data table (Figma 541:4024, component set 474:1795) on a gray.0 surface with gray.10 left-aligned headers. Wraps native table semantics: horizon (base) keeps only row rules for list-like reading, grid draws a bordered radius-8 frame with per-cell rules for dense comparison. Row states: normal, hover (gray.5), pressed (gray.10), disabled (gray.10 with muted text). The checkbox prop injects the design's selection column: a select-all header box (indeterminate on partial selection) plus per-row boxes, marking selected rows with data-selected.",
   "anatomy": [
     { "name": "root" },
     { "name": "thead", "parent": "root" },
@@ -52,7 +52,7 @@
       "description": "Fires with the selected row indexes whenever the selection changes."
     }
   ],
-  "variants": [{ "name": "type", "values": ["grid", "horizon"], "default": "grid" }],
+  "variants": [{ "name": "type", "values": ["horizon", "grid"], "default": "horizon" }],
   "states": [
     { "name": "hover", "tokens": { "root.background": "{color.palette.gray.5}" } },
     { "name": "active", "tokens": { "root.background": "{color.palette.gray.10}" } },
@@ -67,6 +67,7 @@
     }
   ],
   "tokens": {
+    "root.background": "{color.palette.gray.0}",
     "root.borderColor": "{color.palette.gray.20}",
     "thead.background": "{color.palette.gray.10}"
   },
