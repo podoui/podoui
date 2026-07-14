@@ -231,6 +231,11 @@ export interface SelectProps extends Omit<
   defaultValues?: string[];
   /** 다중 값이 토글될 때 다음 배열과 함께. */
   onValuesChange?: (values: string[]) => void;
+  /**
+   * 트리거에 보여줄 최대 칩 수 — 넘치는 값은 "+N"으로 축약돼요 (해제는
+   * 메뉴에서). 트리거가 한도 끝도 없이 넓어지는 걸 막아요.
+   */
+  maxChips?: number;
   /** 초기 열림 상태 (문서·데모용). */
   defaultOpen?: boolean;
   /** 열리면 트리거가 검색 입력이 되고 입력어를 포함한 항목만 남아요. */
@@ -880,6 +885,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     values,
     defaultValues,
     onValuesChange,
+    maxChips = 3,
     defaultOpen = false,
     searchable,
     addable,
@@ -1035,8 +1041,10 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     }
   };
 
-  // 선택 값 칩은 Chip 컴포넌트의 제거형 모드를 그대로 재사용해요.
-  const chips = selectedValues.map((v) => {
+  // 선택 값 칩은 Chip 컴포넌트의 제거형 모드를 그대로 재사용하고, maxChips를
+  // 넘는 값은 "+N"으로 축약해요 (해제는 메뉴에서).
+  const hiddenChipCount = Math.max(0, selectedValues.length - maxChips);
+  const chips = selectedValues.slice(0, maxChips).map((v) => {
     const label = allOptions.find((o) => o.value === v)?.label ?? v;
     return (
       <Chip
@@ -1052,6 +1060,21 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
       </Chip>
     );
   });
+  if (hiddenChipCount > 0) {
+    chips.push(
+      <span
+        key="podo-select-more"
+        className="podo-chip podo-select__chip-more"
+        data-theme="solid"
+        data-size="md"
+        data-state="selected"
+        data-removable="true"
+        aria-label={`외 ${hiddenChipCount}개 선택됨`}
+      >
+        +{hiddenChipCount}
+      </span>
+    );
+  }
 
   return (
     <div

@@ -235,6 +235,8 @@ export interface NativeSelectProps {
   onValueChange?: (value: string) => void;
   /** 다중 값이 토글될 때 다음 배열과 함께. */
   onValuesChange?: (values: string[]) => void;
+  /** 트리거에 보여줄 최대 칩 수 — 넘치는 값은 "+N"으로 축약돼요. */
+  maxChips?: number;
   invalid?: boolean;
   disabled?: boolean;
   /** 값 앞에 붙는 아이콘 (Figma prefix-icon). */
@@ -573,8 +575,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         }
       };
 
-      // 선택 값 칩은 Chip 컴포넌트의 제거형 모드를 그대로 재사용해요.
-      const chips = selectedValues.map((v) => {
+      // 선택 값 칩은 Chip 컴포넌트의 제거형 모드를 그대로 재사용하고,
+      // maxChips를 넘는 값은 "+N"으로 축약해요 (해제는 메뉴에서).
+      const maxChips = props.maxChips ?? 3;
+      const hiddenChipCount = Math.max(0, selectedValues.length - maxChips);
+      const chips: ReactNode[] = selectedValues.slice(0, maxChips).map((v) => {
         const label = props.options.find((o) => o.value === v)?.label ?? v;
         return createElement(components.Chip, {
           key: v,
@@ -583,6 +588,24 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           onRemove: () => pick(v),
         });
       });
+      if (hiddenChipCount > 0) {
+        chips.push(
+          createElement(
+            host.View,
+            {
+              key: "podo-select-more",
+              accessibilityLabel: `외 ${hiddenChipCount}개 선택됨`,
+              style: { ...styles.chip, backgroundColor: "#3E424B", borderColor: "transparent" },
+              "data-state": "selected",
+            },
+            createElement(
+              host.Text,
+              { style: { ...styles.chipLabel, color: "#FFFFFF", fontSize: 14 } },
+              `+${hiddenChipCount}`
+            )
+          )
+        );
+      }
 
       const valueContent =
         multiple && hasValue

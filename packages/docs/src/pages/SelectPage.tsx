@@ -136,12 +136,12 @@ export function SelectPage() {
           {/* 단일 선택: 검색 불가능 / 가능 */}
           <Select placeholder="과일 선택" options={FRUITS} />
           <Select searchable placeholder="과일 선택 및 검색" options={FRUITS} />
-          {/* 다중 선택: 검색 불가능 / 가능 */}
+          {/* 다중 선택: 검색 불가능 / 가능 — 칩 3개 초과는 +N으로 축약 */}
           <Select
             multiple
             placeholder="과일 선택"
             options={FRUITS}
-            defaultValues={["strawberry", "banana"]}
+            defaultValues={["strawberry", "banana", "grape", "apple", "orange"]}
           />
           <Select multiple searchable placeholder="과일 선택 및 검색" options={FRUITS} />
           {/* 선택 항목 추가: 검색 불가능 / 가능 */}
@@ -261,6 +261,16 @@ export function SelectPage() {
               </span>,
               "—",
               "다중 값이 토글될 때 다음 배열과 함께 호출돼요",
+            ],
+            [
+              <span className="prop-name">
+                <code>maxChips</code>
+              </span>,
+              <span className="prop-type">
+                <code>number</code>
+              </span>,
+              <code>3</code>,
+              '트리거에 보여줄 최대 칩 수. 넘치는 값은 "+N"으로 축약되고 해제는 메뉴에서 해요',
             ],
             [
               <span className="prop-name">

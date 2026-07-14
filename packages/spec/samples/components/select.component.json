@@ -80,6 +80,12 @@
       "description": "다중 값이 토글될 때 다음 배열과 함께."
     },
     {
+      "name": "maxChips",
+      "type": { "kind": "number" },
+      "default": 3,
+      "description": "트리거에 보여줄 최대 칩 수 — 넘치는 값은 \"+N\" 칩으로 축약돼요 (해제는 메뉴에서). 트리거가 무한정 넓어지지 않게 해요. 시안에 규정이 없는 코드 결정."
+    },
+    {
       "name": "searchable",
       "type": { "kind": "boolean" },
       "default": false,

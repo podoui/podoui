@@ -224,6 +224,31 @@ describe("@podo/react", () => {
     expect(q.getByRole("listbox")).toBeDefined();
   });
 
+  it("collapses chips past maxChips into a +N summary", () => {
+    const options = [
+      { value: "a", label: "딸기" },
+      { value: "b", label: "바나나" },
+      { value: "c", label: "포도" },
+      { value: "d", label: "사과" },
+      { value: "e", label: "오렌지" },
+    ];
+    const { container, rerender } = render(
+      <Select multiple options={options} defaultValues={["a", "b", "c", "d", "e"]} />
+    );
+    const q = within(container);
+
+    // 기본 3개까지 칩, 나머지는 +N (해제는 메뉴에서).
+    expect(q.getAllByRole("button", { name: /제거$/ })).toHaveLength(3);
+    expect(q.getByText("+2")).toBeDefined();
+    expect(q.getByLabelText("외 2개 선택됨")).toBeDefined();
+
+    rerender(
+      <Select multiple maxChips={5} options={options} defaultValues={["a", "b", "c", "d", "e"]} />
+    );
+    expect(q.getAllByRole("button", { name: /제거$/ })).toHaveLength(5);
+    expect(q.queryByText("+2")).toBeNull();
+  });
+
   it("navigates select options with the keyboard", async () => {
     const user = userEvent.setup();
     const changes: string[] = [];

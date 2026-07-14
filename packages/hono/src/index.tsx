@@ -202,6 +202,8 @@ export interface HonoSelectProps {
   value?: string;
   /** 다중 선택 값. */
   values?: string[];
+  /** 트리거에 보여줄 최대 칩 수 — 넘치는 값은 "+N"으로 축약돼요. */
+  maxChips?: number;
   /** 정적 렌더에서 메뉴를 펼쳐 보여줄지 (Figma focused). 동작은 클라이언트 코드. */
   open?: boolean;
   /** 메뉴 상단 추가 입력줄 마크업 (Figma multi-select-input). */
@@ -263,6 +265,7 @@ export function Select({
   multiple,
   value,
   values,
+  maxChips = 3,
   open,
   addable,
   addPlaceholder,
@@ -293,8 +296,9 @@ export function Select({
       >
         {prefix ? <span class="podo-select__prefix">{prefix}</span> : null}
         <span class="podo-select__value" data-placeholder={hasValue ? undefined : "true"}>
-          {multiple && hasValue
-            ? selectedValues.map((v) => {
+          {multiple && hasValue ? (
+            <>
+              {selectedValues.slice(0, maxChips).map((v) => {
                 const label = options.find((o) => o.value === v)?.label ?? v;
                 // 선택 값 칩은 Chip의 제거형 모드를 그대로 재사용해요.
                 return (
@@ -302,8 +306,23 @@ export function Select({
                     {label}
                   </Chip>
                 );
-              })
-            : ((multiple ? placeholder : (selected?.label ?? placeholder)) ?? "")}
+              })}
+              {selectedValues.length > maxChips ? (
+                <span
+                  class="podo-chip podo-select__chip-more"
+                  data-theme="solid"
+                  data-size="md"
+                  data-state="selected"
+                  data-removable="true"
+                  aria-label={`외 ${selectedValues.length - maxChips}개 선택됨`}
+                >
+                  +{selectedValues.length - maxChips}
+                </span>
+              ) : null}
+            </>
+          ) : (
+            ((multiple ? placeholder : (selected?.label ?? placeholder)) ?? "")
+          )}
         </span>
         <span class="podo-select__chevron">{HONO_SELECT_CHEVRON}</span>
       </div>

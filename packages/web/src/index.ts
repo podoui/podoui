@@ -2165,6 +2165,7 @@ function createSelectElement(): CustomElementConstructor {
         "options",
         "value",
         "values",
+        "max-chips",
         "placeholder",
         "size",
         "multiple",
@@ -2236,10 +2237,14 @@ function createSelectElement(): CustomElementConstructor {
           ? 'data-state="invalid"'
           : "";
 
-      // Value chips reuse the podo-chip removable classes.
+      // Value chips reuse the podo-chip removable classes; values past
+      // max-chips collapse into a "+N" chip (deselect via the menu).
+      const maxChips = Number.parseInt(attr(this, "max-chips", "3"), 10);
+      const hiddenChipCount = Math.max(0, values.length - maxChips);
       const valueHtml =
         multiple && hasValue
           ? values
+              .slice(0, maxChips)
               .map((v) => {
                 const label = options.find((o) => o.value === v)?.label ?? v;
                 return `<span class="podo-chip" data-theme="solid" data-size="md" data-state="selected" data-removable="true"><span class="podo-chip__label">${escapeHtml(
@@ -2248,7 +2253,10 @@ function createSelectElement(): CustomElementConstructor {
                   v
                 )}" aria-label="${escapeHtml(label)} 제거">${CHIP_CLOSE_SVG}</button></span>`;
               })
-              .join("")
+              .join("") +
+            (hiddenChipCount > 0
+              ? `<span class="podo-chip podo-select__chip-more" data-theme="solid" data-size="md" data-state="selected" data-removable="true" aria-label="외 ${hiddenChipCount}개 선택됨">+${hiddenChipCount}</span>`
+              : "")
           : escapeHtml((multiple ? placeholder : (selected?.label ?? placeholder)) || "");
 
       const cellsHtml = options
