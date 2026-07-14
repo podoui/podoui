@@ -122,28 +122,31 @@ export function SelectPage() {
       <DocSection
         index={4}
         title="응용 (composition)"
-        description="선택의 목적과 데이터 규모에 따라 select-text, multi-select, multi-select-input, multi-select-search를 조합해 구성해요. select-text는 목록에서 하나만 고르는 기본 단일 선택에, multi-select는 여러 값을 체크해 칩으로 담는 다중 선택에 사용해요. multi-select-input은 목록에 없는 값을 직접 추가해야 할 때(추가된 값은 목록에 붙고 자동 선택), multi-select-search는 항목이 많아 검색으로 좁혀 골라야 할 때 사용해요 — 열린 트리거에 입력하면 입력어를 포함한 항목만 남아요. searchable·addable은 단일·다중 어디에나 조합할 수 있어요."
+        description="선택의 목적과 데이터 규모에 따라 단일 선택의 경우 text 테마를, 다중 선택의 경우 slot 테마를 사용해서 구성해요. select는 필요시 검색기능을 지원하고(searchable — 열린 트리거에 입력하면 입력어를 포함한 항목만 남아요), 선택 항목 추가가 필요한 경우 menu 슬롯에 select.input 컴포넌트를 사용해 구성해요(addable — 추가된 값은 목록에 붙고 자동 선택). 검색·추가는 단일·다중 어디에나 조합할 수 있어요."
       >
         <Card stage>
           <Select placeholder="과일 선택" options={FRUITS} />
           <Select
             multiple
-            placeholder="전체 과일"
+            placeholder="과일 선택"
             options={FRUITS}
-            defaultValues={["strawberry"]}
+            defaultValues={["strawberry", "banana"]}
+          />
+          <Select
+            addable
+            placeholder="과일 선택"
+            addPlaceholder="과일 이름 입력"
+            options={FRUITS}
           />
           <Select
             multiple
             addable
-            placeholder="전체 과일"
+            placeholder="과일 선택"
             addPlaceholder="과일 이름 입력"
             options={FRUITS}
           />
-          <Select multiple searchable placeholder="과일 선택 및 검색" options={FRUITS} />
         </Card>
-        <PropertyTags
-          values={["select-text", "multi-select", "multi-select-input", "multi-select-search"]}
-        />
+        <PropertyTags values={["단일 선택", "다중 선택", "선택 항목 추가"]} />
       </DocSection>
 
       <DocSection

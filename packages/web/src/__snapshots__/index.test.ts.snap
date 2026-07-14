@@ -1323,6 +1323,12 @@ input {
   flex-shrink: 0;
 }
 
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
+}
+
 /* Static 18px checkbox visual for multi cells — the row is the control. */
 .podo-select__checkbox {
   align-items: center;
@@ -2883,6 +2889,12 @@ input {
   flex-shrink: 0;
 }
 
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
+}
+
 /* Static 18px checkbox visual for multi cells — the row is the control. */
 .podo-select__checkbox {
   align-items: center;
@@ -4437,6 +4449,12 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
 }
 
 /* Static 18px checkbox visual for multi cells — the row is the control. */
@@ -5997,6 +6015,12 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
 }
 
 /* Static 18px checkbox visual for multi cells — the row is the control. */
@@ -7568,6 +7592,12 @@ input {
   flex-shrink: 0;
 }
 
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
+}
+
 /* Static 18px checkbox visual for multi cells — the row is the control. */
 .podo-select__checkbox {
   align-items: center;
@@ -9121,6 +9151,12 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
 }
 
 /* Static 18px checkbox visual for multi cells — the row is the control. */
@@ -10681,6 +10717,12 @@ input {
   flex-shrink: 0;
 }
 
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
+}
+
 /* Static 18px checkbox visual for multi cells — the row is the control. */
 .podo-select__checkbox {
   align-items: center;
@@ -12239,6 +12281,12 @@ input {
   flex-shrink: 0;
 }
 
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
+}
+
 /* Static 18px checkbox visual for multi cells — the row is the control. */
 .podo-select__checkbox {
   align-items: center;
@@ -13792,6 +13840,12 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
 }
 
 /* Static 18px checkbox visual for multi cells — the row is the control. */
@@ -15348,6 +15402,12 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
 }
 
 /* Static 18px checkbox visual for multi cells — the row is the control. */
@@ -16913,6 +16973,12 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
 }
 
 /* Static 18px checkbox visual for multi cells — the row is the control. */

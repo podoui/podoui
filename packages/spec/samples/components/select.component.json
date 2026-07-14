@@ -5,7 +5,7 @@
   "name": "Select",
   "category": "molecule",
   "status": "experimental",
-  "description": "Dropdown picker (Figma 538:6694, component set 318:2237) sharing the Input state system — normal/hover/focused/completed/danger/disabled. The trigger is an Input-shaped box (md 42/radius 10 — base, lg 52/radius 12) with a gray.80 chevron; focused opens the menu (white, gray.20 hairline, radius 10, 8 padding, 4 gap, 6px below). Figma theme text/slot translates to the multiple prop: single shows the picked label with a primary.50 check in its cell, multiple shows removable chips (the Chip component's removable mode, reused) and 18px checkbox cells. searchable turns the open trigger into a filter input (options containing the query remain — 디자이너 합의로 하이라이트 대신 필터링); addable prepends an add row (32px input + primary 추가 button) that appends and auto-selects new options. danger keeps its border color under focus like Input.",
+  "description": "Dropdown picker (Figma 538:6694, component set 318:2237) sharing the Input state system — normal/hover/focused/completed/danger/disabled. The trigger is an Input-shaped box (md 42/radius 10 — base, lg 52/radius 12) with a gray.80 chevron; focused opens the menu (white, gray.20 hairline, radius 10, 8 padding, 4 gap, 6px below). Figma theme text/slot translates to the multiple prop: single shows the picked label with a primary.50 check in its cell, multiple shows removable chips (the Chip component's removable mode, reused) and 18px checkbox cells. The Figma compositions are 단일 선택/다중 선택/선택 항목 추가; searchable is a capability on any of them turning the open trigger into a filter input (options containing the query remain), and addable prepends an add row (32px Select.input + primary 추가 button) that appends and auto-selects new options. A single-select picked cell shows a primary label + check. danger keeps its border color under focus like Input.",
   "anatomy": [
     { "name": "root" },
     { "name": "trigger", "parent": "root" },
@@ -89,7 +89,7 @@
       "name": "addable",
       "type": { "kind": "boolean" },
       "default": false,
-      "description": "메뉴 상단에 직접 추가 입력줄 표시 (Figma multi-select-input). 추가된 항목은 목록에 붙고 자동 선택돼요."
+      "description": "메뉴 상단에 직접 추가 입력줄 표시 (Figma 선택 항목 추가 — Select.input). 추가된 항목은 목록에 붙고 자동 선택돼요. 단일·다중 모두 조합 가능."
     },
     {
       "name": "addPlaceholder",

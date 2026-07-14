@@ -541,7 +541,6 @@
   - Badge 셋(474:3218)의 `state` 불리언이 theme에서 유도되는 중복 속성 (natural~info는 항상 true, gray~orange는 항상 false) — 셋에서 제거하면 변형 관리가 단순해짐 (코드는 theme+dot만 매핑)
   - Input/Textarea 시안에 danger+focused 조합 상태가 없음 — 코드는 "danger 테두리 색 유지 + 두께만 2px(포커스 표시)"로 결정 (유효성 실패 자동 포커스 시 danger가 파란 포커스 색에 덮이지 않도록). 시안에 해당 조합 추가/확정 요청. Select도 동일 규칙 적용됨
   - Select Menu-cell 셋(328:11855)에 hover/pressed 변형이 없음 — 코드는 hover·키보드 활성 셀에 gray.10(#F4F4F5) 배경을 임시 적용. 셀 hover 스펙 확정 요청
-  - Select 시안 multi-select-search의 "파란 텍스트 = 검색어 매칭 하이라이트"는 합의로 필터링 방식(입력어 포함 항목만 표시)으로 대체 — 시안도 필터링 기준으로 정리되면 좋음
 - [ ] (보류) Figma→코드 동기화 파이프라인 (`podo figma-sync`, 트리거 버튼) — 이전 논의 기록은 auto-memory 참고
 
 ### C. 컴포넌트·품질

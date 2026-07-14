@@ -639,7 +639,15 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             : null,
           createElement(
             host.Text,
-            { style: { color: "#18181B", flex: 1, fontSize: 16, lineHeight: 26 } },
+            {
+              style: {
+                // 단일 선택의 선택 셀은 라벨도 primary (Figma Menu-cell selected).
+                color: !multiple && isSelected ? "#426CED" : "#18181B",
+                flex: 1,
+                fontSize: 16,
+                lineHeight: 26,
+              },
+            },
             option.label
           ),
           !multiple && isSelected

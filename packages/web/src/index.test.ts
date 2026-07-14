@@ -28,6 +28,8 @@ describe("@podo/web", () => {
     expect(podoWebComponentCss).toContain('.podo-input[data-state="invalid"]:focus-within');
     expect(podoWebComponentCss).toContain('.podo-textarea[data-state="invalid"]:focus');
     expect(podoWebComponentCss).toContain('.podo-select[data-state="invalid"][data-open]');
+    // 단일 선택의 선택 셀은 라벨도 primary — 다중(멀티셀렉터블) 셀은 제외.
+    expect(podoWebComponentCss).toContain(".podo-select__menu:not([aria-multiselectable])");
     // Table ships as classes only (no shadow element — table semantics).
     expect(podoWebComponentCss).toContain('.podo-table[data-type="grid"]');
     expect(podoWebComponentCss).toContain('.podo-table [data-align="right"]');

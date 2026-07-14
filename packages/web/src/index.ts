@@ -1397,6 +1397,12 @@ input {
   flex-shrink: 0;
 }
 
+/* Single-select picked cell: primary label + check (Figma Menu-cell
+   theme=text state=selected). Multi checkbox cells keep the basic label. */
+.podo-select__menu:not([aria-multiselectable]) .podo-select__cell[data-state="selected"] .podo-select__cell-label {
+  color: #426CED;
+}
+
 /* Static 18px checkbox visual for multi cells — the row is the control. */
 .podo-select__checkbox {
   align-items: center;
@@ -2255,7 +2261,7 @@ function createSelectElement(): CustomElementConstructor {
     <span class="podo-select__value"${hasValue ? "" : ' data-placeholder="true"'}>${valueHtml}</span>
     <span class="podo-select__chevron">${SELECT_CHEVRON_SVG}</span>
   </div>
-  ${open ? `<div class="podo-select__menu-list"><div class="podo-select__menu" role="listbox">${cellsHtml}</div></div>` : ""}
+  ${open ? `<div class="podo-select__menu-list"><div class="podo-select__menu" role="listbox"${multiple ? ' aria-multiselectable="true"' : ""}>${cellsHtml}</div></div>` : ""}
 </div>`;
 
       this.shadow.querySelector(".podo-select__trigger")?.addEventListener("click", (event) => {
