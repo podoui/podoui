@@ -365,7 +365,8 @@ describe("@podo/react", () => {
 
     expect(addedOptions).toEqual(["멜론"]);
     expect(latest).toEqual(["멜론"]);
-    expect(q.getByRole("option", { name: "멜론" })).toBeDefined();
+    // 추가된 옵션이 활성 셀이 돼 스크롤이 따라가요 (scrollIntoView 대상).
+    expect(q.getByRole("option", { name: "멜론" }).getAttribute("data-active")).toBe("true");
   });
 
   it("clears every multi-select value through the clearable X", async () => {

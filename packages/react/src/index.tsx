@@ -982,7 +982,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
       return;
     }
     const option = { value: text, label: text };
-    if (!allOptions.some((o) => o.value === option.value)) {
+    const existingIndex = allOptions.findIndex((o) => o.value === option.value);
+    if (existingIndex < 0) {
       setAdded((prev) => [...prev, option]);
     }
     if (multiple) {
@@ -993,6 +994,10 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
         }
         onValuesChange?.(next);
       }
+      // 추가된 옵션이 바로 보이게: 검색어를 비워 전체 목록으로 돌리고 해당
+      // 셀을 활성으로 만들어 메뉴 스크롤이 따라가게 해요 (10줄 스크롤 대응).
+      setQuery("");
+      setActiveIndex(existingIndex >= 0 ? existingIndex : allOptions.length);
     } else {
       if (value === undefined) {
         setInternalValue(option.value);
