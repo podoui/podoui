@@ -237,9 +237,9 @@ describe("@podo/react", () => {
     );
     const q = within(container);
 
-    // 기본 3개까지 칩, 나머지는 +N (해제는 메뉴에서).
+    // 기본 3개까지 칩, 나머지는 +N 일반 텍스트 (해제는 메뉴에서).
     expect(q.getAllByRole("button", { name: /제거$/ })).toHaveLength(3);
-    expect(q.getByText("+2")).toBeDefined();
+    expect(q.getByText("+2").className).toBe("podo-select__chip-more");
     expect(q.getByLabelText("외 2개 선택됨")).toBeDefined();
 
     rerender(

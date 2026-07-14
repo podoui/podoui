@@ -22,6 +22,11 @@ const FRUITS = [
   { value: "melon", label: "멜론" },
   { value: "blueberry", label: "블루베리" },
   { value: "kiwi", label: "키위" },
+  { value: "cherry", label: "체리" },
+  { value: "lemon", label: "레몬" },
+  { value: "mango", label: "망고" },
+  { value: "plum", label: "자두" },
+  { value: "pineapple", label: "파인애플" },
 ];
 
 const USAGE_TABS: CodeTab[] = [

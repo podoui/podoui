@@ -5,7 +5,7 @@
   "name": "Select",
   "category": "molecule",
   "status": "experimental",
-  "description": "Dropdown picker (Figma 538:6694, component set 318:2237) sharing the Input state system — normal/hover/focused/completed/danger/disabled. The trigger is an Input-shaped box (md 42/radius 10 — base, lg 52/radius 12) with a gray.80 chevron; focused opens the menu (white, gray.20 hairline, radius 10, 8 padding, 4 gap, 6px below). Figma theme text/slot translates to the multiple prop: single shows the picked label with a primary.50 check in its cell, multiple shows removable chips (the Chip component's removable mode, reused) and 18px checkbox cells. The Figma compositions are 단일 선택/다중 선택/선택 항목 추가; searchable is a capability on any of them turning the open trigger into a filter input (options containing the query remain), and addable prepends an add row (32px Select.input with a 144px minimum width + the primary 추가 button) that appends and auto-selects new options. The value content stays in layout while searching so the trigger width never jumps between open and closed. A single-select picked cell shows a primary label + check. danger keeps its border color under focus like Input.",
+  "description": "Dropdown picker (Figma 538:6694, component set 318:2237) sharing the Input state system — normal/hover/focused/completed/danger/disabled. The trigger is an Input-shaped box (md 42/radius 10 — base, lg 52/radius 12) with a gray.80 chevron; focused opens the menu (white, gray.20 hairline, radius 10, 8 padding, 4 gap, 6px below). Figma theme text/slot translates to the multiple prop: single shows the picked label with a primary.50 check in its cell, multiple shows removable chips (the Chip component's removable mode, reused) and 18px checkbox cells. The Figma compositions are 단일 선택/다중 선택/선택 항목 추가; searchable is a capability on any of them turning the open trigger into a filter input (options containing the query remain), and addable prepends an add row (32px Select.input with a 144px minimum width + the primary 추가 button) that appends and auto-selects new options. The value content stays in layout while searching so the trigger width never jumps between open and closed. A single-select picked cell shows a primary label + check. danger keeps its border color under focus like Input. The menu caps at ten 42px rows (474px) and scrolls beyond — another no-spec code decision.",
   "anatomy": [
     { "name": "root" },
     { "name": "trigger", "parent": "root" },
@@ -83,7 +83,7 @@
       "name": "maxChips",
       "type": { "kind": "number" },
       "default": 3,
-      "description": "트리거에 보여줄 최대 칩 수 — 넘치는 값은 \"+N\" 칩으로 축약돼요 (해제는 메뉴에서). 트리거가 무한정 넓어지지 않게 해요. 시안에 규정이 없는 코드 결정."
+      "description": "트리거에 보여줄 최대 칩 수 — 넘치는 값은 \"+N\" 텍스트로 축약돼요 (해제는 메뉴에서). 트리거가 무한정 넓어지지 않게 해요. 시안에 규정이 없는 코드 결정."
     },
     {
       "name": "searchable",

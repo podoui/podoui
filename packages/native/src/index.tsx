@@ -591,18 +591,13 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       if (hiddenChipCount > 0) {
         chips.push(
           createElement(
-            host.View,
+            host.Text,
             {
               key: "podo-select-more",
               accessibilityLabel: `외 ${hiddenChipCount}개 선택됨`,
-              style: { ...styles.chip, backgroundColor: "#3E424B", borderColor: "transparent" },
-              "data-state": "selected",
+              style: { color: "#50555E", fontSize: 14, lineHeight: 22 },
             },
-            createElement(
-              host.Text,
-              { style: { ...styles.chipLabel, color: "#FFFFFF", fontSize: 14 } },
-              `+${hiddenChipCount}`
-            )
+            `+${hiddenChipCount}`
           )
         );
       }

@@ -996,6 +996,13 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
 
+  // 메뉴가 10줄에서 스크롤되므로, 키보드 활성 셀이 밖으로 나가면 따라가요.
+  useEffect(() => {
+    if (open && activeIndex >= 0) {
+      document.getElementById(`${menuId}-${activeIndex}`)?.scrollIntoView?.({ block: "nearest" });
+    }
+  }, [open, activeIndex, menuId]);
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     onKeyDown?.(event);
     if (disabled || event.defaultPrevented) {
@@ -1064,11 +1071,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     chips.push(
       <span
         key="podo-select-more"
-        className="podo-chip podo-select__chip-more"
-        data-theme="solid"
-        data-size="md"
-        data-state="selected"
-        data-removable="true"
+        className="podo-select__chip-more"
         aria-label={`외 ${hiddenChipCount}개 선택됨`}
       >
         +{hiddenChipCount}

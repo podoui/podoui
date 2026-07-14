@@ -309,11 +309,7 @@ export function Select({
               })}
               {selectedValues.length > maxChips ? (
                 <span
-                  class="podo-chip podo-select__chip-more"
-                  data-theme="solid"
-                  data-size="md"
-                  data-state="selected"
-                  data-removable="true"
+                  class="podo-select__chip-more"
                   aria-label={`외 ${selectedValues.length - maxChips}개 선택됨`}
                 >
                   +{selectedValues.length - maxChips}

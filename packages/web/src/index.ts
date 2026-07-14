@@ -1359,6 +1359,14 @@ input {
   flex-shrink: 0;
 }
 
+/* Values past maxChips collapse into plain "+N" text (deselect via the menu). */
+.podo-select__chip-more {
+  color: #50555E;
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 .podo-select__menu-list {
   left: 0;
   padding-top: 6px;
@@ -1376,10 +1384,14 @@ input {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  /* Ten 42px cells + nine 4px gaps + 16px padding + 2px border — options past
+     ten scroll instead of growing the menu forever. */
+  max-height: 474px;
   /* The box grows past a narrow trigger when content can't shrink (the
      addable row's 144px input + 추가 button); cell labels keep min-width: 0,
      so long options still ellipsize at the trigger width. */
   min-width: min-content;
+  overflow-y: auto;
   padding: 8px;
 }
 
@@ -2255,7 +2267,7 @@ function createSelectElement(): CustomElementConstructor {
               })
               .join("") +
             (hiddenChipCount > 0
-              ? `<span class="podo-chip podo-select__chip-more" data-theme="solid" data-size="md" data-state="selected" data-removable="true" aria-label="외 ${hiddenChipCount}개 선택됨">+${hiddenChipCount}</span>`
+              ? `<span class="podo-select__chip-more" aria-label="외 ${hiddenChipCount}개 선택됨">+${hiddenChipCount}</span>`
               : "")
           : escapeHtml((multiple ? placeholder : (selected?.label ?? placeholder)) || "");
 
