@@ -325,8 +325,13 @@ describe("@podo/react", () => {
     await user.keyboard("바나");
     expect(q.queryByRole("option", { name: "딸기" })).toBeNull();
     await user.click(q.getByRole("option", { name: "바나나" }));
-    // 다중 선택은 검색 중에도 메뉴가 열린 채 칩이 추가돼요.
+    // 다중 선택은 검색 중에도 메뉴가 열린 채 칩이 추가되고,
+    // 선택하면 입력값이 초기화돼 전체 목록으로 돌아와요.
     expect(q.getByRole("button", { name: "바나나 제거" })).toBeDefined();
+    expect(
+      (container.querySelector(".podo-select__search--inline") as HTMLInputElement).value
+    ).toBe("");
+    expect(q.getByRole("option", { name: "딸기" })).toBeDefined();
   });
 
   it("adds and auto-selects a new option through the add row", async () => {

@@ -941,6 +941,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
         setInternalValues(next);
       }
       onValuesChange?.(next);
+      // 검색 중 선택하면 입력값을 비워 전체 목록으로 되돌려요.
+      setQuery("");
+      setActiveIndex(-1);
     } else {
       if (value === undefined) {
         setInternalValue(optionValue);
