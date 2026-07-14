@@ -117,6 +117,7 @@ export function SelectPage() {
             <span style={{ display: "inline-flex", marginBottom: 118 }}>
               <Select
                 defaultOpen
+                portal={false}
                 placeholder="플레이스 홀더"
                 options={[
                   { value: "a", label: "작성영역" },
@@ -336,6 +337,16 @@ export function SelectPage() {
               </span>,
               <code>false</code>,
               "다중 선택에서 값이 있을 때 트리거에 모두 해제(✕) 버튼을 보여줘요",
+            ],
+            [
+              <span className="prop-name">
+                <code>portal</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              <code>true</code>,
+              "메뉴를 document.body로 포탈 렌더해요 (Tooltip과 동일 규약) — overflow에 잘리지 않아요. 열린 채 스크롤하면 닫혀요. false면 트리거 아래 인라인",
             ],
             [
               <span className="prop-name">

@@ -249,6 +249,12 @@ export interface SelectProps extends Omit<
   /** 다중 선택에서 값이 있을 때 트리거에 "모두 해제" ✕ 버튼을 보여줘요. */
   clearable?: boolean;
   /**
+   * 메뉴를 document.body로 포탈 렌더 (기본값) — overflow hidden 컨테이너나
+   * 스태킹 컨텍스트 안에서도 잘리지 않아요. portal={false}면 트리거 아래
+   * 인라인으로 렌더돼요 (Tooltip과 동일 규약).
+   */
+  portal?: boolean;
+  /**
    * 값은 보이지만 변경할 수 없는 상태 — 박스·체브론 없이 값만 렌더돼요
    * (Figma read-only, Input과 동일 규약).
    */
@@ -899,6 +905,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     addPlaceholder,
     onOptionAdd,
     clearable,
+    portal = true,
     readOnly,
     invalid,
     disabled,
@@ -920,6 +927,13 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
   // addable로 만들어진 옵션은 내부에 쌓아 options와 합쳐요 (value 기준 중복 제거).
   const [added, setAdded] = useState<SelectOption[]>([]);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const menuListRef = useRef<HTMLDivElement | null>(null);
+  // Portal 모드에서 트리거 아래 고정 배치할 좌표 (getBoundingClientRect 기준).
+  const [menuPosition, setMenuPosition] = useState<{
+    top: number;
+    left: number;
+    width: number;
+  } | null>(null);
   const menuId = useId();
 
   const selectedValue = value !== undefined ? value : internalValue;
@@ -998,7 +1012,13 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     }
     const onPointerDown = (event: PointerEvent) => {
       const root = rootRef.current;
-      if (root && event.target instanceof Node && !root.contains(event.target)) {
+      if (
+        root &&
+        event.target instanceof Node &&
+        !root.contains(event.target) &&
+        // Portal 메뉴는 루트 밖에 있으니 따로 포함 검사해요.
+        !menuListRef.current?.contains(event.target)
+      ) {
         setOpen(false);
         setQuery("");
         setActiveIndex(-1);
@@ -1007,6 +1027,44 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
+
+  // Portal 모드: 트리거 위치를 재서 메뉴를 그 아래 고정 배치해요. 값·검색어가
+  // 바뀌어 트리거가 변해도 다시 잽니다.
+  useLayoutEffect(() => {
+    if (!open || !portal) {
+      return;
+    }
+    const rect = rootRef.current?.getBoundingClientRect();
+    if (rect) {
+      setMenuPosition({ left: rect.left, top: rect.bottom, width: rect.width });
+    }
+  }, [open, portal, selectedValues.length, query, size]);
+
+  // Portal 메뉴는 스크롤/리사이즈를 따라가지 않고 닫아요 (Tooltip과 동일).
+  // 메뉴 내부 옵션 리스트 스크롤은 예외.
+  useEffect(() => {
+    if (!open || !portal) {
+      return undefined;
+    }
+    const close = (event: Event) => {
+      if (
+        event.target instanceof Node &&
+        menuListRef.current &&
+        menuListRef.current.contains(event.target)
+      ) {
+        return;
+      }
+      setOpen(false);
+      setQuery("");
+      setActiveIndex(-1);
+    };
+    window.addEventListener("scroll", close, true);
+    window.addEventListener("resize", close);
+    return () => {
+      window.removeEventListener("scroll", close, true);
+      window.removeEventListener("resize", close);
+    };
+  }, [open, portal]);
 
   // 메뉴가 10줄에서 스크롤되므로, 키보드 활성 셀이 밖으로 나가면 따라가요.
   useEffect(() => {
@@ -1216,70 +1274,93 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
         {/* read-only는 열 수 없으니 체브론도 없어요 (Figma read-only). */}
         {readOnly ? null : <span className="podo-select__chevron">{SELECT_CHEVRON}</span>}
       </div>
-      {open ? (
-        <div className="podo-select__menu-list">
-          <div
-            className="podo-select__menu"
-            role="listbox"
-            id={menuId}
-            aria-multiselectable={multiple || undefined}
-          >
-            {addable ? (
-              <div className="podo-select__add">
-                <input
-                  className="podo-select__add-input"
-                  value={addText}
-                  placeholder={addPlaceholder}
-                  onChange={(event) => setAddText(event.currentTarget.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      addOption();
+      {open
+        ? renderSelectMenu(
+            portal,
+            <div
+              ref={menuListRef}
+              className="podo-select__menu-list"
+              data-portal={portal ? "true" : undefined}
+              style={
+                portal
+                  ? {
+                      left: menuPosition?.left ?? 0,
+                      position: "fixed",
+                      right: "auto",
+                      top: menuPosition?.top ?? 0,
+                      width: menuPosition?.width,
                     }
-                  }}
-                />
-                <button type="button" className="podo-select__add-button" onClick={addOption}>
-                  추가
-                </button>
-              </div>
-            ) : null}
-            {visible.map((option, index) => {
-              const selected = multiple
-                ? selectedValues.includes(option.value)
-                : option.value === selectedValue;
-              return (
-                <div
-                  key={option.value}
-                  id={`${menuId}-${index}`}
-                  role="option"
-                  aria-selected={selected}
-                  className="podo-select__cell"
-                  data-state={selected ? "selected" : undefined}
-                  data-active={index === activeIndex ? "true" : undefined}
-                  onClick={() => pick(option.value)}
-                >
-                  {multiple ? (
-                    <span
-                      className="podo-select__checkbox"
-                      data-checked={selected ? "true" : undefined}
+                  : undefined
+              }
+            >
+              <div
+                className="podo-select__menu"
+                role="listbox"
+                id={menuId}
+                aria-multiselectable={multiple || undefined}
+              >
+                {addable ? (
+                  <div className="podo-select__add">
+                    <input
+                      className="podo-select__add-input"
+                      value={addText}
+                      placeholder={addPlaceholder}
+                      onChange={(event) => setAddText(event.currentTarget.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          addOption();
+                        }
+                      }}
+                    />
+                    <button type="button" className="podo-select__add-button" onClick={addOption}>
+                      추가
+                    </button>
+                  </div>
+                ) : null}
+                {visible.map((option, index) => {
+                  const selected = multiple
+                    ? selectedValues.includes(option.value)
+                    : option.value === selectedValue;
+                  return (
+                    <div
+                      key={option.value}
+                      id={`${menuId}-${index}`}
+                      role="option"
+                      aria-selected={selected}
+                      className="podo-select__cell"
+                      data-state={selected ? "selected" : undefined}
+                      data-active={index === activeIndex ? "true" : undefined}
+                      onClick={() => pick(option.value)}
                     >
-                      {selected ? SELECT_BOX_CHECK : null}
-                    </span>
-                  ) : null}
-                  <span className="podo-select__cell-label">{option.label}</span>
-                  {!multiple && selected ? (
-                    <span className="podo-select__cell-check">{SELECT_CHECK}</span>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ) : null}
+                      {multiple ? (
+                        <span
+                          className="podo-select__checkbox"
+                          data-checked={selected ? "true" : undefined}
+                        >
+                          {selected ? SELECT_BOX_CHECK : null}
+                        </span>
+                      ) : null}
+                      <span className="podo-select__cell-label">{option.label}</span>
+                      {!multiple && selected ? (
+                        <span className="podo-select__cell-check">{SELECT_CHECK}</span>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )
+        : null}
     </div>
   );
 });
+
+// Portal이면 메뉴를 document.body로 띄우고, 아니면 트리거 아래 인라인.
+function renderSelectMenu(portal: boolean, menu: React.ReactElement): React.ReactNode {
+  return portal ? createPortal(menu, document.body) : menu;
+}
 
 // Arrowheads per position, pointing at the target (Figma 4x16 rounded vector,
 // drawn straight — the 2px rounding is invisible at this size).

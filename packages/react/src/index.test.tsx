@@ -166,6 +166,7 @@ describe("@podo/react", () => {
     const changes: string[] = [];
     const { container } = render(
       <Select
+        portal={false}
         placeholder="과일 선택"
         options={[
           { value: "strawberry", label: "딸기" },
@@ -199,6 +200,7 @@ describe("@podo/react", () => {
     const { container } = render(
       <Select
         multiple
+        portal={false}
         placeholder="전체 과일"
         options={[
           { value: "strawberry", label: "딸기" },
@@ -254,6 +256,7 @@ describe("@podo/react", () => {
     const changes: string[] = [];
     const { container } = render(
       <Select
+        portal={false}
         placeholder="과일 키보드"
         options={[
           { value: "strawberry", label: "딸기" },
@@ -281,6 +284,7 @@ describe("@podo/react", () => {
     const { container } = render(
       <Select
         searchable
+        portal={false}
         placeholder="과일 선택 및 검색"
         options={[
           { value: "strawberry", label: "딸기" },
@@ -307,6 +311,7 @@ describe("@podo/react", () => {
       <Select
         multiple
         searchable
+        portal={false}
         options={[
           { value: "strawberry", label: "딸기" },
           { value: "banana", label: "바나나" },
@@ -342,6 +347,7 @@ describe("@podo/react", () => {
       <Select
         multiple
         addable
+        portal={false}
         placeholder="추가형 과일"
         addPlaceholder="과일 이름 입력"
         options={[{ value: "strawberry", label: "딸기" }]}
@@ -420,11 +426,30 @@ describe("@podo/react", () => {
     expect(q.queryByRole("button", { name: "딸기 제거" })).toBeNull();
   });
 
+  it("portals the menu to document.body by default", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select placeholder="포탈 과일" options={[{ value: "grape-green", label: "청포도" }]} />
+    );
+    const q = within(container);
+
+    await user.click(q.getByRole("combobox"));
+    // 메뉴는 루트 밖(document.body)에 떠요 — overflow 잘림 방지.
+    expect(container.querySelector('[role="listbox"]')).toBeNull();
+    const menuList = document.body.querySelector(".podo-select__menu-list[data-portal]");
+    expect(menuList).not.toBeNull();
+
+    // 포탈 메뉴 안 클릭은 외부 클릭으로 닫히지 않고 정상 선택돼요.
+    await user.click(within(menuList as HTMLElement).getByRole("option", { name: "청포도" }));
+    expect(q.getByText("청포도")).toBeDefined();
+    expect(document.body.querySelector(".podo-select__menu-list[data-portal]")).toBeNull();
+  });
+
   it("closes the select on outside click and blocks it while disabled", async () => {
     const user = userEvent.setup();
     const { container } = render(
       <>
-        <Select placeholder="바깥 과일" options={[{ value: "a", label: "사과" }]} />
+        <Select portal={false} placeholder="바깥 과일" options={[{ value: "a", label: "사과" }]} />
         <Select disabled placeholder="비활성" options={[]} />
       </>
     );
