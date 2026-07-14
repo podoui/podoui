@@ -5,7 +5,7 @@
   "name": "Input",
   "category": "atom",
   "status": "stable",
-  "description": "Text input (Figma 538:6693): md/lg sizes, normal/hover/focused/completed/read-only/danger/disabled states, and prefix, suffix-text, suffix-icon composition slots.",
+  "description": "Text input (Figma 538:6693): md/lg sizes, normal/hover/focused/completed/read-only/danger/disabled states, and prefix, suffix-text, suffix-icon composition slots. danger keeps its border color under focus — only the 2px weight change signals focus, so validation auto-focus never masks the state (combo not in the Figma set; code decision pending a design check).",
   "anatomy": [
     {
       "name": "root"

@@ -539,6 +539,7 @@
   - Badge 문서(541:11262) 색상 표기·도트 두 곳의 properties 태그 오타 `rad` → `red`
   - Badge red 도트 색이 accent.50(#F15764) ↔ 같은 테마의 텍스트는 error.50(#F23B3B) — 다른 도트는 모두 자기 테마의 50 강도를 쓰는데 red만 어긋남. 의도 확인 필요 (코드는 시안 그대로 accent.50 반영, "pending a design check" 주석 지점: web CSS/theme.css/native)
   - Badge 셋(474:3218)의 `state` 불리언이 theme에서 유도되는 중복 속성 (natural~info는 항상 true, gray~orange는 항상 false) — 셋에서 제거하면 변형 관리가 단순해짐 (코드는 theme+dot만 매핑)
+  - Input/Textarea 시안에 danger+focused 조합 상태가 없음 — 코드는 "danger 테두리 색 유지 + 두께만 2px(포커스 표시)"로 결정 (유효성 실패 자동 포커스 시 danger가 파란 포커스 색에 덮이지 않도록). 시안에 해당 조합 추가/확정 요청
 - [ ] (보류) Figma→코드 동기화 파이프라인 (`podo figma-sync`, 트리거 버튼) — 이전 논의 기록은 auto-memory 참고
 
 ### C. 컴포넌트·품질

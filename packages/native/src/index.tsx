@@ -174,6 +174,8 @@ export interface NativeInputProps {
   disabled?: boolean;
   required?: boolean;
   onValueChange?: (value: string) => void;
+  /** 안쪽 TextInput에 그대로 연결되는 ref — focus() 같은 imperative 호출용. */
+  inputRef?: React.Ref<unknown>;
   accessibilityLabel?: string;
   accessibilityLabelledBy?: string;
   accessibilityDescribedBy?: string;
@@ -195,6 +197,8 @@ export interface NativeTextareaProps {
   disabled?: boolean;
   required?: boolean;
   onValueChange?: (value: string) => void;
+  /** 안쪽 TextInput에 그대로 연결되는 ref — focus() 같은 imperative 호출용. */
+  inputRef?: React.Ref<unknown>;
   accessibilityLabel?: string;
   accessibilityLabelledBy?: string;
   accessibilityDescribedBy?: string;
@@ -470,6 +474,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       // Root wrapper carries the box style so prefix/suffix content can live
       // inside the input (Figma 538:6693); the TextInput keeps the a11y wiring.
       const control = createElement(host.TextInput, {
+        ref: props.inputRef,
         accessibilityLabel: props.accessibilityLabel,
         accessibilityLabelledBy: props.accessibilityLabelledBy,
         accessibilityDescribedBy: props.accessibilityDescribedBy,
@@ -525,6 +530,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         required: props.required,
       });
       return createElement(host.TextInput, {
+        ref: props.inputRef,
         accessibilityLabel: props.accessibilityLabel,
         accessibilityLabelledBy: props.accessibilityLabelledBy,
         accessibilityDescribedBy: props.accessibilityDescribedBy,

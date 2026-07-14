@@ -23,6 +23,9 @@ describe("@podo/web", () => {
     expect(podoWebComponentCss).toContain('.podo-button[data-theme="solid-primary"]');
     expect(podoWebComponentCss).toContain('.podo-chip[data-theme="outline-weak"]');
     expect(podoWebComponentCss).toContain(".podo-badge[data-dot]");
+    // Invalid inputs keep the danger border while focused (auto-focus UX).
+    expect(podoWebComponentCss).toContain('.podo-input[data-state="invalid"]:focus-within');
+    expect(podoWebComponentCss).toContain('.podo-textarea[data-state="invalid"]:focus');
     // Table ships as classes only (no shadow element — table semantics).
     expect(podoWebComponentCss).toContain('.podo-table[data-type="grid"]');
     expect(podoWebComponentCss).toContain('.podo-table [data-align="right"]');

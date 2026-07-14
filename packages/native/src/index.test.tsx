@@ -13,7 +13,9 @@ import {
 const domNative = createNativeComponents({
   Pressable: TestPressable,
   Text: TestText,
-  TextInput: TestTextInput,
+  // forwardRef so the components' inputRef passthrough reaches the DOM input,
+  // like the real RN TextInput ref would.
+  TextInput: React.forwardRef(TestTextInput),
   View: TestView,
 });
 
@@ -75,6 +77,17 @@ describe("@podo/native", () => {
     render(<domNative.Textarea accessibilityLabel="메모" defaultValue="여러 줄" testID="area" />);
     expect(screen.getByTestId("area").tagName).toBe("INPUT"); // TestTextInput host
     expect((screen.getByTestId("area") as HTMLInputElement).value).toBe("여러 줄");
+
+    // inputRef reaches the inner TextInput for imperative focus (e.g. after
+    // a failed validation).
+    const inputRef = React.createRef<HTMLInputElement>();
+    render(<domNative.Input inputRef={inputRef} accessibilityLabel="검색어" testID="focusable" />);
+    inputRef.current?.focus();
+    expect(document.activeElement).toBe(screen.getByTestId("focusable"));
+
+    const textareaRef = React.createRef<HTMLInputElement>();
+    render(<domNative.Textarea inputRef={textareaRef} accessibilityLabel="긴 글" />);
+    expect(textareaRef.current).not.toBeNull();
 
     const changes: boolean[] = [];
     render(
@@ -235,10 +248,14 @@ function TestText({
   );
 }
 
-function TestTextInput(props: Record<string, unknown>): React.ReactElement {
+function TestTextInput(
+  props: Record<string, unknown>,
+  ref: React.ForwardedRef<HTMLInputElement>
+): React.ReactElement {
   const styleRecord = props.style as Record<string, unknown> | undefined;
   return (
     <input
+      ref={ref}
       aria-label={props.accessibilityLabel as string | undefined}
       data-bg={styleRecord?.backgroundColor as string | undefined}
       data-color={styleRecord?.color as string | undefined}

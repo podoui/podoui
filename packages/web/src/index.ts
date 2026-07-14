@@ -1053,6 +1053,13 @@ input {
   border-color: var(--podo-semantic-color-text-danger, #F23B3B);
 }
 
+/* Invalid keeps the danger color under focus — only the 2px weight change
+   signals focus, so validation auto-focus never masks the state. */
+.podo-input[data-state="invalid"]:focus-within {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+  box-shadow: inset 0 0 0 1px var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
 .podo-input[data-state="disabled"] {
   background: #E4E4E7;
   border-color: #D1D2D6;
@@ -1248,6 +1255,13 @@ input {
 
 .podo-textarea[data-state="invalid"] {
   border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+}
+
+/* Invalid keeps the danger color under focus — only the 2px weight change
+   signals focus, so validation auto-focus never masks the state. */
+.podo-textarea[data-state="invalid"]:focus {
+  border-color: var(--podo-semantic-color-text-danger, #F23B3B);
+  box-shadow: inset 0 0 0 1px var(--podo-semantic-color-text-danger, #F23B3B);
 }
 
 /* Figma read-only: the value stays visible without the box (12px vertical

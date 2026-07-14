@@ -478,6 +478,14 @@
   border-color: #f23b3b;
 }
 
+/* Invalid keeps the danger color under focus — only the 2px weight change
+   signals focus, so validation auto-focus never masks the state. */
+.podo-textarea[data-state="invalid"]:focus,
+.podo-textarea[data-state="invalid"].is-focus {
+  border-color: #f23b3b;
+  box-shadow: inset 0 0 0 1px #f23b3b;
+}
+
 .podo-textarea[data-state="read-only"] {
   background: transparent;
   border-color: transparent;
@@ -1162,6 +1170,14 @@
 
 .podo-input[data-state="invalid"] {
   border-color: #f23b3b;
+}
+
+/* Invalid keeps the danger color under focus — only the 2px weight change
+   signals focus, so validation auto-focus never masks the state. */
+.podo-input[data-state="invalid"]:focus-within,
+.podo-input[data-state="invalid"].is-focus {
+  border-color: #f23b3b;
+  box-shadow: inset 0 0 0 1px #f23b3b;
 }
 
 .podo-input[data-state="disabled"] {
