@@ -141,42 +141,48 @@ export function SelectPage() {
         description="선택의 목적과 데이터 규모에 따라 단일 선택의 경우 text 테마를, 다중 선택의 경우 slot 테마를 사용해서 구성하고, 선택 항목 추가가 필요한 경우 menu 슬롯에 select.input 컴포넌트를 사용해 구성해요(addable — 추가된 값은 목록에 붙고 자동 선택). 세 형태 모두 필요시 검색기능(searchable)을 조합할 수 있어요 — 열린 트리거에 입력하면 입력어를 포함한 항목만 남아요. 아래는 단일 선택, 다중 선택, 선택 항목 추가 각각에 검색을 끄고 켠 6가지 케이스예요."
       >
         <Card stage>
-          {/* 단일 선택: 검색 불가능 / 가능 */}
-          <Select placeholder="과일 선택" options={FRUITS} />
-          <Select searchable placeholder="과일 선택 및 검색" options={FRUITS} />
-          {/* 다중 선택: 검색 불가능 / 가능 — 칩 3개 초과는 +N 축약, ✕로 모두 해제 */}
-          <Select
-            multiple
-            clearable
-            placeholder="과일 선택"
-            options={FRUITS}
-            defaultValues={["strawberry", "banana", "grape", "apple", "orange"]}
-          />
-          <Select multiple searchable placeholder="과일 선택 및 검색" options={FRUITS} />
-          {/* 선택 항목 추가: 검색 불가능 / 가능 */}
-          <Select
-            multiple
-            addable
-            placeholder="과일 선택"
-            addPlaceholder="과일 이름 입력"
-            options={FRUITS}
-          />
-          <Select
-            multiple
-            addable
-            searchable
-            placeholder="과일 선택 및 검색"
-            addPlaceholder="과일 이름 입력"
-            options={FRUITS}
-          />
+          <div className="stage-col">
+            {/* 1행 — 단일 선택 / 다중 선택 / 선택 항목 추가 (검색 없음) */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}>
+              <Select placeholder="과일 선택" options={FRUITS} />
+              {/* 칩 3개 초과는 +N 축약, ✕로 모두 해제 */}
+              <Select
+                multiple
+                clearable
+                placeholder="과일 선택"
+                options={FRUITS}
+                defaultValues={["strawberry", "banana", "grape", "apple", "orange"]}
+              />
+              <Select
+                multiple
+                addable
+                placeholder="과일 선택"
+                addPlaceholder="과일 이름 입력"
+                options={FRUITS}
+              />
+            </div>
+            {/* 2행 — 같은 3형태에 검색(searchable)을 켠 케이스 */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}>
+              <Select searchable placeholder="과일 선택 및 검색" options={FRUITS} />
+              <Select multiple searchable placeholder="과일 선택 및 검색" options={FRUITS} />
+              <Select
+                multiple
+                addable
+                searchable
+                placeholder="과일 선택 및 검색"
+                addPlaceholder="과일 이름 입력"
+                options={FRUITS}
+              />
+            </div>
+          </div>
         </Card>
         <PropertyTags
           values={[
             "단일 선택",
-            "단일 선택 + 검색",
             "다중 선택",
-            "다중 선택 + 검색",
             "선택 항목 추가",
+            "단일 선택 + 검색",
+            "다중 선택 + 검색",
             "선택 항목 추가 + 검색",
           ]}
         />
