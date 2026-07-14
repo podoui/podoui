@@ -246,6 +246,8 @@ export interface SelectProps extends Omit<
   addPlaceholder?: string;
   /** 추가 버튼으로 새 옵션이 만들어져 목록에 붙고 선택됐을 때. */
   onOptionAdd?: (option: SelectOption) => void;
+  /** 다중 선택에서 값이 있을 때 트리거에 "모두 해제" ✕ 버튼을 보여줘요. */
+  clearable?: boolean;
   /**
    * 값은 보이지만 변경할 수 없는 상태 — 박스·체브론 없이 값만 렌더돼요
    * (Figma read-only, Input과 동일 규약).
@@ -896,6 +898,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     addable,
     addPlaceholder,
     onOptionAdd,
+    clearable,
     readOnly,
     invalid,
     disabled,
@@ -1193,6 +1196,23 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
             </>
           )}
         </span>
+        {clearable && multiple && hasValue && !disabled && !readOnly ? (
+          <button
+            type="button"
+            className="podo-select__clear"
+            aria-label="모두 해제"
+            onClick={(event) => {
+              // 메뉴 토글로 번지지 않게 끊고 전체 해제해요.
+              event.stopPropagation();
+              if (values === undefined) {
+                setInternalValues([]);
+              }
+              onValuesChange?.([]);
+            }}
+          >
+            {CHIP_CLOSE}
+          </button>
+        ) : null}
         {/* read-only는 열 수 없으니 체브론도 없어요 (Figma read-only). */}
         {readOnly ? null : <span className="podo-select__chevron">{SELECT_CHEVRON}</span>}
       </div>

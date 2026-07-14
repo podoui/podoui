@@ -144,9 +144,10 @@ export function SelectPage() {
           {/* 단일 선택: 검색 불가능 / 가능 */}
           <Select placeholder="과일 선택" options={FRUITS} />
           <Select searchable placeholder="과일 선택 및 검색" options={FRUITS} />
-          {/* 다중 선택: 검색 불가능 / 가능 — 칩 3개 초과는 +N으로 축약 */}
+          {/* 다중 선택: 검색 불가능 / 가능 — 칩 3개 초과는 +N 축약, ✕로 모두 해제 */}
           <Select
             multiple
+            clearable
             placeholder="과일 선택"
             options={FRUITS}
             defaultValues={["strawberry", "banana", "grape", "apple", "orange"]}
@@ -319,6 +320,16 @@ export function SelectPage() {
               </span>,
               "—",
               "추가 버튼으로 새 옵션이 만들어졌을 때 호출돼요",
+            ],
+            [
+              <span className="prop-name">
+                <code>clearable</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              <code>false</code>,
+              "다중 선택에서 값이 있을 때 트리거에 모두 해제(✕) 버튼을 보여줘요",
             ],
             [
               <span className="prop-name">

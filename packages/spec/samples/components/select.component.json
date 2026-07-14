@@ -108,6 +108,12 @@
       "description": "추가 버튼으로 새 옵션이 만들어졌을 때."
     },
     {
+      "name": "clearable",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "다중 선택에서 값이 있을 때 트리거(체브론 앞)에 \"모두 해제\" ✕ 버튼 표시 — 클릭하면 onValuesChange([])로 전부 해제돼요. 시안에 규정이 없는 코드 결정."
+    },
+    {
       "name": "readOnly",
       "type": { "kind": "boolean" },
       "default": false,

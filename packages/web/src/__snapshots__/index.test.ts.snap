@@ -1242,6 +1242,26 @@ input {
   flex-shrink: 0;
 }
 
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
+}
+
 .podo-select__value {
   align-items: center;
   color: var(--podo-select-value-color, #18181B);
@@ -2857,6 +2877,26 @@ input {
   flex-shrink: 0;
 }
 
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
+}
+
 .podo-select__value {
   align-items: center;
   color: var(--podo-select-value-color, #18181B);
@@ -4466,6 +4506,26 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
 }
 
 .podo-select__value {
@@ -6081,6 +6141,26 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
 }
 
 .podo-select__value {
@@ -7707,6 +7787,26 @@ input {
   flex-shrink: 0;
 }
 
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
+}
+
 .podo-select__value {
   align-items: center;
   color: var(--podo-select-value-color, #18181B);
@@ -9315,6 +9415,26 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
 }
 
 .podo-select__value {
@@ -10930,6 +11050,26 @@ input {
   flex-shrink: 0;
 }
 
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
+}
+
 .podo-select__value {
   align-items: center;
   color: var(--podo-select-value-color, #18181B);
@@ -12543,6 +12683,26 @@ input {
   flex-shrink: 0;
 }
 
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
+}
+
 .podo-select__value {
   align-items: center;
   color: var(--podo-select-value-color, #18181B);
@@ -14151,6 +14311,26 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
 }
 
 .podo-select__value {
@@ -15762,6 +15942,26 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
 }
 
 .podo-select__value {
@@ -17382,6 +17582,26 @@ input {
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
 }
 
 .podo-select__value {

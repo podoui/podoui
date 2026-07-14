@@ -209,6 +209,8 @@ export interface HonoSelectProps {
   /** 메뉴 상단 추가 입력줄 마크업 (Figma multi-select-input). */
   addable?: boolean;
   addPlaceholder?: string;
+  /** 다중 선택에서 값이 있을 때 "모두 해제" ✕ 마크업 표시 (동작은 클라이언트 코드). */
+  clearable?: boolean;
   /** 값은 보이지만 변경 불가 — 박스·체브론 없이 값만 렌더 (Figma read-only). */
   readOnly?: boolean;
   invalid?: boolean;
@@ -271,6 +273,7 @@ export function Select({
   open,
   addable,
   addPlaceholder,
+  clearable,
   readOnly,
   invalid,
   disabled,
@@ -337,6 +340,11 @@ export function Select({
             ((multiple ? placeholder : (selected?.label ?? placeholder)) ?? "")
           )}
         </span>
+        {clearable && multiple && hasValue && !disabled && !readOnly ? (
+          <button type="button" class="podo-select__clear" aria-label="모두 해제">
+            {HONO_CHIP_CLOSE}
+          </button>
+        ) : null}
         {readOnly ? null : <span class="podo-select__chevron">{HONO_SELECT_CHEVRON}</span>}
       </div>
       {open ? (

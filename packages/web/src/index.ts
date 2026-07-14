@@ -1316,6 +1316,26 @@ input {
   flex-shrink: 0;
 }
 
+/* Multi-select clear-all: an X ahead of the chevron, shown while values
+   exist (no design spec yet — logged for a check). */
+.podo-select__clear {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #767985;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
+}
+
+.podo-select__clear:hover {
+  color: #50555E;
+}
+
 .podo-select__value {
   align-items: center;
   color: var(--podo-select-value-color, #18181B);
@@ -2198,6 +2218,7 @@ function createSelectElement(): CustomElementConstructor {
         "placeholder",
         "size",
         "multiple",
+        "clearable",
         "readonly",
         "invalid",
         "disabled",
@@ -2323,16 +2344,31 @@ function createSelectElement(): CustomElementConstructor {
     disabled ? "-1" : "0"
   }">
     <span class="podo-select__value"${hasValue ? "" : ' data-placeholder="true"'}>${valueHtml}</span>
+    ${
+      this.hasAttribute("clearable") && multiple && hasValue && !disabled && !readOnly
+        ? `<button type="button" class="podo-select__clear" aria-label="모두 해제">${CHIP_CLOSE_SVG}</button>`
+        : ""
+    }
     ${readOnly ? "" : `<span class="podo-select__chevron">${SELECT_CHEVRON_SVG}</span>`}
   </div>
   ${open ? `<div class="podo-select__menu-list"><div class="podo-select__menu" role="listbox"${multiple ? ' aria-multiselectable="true"' : ""}>${cellsHtml}</div></div>` : ""}
 </div>`;
 
       this.shadow.querySelector(".podo-select__trigger")?.addEventListener("click", (event) => {
-        if (disabled || readOnly || (event.target as HTMLElement).closest(".podo-chip__remove")) {
+        if (
+          disabled ||
+          readOnly ||
+          (event.target as HTMLElement).closest(".podo-chip__remove, .podo-select__clear")
+        ) {
           return;
         }
         this.toggleAttribute("open");
+      });
+      this.shadow.querySelector(".podo-select__clear")?.addEventListener("click", () => {
+        this.setAttribute("values", "[]");
+        this.dispatchEvent(
+          new CustomEvent("podo-change", { bubbles: true, composed: true, detail: { values: [] } })
+        );
       });
       for (const remove of this.shadow.querySelectorAll(".podo-chip__remove")) {
         remove.addEventListener("click", () => {

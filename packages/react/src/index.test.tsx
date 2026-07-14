@@ -362,6 +362,33 @@ describe("@podo/react", () => {
     expect(q.getByRole("option", { name: "멜론" })).toBeDefined();
   });
 
+  it("clears every multi-select value through the clearable X", async () => {
+    const user = userEvent.setup();
+    let latest: string[] | null = null;
+    const { container } = render(
+      <Select
+        multiple
+        clearable
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+        defaultValues={["strawberry", "banana"]}
+        onValuesChange={(next) => {
+          latest = next;
+        }}
+      />
+    );
+    const q = within(container);
+
+    await user.click(q.getByRole("button", { name: "모두 해제" }));
+    expect(latest).toEqual([]);
+    // 전부 해제되면 칩·해제 버튼이 사라지고 플레이스홀더로 돌아가요.
+    expect(q.queryByRole("button", { name: "모두 해제" })).toBeNull();
+    // 모두 해제 클릭은 메뉴 토글로 번지지 않아요.
+    expect(q.queryByRole("listbox")).toBeNull();
+  });
+
   it("renders read-only selects without the box, chevron, or chip removal", async () => {
     const user = userEvent.setup();
     const { container } = render(

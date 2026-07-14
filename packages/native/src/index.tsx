@@ -237,6 +237,8 @@ export interface NativeSelectProps {
   onValuesChange?: (values: string[]) => void;
   /** 트리거에 보여줄 최대 칩 수 — 넘치는 값은 "+N"으로 축약돼요. */
   maxChips?: number;
+  /** 다중 선택에서 값이 있을 때 "모두 해제" ✕ 버튼을 보여줘요. */
+  clearable?: boolean;
   /** 값은 보이지만 변경 불가 — 박스·체브론 없이 값만 렌더 (Figma read-only). */
   readOnly?: boolean;
   invalid?: boolean;
@@ -729,6 +731,17 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           },
           props.prefix,
           ...valueContent,
+          props.clearable && multiple && hasValue && !disabled && !readOnly
+            ? createElement(
+                host.Pressable,
+                {
+                  accessibilityRole: "button",
+                  accessibilityLabel: "모두 해제",
+                  onPress: () => props.onValuesChange?.([]),
+                },
+                createElement(host.Text, { style: { color: "#767985", fontSize: 14 } }, "✕")
+              )
+            : null,
           readOnly
             ? null
             : createElement(host.Text, { style: { color: "#27272A", fontSize: 16 } }, "▾")
