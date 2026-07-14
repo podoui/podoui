@@ -1221,6 +1221,15 @@ input {
   cursor: not-allowed;
 }
 
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
+}
+
 .podo-select__trigger:focus-visible {
   outline: 2px solid #426CED;
   outline-offset: 2px;
@@ -2827,6 +2836,15 @@ input {
   cursor: not-allowed;
 }
 
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
+}
+
 .podo-select__trigger:focus-visible {
   outline: 2px solid #426CED;
   outline-offset: 2px;
@@ -4427,6 +4445,15 @@ input {
   background: #E4E4E7;
   border-color: #D1D2D6;
   cursor: not-allowed;
+}
+
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
 }
 
 .podo-select__trigger:focus-visible {
@@ -6033,6 +6060,15 @@ input {
   background: #E4E4E7;
   border-color: #D1D2D6;
   cursor: not-allowed;
+}
+
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
 }
 
 .podo-select__trigger:focus-visible {
@@ -7650,6 +7686,15 @@ input {
   cursor: not-allowed;
 }
 
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
+}
+
 .podo-select__trigger:focus-visible {
   outline: 2px solid #426CED;
   outline-offset: 2px;
@@ -9249,6 +9294,15 @@ input {
   background: #E4E4E7;
   border-color: #D1D2D6;
   cursor: not-allowed;
+}
+
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
 }
 
 .podo-select__trigger:focus-visible {
@@ -10855,6 +10909,15 @@ input {
   cursor: not-allowed;
 }
 
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
+}
+
 .podo-select__trigger:focus-visible {
   outline: 2px solid #426CED;
   outline-offset: 2px;
@@ -12459,6 +12522,15 @@ input {
   cursor: not-allowed;
 }
 
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
+}
+
 .podo-select__trigger:focus-visible {
   outline: 2px solid #426CED;
   outline-offset: 2px;
@@ -14058,6 +14130,15 @@ input {
   background: #E4E4E7;
   border-color: #D1D2D6;
   cursor: not-allowed;
+}
+
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
 }
 
 .podo-select__trigger:focus-visible {
@@ -15660,6 +15741,15 @@ input {
   background: #E4E4E7;
   border-color: #D1D2D6;
   cursor: not-allowed;
+}
+
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
 }
 
 .podo-select__trigger:focus-visible {
@@ -17271,6 +17361,15 @@ input {
   background: #E4E4E7;
   border-color: #D1D2D6;
   cursor: not-allowed;
+}
+
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
 }
 
 .podo-select__trigger:focus-visible {

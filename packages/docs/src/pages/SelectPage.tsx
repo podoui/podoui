@@ -107,7 +107,7 @@ export function SelectPage() {
       <DocSection
         index={3}
         title="상태 (state)"
-        description="선택 상태는 선택 단계와 결과에 따라 normal, hover, focused, completed, danger, disabled로 구분해 표현해요. normal은 선택 전 기본 상태, hover는 마우스를 올려 상호작용 가능함을 미리 알리고, focused는 메뉴가 열려 값을 고르는 중임을, completed는 값이 올바르게 선택됐음을, danger는 필수 선택 누락이나 검증 실패를 알리고, disabled는 지금 선택할 수 없는 상태임을 시각적으로 구분해요. hover·focused는 실제 인터랙션으로 표현되고, completed는 값이 선택되면 자연히 나타나요. danger는 포커스 중에도 색을 유지해요."
+        description="선택 상태는 선택 단계와 결과에 따라 normal, hover, focused, completed, read-only, danger, disabled로 구분해 표현해요. normal은 선택 전 기본 상태, hover는 마우스를 올려 상호작용 가능함을 미리 알리고, focused는 메뉴가 열려 값을 고르는 중임을, completed는 값이 올바르게 선택됐음을, read-only는 읽기 전용으로 사용자가 변경할 수 없는 상태임을, danger는 필수 선택 누락이나 검증 실패를 알리고, disabled는 지금 선택할 수 없는 상태임을 시각적으로 구분해요. hover·focused는 실제 인터랙션으로 표현되고, completed는 값이 선택되면 자연히 나타나요. danger는 포커스 중에도 색을 유지해요."
       >
         <Card stage>
           <div className="stage-col">
@@ -125,11 +125,14 @@ export function SelectPage() {
               />
             </span>
             <Select defaultValue="strawberry" options={FRUITS} />
+            <Select readOnly defaultValue="strawberry" options={FRUITS} />
             <Select invalid placeholder="플레이스 홀더" options={FRUITS} />
             <Select disabled placeholder="플레이스 홀더" options={FRUITS} />
           </div>
         </Card>
-        <PropertyTags values={["normal", "hover", "focused", "completed", "danger", "disabled"]} />
+        <PropertyTags
+          values={["normal", "hover", "focused", "completed", "read-only", "danger", "disabled"]}
+        />
       </DocSection>
 
       <DocSection
@@ -316,6 +319,16 @@ export function SelectPage() {
               </span>,
               "—",
               "추가 버튼으로 새 옵션이 만들어졌을 때 호출돼요",
+            ],
+            [
+              <span className="prop-name">
+                <code>readOnly</code>
+              </span>,
+              <span className="prop-type">
+                <code>boolean</code>
+              </span>,
+              <code>false</code>,
+              "읽기 전용. 박스·체브론 없이 값만 보이고 열리지 않아요. 칩의 X도 사라져요",
             ],
             [
               <span className="prop-name">

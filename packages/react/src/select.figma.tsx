@@ -16,17 +16,19 @@ figma.connect(
       multiple: figma.enum("theme", { text: false, slot: true }),
       invalid: figma.enum("state", { danger: true }),
       disabled: figma.enum("state", { disabled: true }),
+      readOnly: figma.enum("state", { "read-only": true }),
       prefix: figma.boolean("prefix-icon", {
         true: <Icon name="menu" />,
         false: undefined,
       }),
     },
-    example: ({ size, multiple, invalid, disabled, prefix }) => (
+    example: ({ size, multiple, invalid, disabled, readOnly, prefix }) => (
       <Select
         size={size}
         multiple={multiple}
         invalid={invalid}
         disabled={disabled}
+        readOnly={readOnly}
         prefix={prefix}
         placeholder="플레이스 홀더"
         options={[

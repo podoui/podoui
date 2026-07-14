@@ -246,6 +246,11 @@ export interface SelectProps extends Omit<
   addPlaceholder?: string;
   /** 추가 버튼으로 새 옵션이 만들어져 목록에 붙고 선택됐을 때. */
   onOptionAdd?: (option: SelectOption) => void;
+  /**
+   * 값은 보이지만 변경할 수 없는 상태 — 박스·체브론 없이 값만 렌더돼요
+   * (Figma read-only, Input과 동일 규약).
+   */
+  readOnly?: boolean;
   invalid?: boolean;
   disabled?: boolean;
   /** 값 앞에 붙는 아이콘 (Figma prefix-icon). */
@@ -891,6 +896,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     addable,
     addPlaceholder,
     onOptionAdd,
+    readOnly,
     invalid,
     disabled,
     prefix,
@@ -1008,7 +1014,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     onKeyDown?.(event);
-    if (disabled || event.defaultPrevented) {
+    if (disabled || readOnly || event.defaultPrevented) {
       return;
     }
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
@@ -1052,10 +1058,25 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
   };
 
   // 선택 값 칩은 Chip 컴포넌트의 제거형 모드를 그대로 재사용하고, maxChips를
-  // 넘는 값은 "+N"으로 축약해요 (해제는 메뉴에서).
+  // 넘는 값은 "+N"으로 축약해요 (해제는 메뉴에서). read-only에선 지울 수
+  // 없으니 X 없는 정적 칩으로 렌더해요.
   const hiddenChipCount = Math.max(0, selectedValues.length - maxChips);
   const chips = selectedValues.slice(0, maxChips).map((v) => {
     const label = allOptions.find((o) => o.value === v)?.label ?? v;
+    if (readOnly) {
+      return (
+        <span
+          key={v}
+          className="podo-chip"
+          data-theme="solid"
+          data-size="md"
+          data-state="selected"
+          data-removable="true"
+        >
+          <span className="podo-chip__label">{label}</span>
+        </span>
+      );
+    }
     return (
       <Chip
         key={v}
@@ -1095,7 +1116,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
       }}
       className={joinClass("podo-select", className)}
       data-size={size}
-      data-state={invalid ? "invalid" : disabled ? "disabled" : undefined}
+      data-state={invalid ? "invalid" : disabled ? "disabled" : readOnly ? "read-only" : undefined}
       data-open={open ? "true" : undefined}
     >
       <div
@@ -1105,13 +1126,14 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
         aria-controls={open ? menuId : undefined}
         aria-activedescendant={open && activeIndex >= 0 ? `${menuId}-${activeIndex}` : undefined}
         aria-disabled={disabled || undefined}
+        aria-readonly={readOnly || undefined}
         aria-invalid={invalid || undefined}
         tabIndex={disabled ? -1 : 0}
         className="podo-select__trigger"
         onKeyDown={handleKeyDown}
         onClick={(event) => {
           onClick?.(event);
-          if (disabled || event.defaultPrevented) {
+          if (disabled || readOnly || event.defaultPrevented) {
             return;
           }
           // 검색 입력 클릭은 편집이지 토글이 아니에요.
@@ -1171,7 +1193,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
             </>
           )}
         </span>
-        <span className="podo-select__chevron">{SELECT_CHEVRON}</span>
+        {/* read-only는 열 수 없으니 체브론도 없어요 (Figma read-only). */}
+        {readOnly ? null : <span className="podo-select__chevron">{SELECT_CHEVRON}</span>}
       </div>
       {open ? (
         <div className="podo-select__menu-list">

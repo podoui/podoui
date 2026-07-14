@@ -1295,6 +1295,15 @@ input {
   cursor: not-allowed;
 }
 
+/* Figma read-only: the value stays visible without the box or chevron
+   (same rule family as Input read-only). */
+.podo-select[data-state="read-only"] .podo-select__trigger {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+  padding-left: 0;
+}
+
 .podo-select__trigger:focus-visible {
   outline: 2px solid #426CED;
   outline-offset: 2px;
@@ -2189,6 +2198,7 @@ function createSelectElement(): CustomElementConstructor {
         "placeholder",
         "size",
         "multiple",
+        "readonly",
         "invalid",
         "disabled",
         "open",
@@ -2251,11 +2261,14 @@ function createSelectElement(): CustomElementConstructor {
       const placeholder = attr(this, "placeholder", "");
       const selected = options.find((o) => o.value === value);
       const hasValue = multiple ? values.length > 0 : Boolean(selected);
+      const readOnly = this.hasAttribute("readonly");
       const stateAttr = disabled
         ? 'data-state="disabled"'
         : this.hasAttribute("invalid")
           ? 'data-state="invalid"'
-          : "";
+          : readOnly
+            ? 'data-state="read-only"'
+            : "";
 
       // Value chips reuse the podo-chip removable classes; values past
       // max-chips collapse into a "+N" chip (deselect via the menu).
@@ -2267,11 +2280,14 @@ function createSelectElement(): CustomElementConstructor {
               .slice(0, maxChips)
               .map((v) => {
                 const label = options.find((o) => o.value === v)?.label ?? v;
+                const removeButton = readOnly
+                  ? ""
+                  : `<button type="button" class="podo-chip__remove" data-value="${escapeHtml(
+                      v
+                    )}" aria-label="${escapeHtml(label)} 제거">${CHIP_CLOSE_SVG}</button>`;
                 return `<span class="podo-chip" data-theme="solid" data-size="md" data-state="selected" data-removable="true"><span class="podo-chip__label">${escapeHtml(
                   label
-                )}</span><button type="button" class="podo-chip__remove" data-value="${escapeHtml(
-                  v
-                )}" aria-label="${escapeHtml(label)} 제거">${CHIP_CLOSE_SVG}</button></span>`;
+                )}</span>${removeButton}</span>`;
               })
               .join("") +
             (hiddenChipCount > 0
@@ -2307,13 +2323,13 @@ function createSelectElement(): CustomElementConstructor {
     disabled ? "-1" : "0"
   }">
     <span class="podo-select__value"${hasValue ? "" : ' data-placeholder="true"'}>${valueHtml}</span>
-    <span class="podo-select__chevron">${SELECT_CHEVRON_SVG}</span>
+    ${readOnly ? "" : `<span class="podo-select__chevron">${SELECT_CHEVRON_SVG}</span>`}
   </div>
   ${open ? `<div class="podo-select__menu-list"><div class="podo-select__menu" role="listbox"${multiple ? ' aria-multiselectable="true"' : ""}>${cellsHtml}</div></div>` : ""}
 </div>`;
 
       this.shadow.querySelector(".podo-select__trigger")?.addEventListener("click", (event) => {
-        if (disabled || (event.target as HTMLElement).closest(".podo-chip__remove")) {
+        if (disabled || readOnly || (event.target as HTMLElement).closest(".podo-chip__remove")) {
           return;
         }
         this.toggleAttribute("open");

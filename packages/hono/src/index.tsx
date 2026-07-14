@@ -209,6 +209,8 @@ export interface HonoSelectProps {
   /** 메뉴 상단 추가 입력줄 마크업 (Figma multi-select-input). */
   addable?: boolean;
   addPlaceholder?: string;
+  /** 값은 보이지만 변경 불가 — 박스·체브론 없이 값만 렌더 (Figma read-only). */
+  readOnly?: boolean;
   invalid?: boolean;
   disabled?: boolean;
   /** 값 앞에 붙는 아이콘 (Figma prefix-icon). */
@@ -269,6 +271,7 @@ export function Select({
   open,
   addable,
   addPlaceholder,
+  readOnly,
   invalid,
   disabled,
   prefix,
@@ -277,7 +280,7 @@ export function Select({
   const selectedValues = values ?? [];
   const selected = options.find((o) => o.value === value);
   const hasValue = multiple ? selectedValues.length > 0 : Boolean(selected);
-  const state = invalid ? "invalid" : disabled ? "disabled" : undefined;
+  const state = invalid ? "invalid" : disabled ? "disabled" : readOnly ? "read-only" : undefined;
 
   return (
     <div
@@ -301,6 +304,20 @@ export function Select({
               {selectedValues.slice(0, maxChips).map((v) => {
                 const label = options.find((o) => o.value === v)?.label ?? v;
                 // 선택 값 칩은 Chip의 제거형 모드를 그대로 재사용해요.
+                // read-only는 지울 수 없으니 X 없는 정적 칩으로 렌더해요.
+                if (readOnly) {
+                  return (
+                    <span
+                      class="podo-chip"
+                      data-theme="solid"
+                      data-size="md"
+                      data-state="selected"
+                      data-removable="true"
+                    >
+                      <span class="podo-chip__label">{label}</span>
+                    </span>
+                  );
+                }
                 return (
                   <Chip removable removeLabel={`${label} 제거`}>
                     {label}
@@ -320,7 +337,7 @@ export function Select({
             ((multiple ? placeholder : (selected?.label ?? placeholder)) ?? "")
           )}
         </span>
-        <span class="podo-select__chevron">{HONO_SELECT_CHEVRON}</span>
+        {readOnly ? null : <span class="podo-select__chevron">{HONO_SELECT_CHEVRON}</span>}
       </div>
       {open ? (
         <div class="podo-select__menu-list">

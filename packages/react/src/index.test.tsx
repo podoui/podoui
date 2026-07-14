@@ -362,6 +362,37 @@ describe("@podo/react", () => {
     expect(q.getByRole("option", { name: "멜론" })).toBeDefined();
   });
 
+  it("renders read-only selects without the box, chevron, or chip removal", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <Select
+          readOnly
+          defaultValue="strawberry"
+          options={[{ value: "strawberry", label: "딸기" }]}
+        />
+        <Select
+          readOnly
+          multiple
+          defaultValues={["strawberry"]}
+          options={[{ value: "strawberry", label: "딸기" }]}
+        />
+      </>
+    );
+    const q = within(container);
+
+    const [single] = q.getAllByRole("combobox");
+    expect(single!.closest(".podo-select")?.getAttribute("data-state")).toBe("read-only");
+    expect(single!.getAttribute("aria-readonly")).toBe("true");
+    // 열리지 않고 체브론도 없어요.
+    await user.click(single!);
+    expect(q.queryByRole("listbox")).toBeNull();
+    expect(container.querySelector(".podo-select__chevron")).toBeNull();
+    // 다중 read-only 칩은 X 버튼 없이 값만 보여요.
+    expect(q.getByText("딸기", { selector: ".podo-chip__label" })).toBeDefined();
+    expect(q.queryByRole("button", { name: "딸기 제거" })).toBeNull();
+  });
+
   it("closes the select on outside click and blocks it while disabled", async () => {
     const user = userEvent.setup();
     const { container } = render(

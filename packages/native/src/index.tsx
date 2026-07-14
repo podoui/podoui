@@ -237,6 +237,8 @@ export interface NativeSelectProps {
   onValuesChange?: (values: string[]) => void;
   /** 트리거에 보여줄 최대 칩 수 — 넘치는 값은 "+N"으로 축약돼요. */
   maxChips?: number;
+  /** 값은 보이지만 변경 불가 — 박스·체브론 없이 값만 렌더 (Figma read-only). */
+  readOnly?: boolean;
   invalid?: boolean;
   disabled?: boolean;
   /** 값 앞에 붙는 아이콘 (Figma prefix-icon). */
@@ -552,16 +554,19 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const [open, setOpen] = useState(false);
       const multiple = props.multiple === true;
       const disabled = props.disabled === true;
+      const readOnly = props.readOnly === true;
       const selectedValues = props.values ?? [];
       const selected = props.options.find((o) => o.value === props.value);
       const hasValue = multiple ? selectedValues.length > 0 : Boolean(selected);
-      const border = disabled
-        ? { color: "#D1D2D6", width: 1 }
-        : open
-          ? { color: props.invalid ? "#F23B3B" : "#426CED", width: 2 }
-          : props.invalid
-            ? { color: "#F23B3B", width: 1 }
-            : { color: "#E4E4E7", width: 1 };
+      const border = readOnly
+        ? { color: "transparent", width: 1 }
+        : disabled
+          ? { color: "#D1D2D6", width: 1 }
+          : open
+            ? { color: props.invalid ? "#F23B3B" : "#426CED", width: 2 }
+            : props.invalid
+              ? { color: "#F23B3B", width: 1 }
+              : { color: "#E4E4E7", width: 1 };
 
       const pick = (optionValue: string) => {
         if (multiple) {
@@ -581,6 +586,22 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const hiddenChipCount = Math.max(0, selectedValues.length - maxChips);
       const chips: ReactNode[] = selectedValues.slice(0, maxChips).map((v) => {
         const label = props.options.find((o) => o.value === v)?.label ?? v;
+        // read-only는 지울 수 없으니 X 없는 정적 칩으로 렌더해요.
+        if (readOnly) {
+          return createElement(
+            host.View,
+            {
+              key: v,
+              style: { ...styles.chip, backgroundColor: "#3E424B" },
+              "data-state": "selected",
+            },
+            createElement(
+              host.Text,
+              { style: { ...styles.chipLabel, color: "#FFFFFF", fontSize: 14 } },
+              label
+            )
+          );
+        }
         return createElement(components.Chip, {
           key: v,
           children: label,
@@ -681,7 +702,13 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           style: { flexDirection: "column", gap: 6 },
           testID: props.testID,
           "data-size": props.size ?? "md",
-          "data-state": props.invalid ? "invalid" : disabled ? "disabled" : undefined,
+          "data-state": props.invalid
+            ? "invalid"
+            : disabled
+              ? "disabled"
+              : readOnly
+                ? "read-only"
+                : undefined,
           "data-open": open ? "true" : undefined,
         },
         createElement(
@@ -690,18 +717,21 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             accessibilityRole: "button",
             accessibilityState: { disabled, expanded: open },
             disabled,
-            onPress: disabled ? undefined : () => setOpen(!open),
+            onPress: disabled || readOnly ? undefined : () => setOpen(!open),
             style: {
               ...styles.selectTrigger,
               ...(props.size === "lg" ? { borderRadius: 12, minHeight: 52, minWidth: 120 } : {}),
-              backgroundColor: disabled ? "#E4E4E7" : "#FFFFFF",
+              ...(readOnly ? { paddingLeft: 0 } : {}),
+              backgroundColor: disabled ? "#E4E4E7" : readOnly ? "transparent" : "#FFFFFF",
               borderColor: border.color,
               borderWidth: border.width,
             },
           },
           props.prefix,
           ...valueContent,
-          createElement(host.Text, { style: { color: "#27272A", fontSize: 16 } }, "▾")
+          readOnly
+            ? null
+            : createElement(host.Text, { style: { color: "#27272A", fontSize: 16 } }, "▾")
         ),
         open ? createElement(host.View, { style: styles.selectMenu }, ...cells) : null
       );
