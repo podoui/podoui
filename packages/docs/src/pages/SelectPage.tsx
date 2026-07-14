@@ -122,17 +122,23 @@ export function SelectPage() {
       <DocSection
         index={4}
         title="응용 (composition)"
-        description="선택의 목적과 데이터 규모에 따라 단일 선택의 경우 text 테마를, 다중 선택의 경우 slot 테마를 사용해서 구성해요. select는 필요시 검색기능을 지원하고(searchable — 열린 트리거에 입력하면 입력어를 포함한 항목만 남아요), 선택 항목 추가가 필요한 경우 menu 슬롯에 select.input 컴포넌트를 사용해 구성해요(addable — 추가된 값은 목록에 붙고 자동 선택). 검색·추가는 단일·다중 어디에나 조합할 수 있어요."
+        description="선택의 목적과 데이터 규모에 따라 단일 선택의 경우 text 테마를, 다중 선택의 경우 slot 테마를 사용해서 구성하고, 선택 항목 추가가 필요한 경우 menu 슬롯에 select.input 컴포넌트를 사용해 구성해요(addable — 추가된 값은 목록에 붙고 자동 선택). 세 형태 모두 필요시 검색기능(searchable)을 조합할 수 있어요 — 열린 트리거에 입력하면 입력어를 포함한 항목만 남아요. 아래는 단일 선택, 다중 선택, 선택 항목 추가 각각에 검색을 끄고 켠 6가지 케이스예요."
       >
         <Card stage>
+          {/* 단일 선택: 검색 불가능 / 가능 */}
           <Select placeholder="과일 선택" options={FRUITS} />
+          <Select searchable placeholder="과일 선택 및 검색" options={FRUITS} />
+          {/* 다중 선택: 검색 불가능 / 가능 */}
           <Select
             multiple
             placeholder="과일 선택"
             options={FRUITS}
             defaultValues={["strawberry", "banana"]}
           />
+          <Select multiple searchable placeholder="과일 선택 및 검색" options={FRUITS} />
+          {/* 선택 항목 추가: 검색 불가능 / 가능 */}
           <Select
+            multiple
             addable
             placeholder="과일 선택"
             addPlaceholder="과일 이름 입력"
@@ -141,12 +147,22 @@ export function SelectPage() {
           <Select
             multiple
             addable
-            placeholder="과일 선택"
+            searchable
+            placeholder="과일 선택 및 검색"
             addPlaceholder="과일 이름 입력"
             options={FRUITS}
           />
         </Card>
-        <PropertyTags values={["단일 선택", "다중 선택", "선택 항목 추가"]} />
+        <PropertyTags
+          values={[
+            "단일 선택",
+            "단일 선택 + 검색",
+            "다중 선택",
+            "다중 선택 + 검색",
+            "선택 항목 추가",
+            "선택 항목 추가 + 검색",
+          ]}
+        />
       </DocSection>
 
       <DocSection
