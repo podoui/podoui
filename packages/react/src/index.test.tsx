@@ -177,7 +177,9 @@ describe("@podo/react", () => {
     const q = within(container);
 
     const trigger = q.getByRole("combobox");
-    expect(q.getByText("과일 선택").getAttribute("data-placeholder")).toBe("true");
+    expect(
+      q.getByText("과일 선택").closest(".podo-select__value")?.getAttribute("data-placeholder")
+    ).toBe("true");
     await user.click(trigger);
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
 
@@ -264,10 +266,14 @@ describe("@podo/react", () => {
     const q = within(container);
 
     await user.click(q.getByRole("combobox"));
+    // 검색 중에도 값 콘텐츠는 레이아웃에 남아(숨김 처리) 트리거 너비를 지켜요.
+    const content = container.querySelector(".podo-select__value-content");
+    expect(content?.getAttribute("data-hidden")).toBe("true");
     await user.keyboard("바나");
     expect(q.queryByRole("option", { name: "딸기" })).toBeNull();
     await user.click(q.getByRole("option", { name: "바나나" }));
     expect(q.getByText("바나나")).toBeDefined();
+    expect(content?.getAttribute("data-hidden")).toBeNull();
   });
 
   it("adds and auto-selects a new option through the add row", async () => {

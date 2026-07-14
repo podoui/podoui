@@ -1097,22 +1097,28 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
         }}
       >
         {prefix ? <span className="podo-select__prefix">{prefix}</span> : null}
-        {open && searchable ? (
-          <input
-            autoFocus
-            className="podo-select__search"
-            value={query}
-            placeholder={multiple ? placeholder : (selectedOption?.label ?? placeholder)}
-            onChange={(event) => {
-              setQuery(event.currentTarget.value);
-              setActiveIndex(-1);
-            }}
-          />
-        ) : (
-          <span className="podo-select__value" data-placeholder={hasValue ? undefined : "true"}>
+        {/* 값 콘텐츠는 검색 중에도 레이아웃에 남아 트리거 너비를 고정하고,
+            검색 입력은 그 위에 겹쳐요 (열림/닫힘 너비 점프 방지). */}
+        <span className="podo-select__value" data-placeholder={hasValue ? undefined : "true"}>
+          <span
+            className="podo-select__value-content"
+            data-hidden={open && searchable ? "true" : undefined}
+          >
             {multiple ? (hasValue ? chips : placeholder) : (selectedOption?.label ?? placeholder)}
           </span>
-        )}
+          {open && searchable ? (
+            <input
+              autoFocus
+              className="podo-select__search"
+              value={query}
+              placeholder={multiple ? placeholder : (selectedOption?.label ?? placeholder)}
+              onChange={(event) => {
+                setQuery(event.currentTarget.value);
+                setActiveIndex(-1);
+              }}
+            />
+          ) : null}
+        </span>
         <span className="podo-select__chevron">{SELECT_CHEVRON}</span>
       </div>
       {open ? (

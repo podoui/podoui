@@ -532,6 +532,7 @@
   gap: 6px;
   min-width: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .podo-select__value[data-placeholder],
@@ -539,15 +540,30 @@
   color: #9fa2ad;
 }
 
+.podo-select__value-content {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* While searching the content stays in layout (keeps the trigger width
+   stable between open/closed) and the input overlays it. */
+.podo-select__value-content[data-hidden] {
+  visibility: hidden;
+}
+
 .podo-select__search {
   background: transparent;
   border: 0;
   color: #18181b;
-  flex: 1 1 0;
   font: inherit;
-  min-width: 0;
+  inset: 0;
   outline: none;
   padding: 0;
+  position: absolute;
+  width: 100%;
 }
 
 .podo-select__search::placeholder {
@@ -652,7 +668,7 @@
   font-size: 14px;
   line-height: 1.6;
   min-height: 32px;
-  min-width: 0;
+  min-width: 144px;
   outline: none;
   padding: 0 10px 0 12px;
 }
