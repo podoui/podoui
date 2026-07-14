@@ -297,12 +297,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -340,6 +340,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -1244,30 +1263,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -1858,12 +1857,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -1901,6 +1900,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -2805,30 +2823,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -3415,12 +3413,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -3458,6 +3456,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -4362,30 +4379,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -4976,12 +4973,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -5019,6 +5016,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -5923,30 +5939,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -6546,12 +6542,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -6589,6 +6585,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -7493,30 +7508,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -8102,12 +8097,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -8145,6 +8140,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -9049,30 +9063,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -9661,12 +9655,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -9704,6 +9698,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -10608,30 +10621,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -11220,12 +11213,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -11263,6 +11256,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -12167,30 +12179,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -12776,12 +12768,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -12819,6 +12811,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -13723,30 +13734,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -14333,12 +14324,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -14376,6 +14367,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -15280,30 +15290,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -15899,12 +15889,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -15942,6 +15932,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -16846,30 +16855,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {

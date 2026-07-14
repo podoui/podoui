@@ -5,7 +5,7 @@
   "name": "Chip",
   "category": "atom",
   "status": "experimental",
-  "description": "Compact selectable tag (Figma 538:6615) with a selection model — unselected is the base look. solid: gray.10 fill unselected, gray.70 fill with gray.0 text selected; outline-strong/weak: transparent with a gray.20 hairline unselected (outline-strong selected currently renders identically to solid, pending a design fix; outline-weak selected is gray.5 with a gray.50 border). Pressing nudges each state darker (unselected-pressed, selected-pressed) and disabled flattens to gray.20/gray.40. Sizes: md 14px/2-6 padding (base), lg 16px/2-8. prefix and suffix icon slots compose category and remove actions.",
+  "description": "Compact selectable tag (Figma 538:6615) with a selection model — unselected is the base look. solid: gray.10 fill unselected, gray.70 fill with gray.0 text selected; outline-strong/weak: transparent with a gray.20 hairline unselected (outline-strong selected currently renders identically to solid, pending a design fix; outline-weak selected is gray.5 with a gray.50 border). Pressing nudges each state darker (unselected-pressed, selected-pressed) and disabled flattens to gray.20/gray.40. Sizes: md 14px/2-6 padding (base), lg 16px/2-8. prefix and suffix icon slots compose category and remove actions. Removable mode (react onRemove / static removable) locks the selected look, drops the toggle, and builds in an X button — the pattern Select's value chips reuse (Figma 506:696 suffix-icon=close).",
   "anatomy": [
     {
       "name": "root"
@@ -107,6 +107,21 @@
           "source": "chip"
         }
       }
+    },
+    {
+      "name": "onRemove",
+      "type": {
+        "kind": "event"
+      },
+      "description": "제거형 칩 (react) — 지정하면 선택된 모습으로 고정되고 X 버튼이 붙어요. 토글 대신 X 클릭이 이 콜백을 부르고 루트는 span이 돼요. 정적 타깃(web/hono)은 removable 불리언으로 같은 마크업을 렌더해요 (web은 podo-remove 이벤트)."
+    },
+    {
+      "name": "removeLabel",
+      "type": {
+        "kind": "string"
+      },
+      "default": "제거",
+      "description": "제거 버튼의 접근성 이름."
     }
   ],
   "variants": [

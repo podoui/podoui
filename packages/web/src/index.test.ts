@@ -109,14 +109,34 @@ describe("@podo/web", () => {
     expect(select.hasAttribute("open")).toBe(false);
     expect(select.shadowRoot?.innerHTML).toContain("바나나");
 
-    // multiple은 values JSON을 토글하고 칩을 그려요.
+    // multiple은 values JSON을 토글하고 제거형 칩(podo-chip)을 그려요.
     select.setAttribute("multiple", "");
     select.setAttribute("values", JSON.stringify(["strawberry"]));
-    expect(select.shadowRoot?.querySelector(".podo-select__chip")).not.toBeNull();
+    expect(select.shadowRoot?.querySelector('.podo-chip[data-removable="true"]')).not.toBeNull();
     select.setAttribute("open", "");
     (select.shadowRoot?.querySelector('[data-value="banana"]') as HTMLElement).click();
     expect(JSON.parse(select.getAttribute("values") ?? "[]")).toEqual(["strawberry", "banana"]);
     select.remove();
+  });
+
+  it("renders the removable chip element and emits podo-remove", () => {
+    registerPodoElements();
+    const chip = document.createElement("podo-chip");
+    chip.setAttribute("removable", "");
+    chip.setAttribute("remove-label", "딸기 제거");
+    chip.textContent = "딸기";
+    document.body.append(chip);
+
+    // 제거형은 span 루트 + X 버튼 — 토글 대신 podo-remove를 쏴요.
+    expect(chip.shadowRoot?.querySelector("span.podo-chip[data-removable]")).not.toBeNull();
+    expect(chip.shadowRoot?.querySelector("button.podo-chip")).toBeNull();
+    let removed = 0;
+    chip.addEventListener("podo-remove", () => {
+      removed += 1;
+    });
+    (chip.shadowRoot?.querySelector(".podo-chip__remove") as HTMLElement).click();
+    expect(removed).toBe(1);
+    chip.remove();
   });
 
   it("renders the badge pill and its dot mode", () => {

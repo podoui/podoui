@@ -70,8 +70,8 @@ describe("@podo/hono", () => {
     expect(html).toContain('class="podo-select"');
     expect(html).toContain('data-open="true"');
     expect(html).toContain('role="combobox"');
-    // 선택된 값은 칩으로, 셀에는 체크박스가 붙어요.
-    expect(html).toContain('class="podo-select__chip"');
+    // 선택된 값은 Chip의 제거형 모드로, 셀에는 체크박스가 붙어요.
+    expect(html).toContain('data-removable="true"');
     expect(html).toContain("딸기 제거");
     expect(html).toContain('data-checked="true"');
     expect(html).toContain('aria-multiselectable="true"');

@@ -371,12 +371,12 @@ input {
   --podo-chip-root-borderColor: #767985;
 }
 
-.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]),
-.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
+.podo-chip[data-theme="outline-strong"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #767985;
 }
 
-.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]) {
+.podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not([data-removable]) {
   --podo-chip-root-background: #F4F4F5;
 }
 
@@ -414,6 +414,25 @@ input {
 .podo-chip[data-size="lg"] .podo-chip__suffix {
   height: 20px;
   width: 20px;
+}
+
+/* Removable chip: born in the selected look, no toggle — the X button is the
+   only control, so the body isn't clickable. */
+.podo-chip[data-removable] {
+  cursor: default;
+}
+
+.podo-chip__remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--podo-chip-label-color, currentColor);
+  cursor: pointer;
+  display: inline-flex;
+  height: 16px;
+  justify-content: center;
+  padding: 0;
+  width: 16px;
 }
 
 /* Switch (Figma 338:2464): pill track with a shadowed sliding handle.
@@ -1318,30 +1337,10 @@ input {
   color: #9FA2AD;
 }
 
-/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
-.podo-select__chip {
-  align-items: center;
-  background: #3E424B;
-  border-radius: 9999px;
-  color: #FFFFFF;
-  display: inline-flex;
+/* Value chips reuse .podo-chip[data-removable] — only pin them content-sized
+   inside the flexible trigger row. */
+.podo-select__value .podo-chip {
   flex-shrink: 0;
-  font-size: 14px;
-  gap: 2px;
-  justify-content: center;
-  line-height: 1.6;
-  min-width: 40px;
-  padding: 2px 6px;
-}
-
-.podo-select__chip-remove {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: #F9F9F9;
-  cursor: pointer;
-  display: inline-flex;
-  padding: 0;
 }
 
 .podo-select__menu-list {
@@ -1719,10 +1718,12 @@ function createBadgeElement(): CustomElementConstructor {
   };
 }
 
+const CHIP_CLOSE_SVG = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`;
+
 function createChipElement(): CustomElementConstructor {
   return class PodoChipElement extends HTMLElement {
     static get observedAttributes(): string[] {
-      return ["disabled", "size", "theme"];
+      return ["disabled", "size", "theme", "removable", "remove-label"];
     }
 
     readonly shadow = this.attachShadow({ mode: "open" });
@@ -1736,6 +1737,25 @@ function createChipElement(): CustomElementConstructor {
     }
 
     private render(): void {
+      const sizeAttr = `data-size="${escapeHtml(attr(this, "size", "md"))}"`;
+      const themeAttr = `data-theme="${escapeHtml(attr(this, "theme", "solid"))}"`;
+
+      // Removable chip: selected look, no toggle — the X emits podo-remove.
+      if (this.hasAttribute("removable")) {
+        this.shadow.innerHTML = `${componentStyleBlock()}
+<span class="podo-chip" part="root" ${themeAttr} ${sizeAttr} data-state="selected" data-removable="true">
+  <span class="podo-chip__prefix" part="prefix"><slot name="prefix"></slot></span>
+  <span part="label"><slot></slot></span>
+  <button type="button" class="podo-chip__remove" part="remove" aria-label="${escapeHtml(
+    attr(this, "remove-label", "제거")
+  )}">${CHIP_CLOSE_SVG}</button>
+</span>`;
+        this.shadow.querySelector(".podo-chip__remove")?.addEventListener("click", () => {
+          this.dispatchEvent(new CustomEvent("podo-remove", { bubbles: true, composed: true }));
+        });
+        return;
+      }
+
       const behavior = createButtonBehavior({
         disabled: this.hasAttribute("disabled"),
       });
@@ -1743,9 +1763,7 @@ function createChipElement(): CustomElementConstructor {
       const stateAttr = this.hasAttribute("disabled") ? 'data-state="disabled"' : "";
 
       this.shadow.innerHTML = `${componentStyleBlock()}
-<button class="podo-chip" part="root" data-theme="${escapeHtml(
-        attr(this, "theme", "solid")
-      )}" data-size="${escapeHtml(attr(this, "size", "md"))}" ${stateAttr} ${disabled}>
+<button class="podo-chip" part="root" ${themeAttr} ${sizeAttr} ${stateAttr} ${disabled}>
   <span class="podo-chip__prefix" part="prefix"><slot name="prefix"></slot></span>
   <span part="label"><slot></slot></span>
   <span class="podo-chip__suffix" part="suffix"><slot name="suffix"></slot></span>
@@ -2110,7 +2128,6 @@ function createInputElement(): CustomElementConstructor {
 const SELECT_CHEVRON_SVG = `<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#27272A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const SELECT_CHECK_SVG = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-6.5" stroke="#426CED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const SELECT_BOX_CHECK_SVG = `<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const SELECT_CHIP_CLOSE_SVG = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`;
 
 // Minimal-behavior element: options come in as a JSON attribute, clicking the
 // trigger toggles [open], clicking a cell picks/toggles and emits podo-change.
@@ -2193,16 +2210,17 @@ function createSelectElement(): CustomElementConstructor {
           ? 'data-state="invalid"'
           : "";
 
+      // Value chips reuse the podo-chip removable classes.
       const valueHtml =
         multiple && hasValue
           ? values
               .map((v) => {
                 const label = options.find((o) => o.value === v)?.label ?? v;
-                return `<span class="podo-select__chip"><span class="podo-select__chip-label">${escapeHtml(
+                return `<span class="podo-chip" data-theme="solid" data-size="md" data-state="selected" data-removable="true"><span class="podo-chip__label">${escapeHtml(
                   label
-                )}</span><button type="button" class="podo-select__chip-remove" data-value="${escapeHtml(
+                )}</span><button type="button" class="podo-chip__remove" data-value="${escapeHtml(
                   v
-                )}" aria-label="${escapeHtml(label)} 제거">${SELECT_CHIP_CLOSE_SVG}</button></span>`;
+                )}" aria-label="${escapeHtml(label)} 제거">${CHIP_CLOSE_SVG}</button></span>`;
               })
               .join("")
           : escapeHtml((multiple ? placeholder : (selected?.label ?? placeholder)) || "");
@@ -2241,12 +2259,12 @@ function createSelectElement(): CustomElementConstructor {
 </div>`;
 
       this.shadow.querySelector(".podo-select__trigger")?.addEventListener("click", (event) => {
-        if (disabled || (event.target as HTMLElement).closest(".podo-select__chip-remove")) {
+        if (disabled || (event.target as HTMLElement).closest(".podo-chip__remove")) {
           return;
         }
         this.toggleAttribute("open");
       });
-      for (const remove of this.shadow.querySelectorAll(".podo-select__chip-remove")) {
+      for (const remove of this.shadow.querySelectorAll(".podo-chip__remove")) {
         remove.addEventListener("click", () => {
           this.pick((remove as HTMLElement).dataset.value ?? "");
         });

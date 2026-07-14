@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Chip } from "@podo/react";
 import { Card, StageItem } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
@@ -45,6 +46,29 @@ const Close = () => (
     <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
   </svg>
 );
+
+// 제거형 데모: X를 누르면 실제로 사라지고, 다 지우면 리필 칩이 나타나요.
+const REMOVABLE_FRUITS = ["딸기", "바나나", "멜론"];
+
+function RemovableStage() {
+  const [items, setItems] = useState(REMOVABLE_FRUITS);
+  return (
+    <>
+      {items.map((fruit) => (
+        <Chip
+          key={fruit}
+          removeLabel={`${fruit} 제거`}
+          onRemove={() => setItems(items.filter((item) => item !== fruit))}
+        >
+          {fruit}
+        </Chip>
+      ))}
+      {items.length === 0 ? (
+        <Chip onPress={() => setItems(REMOVABLE_FRUITS)}>다시 채우기</Chip>
+      ) : null}
+    </>
+  );
+}
 
 export function ChipPage() {
   return (
@@ -107,6 +131,17 @@ export function ChipPage() {
 
       <DocSection
         index={4}
+        title="제거형 (removable)"
+        description="제거형 칩은 선택·해제를 오가는 토글이 아니라, 이미 선택된 값을 표시하고 지우는 용도로 사용해요. onRemove를 지정하면 칩이 선택된 모습으로 고정되고 X 버튼이 붙으며, 칩 본체는 눌리지 않고 X 클릭만 콜백을 불러요. 멀티 셀렉트의 선택 값 칩처럼 필터·태그 목록에서 값을 담아두고 하나씩 걷어낼 때 적합해요."
+      >
+        <Card stage>
+          <RemovableStage />
+        </Card>
+        <PropertyTags values={["onRemove", "removeLabel"]} />
+      </DocSection>
+
+      <DocSection
+        index={5}
         title="응용 (composition)"
         description="칩은 레이블의 의미를 보조하기 위해 prefix-icon, suffix-icon을 조합해 구성해요. prefix-icon은 카테고리나 상태를 상징하는 아이콘을 레이블 앞에 두어 종류를 빠르게 식별하게 할 때, suffix-icon은 삭제(close)처럼 칩 자체를 제거하는 동작을 레이블 뒤에서 제공할 때 사용해요. 목적에 맞게 조합하면 칩의 역할이 분명해지고 불필요한 안내 없이도 조작 방법을 직관적으로 전달할 수 있어요."
       >
@@ -118,7 +153,7 @@ export function ChipPage() {
       </DocSection>
 
       <DocSection
-        index={5}
+        index={6}
         title="속성 (props)"
         description="@podo/react의 Chip이 받는 속성이에요. pressed 계열은 누르는 동안(:active) 자동으로 표현되고, 선택 여부만 selected로 제어해요. 이 밖에 표준 button 속성(className, type, aria-* 등)도 그대로 전달돼요."
       >
@@ -215,6 +250,26 @@ export function ChipPage() {
               </span>,
               "—",
               "칩이 눌렸을 때 호출돼요 (onClick도 지원)",
+            ],
+            [
+              <span className="prop-name">
+                <code>onRemove</code>
+              </span>,
+              <span className="prop-type">
+                <code>(e: MouseEvent) =&gt; void</code>
+              </span>,
+              "—",
+              "제거형 전환. 선택된 모습으로 고정되고 X 클릭이 이 콜백을 불러요. 토글·onPress는 비활성화돼요",
+            ],
+            [
+              <span className="prop-name">
+                <code>removeLabel</code>
+              </span>,
+              <span className="prop-type">
+                <code>string</code>
+              </span>,
+              <code>"제거"</code>,
+              '제거 버튼의 접근성 이름 (예: "딸기 제거")',
             ],
           ]}
         />

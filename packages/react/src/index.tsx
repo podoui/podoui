@@ -89,6 +89,13 @@ export interface ChipProps extends Omit<
   onPress?: (event: PodoPressEvent) => void;
   /** Fires with the next value when the chip is toggled. */
   onSelectedChange?: (selected: boolean) => void;
+  /**
+   * 제거형 칩 — 지정하면 선택된 모습으로 고정되고 X 버튼이 붙어요.
+   * 토글 대신 X 클릭이 이 콜백을 부르며, 루트는 button이 아닌 span이 돼요.
+   */
+  onRemove?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  /** 제거 버튼의 접근성 이름 (기본 "제거"). */
+  removeLabel?: string;
 }
 
 export type BadgeTheme =
@@ -430,6 +437,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   );
 });
 
+// Close glyph for removable chips (Figma suffix-icon=close, 16px, follows the
+// label color).
+const CHIP_CLOSE = (
+  <svg aria-hidden width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
+
 export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
   {
     theme = "solid",
@@ -445,6 +460,8 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
     onClick,
     onPress,
     onSelectedChange,
+    onRemove,
+    removeLabel = "제거",
     ...props
   },
   ref
@@ -453,6 +470,33 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
   // Uncontrolled fallback: without a selected prop the chip toggles itself.
   const [internalSelected, setInternalSelected] = useState(defaultSelected);
   const isSelected = selected ?? internalSelected;
+
+  if (onRemove) {
+    // Removable chip: born in the selected look, no toggle — the X is the only
+    // control, so the root is a static span (buttons can't nest).
+    return (
+      <span
+        {...(props as HTMLAttributes<HTMLElement>)}
+        ref={ref as React.Ref<HTMLSpanElement>}
+        className={joinClass("podo-chip", className)}
+        data-size={size}
+        data-theme={theme}
+        data-state="selected"
+        data-removable="true"
+      >
+        {prefix ? <span className="podo-chip__prefix">{prefix}</span> : null}
+        <span className="podo-chip__label">{children}</span>
+        <button
+          type="button"
+          className="podo-chip__remove"
+          aria-label={removeLabel}
+          onClick={onRemove}
+        >
+          {CHIP_CLOSE}
+        </button>
+      </span>
+    );
+  }
 
   return (
     <button
@@ -824,12 +868,6 @@ const SELECT_BOX_CHECK = (
   </svg>
 );
 
-const SELECT_CHIP_CLOSE = (
-  <svg aria-hidden width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-  </svg>
-);
-
 export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
   {
     options,
@@ -997,24 +1035,21 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     }
   };
 
+  // 선택 값 칩은 Chip 컴포넌트의 제거형 모드를 그대로 재사용해요.
   const chips = selectedValues.map((v) => {
-    const option = allOptions.find((o) => o.value === v);
-    const label = option?.label ?? v;
+    const label = allOptions.find((o) => o.value === v)?.label ?? v;
     return (
-      <span key={v} className="podo-select__chip">
-        <span className="podo-select__chip-label">{label}</span>
-        <button
-          type="button"
-          className="podo-select__chip-remove"
-          aria-label={`${label} 제거`}
-          onClick={(event) => {
-            event.stopPropagation();
-            pick(v);
-          }}
-        >
-          {SELECT_CHIP_CLOSE}
-        </button>
-      </span>
+      <Chip
+        key={v}
+        removeLabel={`${label} 제거`}
+        onRemove={(event) => {
+          // 트리거 클릭(메뉴 토글)으로 번지지 않게 여기서 끊어요.
+          event.stopPropagation();
+          pick(v);
+        }}
+      >
+        {label}
+      </Chip>
     );
   });
 

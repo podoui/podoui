@@ -74,6 +74,13 @@ export interface NativeChipProps {
   onPress?: () => void;
   /** Fires with the next value when the chip is toggled. */
   onSelectedChange?: (selected: boolean) => void;
+  /**
+   * 제거형 칩 — 지정하면 선택된 모습으로 고정되고 X 버튼이 붙어요.
+   * 토글 대신 X 프레스가 이 콜백을 불러요.
+   */
+  onRemove?: () => void;
+  /** 제거 버튼의 접근성 이름 (기본 "제거"). */
+  removeLabel?: string;
   testID?: string;
 }
 
@@ -387,7 +394,7 @@ const BADGE_COLORS: Record<
 };
 
 export function createNativeComponents(host: NativeHost = defaultNativeHost): NativeComponents {
-  return {
+  const components: NativeComponents = {
     Button: (props) => {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
@@ -420,6 +427,49 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const themeName = props.theme ?? "solid";
       const size = props.size ?? "md";
       const selected = props.selected === true;
+      if (props.onRemove) {
+        // Removable chip: born in the selected look, no toggle — the X is the
+        // only control, so the root is a plain View.
+        const box =
+          themeName === "outline-weak"
+            ? { fill: "#F9F9F9", border: "#767985", label: "#18181B" }
+            : { fill: "#3E424B", border: "transparent", label: "#FFFFFF" };
+        return createElement(
+          host.View,
+          {
+            style: {
+              ...styles.chip,
+              backgroundColor: box.fill,
+              borderColor: box.border,
+            },
+            testID: props.testID,
+            "data-theme": themeName,
+            "data-size": size,
+            "data-state": "selected",
+          },
+          props.prefix,
+          createElement(
+            host.Text,
+            {
+              style: {
+                ...styles.chipLabel,
+                color: box.label,
+                fontSize: size === "lg" ? 16 : 14,
+              },
+            },
+            props.children
+          ),
+          createElement(
+            host.Pressable,
+            {
+              accessibilityRole: "button",
+              accessibilityLabel: props.removeLabel ?? "제거",
+              onPress: props.onRemove,
+            },
+            createElement(host.Text, { style: { color: box.label, fontSize: 14 } }, "✕")
+          )
+        );
+      }
       // Figma 538:6615 selection colors — unselected is the base look.
       // outline-strong selected renders identically to solid (pending fix).
       const box = props.disabled
@@ -523,26 +573,15 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         }
       };
 
+      // 선택 값 칩은 Chip 컴포넌트의 제거형 모드를 그대로 재사용해요.
       const chips = selectedValues.map((v) => {
         const label = props.options.find((o) => o.value === v)?.label ?? v;
-        return createElement(
-          host.View,
-          { key: v, style: styles.selectChip },
-          createElement(
-            host.Text,
-            { style: { color: "#FFFFFF", fontSize: 14, lineHeight: 22 } },
-            label
-          ),
-          createElement(
-            host.Pressable,
-            {
-              accessibilityRole: "button",
-              accessibilityLabel: `${label} 제거`,
-              onPress: () => pick(v),
-            },
-            createElement(host.Text, { style: { color: "#F9F9F9", fontSize: 14 } }, "✕")
-          )
-        );
+        return createElement(components.Chip, {
+          key: v,
+          children: label,
+          removeLabel: `${label} 제거`,
+          onRemove: () => pick(v),
+        });
       });
 
       const valueContent =
@@ -1179,6 +1218,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       );
     },
   };
+  return components;
 }
 
 export const {
@@ -1253,7 +1293,6 @@ function createNativeThemeStyles(
   | "chip"
   | "chipLabel"
   | "selectCell"
-  | "selectChip"
   | "selectMenu"
   | "selectTrigger"
   | "error"
@@ -1375,17 +1414,6 @@ function createNativeThemeStyles(
       gap: 8,
       minHeight: 42,
       paddingHorizontal: 8,
-    },
-    selectChip: {
-      alignItems: "center",
-      backgroundColor: "#3E424B",
-      borderRadius: 9999,
-      flexDirection: "row",
-      gap: 2,
-      justifyContent: "center",
-      minWidth: 40,
-      paddingHorizontal: 6,
-      paddingVertical: 2,
     },
     // Chip (Figma 538:6615): pill, content-sized; md gap 2/pad 6 (base).
     chip: {

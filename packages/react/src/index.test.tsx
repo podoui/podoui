@@ -141,10 +141,30 @@ describe("@podo/react", () => {
     expect(controlled.getAttribute("aria-pressed")).toBe("false");
   });
 
+  it("renders a removable chip that only removes via its X", async () => {
+    const user = userEvent.setup();
+    let removed = 0;
+    const { container } = render(
+      <Chip onRemove={() => (removed += 1)} removeLabel="딸기 제거">
+        딸기
+      </Chip>
+    );
+
+    const chip = container.querySelector(".podo-chip");
+    // 제거형은 토글 버튼이 아니라 정적 span — X만 컨트롤이에요.
+    expect(chip?.tagName).toBe("SPAN");
+    expect(chip?.getAttribute("data-state")).toBe("selected");
+    expect(chip?.getAttribute("data-removable")).toBe("true");
+    expect(chip?.getAttribute("aria-pressed")).toBeNull();
+
+    await user.click(within(container).getByRole("button", { name: "딸기 제거" }));
+    expect(removed).toBe(1);
+  });
+
   it("opens the select, picks a single value, and closes", async () => {
     const user = userEvent.setup();
     const changes: string[] = [];
-    render(
+    const { container } = render(
       <Select
         placeholder="과일 선택"
         options={[
@@ -154,20 +174,21 @@ describe("@podo/react", () => {
         onValueChange={(next) => changes.push(next)}
       />
     );
+    const q = within(container);
 
-    const trigger = screen.getByRole("combobox");
-    expect(screen.getByText("과일 선택").getAttribute("data-placeholder")).toBe("true");
+    const trigger = q.getByRole("combobox");
+    expect(q.getByText("과일 선택").getAttribute("data-placeholder")).toBe("true");
     await user.click(trigger);
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
 
-    await user.click(screen.getByRole("option", { name: "딸기" }));
+    await user.click(q.getByRole("option", { name: "딸기" }));
 
     expect(changes).toEqual(["strawberry"]);
-    expect(screen.queryByRole("listbox")).toBeNull();
-    expect(screen.getByText("딸기")).toBeDefined();
+    expect(q.queryByRole("listbox")).toBeNull();
+    expect(q.getByText("딸기")).toBeDefined();
     // 선택 후 다시 열면 해당 셀이 selected로 표시돼요.
     await user.click(trigger);
-    expect(screen.getByRole("option", { name: "딸기" }).getAttribute("aria-selected")).toBe("true");
+    expect(q.getByRole("option", { name: "딸기" }).getAttribute("aria-selected")).toBe("true");
   });
 
   it("toggles multi-select values as removable chips", async () => {

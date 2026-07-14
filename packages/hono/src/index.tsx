@@ -48,6 +48,13 @@ export interface HonoChipProps {
   prefix?: Child;
   /** Removal/action icon after the label, e.g. close (Figma suffix-icon). */
   suffix?: Child;
+  /**
+   * 제거형 칩 — 선택된 모습으로 고정되고 X 버튼 마크업이 붙어요 (동작은
+   * 클라이언트 코드). 루트는 button 대신 span으로 렌더돼요.
+   */
+  removable?: boolean;
+  /** 제거 버튼의 접근성 이름 (기본 "제거"). */
+  removeLabel?: string;
   type?: "button" | "submit" | "reset";
   class?: string;
 }
@@ -243,7 +250,7 @@ const HONO_SELECT_BOX_CHECK = (
   </svg>
 );
 
-const HONO_SELECT_CHIP_CLOSE = (
+const HONO_CHIP_CLOSE = (
   <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
     <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
   </svg>
@@ -289,17 +296,11 @@ export function Select({
           {multiple && hasValue
             ? selectedValues.map((v) => {
                 const label = options.find((o) => o.value === v)?.label ?? v;
+                // 선택 값 칩은 Chip의 제거형 모드를 그대로 재사용해요.
                 return (
-                  <span class="podo-select__chip">
-                    <span class="podo-select__chip-label">{label}</span>
-                    <button
-                      type="button"
-                      class="podo-select__chip-remove"
-                      aria-label={`${label} 제거`}
-                    >
-                      {HONO_SELECT_CHIP_CLOSE}
-                    </button>
-                  </span>
+                  <Chip removable removeLabel={`${label} 제거`}>
+                    {label}
+                  </Chip>
                 );
               })
             : ((multiple ? placeholder : (selected?.label ?? placeholder)) ?? "")}
@@ -548,10 +549,31 @@ export function Chip({
   disabled,
   prefix,
   suffix,
+  removable,
+  removeLabel = "제거",
   type,
   class: className,
 }: HonoChipProps): JSX.Element {
   const behavior = createButtonBehavior({ disabled, type });
+
+  if (removable) {
+    // Removable chip: selected look, no toggle — the X is the only control.
+    return (
+      <span
+        class={joinClass("podo-chip", className)}
+        data-theme={theme}
+        data-size={size}
+        data-state="selected"
+        data-removable="true"
+      >
+        {prefix ? <span class="podo-chip__prefix">{prefix}</span> : null}
+        <span class="podo-chip__label">{children}</span>
+        <button type="button" class="podo-chip__remove" aria-label={removeLabel}>
+          {HONO_CHIP_CLOSE}
+        </button>
+      </span>
+    );
+  }
 
   return (
     <button
