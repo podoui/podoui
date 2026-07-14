@@ -1376,6 +1376,10 @@ input {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  /* The box grows past a narrow trigger when content can't shrink (the
+     addable row's 144px input + 추가 button); cell labels keep min-width: 0,
+     so long options still ellipsize at the trigger width. */
+  min-width: min-content;
   padding: 8px;
 }
 

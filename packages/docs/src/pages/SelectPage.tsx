@@ -14,6 +14,14 @@ const INTRO =
 const FRUITS = [
   { value: "strawberry", label: "딸기" },
   { value: "banana", label: "바나나" },
+  { value: "grape", label: "포도" },
+  { value: "apple", label: "사과" },
+  { value: "orange", label: "오렌지" },
+  { value: "peach", label: "복숭아" },
+  { value: "watermelon", label: "수박" },
+  { value: "melon", label: "멜론" },
+  { value: "blueberry", label: "블루베리" },
+  { value: "kiwi", label: "키위" },
 ];
 
 const USAGE_TABS: CodeTab[] = [
