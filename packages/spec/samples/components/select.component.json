@@ -1,0 +1,192 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "select",
+  "name": "Select",
+  "category": "molecule",
+  "status": "experimental",
+  "description": "Dropdown picker (Figma 538:6694, component set 318:2237) sharing the Input state system — normal/hover/focused/completed/danger/disabled. The trigger is an Input-shaped box (md 42/radius 10 — base, lg 52/radius 12) with a gray.80 chevron; focused opens the menu (white, gray.20 hairline, radius 10, 8 padding, 4 gap, 6px below). Figma theme text/slot translates to the multiple prop: single shows the picked label with a primary.50 check in its cell, multiple shows removable chips and 18px checkbox cells. searchable turns the open trigger into a filter input (options containing the query remain — 디자이너 합의로 하이라이트 대신 필터링); addable prepends an add row (32px input + primary 추가 button) that appends and auto-selects new options. danger keeps its border color under focus like Input.",
+  "anatomy": [
+    { "name": "root" },
+    { "name": "trigger", "parent": "root" },
+    { "name": "prefix-icon", "parent": "trigger" },
+    { "name": "value", "parent": "trigger" },
+    { "name": "chip", "parent": "value" },
+    { "name": "chevron", "parent": "trigger" },
+    { "name": "menu", "parent": "root" },
+    { "name": "add-row", "parent": "menu" },
+    { "name": "cell", "parent": "menu" },
+    { "name": "cell-checkbox", "parent": "cell" },
+    { "name": "cell-label", "parent": "cell" },
+    { "name": "cell-check", "parent": "cell" }
+  ],
+  "slots": [
+    {
+      "name": "prefix-icon",
+      "description": "Icon before the value giving it context (Figma prefix-icon).",
+      "targets": {
+        "web": { "name": "prefix" },
+        "react": { "name": "prefix" },
+        "hono": { "name": "prefix" },
+        "native": { "name": "prefix" }
+      }
+    }
+  ],
+  "props": [
+    {
+      "name": "options",
+      "type": { "kind": "object", "schema": { "type": "Array<{ value: string; label: string }>" } },
+      "description": "메뉴 항목 목록. 데이터 주도 — 셀 마크업은 컴포넌트가 그려요."
+    },
+    {
+      "name": "placeholder",
+      "type": { "kind": "string" },
+      "description": "값이 없을 때 트리거에 표시 (Figma 플레이스 홀더, gray.40)."
+    },
+    {
+      "name": "multiple",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "다중 선택 (Figma theme=slot) — 선택 값이 삭제 가능한 칩으로 나열되고 셀에 체크박스가 붙어요. false면 Figma theme=text."
+    },
+    {
+      "name": "value",
+      "type": { "kind": "string" },
+      "description": "Controlled 단일 값. 생략하면 비제어."
+    },
+    {
+      "name": "defaultValue",
+      "type": { "kind": "string" },
+      "description": "비제어 단일 초기값."
+    },
+    {
+      "name": "onValueChange",
+      "type": { "kind": "event", "payload": { "value": "string" } },
+      "description": "단일 값이 선택될 때."
+    },
+    {
+      "name": "values",
+      "type": { "kind": "object", "schema": { "type": "string[]" } },
+      "description": "Controlled 다중 값."
+    },
+    {
+      "name": "defaultValues",
+      "type": { "kind": "object", "schema": { "type": "string[]" } },
+      "description": "비제어 다중 초기값."
+    },
+    {
+      "name": "onValuesChange",
+      "type": { "kind": "event", "payload": { "values": "string[]" } },
+      "description": "다중 값이 토글될 때 다음 배열과 함께."
+    },
+    {
+      "name": "searchable",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "열리면 트리거가 검색 입력이 되고 목록이 입력어를 포함한 항목으로 필터링돼요. 단일/다중/추가형 어디에나 조합 가능."
+    },
+    {
+      "name": "addable",
+      "type": { "kind": "boolean" },
+      "default": false,
+      "description": "메뉴 상단에 직접 추가 입력줄 표시 (Figma multi-select-input). 추가된 항목은 목록에 붙고 자동 선택돼요."
+    },
+    {
+      "name": "addPlaceholder",
+      "type": { "kind": "string" },
+      "description": "추가 입력줄 플레이스홀더."
+    },
+    {
+      "name": "onOptionAdd",
+      "type": { "kind": "event", "payload": { "option": "{ value: string; label: string }" } },
+      "description": "추가 버튼으로 새 옵션이 만들어졌을 때."
+    },
+    { "name": "invalid", "type": { "kind": "boolean" }, "default": false },
+    { "name": "disabled", "type": { "kind": "boolean" }, "default": false }
+  ],
+  "variants": [
+    {
+      "name": "size",
+      "values": ["md", "lg"],
+      "default": "md"
+    },
+    {
+      "name": "theme",
+      "values": ["text", "slot"],
+      "default": "text",
+      "description": "Figma 어휘 — 코드에서는 multiple(false=text, true=slot)로 표현."
+    }
+  ],
+  "states": [
+    { "name": "focusVisible" },
+    {
+      "name": "open",
+      "description": "Figma focused: 2px primary border and the menu 6px below. danger stays danger-colored under focus."
+    },
+    {
+      "name": "completed",
+      "description": "값이 선택되면 자연 파생 — 트리거 텍스트가 gray.40에서 gray.90으로. 별도 prop 없음."
+    },
+    {
+      "name": "invalid",
+      "tokens": { "root.borderColor": "{color.palette.error.50}" }
+    },
+    {
+      "name": "disabled",
+      "tokens": {
+        "root.background": "{color.palette.gray.20}",
+        "root.borderColor": "{color.palette.gray.30}",
+        "value.color": "{color.palette.gray.40}"
+      }
+    }
+  ],
+  "tokens": {
+    "root.background": "{semantic.color.surface}",
+    "root.borderColor": "{color.palette.gray.20}",
+    "value.color": "{color.palette.gray.90}"
+  },
+  "targets": {
+    "web": {
+      "supported": true,
+      "limitations": [
+        "podo-select renders from a JSON options attribute; keyboard navigation and searchable/addable are React-only."
+      ]
+    },
+    "react": { "supported": true, "limitations": [] },
+    "hono": {
+      "supported": true,
+      "limitations": ["Static render (open menu via the open prop); interactions are client code."]
+    },
+    "native": {
+      "supported": true,
+      "limitations": [
+        "Inline menu below the trigger (no overlay portal); searchable/addable are consumer compositions."
+      ]
+    }
+  },
+  "accessibility": {
+    "aria": [
+      "combobox trigger with aria-expanded/aria-haspopup/aria-controls",
+      "listbox menu with option cells (aria-selected, aria-multiselectable)"
+    ],
+    "keyboard": [
+      "Enter/Space opens",
+      "ArrowUp/ArrowDown moves the active option",
+      "Enter picks it",
+      "Escape closes"
+    ],
+    "focusManagement": "Focus stays on the trigger (or its search input); the active cell is pointed at with aria-activedescendant."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Single select",
+      "code": "<Select placeholder=\"과일 선택\" options={fruits} value={fruit} onValueChange={setFruit} />"
+    },
+    {
+      "target": "react",
+      "title": "Multi select with search",
+      "code": "<Select multiple searchable placeholder=\"과일 선택 및 검색\" options={fruits} values={picked} onValuesChange={setPicked} />"
+    }
+  ]
+}

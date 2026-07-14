@@ -206,6 +206,36 @@ export interface NativeTextareaProps {
   testID?: string;
 }
 
+export interface NativeSelectOption {
+  value: string;
+  label: string;
+}
+
+export interface NativeSelectProps {
+  /** 메뉴 항목 목록 — 셀 마크업은 컴포넌트가 그려요. */
+  options: NativeSelectOption[];
+  /** 값이 없을 때 트리거에 표시 (Figma 플레이스 홀더). */
+  placeholder?: string;
+  /** Trigger height and radius (Figma: md 42 — base, lg 52). */
+  size?: "md" | "lg";
+  /** 다중 선택 (Figma theme=slot) — 칩 나열 + 체크박스 셀. */
+  multiple?: boolean;
+  /** Controlled 단일 값. */
+  value?: string | null;
+  /** Controlled 다중 값. */
+  values?: string[];
+  /** 단일 값이 선택될 때. */
+  onValueChange?: (value: string) => void;
+  /** 다중 값이 토글될 때 다음 배열과 함께. */
+  onValuesChange?: (values: string[]) => void;
+  invalid?: boolean;
+  disabled?: boolean;
+  /** 값 앞에 붙는 아이콘 (Figma prefix-icon). */
+  prefix?: ReactNode;
+  accessibilityLabel?: string;
+  testID?: string;
+}
+
 export interface NativeFieldProps {
   children: ReactNode;
   label: ReactNode;
@@ -267,6 +297,7 @@ export interface NativeComponents {
   Radio: (props: NativeRadioProps) => React.ReactElement;
   Chip: (props: NativeChipProps) => React.ReactElement;
   Badge: (props: NativeBadgeProps) => React.ReactElement;
+  Select: (props: NativeSelectProps) => React.ReactElement;
   Input: (props: NativeInputProps) => React.ReactElement;
   Textarea: (props: NativeTextareaProps) => React.ReactElement;
   Field: (props: NativeFieldProps) => React.ReactElement;
@@ -459,6 +490,155 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           { style: { ...styles.badgeLabel, color: box.label } },
           props.children
         )
+      );
+    },
+    // Select (Figma 318:2237): trigger + inline menu below (no overlay portal
+    // on native). Controlled values only; open state is internal.
+    Select: function NativeSelect(props) {
+      const theme = usePodoNativeTheme();
+      const styles = createNativeThemeStyles(theme);
+      const [open, setOpen] = useState(false);
+      const multiple = props.multiple === true;
+      const disabled = props.disabled === true;
+      const selectedValues = props.values ?? [];
+      const selected = props.options.find((o) => o.value === props.value);
+      const hasValue = multiple ? selectedValues.length > 0 : Boolean(selected);
+      const border = disabled
+        ? { color: "#D1D2D6", width: 1 }
+        : open
+          ? { color: props.invalid ? "#F23B3B" : "#426CED", width: 2 }
+          : props.invalid
+            ? { color: "#F23B3B", width: 1 }
+            : { color: "#E4E4E7", width: 1 };
+
+      const pick = (optionValue: string) => {
+        if (multiple) {
+          const next = selectedValues.includes(optionValue)
+            ? selectedValues.filter((v) => v !== optionValue)
+            : [...selectedValues, optionValue];
+          props.onValuesChange?.(next);
+        } else {
+          props.onValueChange?.(optionValue);
+          setOpen(false);
+        }
+      };
+
+      const chips = selectedValues.map((v) => {
+        const label = props.options.find((o) => o.value === v)?.label ?? v;
+        return createElement(
+          host.View,
+          { key: v, style: styles.selectChip },
+          createElement(
+            host.Text,
+            { style: { color: "#FFFFFF", fontSize: 14, lineHeight: 22 } },
+            label
+          ),
+          createElement(
+            host.Pressable,
+            {
+              accessibilityRole: "button",
+              accessibilityLabel: `${label} 제거`,
+              onPress: () => pick(v),
+            },
+            createElement(host.Text, { style: { color: "#F9F9F9", fontSize: 14 } }, "✕")
+          )
+        );
+      });
+
+      const valueContent =
+        multiple && hasValue
+          ? chips
+          : [
+              createElement(
+                host.Text,
+                {
+                  key: "value",
+                  style: {
+                    color: disabled ? "#9FA2AD" : hasValue ? "#18181B" : "#9FA2AD",
+                    flex: 1,
+                    fontSize: 16,
+                    lineHeight: 26,
+                  },
+                },
+                (multiple ? props.placeholder : (selected?.label ?? props.placeholder)) ?? ""
+              ),
+            ];
+
+      const cells = props.options.map((option) => {
+        const isSelected = multiple
+          ? selectedValues.includes(option.value)
+          : option.value === props.value;
+        return createElement(
+          host.Pressable,
+          {
+            key: option.value,
+            accessibilityRole: "button",
+            accessibilityState: { selected: isSelected },
+            onPress: () => pick(option.value),
+            style: styles.selectCell,
+            "data-state": isSelected ? "selected" : undefined,
+          },
+          multiple
+            ? createElement(
+                host.View,
+                {
+                  style: {
+                    alignItems: "center",
+                    backgroundColor: isSelected ? "#426CED" : "#FFFFFF",
+                    borderColor: isSelected ? "#426CED" : "#9FA2AD",
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    height: 18,
+                    justifyContent: "center",
+                    width: 18,
+                  },
+                },
+                isSelected
+                  ? createElement(host.Text, { style: { color: "#F9F9F9", fontSize: 12 } }, "✓")
+                  : null
+              )
+            : null,
+          createElement(
+            host.Text,
+            { style: { color: "#18181B", flex: 1, fontSize: 16, lineHeight: 26 } },
+            option.label
+          ),
+          !multiple && isSelected
+            ? createElement(host.Text, { style: { color: "#426CED", fontSize: 16 } }, "✓")
+            : null
+        );
+      });
+
+      return createElement(
+        host.View,
+        {
+          accessibilityLabel: props.accessibilityLabel,
+          style: { flexDirection: "column", gap: 6 },
+          testID: props.testID,
+          "data-size": props.size ?? "md",
+          "data-state": props.invalid ? "invalid" : disabled ? "disabled" : undefined,
+          "data-open": open ? "true" : undefined,
+        },
+        createElement(
+          host.Pressable,
+          {
+            accessibilityRole: "button",
+            accessibilityState: { disabled, expanded: open },
+            disabled,
+            onPress: disabled ? undefined : () => setOpen(!open),
+            style: {
+              ...styles.selectTrigger,
+              ...(props.size === "lg" ? { borderRadius: 12, minHeight: 52, minWidth: 120 } : {}),
+              backgroundColor: disabled ? "#E4E4E7" : "#FFFFFF",
+              borderColor: border.color,
+              borderWidth: border.width,
+            },
+          },
+          props.prefix,
+          ...valueContent,
+          createElement(host.Text, { style: { color: "#27272A", fontSize: 16 } }, "▾")
+        ),
+        open ? createElement(host.View, { style: styles.selectMenu }, ...cells) : null
       );
     },
     Input: (props) => {
@@ -1007,6 +1187,7 @@ export const {
   Radio,
   Chip,
   Badge,
+  Select,
   Input,
   Textarea,
   Field,
@@ -1071,6 +1252,10 @@ function createNativeThemeStyles(
   | "buttonLabel"
   | "chip"
   | "chipLabel"
+  | "selectCell"
+  | "selectChip"
+  | "selectMenu"
+  | "selectTrigger"
   | "error"
   | "field"
   | "fieldCount"
@@ -1163,6 +1348,45 @@ function createNativeThemeStyles(
       paddingHorizontal: 6,
     },
     badgeLabel: { fontSize: 14, lineHeight: 22 },
+    // Select (Figma 318:2237): Input-shaped trigger, menu 6px below inline.
+    selectTrigger: {
+      alignItems: "center",
+      borderRadius: 10,
+      flexDirection: "row",
+      gap: 6,
+      minHeight: 42,
+      minWidth: 100,
+      paddingLeft: 16,
+      paddingRight: 10,
+    },
+    selectMenu: {
+      backgroundColor: "#FFFFFF",
+      borderColor: "#E4E4E7",
+      borderRadius: 10,
+      borderWidth: 1,
+      flexDirection: "column",
+      gap: 4,
+      padding: 8,
+    },
+    selectCell: {
+      alignItems: "center",
+      borderRadius: 8,
+      flexDirection: "row",
+      gap: 8,
+      minHeight: 42,
+      paddingHorizontal: 8,
+    },
+    selectChip: {
+      alignItems: "center",
+      backgroundColor: "#3E424B",
+      borderRadius: 9999,
+      flexDirection: "row",
+      gap: 2,
+      justifyContent: "center",
+      minWidth: 40,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+    },
     // Chip (Figma 538:6615): pill, content-sized; md gap 2/pad 6 (base).
     chip: {
       alignItems: "center",

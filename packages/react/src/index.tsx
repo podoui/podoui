@@ -191,6 +191,55 @@ export interface InputProps extends Omit<
   onValueChange?: (value: string, event: ChangeEvent<HTMLInputElement>) => void;
 }
 
+export interface SelectOption {
+  value: string;
+  /** 트리거 텍스트·칩·검색 필터에 그대로 쓰이는 표시 문자열. */
+  label: string;
+}
+
+export interface SelectProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "onChange" | "prefix"
+> {
+  /** 메뉴 항목 목록 — 셀 마크업은 컴포넌트가 그려요. */
+  options: SelectOption[];
+  /** 값이 없을 때 트리거에 표시 (Figma 플레이스 홀더). */
+  placeholder?: string;
+  /** Control height and radius (Figma: md 42 — base, lg 52). */
+  size?: "md" | "lg";
+  /**
+   * 다중 선택 (Figma theme=slot) — 선택 값이 삭제 가능한 칩으로 나열되고
+   * 메뉴 셀에 체크박스가 붙어요. false면 Figma theme=text.
+   */
+  multiple?: boolean;
+  /** Controlled 단일 값 (null = 선택 없음). 생략하면 비제어. */
+  value?: string | null;
+  /** 비제어 단일 초기값. */
+  defaultValue?: string;
+  /** 단일 값이 선택될 때. */
+  onValueChange?: (value: string) => void;
+  /** Controlled 다중 값. 생략하면 비제어. */
+  values?: string[];
+  /** 비제어 다중 초기값. */
+  defaultValues?: string[];
+  /** 다중 값이 토글될 때 다음 배열과 함께. */
+  onValuesChange?: (values: string[]) => void;
+  /** 초기 열림 상태 (문서·데모용). */
+  defaultOpen?: boolean;
+  /** 열리면 트리거가 검색 입력이 되고 입력어를 포함한 항목만 남아요. */
+  searchable?: boolean;
+  /** 메뉴 상단에 직접 추가 입력줄 표시 (Figma multi-select-input). */
+  addable?: boolean;
+  /** 추가 입력줄 플레이스홀더. */
+  addPlaceholder?: string;
+  /** 추가 버튼으로 새 옵션이 만들어져 목록에 붙고 선택됐을 때. */
+  onOptionAdd?: (option: SelectOption) => void;
+  invalid?: boolean;
+  disabled?: boolean;
+  /** 값 앞에 붙는 아이콘 (Figma prefix-icon). */
+  prefix?: ReactNode;
+}
+
 export interface TextareaProps extends Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
   "disabled" | "onChange"
@@ -734,6 +783,365 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         onValueChange?.(event.currentTarget.value, event);
       }}
     />
+  );
+});
+
+// Select icons (Figma: chevron gray.80, single-selected check primary.50,
+// checkbox check + chip close inherit their surface colors).
+const SELECT_CHEVRON = (
+  <svg aria-hidden width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M6 9l6 6 6-6"
+      stroke="#27272A"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const SELECT_CHECK = (
+  <svg aria-hidden width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M3.5 8.5l3 3 6-6.5"
+      stroke="#426CED"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const SELECT_BOX_CHECK = (
+  <svg aria-hidden width="12" height="12" viewBox="0 0 12 12" fill="none">
+    <path
+      d="M2.5 6.5l2.5 2.5 4.5-5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const SELECT_CHIP_CLOSE = (
+  <svg aria-hidden width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
+
+export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
+  {
+    options,
+    placeholder,
+    size = "md",
+    multiple,
+    value,
+    defaultValue,
+    onValueChange,
+    values,
+    defaultValues,
+    onValuesChange,
+    defaultOpen = false,
+    searchable,
+    addable,
+    addPlaceholder,
+    onOptionAdd,
+    invalid,
+    disabled,
+    prefix,
+    className,
+    onClick,
+    onKeyDown,
+    ...props
+  },
+  ref
+) {
+  const [open, setOpen] = useState(defaultOpen);
+  const [query, setQuery] = useState("");
+  const [addText, setAddText] = useState("");
+  const [activeIndex, setActiveIndex] = useState(-1);
+  // Uncontrolled fallbacks — value/values props switch each mode to controlled.
+  const [internalValue, setInternalValue] = useState<string | null>(defaultValue ?? null);
+  const [internalValues, setInternalValues] = useState<string[]>(defaultValues ?? []);
+  // addable로 만들어진 옵션은 내부에 쌓아 options와 합쳐요 (value 기준 중복 제거).
+  const [added, setAdded] = useState<SelectOption[]>([]);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const menuId = useId();
+
+  const selectedValue = value !== undefined ? value : internalValue;
+  const selectedValues = values ?? internalValues;
+  const allOptions = [
+    ...options,
+    ...added.filter((a) => !options.some((o) => o.value === a.value)),
+  ];
+  const visible =
+    searchable && query ? allOptions.filter((o) => o.label.includes(query)) : allOptions;
+  const hasValue = multiple
+    ? selectedValues.length > 0
+    : selectedValue != null && selectedValue !== "";
+  const selectedOption = allOptions.find((o) => o.value === selectedValue);
+
+  const closeMenu = () => {
+    setOpen(false);
+    setQuery("");
+    setActiveIndex(-1);
+  };
+
+  const pick = (optionValue: string) => {
+    if (multiple) {
+      const next = selectedValues.includes(optionValue)
+        ? selectedValues.filter((v) => v !== optionValue)
+        : [...selectedValues, optionValue];
+      if (values === undefined) {
+        setInternalValues(next);
+      }
+      onValuesChange?.(next);
+    } else {
+      if (value === undefined) {
+        setInternalValue(optionValue);
+      }
+      onValueChange?.(optionValue);
+      closeMenu();
+    }
+  };
+
+  const addOption = () => {
+    const text = addText.trim();
+    if (!text) {
+      return;
+    }
+    const option = { value: text, label: text };
+    if (!allOptions.some((o) => o.value === option.value)) {
+      setAdded((prev) => [...prev, option]);
+    }
+    if (multiple) {
+      if (!selectedValues.includes(option.value)) {
+        const next = [...selectedValues, option.value];
+        if (values === undefined) {
+          setInternalValues(next);
+        }
+        onValuesChange?.(next);
+      }
+    } else {
+      if (value === undefined) {
+        setInternalValue(option.value);
+      }
+      onValueChange?.(option.value);
+      closeMenu();
+    }
+    onOptionAdd?.(option);
+    setAddText("");
+  };
+
+  // Outside click closes — the menu is anchored inside the root, so a simple
+  // containment check covers the trigger, chips, add row, and cells.
+  useEffect(() => {
+    if (!open) {
+      return undefined;
+    }
+    const onPointerDown = (event: PointerEvent) => {
+      const root = rootRef.current;
+      if (root && event.target instanceof Node && !root.contains(event.target)) {
+        setOpen(false);
+        setQuery("");
+        setActiveIndex(-1);
+      }
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    onKeyDown?.(event);
+    if (disabled || event.defaultPrevented) {
+      return;
+    }
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      if (!open) {
+        setOpen(true);
+        setActiveIndex(0);
+        return;
+      }
+      setActiveIndex((current) => {
+        const max = visible.length - 1;
+        if (max < 0) {
+          return -1;
+        }
+        return event.key === "ArrowDown" ? Math.min(current + 1, max) : Math.max(current - 1, 0);
+      });
+    } else if (event.key === "Enter") {
+      // 추가 입력줄의 Enter는 자체 처리(stopPropagation) — 여기 오지 않아요.
+      event.preventDefault();
+      const active = visible[activeIndex];
+      if (open && active) {
+        pick(active.value);
+      } else {
+        setOpen(!open);
+        if (open) {
+          setQuery("");
+          setActiveIndex(-1);
+        }
+      }
+    } else if (event.key === " " && !(searchable && open)) {
+      event.preventDefault();
+      if (open) {
+        closeMenu();
+      } else {
+        setOpen(true);
+      }
+    } else if (event.key === "Escape" && open) {
+      event.preventDefault();
+      closeMenu();
+    }
+  };
+
+  const chips = selectedValues.map((v) => {
+    const option = allOptions.find((o) => o.value === v);
+    const label = option?.label ?? v;
+    return (
+      <span key={v} className="podo-select__chip">
+        <span className="podo-select__chip-label">{label}</span>
+        <button
+          type="button"
+          className="podo-select__chip-remove"
+          aria-label={`${label} 제거`}
+          onClick={(event) => {
+            event.stopPropagation();
+            pick(v);
+          }}
+        >
+          {SELECT_CHIP_CLOSE}
+        </button>
+      </span>
+    );
+  });
+
+  return (
+    <div
+      {...props}
+      ref={(node) => {
+        rootRef.current = node;
+        if (typeof ref === "function") {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      }}
+      className={joinClass("podo-select", className)}
+      data-size={size}
+      data-state={invalid ? "invalid" : disabled ? "disabled" : undefined}
+      data-open={open ? "true" : undefined}
+    >
+      <div
+        role="combobox"
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-controls={open ? menuId : undefined}
+        aria-activedescendant={open && activeIndex >= 0 ? `${menuId}-${activeIndex}` : undefined}
+        aria-disabled={disabled || undefined}
+        aria-invalid={invalid || undefined}
+        tabIndex={disabled ? -1 : 0}
+        className="podo-select__trigger"
+        onKeyDown={handleKeyDown}
+        onClick={(event) => {
+          onClick?.(event);
+          if (disabled || event.defaultPrevented) {
+            return;
+          }
+          // 검색 입력 클릭은 편집이지 토글이 아니에요.
+          if ((event.target as HTMLElement).closest(".podo-select__search")) {
+            return;
+          }
+          if (open) {
+            closeMenu();
+          } else {
+            setOpen(true);
+          }
+        }}
+      >
+        {prefix ? <span className="podo-select__prefix">{prefix}</span> : null}
+        {open && searchable ? (
+          <input
+            autoFocus
+            className="podo-select__search"
+            value={query}
+            placeholder={multiple ? placeholder : (selectedOption?.label ?? placeholder)}
+            onChange={(event) => {
+              setQuery(event.currentTarget.value);
+              setActiveIndex(-1);
+            }}
+          />
+        ) : (
+          <span className="podo-select__value" data-placeholder={hasValue ? undefined : "true"}>
+            {multiple ? (hasValue ? chips : placeholder) : (selectedOption?.label ?? placeholder)}
+          </span>
+        )}
+        <span className="podo-select__chevron">{SELECT_CHEVRON}</span>
+      </div>
+      {open ? (
+        <div className="podo-select__menu-list">
+          <div
+            className="podo-select__menu"
+            role="listbox"
+            id={menuId}
+            aria-multiselectable={multiple || undefined}
+          >
+            {addable ? (
+              <div className="podo-select__add">
+                <input
+                  className="podo-select__add-input"
+                  value={addText}
+                  placeholder={addPlaceholder}
+                  onChange={(event) => setAddText(event.currentTarget.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      addOption();
+                    }
+                  }}
+                />
+                <button type="button" className="podo-select__add-button" onClick={addOption}>
+                  추가
+                </button>
+              </div>
+            ) : null}
+            {visible.map((option, index) => {
+              const selected = multiple
+                ? selectedValues.includes(option.value)
+                : option.value === selectedValue;
+              return (
+                <div
+                  key={option.value}
+                  id={`${menuId}-${index}`}
+                  role="option"
+                  aria-selected={selected}
+                  className="podo-select__cell"
+                  data-state={selected ? "selected" : undefined}
+                  data-active={index === activeIndex ? "true" : undefined}
+                  onClick={() => pick(option.value)}
+                >
+                  {multiple ? (
+                    <span
+                      className="podo-select__checkbox"
+                      data-checked={selected ? "true" : undefined}
+                    >
+                      {selected ? SELECT_BOX_CHECK : null}
+                    </span>
+                  ) : null}
+                  <span className="podo-select__cell-label">{option.label}</span>
+                  {!multiple && selected ? (
+                    <span className="podo-select__cell-check">{SELECT_CHECK}</span>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+    </div>
   );
 });
 

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import {
   PodoNativeThemeProvider,
@@ -88,6 +88,26 @@ describe("@podo/native", () => {
     const textareaRef = React.createRef<HTMLInputElement>();
     render(<domNative.Textarea inputRef={textareaRef} accessibilityLabel="긴 글" />);
     expect(textareaRef.current).not.toBeNull();
+
+    // Select: 트리거 프레스로 열고, 셀 프레스로 선택 (단일은 닫힘).
+    const picked: string[] = [];
+    render(
+      <domNative.Select
+        testID="select"
+        placeholder="과일 선택"
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+        onValueChange={(next) => picked.push(next)}
+      />
+    );
+    expect(screen.getByTestId("select").getAttribute("data-open")).toBeNull();
+    fireEvent.click(screen.getByText("과일 선택").closest("button") as HTMLElement);
+    expect(screen.getByTestId("select").getAttribute("data-open")).toBe("true");
+    fireEvent.click(screen.getByText("바나나").closest("button") as HTMLElement);
+    expect(picked).toEqual(["banana"]);
+    expect(screen.getByTestId("select").getAttribute("data-open")).toBeNull();
 
     const changes: boolean[] = [];
     render(
@@ -284,6 +304,7 @@ function TestView({
       data-theme={props["data-theme"] as string | undefined}
       data-position={props["data-position"] as string | undefined}
       data-ordinal={props["data-ordinal"] as string | undefined}
+      data-open={props["data-open"] as string | undefined}
       aria-label={props.accessibilityLabel as string | undefined}
     >
       {children}

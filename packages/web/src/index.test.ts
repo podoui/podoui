@@ -18,6 +18,7 @@ describe("@podo/web", () => {
     expect(customElements.get("podo-checkbox")).toBeDefined();
     expect(customElements.get("podo-chip")).toBeDefined();
     expect(customElements.get("podo-input")).toBeDefined();
+    expect(customElements.get("podo-select")).toBeDefined();
     expect(customElements.get("podo-switch")).toBeDefined();
     expect(customElements.get("podo-textarea")).toBeDefined();
     expect(podoWebComponentCss).toContain('.podo-button[data-theme="solid-primary"]');
@@ -26,6 +27,7 @@ describe("@podo/web", () => {
     // Invalid inputs keep the danger border while focused (auto-focus UX).
     expect(podoWebComponentCss).toContain('.podo-input[data-state="invalid"]:focus-within');
     expect(podoWebComponentCss).toContain('.podo-textarea[data-state="invalid"]:focus');
+    expect(podoWebComponentCss).toContain('.podo-select[data-state="invalid"][data-open]');
     // Table ships as classes only (no shadow element — table semantics).
     expect(podoWebComponentCss).toContain('.podo-table[data-type="grid"]');
     expect(podoWebComponentCss).toContain('.podo-table [data-align="right"]');
@@ -74,6 +76,47 @@ describe("@podo/web", () => {
 
     expect(pressed).toBe(1);
     expect(button.shadowRoot?.innerHTML).toMatchSnapshot();
+  });
+
+  it("opens the select element and picks values through podo-change", () => {
+    registerPodoElements();
+    const select = document.createElement("podo-select");
+    select.setAttribute(
+      "options",
+      JSON.stringify([
+        { value: "strawberry", label: "딸기" },
+        { value: "banana", label: "바나나" },
+      ])
+    );
+    select.setAttribute("placeholder", "과일 선택");
+    document.body.append(select);
+
+    expect(select.shadowRoot?.innerHTML).toContain("과일 선택");
+
+    // 트리거 클릭 → open 토글, 메뉴 렌더.
+    (select.shadowRoot?.querySelector(".podo-select__trigger") as HTMLElement).click();
+    expect(select.hasAttribute("open")).toBe(true);
+    expect(select.shadowRoot?.querySelectorAll(".podo-select__cell").length).toBe(2);
+
+    // 셀 클릭 → 단일 값 선택 + 닫힘 + podo-change.
+    let picked: string | undefined;
+    select.addEventListener("podo-change", (event) => {
+      picked = (event as CustomEvent<{ value: string }>).detail.value;
+    });
+    (select.shadowRoot?.querySelector('[data-value="banana"]') as HTMLElement).click();
+    expect(picked).toBe("banana");
+    expect(select.getAttribute("value")).toBe("banana");
+    expect(select.hasAttribute("open")).toBe(false);
+    expect(select.shadowRoot?.innerHTML).toContain("바나나");
+
+    // multiple은 values JSON을 토글하고 칩을 그려요.
+    select.setAttribute("multiple", "");
+    select.setAttribute("values", JSON.stringify(["strawberry"]));
+    expect(select.shadowRoot?.querySelector(".podo-select__chip")).not.toBeNull();
+    select.setAttribute("open", "");
+    (select.shadowRoot?.querySelector('[data-value="banana"]') as HTMLElement).click();
+    expect(JSON.parse(select.getAttribute("values") ?? "[]")).toEqual(["strawberry", "banana"]);
+    select.remove();
   });
 
   it("renders the badge pill and its dot mode", () => {

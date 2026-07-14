@@ -1144,6 +1144,249 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -2462,6 +2705,249 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -3774,6 +4260,249 @@ input {
 .podo-table tbody tr[data-disabled] td {
   background: #F4F4F5;
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
 }
 
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
@@ -5092,6 +5821,249 @@ input {
 .podo-table tbody tr[data-disabled] td {
   background: #F4F4F5;
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
 }
 
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
@@ -6421,6 +7393,249 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -7732,6 +8947,249 @@ input {
 .podo-table tbody tr[data-disabled] td {
   background: #F4F4F5;
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
 }
 
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
@@ -9050,6 +10508,249 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -10366,6 +12067,249 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -11677,6 +13621,249 @@ input {
 .podo-table tbody tr[data-disabled] td {
   background: #F4F4F5;
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
 }
 
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
@@ -12991,6 +15178,249 @@ input {
 .podo-table tbody tr[data-disabled] td {
   background: #F4F4F5;
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
 }
 
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
@@ -14314,6 +16744,249 @@ input {
 .podo-table tbody tr[data-disabled] td {
   background: #F4F4F5;
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
+}
+
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
 }
 
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding

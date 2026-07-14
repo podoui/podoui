@@ -177,6 +177,183 @@ export function Textarea({
   );
 }
 
+export interface HonoSelectOption {
+  value: string;
+  label: string;
+}
+
+export interface HonoSelectProps {
+  /** 메뉴 항목 목록 — 셀 마크업은 컴포넌트가 그려요. */
+  options: HonoSelectOption[];
+  /** 값이 없을 때 트리거에 표시 (Figma 플레이스 홀더). */
+  placeholder?: string;
+  /** Control height and radius (Figma: md 42 — base, lg 52). */
+  size?: "md" | "lg";
+  /** 다중 선택 (Figma theme=slot) — 칩 나열 + 체크박스 셀. */
+  multiple?: boolean;
+  /** 단일 선택 값. */
+  value?: string;
+  /** 다중 선택 값. */
+  values?: string[];
+  /** 정적 렌더에서 메뉴를 펼쳐 보여줄지 (Figma focused). 동작은 클라이언트 코드. */
+  open?: boolean;
+  /** 메뉴 상단 추가 입력줄 마크업 (Figma multi-select-input). */
+  addable?: boolean;
+  addPlaceholder?: string;
+  invalid?: boolean;
+  disabled?: boolean;
+  /** 값 앞에 붙는 아이콘 (Figma prefix-icon). */
+  prefix?: Child;
+  class?: string;
+}
+
+const HONO_SELECT_CHEVRON = (
+  <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M6 9l6 6 6-6"
+      stroke="#27272A"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+const HONO_SELECT_CHECK = (
+  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M3.5 8.5l3 3 6-6.5"
+      stroke="#426CED"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+const HONO_SELECT_BOX_CHECK = (
+  <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none">
+    <path
+      d="M2.5 6.5l2.5 2.5 4.5-5"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+const HONO_SELECT_CHIP_CLOSE = (
+  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+  </svg>
+);
+
+export function Select({
+  options,
+  placeholder,
+  size = "md",
+  multiple,
+  value,
+  values,
+  open,
+  addable,
+  addPlaceholder,
+  invalid,
+  disabled,
+  prefix,
+  class: className,
+}: HonoSelectProps): JSX.Element {
+  const selectedValues = values ?? [];
+  const selected = options.find((o) => o.value === value);
+  const hasValue = multiple ? selectedValues.length > 0 : Boolean(selected);
+  const state = invalid ? "invalid" : disabled ? "disabled" : undefined;
+
+  return (
+    <div
+      class={joinClass("podo-select", className)}
+      data-size={size}
+      data-state={state}
+      data-open={open ? "true" : undefined}
+    >
+      <div
+        class="podo-select__trigger"
+        role="combobox"
+        aria-haspopup="listbox"
+        aria-expanded={open ? "true" : "false"}
+        aria-disabled={disabled ? "true" : undefined}
+        tabindex={disabled ? -1 : 0}
+      >
+        {prefix ? <span class="podo-select__prefix">{prefix}</span> : null}
+        <span class="podo-select__value" data-placeholder={hasValue ? undefined : "true"}>
+          {multiple && hasValue
+            ? selectedValues.map((v) => {
+                const label = options.find((o) => o.value === v)?.label ?? v;
+                return (
+                  <span class="podo-select__chip">
+                    <span class="podo-select__chip-label">{label}</span>
+                    <button
+                      type="button"
+                      class="podo-select__chip-remove"
+                      aria-label={`${label} 제거`}
+                    >
+                      {HONO_SELECT_CHIP_CLOSE}
+                    </button>
+                  </span>
+                );
+              })
+            : ((multiple ? placeholder : (selected?.label ?? placeholder)) ?? "")}
+        </span>
+        <span class="podo-select__chevron">{HONO_SELECT_CHEVRON}</span>
+      </div>
+      {open ? (
+        <div class="podo-select__menu-list">
+          <div
+            class="podo-select__menu"
+            role="listbox"
+            aria-multiselectable={multiple ? "true" : undefined}
+          >
+            {addable ? (
+              <div class="podo-select__add">
+                <input class="podo-select__add-input" placeholder={addPlaceholder} />
+                <button type="button" class="podo-select__add-button">
+                  추가
+                </button>
+              </div>
+            ) : null}
+            {options.map((option) => {
+              const isSelected = multiple
+                ? selectedValues.includes(option.value)
+                : option.value === value;
+              return (
+                <div
+                  class="podo-select__cell"
+                  role="option"
+                  aria-selected={isSelected ? "true" : "false"}
+                  data-state={isSelected ? "selected" : undefined}
+                >
+                  {multiple ? (
+                    <span
+                      class="podo-select__checkbox"
+                      data-checked={isSelected ? "true" : undefined}
+                    >
+                      {isSelected ? HONO_SELECT_BOX_CHECK : null}
+                    </span>
+                  ) : null}
+                  <span class="podo-select__cell-label">{option.label}</span>
+                  {!multiple && isSelected ? (
+                    <span class="podo-select__cell-check">{HONO_SELECT_CHECK}</span>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 const HONO_TOOLTIP_ARROWS: Record<string, string> = {
   right:
     '<svg aria-hidden="true" width="4" height="16" viewBox="0 0 4 16"><path d="M4 0v4L0 8l4 4v4z" fill="currentColor"/></svg>',

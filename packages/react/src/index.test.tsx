@@ -14,6 +14,7 @@ import {
   Input,
   PodoThemeProvider,
   Radio,
+  Select,
   Switch,
   Table,
   Textarea,
@@ -138,6 +139,162 @@ describe("@podo/react", () => {
     const controlled = screen.getByRole("button", { name: "제어형" });
     await user.click(controlled);
     expect(controlled.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("opens the select, picks a single value, and closes", async () => {
+    const user = userEvent.setup();
+    const changes: string[] = [];
+    render(
+      <Select
+        placeholder="과일 선택"
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+        onValueChange={(next) => changes.push(next)}
+      />
+    );
+
+    const trigger = screen.getByRole("combobox");
+    expect(screen.getByText("과일 선택").getAttribute("data-placeholder")).toBe("true");
+    await user.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+
+    await user.click(screen.getByRole("option", { name: "딸기" }));
+
+    expect(changes).toEqual(["strawberry"]);
+    expect(screen.queryByRole("listbox")).toBeNull();
+    expect(screen.getByText("딸기")).toBeDefined();
+    // 선택 후 다시 열면 해당 셀이 selected로 표시돼요.
+    await user.click(trigger);
+    expect(screen.getByRole("option", { name: "딸기" }).getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("toggles multi-select values as removable chips", async () => {
+    const user = userEvent.setup();
+    let latest: string[] = [];
+    const { container } = render(
+      <Select
+        multiple
+        placeholder="전체 과일"
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+        onValuesChange={(next) => {
+          latest = next;
+        }}
+      />
+    );
+    const q = within(container);
+
+    await user.click(q.getByRole("combobox"));
+    await user.click(q.getByRole("option", { name: "딸기" }));
+    await user.click(q.getByRole("option", { name: "바나나" }));
+    // 다중 선택은 메뉴가 열린 채 유지돼요.
+    expect(q.getByRole("listbox")).toBeDefined();
+    expect(latest).toEqual(["strawberry", "banana"]);
+
+    // 칩 X로 해제 — 메뉴 토글 없이 그 값만 빠져요.
+    await user.click(q.getByRole("button", { name: "딸기 제거" }));
+    expect(latest).toEqual(["banana"]);
+    expect(q.getByRole("listbox")).toBeDefined();
+  });
+
+  it("navigates select options with the keyboard", async () => {
+    const user = userEvent.setup();
+    const changes: string[] = [];
+    const { container } = render(
+      <Select
+        placeholder="과일 키보드"
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+        onValueChange={(next) => changes.push(next)}
+      />
+    );
+    const q = within(container);
+
+    act(() => q.getByRole("combobox").focus());
+    expect(q.getByRole("combobox")).toBe(document.activeElement);
+    await user.keyboard("{ArrowDown}{ArrowDown}{Enter}");
+    expect(changes).toEqual(["banana"]);
+    expect(q.queryByRole("listbox")).toBeNull();
+
+    await user.keyboard("{Enter}");
+    expect(q.getByRole("listbox")).toBeDefined();
+    await user.keyboard("{Escape}");
+    expect(q.queryByRole("listbox")).toBeNull();
+  });
+
+  it("filters options while typing when searchable", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select
+        searchable
+        placeholder="과일 선택 및 검색"
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+      />
+    );
+    const q = within(container);
+
+    await user.click(q.getByRole("combobox"));
+    await user.keyboard("바나");
+    expect(q.queryByRole("option", { name: "딸기" })).toBeNull();
+    await user.click(q.getByRole("option", { name: "바나나" }));
+    expect(q.getByText("바나나")).toBeDefined();
+  });
+
+  it("adds and auto-selects a new option through the add row", async () => {
+    const user = userEvent.setup();
+    const addedOptions: string[] = [];
+    let latest: string[] = [];
+    const { container } = render(
+      <Select
+        multiple
+        addable
+        placeholder="추가형 과일"
+        addPlaceholder="과일 이름 입력"
+        options={[{ value: "strawberry", label: "딸기" }]}
+        onOptionAdd={(option) => addedOptions.push(option.value)}
+        onValuesChange={(next) => {
+          latest = next;
+        }}
+      />
+    );
+    const q = within(container);
+
+    await user.click(q.getByRole("combobox"));
+    await user.type(q.getByPlaceholderText("과일 이름 입력"), "멜론");
+    await user.click(q.getByRole("button", { name: "추가" }));
+
+    expect(addedOptions).toEqual(["멜론"]);
+    expect(latest).toEqual(["멜론"]);
+    expect(q.getByRole("option", { name: "멜론" })).toBeDefined();
+  });
+
+  it("closes the select on outside click and blocks it while disabled", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <Select placeholder="바깥 과일" options={[{ value: "a", label: "사과" }]} />
+        <Select disabled placeholder="비활성" options={[]} />
+      </>
+    );
+    const q = within(container);
+
+    const [enabled, blocked] = q.getAllByRole("combobox");
+    await user.click(enabled!);
+    expect(q.getByRole("listbox")).toBeDefined();
+    fireEvent.pointerDown(document.body);
+    expect(q.queryByRole("listbox")).toBeNull();
+
+    await user.click(blocked!);
+    expect(q.queryByRole("listbox")).toBeNull();
   });
 
   it("tracks the character count automatically and caps input at countMax", async () => {

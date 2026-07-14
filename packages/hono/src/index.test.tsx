@@ -11,6 +11,7 @@ import {
   Icon,
   Input,
   Radio,
+  Select,
   Switch,
   Table,
   Textarea,
@@ -48,6 +49,41 @@ describe("@podo/hono", () => {
     expect(html).not.toContain("Work email");
     expect(html).toContain('aria-invalid="true"');
     expect(html).toContain('name="email"');
+  });
+
+  it("renders the select trigger and open menu statically", () => {
+    const html = renderToString(
+      <Select
+        multiple
+        open
+        addable
+        addPlaceholder="과일 이름 입력"
+        placeholder="전체 과일"
+        values={["strawberry"]}
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+      />
+    );
+
+    expect(html).toContain('class="podo-select"');
+    expect(html).toContain('data-open="true"');
+    expect(html).toContain('role="combobox"');
+    // 선택된 값은 칩으로, 셀에는 체크박스가 붙어요.
+    expect(html).toContain('class="podo-select__chip"');
+    expect(html).toContain("딸기 제거");
+    expect(html).toContain('data-checked="true"');
+    expect(html).toContain('aria-multiselectable="true"');
+    // 추가 입력줄 (동작은 클라이언트 코드).
+    expect(html).toContain('class="podo-select__add-input"');
+    expect(html).toContain("추가");
+
+    const single = renderToString(
+      <Select value="banana" options={[{ value: "banana", label: "바나나" }]} open />
+    );
+    expect(single).toContain('data-state="selected"');
+    expect(single).toContain('class="podo-select__cell-check"');
   });
 
   it("renders button, icon, typography, and critical css helpers", () => {

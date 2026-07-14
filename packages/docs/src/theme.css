@@ -435,6 +435,241 @@
   color: #9fa2ad;
 }
 
+/* Select (Figma 538:6694) — mirrors the canonical @podo/web select CSS.
+   data-open is Figma "focused"; danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font: inherit;
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover,
+.podo-select.is-hover .podo-select__trigger {
+  border-color: #9fa2ad;
+}
+
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426ced;
+  box-shadow: inset 0 0 0 1px #426ced;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #f23b3b;
+}
+
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #f23b3b;
+  box-shadow: inset 0 0 0 1px #f23b3b;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #e4e4e7;
+  border-color: #d1d2d6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426ced;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: #18181b;
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9fa2ad;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181b;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9fa2ad;
+}
+
+.podo-select__chip {
+  align-items: center;
+  background: #3e424b;
+  border-radius: 9999px;
+  color: #ffffff;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #f9f9f9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #f4f4f5;
+}
+
+.podo-select__cell-label {
+  color: #18181b;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__checkbox {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #9fa2ad;
+  border-radius: 4px;
+  color: #ffffff;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426ced;
+  border-color: #426ced;
+}
+
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #e4e4e7;
+  border-radius: 6px;
+  color: #18181b;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9fa2ad;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426ced;
+}
+
+.podo-select__add-button {
+  background: #426ced;
+  border: 0;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
+}
+
 /* Textarea (Figma 380:3867) — mirrors the canonical @podo/web textarea CSS. */
 .podo-textarea {
   background: #ffffff;

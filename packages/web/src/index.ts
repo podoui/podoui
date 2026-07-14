@@ -17,6 +17,7 @@ export const podoElementNames = {
   checkbox: "podo-checkbox",
   chip: "podo-chip",
   input: "podo-input",
+  select: "podo-select",
   textarea: "podo-textarea",
   field: "podo-field",
   icon: "podo-icon",
@@ -39,6 +40,7 @@ export function registerPodoElements(options: RegisterPodoElementsOptions = {}):
     [names.checkbox, createCheckboxElement()],
     [names.chip, createChipElement()],
     [names.input, createInputElement()],
+    [names.select, createSelectElement()],
     [names.textarea, createTextareaElement()],
     [names.field, createFieldElement()],
     [names.icon, createIconElement()],
@@ -62,6 +64,7 @@ export function createElementNames(prefix = "podo"): typeof podoElementNames {
     checkbox: `${prefix}-checkbox`,
     chip: `${prefix}-chip`,
     input: `${prefix}-input`,
+    select: `${prefix}-select`,
     textarea: `${prefix}-textarea`,
     field: `${prefix}-field`,
     icon: `${prefix}-icon`,
@@ -1215,6 +1218,249 @@ input {
   color: var(--podo-semantic-color-text-muted, #9FA2AD);
 }
 
+/* Select (Figma 538:6694, set 318:2237): Input-shaped trigger + dropdown menu.
+   States mirror Input — data-open is Figma "focused" (menu visible), completed
+   derives from having a value, and danger keeps its color under focus. */
+.podo-select {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--podo-typography-body-medium-fontFamily, "Pretendard", sans-serif);
+  position: relative;
+}
+
+.podo-select__trigger {
+  align-items: center;
+  background: var(--podo-select-root-background, #FFFFFF);
+  border: 1px solid var(--podo-select-root-borderColor, #E4E4E7);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  gap: 6px;
+  line-height: 1.6;
+  min-height: 42px;
+  min-width: 100px;
+  padding: 0 10px 0 16px;
+}
+
+.podo-select[data-size="lg"] .podo-select__trigger {
+  border-radius: 12px;
+  min-height: 52px;
+  min-width: 120px;
+}
+
+.podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover {
+  border-color: #9FA2AD;
+}
+
+/* Figma focused = 2px primary border; inset shadow adds the second pixel
+   without shifting layout. */
+.podo-select[data-open] .podo-select__trigger {
+  border-color: #426CED;
+  box-shadow: inset 0 0 0 1px #426CED;
+}
+
+.podo-select[data-state="invalid"] .podo-select__trigger {
+  border-color: #F23B3B;
+}
+
+/* Invalid keeps the danger color under focus — same rule as Input. */
+.podo-select[data-state="invalid"][data-open] .podo-select__trigger {
+  border-color: #F23B3B;
+  box-shadow: inset 0 0 0 1px #F23B3B;
+}
+
+.podo-select[data-state="disabled"] .podo-select__trigger {
+  background: #E4E4E7;
+  border-color: #D1D2D6;
+  cursor: not-allowed;
+}
+
+.podo-select__trigger:focus-visible {
+  outline: 2px solid #426CED;
+  outline-offset: 2px;
+}
+
+.podo-select__prefix,
+.podo-select__chevron {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.podo-select__value {
+  align-items: center;
+  color: var(--podo-select-value-color, #18181B);
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.podo-select__value[data-placeholder],
+.podo-select[data-state="disabled"] .podo-select__value {
+  color: #9FA2AD;
+}
+
+.podo-select__search {
+  background: transparent;
+  border: 0;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+}
+
+.podo-select__search::placeholder {
+  color: #9FA2AD;
+}
+
+/* Removable value chip — the Figma slot theme's Chip (solid selected look). */
+.podo-select__chip {
+  align-items: center;
+  background: #3E424B;
+  border-radius: 9999px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  gap: 2px;
+  justify-content: center;
+  line-height: 1.6;
+  min-width: 40px;
+  padding: 2px 6px;
+}
+
+.podo-select__chip-remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: #F9F9F9;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 0;
+}
+
+.podo-select__menu-list {
+  left: 0;
+  padding-top: 6px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+}
+
+.podo-select__menu {
+  backdrop-filter: blur(50px);
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+/* Menu-cell (Figma set 328:11855): 42px row, radius 8. The set has no hover
+   variant — gray.10 hover/active feedback pending a design check. */
+.podo-select__cell {
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 8px;
+}
+
+.podo-select__cell:hover,
+.podo-select__cell[data-active] {
+  background: #F4F4F5;
+}
+
+.podo-select__cell-label {
+  color: #18181B;
+  flex: 1 1 0;
+  font-size: 16px;
+  line-height: 1.6;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podo-select__cell-check {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Static 18px checkbox visual for multi cells — the row is the control. */
+.podo-select__checkbox {
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #9FA2AD;
+  border-radius: 4px;
+  color: #FFFFFF;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.podo-select__checkbox[data-checked] {
+  background: #426CED;
+  border-color: #426CED;
+}
+
+/* Add row (Figma multi-select-input): 32px input + primary 추가 button. */
+.podo-select__add {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.podo-select__add-input {
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #18181B;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px 0 12px;
+}
+
+.podo-select__add-input::placeholder {
+  color: #9FA2AD;
+}
+
+.podo-select__add-input:focus {
+  border-color: #426CED;
+}
+
+.podo-select__add-button {
+  background: #426CED;
+  border: 0;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 2px 10px;
+}
+
 /* Textarea (Figma 380:3867): shares the Input state system with 16/12 padding
    and radius 10; the resize grip is the platform's, restyled to the design. */
 .podo-textarea {
@@ -1857,6 +2103,186 @@ function createInputElement(): CustomElementConstructor {
           })
         );
       });
+    }
+  };
+}
+
+const SELECT_CHEVRON_SVG = `<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#27272A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SELECT_CHECK_SVG = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-6.5" stroke="#426CED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SELECT_BOX_CHECK_SVG = `<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SELECT_CHIP_CLOSE_SVG = `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`;
+
+// Minimal-behavior element: options come in as a JSON attribute, clicking the
+// trigger toggles [open], clicking a cell picks/toggles and emits podo-change.
+// Keyboard navigation and searchable/addable stay React-side (see the spec).
+function createSelectElement(): CustomElementConstructor {
+  return class PodoSelectElement extends HTMLElement {
+    static get observedAttributes(): string[] {
+      return [
+        "options",
+        "value",
+        "values",
+        "placeholder",
+        "size",
+        "multiple",
+        "invalid",
+        "disabled",
+        "open",
+      ];
+    }
+
+    readonly shadow = this.attachShadow({ mode: "open" });
+
+    private readonly onDocumentPointerDown = (event: Event) => {
+      if (this.hasAttribute("open") && !this.contains(event.target as Node)) {
+        this.removeAttribute("open");
+      }
+    };
+
+    connectedCallback(): void {
+      document.addEventListener("pointerdown", this.onDocumentPointerDown);
+      this.render();
+    }
+
+    disconnectedCallback(): void {
+      document.removeEventListener("pointerdown", this.onDocumentPointerDown);
+    }
+
+    attributeChangedCallback(): void {
+      this.render();
+    }
+
+    private parseOptions(): Array<{ value: string; label: string }> {
+      try {
+        const parsed: unknown = JSON.parse(attr(this, "options", "[]"));
+        return Array.isArray(parsed)
+          ? parsed.filter(
+              (o): o is { value: string; label: string } =>
+                typeof o === "object" && o !== null && "value" in o && "label" in o
+            )
+          : [];
+      } catch {
+        return [];
+      }
+    }
+
+    private parseValues(): string[] {
+      try {
+        const parsed: unknown = JSON.parse(attr(this, "values", "[]"));
+        return Array.isArray(parsed)
+          ? parsed.filter((v): v is string => typeof v === "string")
+          : [];
+      } catch {
+        return [];
+      }
+    }
+
+    private render(): void {
+      const options = this.parseOptions();
+      const multiple = this.hasAttribute("multiple");
+      const disabled = this.hasAttribute("disabled");
+      const open = this.hasAttribute("open");
+      const values = this.parseValues();
+      const value = attr(this, "value", "");
+      const placeholder = attr(this, "placeholder", "");
+      const selected = options.find((o) => o.value === value);
+      const hasValue = multiple ? values.length > 0 : Boolean(selected);
+      const stateAttr = disabled
+        ? 'data-state="disabled"'
+        : this.hasAttribute("invalid")
+          ? 'data-state="invalid"'
+          : "";
+
+      const valueHtml =
+        multiple && hasValue
+          ? values
+              .map((v) => {
+                const label = options.find((o) => o.value === v)?.label ?? v;
+                return `<span class="podo-select__chip"><span class="podo-select__chip-label">${escapeHtml(
+                  label
+                )}</span><button type="button" class="podo-select__chip-remove" data-value="${escapeHtml(
+                  v
+                )}" aria-label="${escapeHtml(label)} 제거">${SELECT_CHIP_CLOSE_SVG}</button></span>`;
+              })
+              .join("")
+          : escapeHtml((multiple ? placeholder : (selected?.label ?? placeholder)) || "");
+
+      const cellsHtml = options
+        .map((option) => {
+          const isSelected = multiple ? values.includes(option.value) : option.value === value;
+          const box = multiple
+            ? `<span class="podo-select__checkbox"${isSelected ? ' data-checked="true"' : ""}>${
+                isSelected ? SELECT_BOX_CHECK_SVG : ""
+              }</span>`
+            : "";
+          const check =
+            !multiple && isSelected
+              ? `<span class="podo-select__cell-check">${SELECT_CHECK_SVG}</span>`
+              : "";
+          return `<div class="podo-select__cell" role="option" aria-selected="${isSelected}" data-value="${escapeHtml(
+            option.value
+          )}"${isSelected ? ' data-state="selected"' : ""}>${box}<span class="podo-select__cell-label">${escapeHtml(
+            option.label
+          )}</span>${check}</div>`;
+        })
+        .join("");
+
+      this.shadow.innerHTML = `${componentStyleBlock()}
+<div class="podo-select" part="root" data-size="${escapeHtml(attr(this, "size", "md"))}" ${stateAttr} ${
+        open ? 'data-open="true"' : ""
+      }>
+  <div class="podo-select__trigger" part="trigger" role="combobox" aria-haspopup="listbox" aria-expanded="${open}" tabindex="${
+    disabled ? "-1" : "0"
+  }">
+    <span class="podo-select__value"${hasValue ? "" : ' data-placeholder="true"'}>${valueHtml}</span>
+    <span class="podo-select__chevron">${SELECT_CHEVRON_SVG}</span>
+  </div>
+  ${open ? `<div class="podo-select__menu-list"><div class="podo-select__menu" role="listbox">${cellsHtml}</div></div>` : ""}
+</div>`;
+
+      this.shadow.querySelector(".podo-select__trigger")?.addEventListener("click", (event) => {
+        if (disabled || (event.target as HTMLElement).closest(".podo-select__chip-remove")) {
+          return;
+        }
+        this.toggleAttribute("open");
+      });
+      for (const remove of this.shadow.querySelectorAll(".podo-select__chip-remove")) {
+        remove.addEventListener("click", () => {
+          this.pick((remove as HTMLElement).dataset.value ?? "");
+        });
+      }
+      for (const cell of this.shadow.querySelectorAll(".podo-select__cell")) {
+        cell.addEventListener("click", () => {
+          this.pick((cell as HTMLElement).dataset.value ?? "");
+        });
+      }
+    }
+
+    private pick(optionValue: string): void {
+      if (this.hasAttribute("multiple")) {
+        const values = this.parseValues();
+        const next = values.includes(optionValue)
+          ? values.filter((v) => v !== optionValue)
+          : [...values, optionValue];
+        this.setAttribute("values", JSON.stringify(next));
+        this.dispatchEvent(
+          new CustomEvent("podo-change", {
+            bubbles: true,
+            composed: true,
+            detail: { values: next },
+          })
+        );
+      } else {
+        this.setAttribute("value", optionValue);
+        this.removeAttribute("open");
+        this.dispatchEvent(
+          new CustomEvent("podo-change", {
+            bubbles: true,
+            composed: true,
+            detail: { value: optionValue },
+          })
+        );
+      }
     }
   };
 }
