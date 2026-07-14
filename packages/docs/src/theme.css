@@ -566,6 +566,14 @@
   width: 100%;
 }
 
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
+}
+
 .podo-select__search::placeholder {
   color: #9fa2ad;
 }

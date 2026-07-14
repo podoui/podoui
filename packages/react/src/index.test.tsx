@@ -301,6 +301,34 @@ describe("@podo/react", () => {
     expect(content?.getAttribute("data-hidden")).toBeNull();
   });
 
+  it("keeps chips visible with an inline caret when searching a multi select", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select
+        multiple
+        searchable
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+        defaultValues={["strawberry"]}
+      />
+    );
+    const q = within(container);
+
+    await user.click(q.getByRole("combobox"));
+    // 칩은 그대로 남고 커서가 칩 뒤에 인라인으로 붙어요 (react-select식).
+    expect(q.getByRole("button", { name: "딸기 제거" })).toBeDefined();
+    expect(container.querySelector("[data-hidden]")).toBeNull();
+    expect(container.querySelector(".podo-select__search--inline")).not.toBeNull();
+
+    await user.keyboard("바나");
+    expect(q.queryByRole("option", { name: "딸기" })).toBeNull();
+    await user.click(q.getByRole("option", { name: "바나나" }));
+    // 다중 선택은 검색 중에도 메뉴가 열린 채 칩이 추가돼요.
+    expect(q.getByRole("button", { name: "바나나 제거" })).toBeDefined();
+  });
+
   it("adds and auto-selects a new option through the add row", async () => {
     const user = userEvent.setup();
     const addedOptions: string[] = [];

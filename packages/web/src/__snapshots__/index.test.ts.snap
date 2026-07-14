@@ -1275,6 +1275,14 @@ input {
   width: 100%;
 }
 
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
+}
+
 .podo-select__search::placeholder {
   color: #9FA2AD;
 }
@@ -2873,6 +2881,14 @@ input {
   width: 100%;
 }
 
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
+}
+
 .podo-select__search::placeholder {
   color: #9FA2AD;
 }
@@ -4465,6 +4481,14 @@ input {
   padding: 0;
   position: absolute;
   width: 100%;
+}
+
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
 }
 
 .podo-select__search::placeholder {
@@ -6063,6 +6087,14 @@ input {
   padding: 0;
   position: absolute;
   width: 100%;
+}
+
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
 }
 
 .podo-select__search::placeholder {
@@ -7672,6 +7704,14 @@ input {
   width: 100%;
 }
 
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
+}
+
 .podo-select__search::placeholder {
   color: #9FA2AD;
 }
@@ -9263,6 +9303,14 @@ input {
   padding: 0;
   position: absolute;
   width: 100%;
+}
+
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
 }
 
 .podo-select__search::placeholder {
@@ -10861,6 +10909,14 @@ input {
   width: 100%;
 }
 
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
+}
+
 .podo-select__search::placeholder {
   color: #9FA2AD;
 }
@@ -12457,6 +12513,14 @@ input {
   width: 100%;
 }
 
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
+}
+
 .podo-select__search::placeholder {
   color: #9FA2AD;
 }
@@ -14048,6 +14112,14 @@ input {
   padding: 0;
   position: absolute;
   width: 100%;
+}
+
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
 }
 
 .podo-select__search::placeholder {
@@ -15642,6 +15714,14 @@ input {
   padding: 0;
   position: absolute;
   width: 100%;
+}
+
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
 }
 
 .podo-select__search::placeholder {
@@ -17245,6 +17325,14 @@ input {
   padding: 0;
   position: absolute;
   width: 100%;
+}
+
+/* Multi-select search: the caret sits inline after the visible chips
+   (react-select style); the width follows the typed text only. */
+.podo-select__search--inline {
+  flex-shrink: 0;
+  inset: auto;
+  position: static;
 }
 
 .podo-select__search::placeholder {
