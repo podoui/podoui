@@ -12,6 +12,7 @@ export default tseslint.config(
       "**/node_modules/**",
       ".changeset/**",
       "pnpm-lock.yaml",
+      "figma-plugin/**",
     ],
   },
   js.configs.recommended,

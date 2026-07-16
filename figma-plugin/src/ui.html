@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>PODO Design System</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, -apple-system, sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #1e1e1e;
+    background: #ffffff;
+    padding: 14px;
+    overflow-y: auto;
+  }
+  h1 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  section {
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .desc {
+    color: #6f6f6f;
+    margin-bottom: 8px;
+  }
+  button {
+    font: inherit;
+    font-weight: 600;
+    color: #ffffff;
+    background: #6d28d9;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 12px;
+    cursor: pointer;
+    width: 100%;
+  }
+  button:hover:not(:disabled) { background: #5b21b6; }
+  button:disabled {
+    background: #d9d9d9;
+    color: #8c8c8c;
+    cursor: not-allowed;
+  }
+  input[type='file'] {
+    font: inherit;
+    width: 100%;
+    margin-bottom: 8px;
+    color: #444444;
+  }
+  input[type='file']:disabled { color: #aaaaaa; }
+  #progress-section { display: none; }
+  #progress-phase { font-weight: 600; margin-bottom: 6px; }
+  .bar-track {
+    height: 6px;
+    background: #ececec;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  #bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #6d28d9;
+    border-radius: 3px;
+    transition: width 0.15s linear;
+  }
+  #progress-count { color: #6f6f6f; }
+  #result-section { display: none; }
+  #export-note { display: none; color: #15803d; margin-top: 8px; word-break: break-all; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 8px; }
+  td {
+    padding: 3px 0;
+    border-bottom: 1px solid #f1f1f1;
+  }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  details { margin-top: 4px; }
+  summary { cursor: pointer; font-weight: 600; color: #b45309; }
+  details ul {
+    margin: 6px 0 0 16px;
+    color: #6f6f6f;
+    word-break: break-all;
+  }
+  details li { margin-bottom: 4px; }
+  .ok { color: #15803d; font-weight: 600; }
+  #error-box {
+    display: none;
+    border: 1px solid #fca5a5;
+    background: #fef2f2;
+    color: #dc2626;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  #close-row { text-align: center; }
+  #close-btn {
+    width: auto;
+    background: none;
+    color: #6f6f6f;
+    font-weight: 400;
+    text-decoration: underline;
+    padding: 4px 8px;
+  }
+  #close-btn:hover:not(:disabled) { background: none; color: #1e1e1e; }
+</style>
+</head>
+<body>
+  <h1>PODO Design System <span style="color:#8c8c8c;font-size:10px;font-weight:400">v0.4.0</span></h1>
+  <!-- __PODO_SNAPSHOT__ : build.mjs가 snapshot.json을 이 위치에 삽입한다.
+       아래 메인 스크립트가 파싱 시점에 getElementById로 감지하므로
+       반드시 스크립트보다 앞(문서 순서상 먼저)이어야 한다. -->
+
+  <section id="export-section">
+    <h2>내보내기</h2>
+    <p class="desc">원본 PODO 파일에서 실행하세요. 로컬 변수·스타일·컴포넌트 전체를 JSON 파일로 저장합니다.</p>
+    <button id="export-btn" type="button">JSON 내보내기</button>
+    <div id="export-note"></div>
+  </section>
+
+  <section id="import-section">
+    <h2>가져오기</h2>
+    <p class="desc">빈 대상 파일에서 실행하세요. <b>_podo</b> 페이지를 만들고 디자인 시스템을 복원합니다.</p>
+    <input id="import-file" type="file" accept=".json,application/json">
+    <button id="import-btn" type="button" disabled>가져오기 실행</button>
+  </section>
+
+  <section id="snapshot-section" style="display:none">
+    <h2>PODO 디자인 시스템 설치</h2>
+    <p class="desc" id="snapshot-desc"></p>
+    <button id="snapshot-btn" type="button">PODO 디자인 시스템 설치</button>
+  </section>
+
+  <div id="error-box"></div>
+
+  <section id="progress-section">
+    <div id="progress-phase"></div>
+    <div class="bar-track"><div id="bar-fill"></div></div>
+    <div id="progress-count"></div>
+  </section>
+
+  <section id="result-section"></section>
+
+  <div id="close-row"><button id="close-btn" type="button">플러그인 닫기</button></div>
+
+<script>
+  'use strict';
+
+  var exportBtn = document.getElementById('export-btn');
+  var exportNote = document.getElementById('export-note');
+  var importBtn = document.getElementById('import-btn');
+  var fileInput = document.getElementById('import-file');
+  var errorBox = document.getElementById('error-box');
+  var progressSection = document.getElementById('progress-section');
+  var progressPhase = document.getElementById('progress-phase');
+  var progressCount = document.getElementById('progress-count');
+  var barFill = document.getElementById('bar-fill');
+  var resultSection = document.getElementById('result-section');
+  var closeBtn = document.getElementById('close-btn');
+  var snapshotBtn = document.getElementById('snapshot-btn');
+
+  var running = false;
+
+  function send(msg) {
+    parent.postMessage({ pluginMessage: msg }, '*');
+  }
+
+  function setRunning(value) {
+    running = value;
+    exportBtn.disabled = value;
+    fileInput.disabled = value;
+    importBtn.disabled = value || fileInput.files.length === 0;
+    snapshotBtn.disabled = value;
+  }
+
+  function clearOutput() {
+    errorBox.style.display = 'none';
+    errorBox.textContent = '';
+    resultSection.style.display = 'none';
+    while (resultSection.firstChild) resultSection.removeChild(resultSection.firstChild);
+    exportNote.style.display = 'none';
+    exportNote.textContent = '';
+  }
+
+  function showProgress(phase, done, total) {
+    progressSection.style.display = 'block';
+    progressPhase.textContent = phase;
+    var pct = total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 0;
+    barFill.style.width = pct + '%';
+    progressCount.textContent = total > 0 ? done + ' / ' + total : '';
+  }
+
+  function hideProgress() {
+    progressSection.style.display = 'none';
+  }
+
+  function showError(message) {
+    hideProgress();
+    errorBox.textContent = message;
+    errorBox.style.display = 'block';
+  }
+
+  function formatSize(chars) {
+    var mb = chars / (1024 * 1024);
+    return mb >= 1 ? mb.toFixed(1) + 'MB' : Math.max(1, Math.round(chars / 1024)) + 'KB';
+  }
+
+  function downloadPayload(payload, fileName) {
+    var blob = new Blob([payload], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = fileName || 'podo-export.json';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
+  }
+
+  function el(tag, text) {
+    var node = document.createElement(tag);
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function renderReport(report) {
+    hideProgress();
+    resultSection.style.display = 'block';
+
+    var title = el('h2', '가져오기 완료');
+    resultSection.appendChild(title);
+
+    var rows = [
+      ['변수 컬렉션', report.variableCollections],
+      ['변수', report.variables],
+      ['스타일', report.styles],
+      ['컴포넌트 세트', report.componentSets],
+      ['컴포넌트', report.components]
+    ];
+    var table = document.createElement('table');
+    for (var i = 0; i < rows.length; i++) {
+      var tr = document.createElement('tr');
+      var labelCell = el('td', rows[i][0]);
+      var numCell = el('td', String(rows[i][1]));
+      numCell.className = 'num';
+      tr.appendChild(labelCell);
+      tr.appendChild(numCell);
+      table.appendChild(tr);
+    }
+    resultSection.appendChild(table);
+
+    var warnings = report.warnings || [];
+    if (warnings.length > 0) {
+      var details = document.createElement('details');
+      // 플랜 제한 등 치명적 경고(⚠ 접두)는 목록을 펼친 채로 보여준다.
+      details.open = warnings.some(function (w) { return String(w).indexOf('⚠') === 0; });
+      details.appendChild(el('summary', '경고 ' + warnings.length + '건'));
+      var list = document.createElement('ul');
+      for (var j = 0; j < warnings.length; j++) {
+        list.appendChild(el('li', warnings[j]));
+      }
+      details.appendChild(list);
+      resultSection.appendChild(details);
+    } else {
+      var ok = el('div', '경고 없음');
+      ok.className = 'ok';
+      resultSection.appendChild(ok);
+    }
+  }
+
+  exportBtn.addEventListener('click', function () {
+    if (running) return;
+    clearOutput();
+    setRunning(true);
+    showProgress('내보내기 준비 중…', 0, 1);
+    send({ type: 'export' });
+  });
+
+  fileInput.addEventListener('change', function () {
+    importBtn.disabled = running || fileInput.files.length === 0;
+  });
+
+  importBtn.addEventListener('click', function () {
+    if (running || fileInput.files.length === 0) return;
+    var file = fileInput.files[0];
+    clearOutput();
+    setRunning(true);
+    showProgress('파일 읽는 중…', 0, 1);
+    file.text().then(
+      function (text) {
+        // 큰 파일(수십 MB)도 하나의 문자열로 한 번에 전달한다 (청크 분할 없음).
+        send({ type: 'import', payload: text });
+      },
+      function (err) {
+        setRunning(false);
+        showError('파일을 읽지 못했습니다: ' + (err && err.message ? err.message : String(err)));
+      }
+    );
+  });
+
+  closeBtn.addEventListener('click', function () {
+    send({ type: 'cancel' });
+  });
+
+  // 빌드 시 snapshot.json이 내장되면 "설치 전용" UI로 전환한다: 내보내기/가져오기
+  // 도구는 숨기고 설치 버튼 하나만 노출 (스냅샷 없는 개발 빌드에서만 도구 표시).
+  var snapshotEl = document.getElementById('podo-snapshot');
+  if (snapshotEl) {
+    var payload = snapshotEl.textContent;
+    var head = payload.slice(0, 2000);
+    var nameMatch = head.match(/"fileName":"((?:[^"\\]|\\.)*)"/);
+    var dateMatch = head.match(/"exportedAt":"([^"]*)"/);
+    document.getElementById('snapshot-desc').textContent =
+      '원본: ' +
+      (nameMatch ? JSON.parse('"' + nameMatch[1] + '"') : '알 수 없음') +
+      (dateMatch ? ' (' + dateMatch[1].slice(0, 10) + ' 기준)' : '') +
+      ' · ' + formatSize(payload.length) +
+      ' — 변수·스타일·컴포넌트를 _podo 페이지에 설치합니다. 기존 _podo가 있으면 덮어씁니다.';
+    document.getElementById('export-section').style.display = 'none';
+    document.getElementById('import-section').style.display = 'none';
+    document.getElementById('snapshot-section').style.display = 'block';
+    snapshotBtn.addEventListener('click', function () {
+      if (running) return;
+      clearOutput();
+      setRunning(true);
+      showProgress('설치 준비 중…', 0, 1);
+      send({ type: 'import', payload: payload });
+    });
+  }
+
+  window.onmessage = function (event) {
+    var msg = event.data && event.data.pluginMessage;
+    if (!msg || typeof msg.type !== 'string') return;
+
+    if (msg.type === 'progress') {
+      showProgress(msg.phase, msg.done, msg.total);
+      return;
+    }
+    if (msg.type === 'export-done') {
+      hideProgress();
+      downloadPayload(msg.payload, msg.fileName);
+      exportNote.textContent =
+        '내보내기 완료 — 다운로드가 시작되었습니다: ' + msg.fileName + ' (' + formatSize(msg.payload.length) + ')';
+      exportNote.style.display = 'block';
+      setRunning(false);
+      return;
+    }
+    if (msg.type === 'import-done') {
+      renderReport(msg.report);
+      setRunning(false);
+      return;
+    }
+    if (msg.type === 'error') {
+      showError(msg.message);
+      setRunning(false);
+      return;
+    }
+  };
+</script>
+</body>
+</html>
