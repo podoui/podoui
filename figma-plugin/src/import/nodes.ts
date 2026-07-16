@@ -77,6 +77,14 @@ interface Ctx {
    * painted onto the wrapper itself.
    */
   svgWrapperIds: Set<string>;
+  /**
+   * SLOT nodes created while populating the current top-level item, with the
+   * SOURCE slot-def full name they referenced (componentPropertyReferences.
+   * slotContentId). Consumed (spliced) by reconcileSlotDefs after each item:
+   * createSlot() auto-creates one SLOT definition per node, so variant
+   * members sharing one source def must be unified onto a single definition.
+   */
+  pendingSlots: { node: SceneNode; sourceRef: string | null }[];
 }
 
 function errMsg(e: unknown): string {
@@ -579,14 +587,54 @@ async function applyBoundVariables(node: SceneNode, data: NodeData, ctx: Ctx): P
 }
 
 /**
+ * SVG 폴백 래퍼: 임포트된 SVG 자식들은 정적 페인트만 갖는다. 원본 벡터의
+ * 페인트가 전부 SOLID(모노크롬 아이콘)면 자식 지오메트리에 원본 페인트를
+ * 재적용해 변수 바인딩(다크모드 색 전환 등)을 복원한다. 멀티컬러 벡터는
+ * 색이 갈릴 수 있으므로 건드리지 않는다.
+ */
+async function repaintSvgFallback(node: SceneNode, data: NodeData, ctx: Ctx): Promise<void> {
+  const allSolid = (paints: PaintData[] | null | undefined): paints is PaintData[] =>
+    Array.isArray(paints) && paints.length > 0 && paints.every((p) => p.type === 'SOLID');
+  const fills = allSolid(data.fills) ? await deserializePaints(data.fills, ctx) : null;
+  const strokes = allSolid(data.strokes) ? await deserializePaints(data.strokes, ctx) : null;
+  if ((!fills && !strokes) || !('findAll' in node)) return;
+  for (const child of (node as FrameNode).findAll(() => true)) {
+    if (fills && 'fills' in child) {
+      const target = child as SceneNode & MinimalFillsMixin;
+      if (Array.isArray(target.fills) && target.fills.length > 0) {
+        try {
+          target.fills = fills;
+        } catch (e) {
+          ctx.warnDedup(`SVG 폴백 채우기 재적용 실패 '${data.name}': ${errMsg(e)}`);
+        }
+      }
+    }
+    if (strokes && 'strokes' in child) {
+      const target = child as SceneNode & MinimalStrokesMixin;
+      if (target.strokes.length > 0) {
+        try {
+          target.strokes = strokes;
+        } catch (e) {
+          ctx.warnDedup(`SVG 폴백 획 재적용 실패 '${data.name}': ${errMsg(e)}`);
+        }
+      }
+    }
+  }
+}
+
+/**
  * Fills / strokes / effects / style ids / node bound vars / property refs /
  * reactions — everything that needs remapping and applies uniformly.
  */
 async function applyCommon(node: SceneNode, data: NodeData, ctx: Ctx, propMap: PropNameMap | null): Promise<void> {
   // SVG-fallback wrapper frames keep their exact paints inside the imported
   // SVG children; the serialized node-level paints/effects/style ids/bindings
-  // describe the source VECTOR and would paint the wrapper itself.
+  // describe the source VECTOR and would paint the wrapper itself. Monochrome
+  // paints (incl. variable bindings) are re-applied to the children instead.
   const svgWrapper = ctx.svgWrapperIds.has(node.id);
+  if (svgWrapper) {
+    await repaintSvgFallback(node, data, ctx);
+  }
   if (!svgWrapper && data.fills !== undefined && data.fills !== null && 'fills' in node) {
     const target = node as SceneNode & MinimalFillsMixin;
     const paints = await deserializePaints(data.fills, ctx);
@@ -638,6 +686,9 @@ async function applyCommon(node: SceneNode, data: NodeData, ctx: Ctx, propMap: P
   if (data.componentPropertyReferences && propMap) {
     const refs: Record<string, string> = {};
     for (const key of Object.keys(data.componentPropertyReferences)) {
+      if (key === 'slotContentId') {
+        continue; // SLOT 정의는 트리 패스 뒤 reconcileSlotDefs에서 통합·연결된다
+      }
       const oldName = data.componentPropertyReferences[key];
       const mapped = propMap.get(oldName) ?? (oldName.indexOf('#') < 0 ? oldName : undefined);
       if (!mapped) {
@@ -762,7 +813,7 @@ function createVectorNode(data: NodeData, ctx: Ctx): SceneNode {
         return only;
       }
       ctx.warnDedup(
-        `벡터 '${data.name}': SVG가 여러 지오메트리로 임포트되어 FRAME으로 유지합니다 (페인트는 SVG 원본을 따르며, 이 노드의 변수 바인딩·스타일 연결은 재현되지 않습니다).`
+        `벡터 '${data.name}': SVG가 여러 지오메트리로 임포트되어 FRAME으로 유지합니다 (단색 페인트·변수 바인딩은 자식에 재적용되고, 스타일 연결은 재현되지 않습니다).`
       );
       ctx.svgWrapperIds.add(frame.id);
       return frame;
@@ -906,6 +957,11 @@ async function buildNode(
       break;
     case 'SLOT':
       node = createSlotNode(data, ctx, host);
+      ctx.pendingSlots.push({
+        node,
+        sourceRef:
+          (data.componentPropertyReferences && data.componentPropertyReferences['slotContentId']) || null
+      });
       break;
     default:
       ctx.warnDedup(`미지원 노드 타입 '${data.type}' — FRAME으로 대체합니다.`);
@@ -1037,59 +1093,129 @@ async function reconcileSlotDefs(
   map: PropNameMap,
   ctx: Ctx
 ): Promise<void> {
+  // createSlot()은 슬롯 노드마다 SLOT 정의를 하나씩 자동 생성한다. 원본에서는
+  // (특히 variant 세트에서) 여러 슬롯 노드가 하나의 정의를 slotContentId로
+  // 공유하므로, 소스 참조가 같은 슬롯 노드들을 대표 정의 하나로 통합하고
+  // 나머지 자동 정의는 제거한다.
+  const slots = ctx.pendingSlots.splice(0);
   const wanted = defs.filter((d) => d.type === 'SLOT');
-  if (!wanted.length) return;
-  let currentSlotNames: string[] = [];
-  try {
-    const current = owner.componentPropertyDefinitions;
-    currentSlotNames = Object.keys(current).filter((name) => current[name].type === 'SLOT');
-  } catch (e) {
-    ctx.warnDedup(`'${owner.name}' SLOT 정의 조회 실패: ${errMsg(e)}`);
-  }
-  for (let i = 0; i < wanted.length; i++) {
-    const def = wanted[i];
+  if (!wanted.length && !slots.length) return;
+
+  const readSlotRef = (node: SceneNode): string | null => {
+    try {
+      const refs = (node as unknown as { componentPropertyReferences?: Record<string, string | undefined> })
+        .componentPropertyReferences;
+      const ref = refs && refs['slotContentId'];
+      return typeof ref === 'string' ? ref : null;
+    } catch {
+      return null;
+    }
+  };
+  const writeSlotRef = (node: SceneNode, name: string): boolean => {
+    try {
+      const target = node as unknown as { componentPropertyReferences?: Record<string, string> };
+      const prev = target.componentPropertyReferences ?? {};
+      target.componentPropertyReferences = { ...prev, slotContentId: name };
+      return true;
+    } catch (e) {
+      ctx.warnDedup(`슬롯 '${node.name}' 정의 연결 실패 ('${owner.name}'): ${errMsg(e)}`);
+      return false;
+    }
+  };
+
+  const used = new Set<string>();
+  for (const def of wanted) {
     const plain = plainPropName(def.name);
+    const group = slots.filter((s) => s.sourceRef === def.name);
+
+    // editComponentProperty는 빈 편집 객체를 거부하므로 바꿀 내용만 담는다.
     const edit: {
       name?: string;
       preferredValues?: InstanceSwapPreferredValue[];
       description?: string;
       slotSettings?: SlotSettings;
-    } = { name: plain };
+    } = {};
     if (def.description !== undefined) edit.description = def.description;
     if (def.slotSettings) edit.slotSettings = def.slotSettings as SlotSettings;
     if (def.preferredValues && def.preferredValues.length) {
       edit.preferredValues = def.preferredValues.map((p) => ({ type: p.type, key: p.key }));
     }
-    if (i < currentSlotNames.length) {
-      // createSlot() materialized a definition — rename/configure it.
-      try {
-        const newName = owner.editComponentProperty(currentSlotNames[i], edit);
-        map.set(def.name, newName);
-      } catch (e) {
-        ctx.warn(`SLOT 프로퍼티 '${def.name}' 설정 실패 ('${owner.name}'): ${errMsg(e)}`);
+
+    let finalName: string | null = null;
+    const canonical = group.length ? readSlotRef(group[0].node) : null;
+    if (canonical) {
+      if (plainPropName(canonical) !== plain) edit.name = plain;
+      if (Object.keys(edit).length) {
+        try {
+          finalName = owner.editComponentProperty(canonical, edit);
+        } catch (e) {
+          ctx.warn(`SLOT 프로퍼티 '${def.name}' 설정 실패 ('${owner.name}'): ${errMsg(e)}`);
+          finalName = canonical; // 설정은 실패해도 정의 자체는 유효하다
+        }
+      } else {
+        finalName = canonical; // 바꿀 것이 없으면 편집 호출 자체를 생략
       }
     } else {
-      // No auto-created definition: try creating one directly (defaultValue
-      // semantics for SLOT are undocumented — '' is the best-effort value).
+      // 이 정의를 참조하는 슬롯 노드가 없다 — 정의만 직접 생성한다
+      // (SLOT의 defaultValue 의미는 비문서화 — ''가 best effort).
       try {
-        let newName = owner.addComponentProperty(plain, 'SLOT', '');
-        try {
-          newName = owner.editComponentProperty(newName, edit);
-        } catch {
-          // settings are cosmetic; keep the property
+        finalName = owner.addComponentProperty(plain, 'SLOT', '');
+        if (Object.keys(edit).length) {
+          try {
+            finalName = owner.editComponentProperty(finalName, edit);
+          } catch {
+            // settings are cosmetic; keep the property
+          }
         }
-        map.set(def.name, newName);
       } catch (e) {
         ctx.warn(
           `SLOT 프로퍼티 '${def.name}' 재생성 실패 ('${owner.name}') — 슬롯 콘텐츠는 일반 자식으로 유지됩니다: ${errMsg(e)}`
         );
       }
     }
+    if (!finalName) continue;
+    map.set(def.name, finalName);
+    used.add(finalName);
+
+    // 같은 소스 정의를 참조하던 나머지 슬롯 노드를 대표 정의로 연결하고,
+    // 그 노드들이 만든 자동 정의는 제거한다.
+    for (let i = 1; i < group.length; i++) {
+      const auto = readSlotRef(group[i].node);
+      if (auto === finalName) continue;
+      const linked = writeSlotRef(group[i].node, finalName);
+      if (linked && auto) {
+        try {
+          owner.deleteComponentProperty(auto);
+        } catch (e) {
+          ctx.warnDedup(`잉여 SLOT 정의 '${auto}' 제거 실패 ('${owner.name}'): ${errMsg(e)}`);
+        }
+      }
+    }
   }
-  if (currentSlotNames.length > wanted.length) {
-    ctx.warn(
-      `'${owner.name}': 트리 재구성이 만든 SLOT 정의(${currentSlotNames.length}개)가 원본(${wanted.length}개)보다 많습니다 — 초과 정의는 자동 생성 이름/설정으로 남습니다.`
-    );
+
+  // 어떤 슬롯 노드도 참조하지 않고 원본 정의에도 대응하지 않는 SLOT 정의 정리.
+  try {
+    const current = owner.componentPropertyDefinitions;
+    const live = new Set<string>();
+    for (const slot of slots) {
+      const ref = readSlotRef(slot.node);
+      if (ref) live.add(ref);
+    }
+    let leftover = 0;
+    for (const name of Object.keys(current)) {
+      if (current[name].type !== 'SLOT') continue;
+      if (used.has(name) || live.has(name)) continue;
+      try {
+        owner.deleteComponentProperty(name);
+      } catch {
+        leftover++;
+      }
+    }
+    if (leftover > 0) {
+      ctx.warn(`'${owner.name}': 원본에 없는 SLOT 정의 ${leftover}개를 제거하지 못했습니다.`);
+    }
+  } catch (e) {
+    ctx.warnDedup(`'${owner.name}' SLOT 정의 정리 실패: ${errMsg(e)}`);
   }
 }
 
@@ -1369,7 +1495,8 @@ export async function buildComponents(
     deferredOverrides: [],
     deferredReactions: [],
     imageMap: new Map(),
-    svgWrapperIds: new Set()
+    svgWrapperIds: new Set(),
+    pendingSlots: []
   };
 
   // Hidden instance children must stay walkable during the override pass.
