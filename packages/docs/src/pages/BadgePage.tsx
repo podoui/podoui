@@ -1,4 +1,4 @@
-import { Badge } from "@podo/react";
+import { Badge } from "@podoui/react";
 import { Card, StageItem } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -16,12 +16,12 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Badge } from "@podo/hono";\n\n<Badge>99</Badge>`,
+    code: `import { Badge } from "@podoui/hono";\n\n<Badge>99</Badge>`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Badge } from "@podo/native";\n\n<Badge>99</Badge>`,
+    code: `import { Badge } from "@podoui/native";\n\n<Badge>99</Badge>`,
   },
 ];
 
@@ -90,7 +90,7 @@ export function BadgePage() {
       <DocSection
         index={4}
         title="속성 (props)"
-        description="@podo/react의 Badge가 받는 속성이에요. 표시할 숫자·텍스트는 children으로 전달하고, 이 밖에 표준 span 속성(className, aria-* 등)도 그대로 전달돼요. 도트처럼 보이는 텍스트가 없을 땐 aria-label로 의미를 제공하세요."
+        description="@podoui/react의 Badge가 받는 속성이에요. 표시할 숫자·텍스트는 children으로 전달하고, 이 밖에 표준 span 속성(className, aria-* 등)도 그대로 전달돼요. 도트처럼 보이는 텍스트가 없을 땐 aria-label로 의미를 제공하세요."
       >
         <SpecTable
           variant="props"

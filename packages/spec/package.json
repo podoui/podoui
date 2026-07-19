@@ -1,5 +1,5 @@
 {
-  "name": "@podo/spec",
+  "name": "@podoui/spec",
   "version": "2.0.0",
   "type": "module",
   "description": "JSON schemas and TypeScript contracts for Podo design specs.",

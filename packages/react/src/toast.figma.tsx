@@ -1,4 +1,4 @@
-// Code Connect: Figma Toast component set (459:1298) → @podo/react Toast.
+// Code Connect: Figma Toast component set (459:1298) → @podoui/react Toast.
 // - state passes through (normal/success/danger/info/warning)
 // - the preffix-icon [sic] / suffix-text booleans become content slots
 // - suffix-icon is the close X in the design, so it maps to onClose

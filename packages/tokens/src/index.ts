@@ -7,7 +7,7 @@ import {
   type TokenDocument,
   type TokenTree,
   type ValidationIssue,
-} from "@podo/spec";
+} from "@podoui/spec";
 
 export { emitLegacyGridCss, emitLegacyGridScss, legacyGridContract } from "./legacy-grid.js";
 

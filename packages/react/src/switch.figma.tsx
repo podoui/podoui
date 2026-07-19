@@ -1,4 +1,4 @@
-// Code Connect: Figma Toggle component set (566:12693) → @podo/react Switch.
+// Code Connect: Figma Toggle component set (566:12693) → @podoui/react Switch.
 // The Figma component is named "Toggle" and its docs page "Switch"; the code
 // follows the docs name. state=on/off maps to the web-standard checked prop,
 // the disable variant maps to disabled, and the text/label pair becomes the

@@ -1,4 +1,4 @@
-import { Select } from "@podo/react";
+import { Select } from "@podoui/react";
 import { Card, StageItem } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -51,12 +51,12 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Select } from "@podo/hono";\n\n<Select placeholder="과일 선택" options={fruits} />`,
+    code: `import { Select } from "@podoui/hono";\n\n<Select placeholder="과일 선택" options={fruits} />`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Select } from "@podo/native";\n\n<Select placeholder="과일 선택" options={fruits} onValueChange={setFruit} />`,
+    code: `import { Select } from "@podoui/native";\n\n<Select placeholder="과일 선택" options={fruits} onValueChange={setFruit} />`,
   },
 ];
 
@@ -192,7 +192,7 @@ export function SelectPage() {
       <DocSection
         index={5}
         title="속성 (props)"
-        description="@podo/react의 Select가 받는 속성이에요. hover·focused는 인터랙션으로 자동 표현되고, completed는 값이 선택되면 파생돼요. 단일 모드는 value 계열, 다중 모드(multiple)는 values 계열을 사용해요. 이 밖에 표준 div 속성(className, aria-* 등)도 그대로 전달돼요."
+        description="@podoui/react의 Select가 받는 속성이에요. hover·focused는 인터랙션으로 자동 표현되고, completed는 값이 선택되면 파생돼요. 단일 모드는 value 계열, 다중 모드(multiple)는 values 계열을 사용해요. 이 밖에 표준 div 속성(className, aria-* 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"

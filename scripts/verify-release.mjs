@@ -76,8 +76,8 @@ function assertRootScripts(rootPackage) {
 async function verifyPackage(directory) {
   const packagePath = join(packagesRoot, directory, "package.json");
   const manifest = await readJson(packagePath);
-  // Private workspace packages (e.g. the @podo/docs site) are never published.
-  if (manifest.private === true || !manifest.name?.startsWith("@podo/")) {
+  // Private workspace packages (e.g. the @podoui/docs site) are never published.
+  if (manifest.private === true || !manifest.name?.startsWith("@podoui/")) {
     return;
   }
 
@@ -159,7 +159,7 @@ async function verifyMcpExecution() {
 
   const mcpModule = await import(pathToFileURL(join(root, "packages/mcp/dist/index.js")).href);
   if (typeof mcpModule.createPodoMcpServer !== "function") {
-    fail("@podo/mcp must export createPodoMcpServer.");
+    fail("@podoui/mcp must export createPodoMcpServer.");
     return;
   }
   mcpModule.createPodoMcpServer({ root });

@@ -25,7 +25,7 @@ import {
   createFieldA11y,
   createInputBehavior,
   createSwitchBehavior,
-} from "@podo/core";
+} from "@podoui/core";
 
 export interface PodoThemeContextValue {
   theme: string;

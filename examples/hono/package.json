@@ -1,5 +1,5 @@
 {
-  "name": "@podo/example-hono",
+  "name": "@podoui/example-hono",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/hono": "workspace:*",
+    "@podoui/hono": "workspace:*",
     "hono": "^4.12.25"
   }
 }

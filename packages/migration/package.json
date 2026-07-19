@@ -1,5 +1,5 @@
 {
-  "name": "@podo/migration",
+  "name": "@podoui/migration",
   "version": "2.0.0",
   "type": "module",
   "description": "Migration manifest, JSON Patch runner, and conflict detection for Podo projects.",
@@ -22,7 +22,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/spec": "workspace:*",
+    "@podoui/spec": "workspace:*",
     "zod": "^4.4.3"
   },
   "author": "hada0127 <work@tarucy.net>",

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { PODO_SCHEMA_VERSION, parseComponentDocument, type ComponentDocument } from "@podo/spec";
+import { PODO_SCHEMA_VERSION, parseComponentDocument, type ComponentDocument } from "@podoui/spec";
 import {
   assertIdempotent,
   emitComponentTokenCss,
@@ -12,7 +12,7 @@ import {
 
 const componentRoot = resolve(process.cwd(), "packages/spec/samples/components");
 
-describe("@podo/codegen", () => {
+describe("@podoui/codegen", () => {
   it("generates deterministic target files from component specs", () => {
     const specs = loadComponents();
     const first = generateComponentFiles({
@@ -41,7 +41,7 @@ describe("@podo/codegen", () => {
       first.find((file) => file.path.endsWith("native/button.native.ts"))?.contents
     ).toMatchSnapshot("native button output");
     expect(first.find((file) => file.path.endsWith("react/button.react.ts"))?.contents).toContain(
-      'export { Button } from "@podo/react";'
+      'export { Button } from "@podoui/react";'
     );
     expect(first.every((file) => file.contents.startsWith(generatedFileHeader))).toBe(true);
   });

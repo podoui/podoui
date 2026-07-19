@@ -19,7 +19,7 @@ import { loadTokenDocuments } from "./node.js";
 // Repo-relative so the origin filePaths captured in snapshots are stable across machines.
 const specSamples = join("packages", "spec", "samples", "tokens");
 
-describe("@podo/tokens", () => {
+describe("@podoui/tokens", () => {
   it("loads package token files and project .podo overrides", async () => {
     const projectRoot = await mkdir(join(tmpdir(), `podo-tokens-${Date.now()}`), {
       recursive: true,

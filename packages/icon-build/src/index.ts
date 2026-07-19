@@ -18,6 +18,6 @@ export { canNormalizeIconSvg, normalizeIconSvg, sanitizeIconSvg } from "./svg.js
 export { svgToFillPathData } from "./stroke.js";
 
 // Re-export the shared validators so icon hosts depend on one source of truth.
-export { computeIconsHash, validateInlineSvg } from "@podo/spec";
+export { computeIconsHash, validateInlineSvg } from "@podoui/spec";
 
-export const packageName = "@podo/icon-build";
+export const packageName = "@podoui/icon-build";

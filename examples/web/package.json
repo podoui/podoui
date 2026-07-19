@@ -1,5 +1,5 @@
 {
-  "name": "@podo/example-web",
+  "name": "@podoui/example-web",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -8,6 +8,6 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/web": "workspace:*"
+    "@podoui/web": "workspace:*"
   }
 }

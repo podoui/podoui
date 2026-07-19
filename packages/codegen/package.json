@@ -1,5 +1,5 @@
 {
-  "name": "@podo/codegen",
+  "name": "@podoui/codegen",
   "version": "2.0.0",
   "type": "module",
   "description": "Component spec code generation templates for Podo targets.",
@@ -22,7 +22,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/spec": "workspace:*"
+    "@podoui/spec": "workspace:*"
   },
   "author": "hada0127 <work@tarucy.net>",
   "repository": {

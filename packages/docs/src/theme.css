@@ -1,10 +1,10 @@
 /*
- * Preview styling for the live @podo/react Button.
+ * Preview styling for the live @podoui/react Button.
  *
  * The React Button renders `class="podo-button"` with `data-theme` / `data-size`
  * and reads its colors from CSS custom properties. It ships no CSS of its own —
  * in a real install those come from the token build (components.css). Here we
- * mirror the canonical @podo/web button CSS (the same Figma values) so previews
+ * mirror the canonical @podoui/web button CSS (the same Figma values) so previews
  * render each theme and size distinctly, WITHOUT wiring the token pipeline into
  * the docs app. Replace this with the generated token CSS once available.
  */
@@ -149,7 +149,7 @@
   cursor: not-allowed;
 }
 
-/* Badge (Figma 474:3218) — mirrors the canonical @podo/web badge CSS.
+/* Badge (Figma 474:3218) — mirrors the canonical @podoui/web badge CSS.
    natural~info are strong system fills (natural — base); gray~orange are
    soft color labels; data-dot collapses to a 6px presence dot. */
 .podo-badge {
@@ -254,7 +254,7 @@
   background: #ff6a33;
 }
 
-/* Chip (Figma 538:6615) — mirrors the canonical @podo/web chip CSS.
+/* Chip (Figma 538:6615) — mirrors the canonical @podoui/web chip CSS.
    Unselected is the base look; data-state="selected" turns the fill on. */
 .podo-chip {
   align-items: center;
@@ -374,7 +374,7 @@
   width: 16px;
 }
 
-/* Table (Figma 474:1795) — mirrors the canonical @podo/web table CSS. */
+/* Table (Figma 474:1795) — mirrors the canonical @podoui/web table CSS. */
 .podo-table {
   background: #ffffff;
   border-collapse: separate;
@@ -457,7 +457,7 @@
   color: #9fa2ad;
 }
 
-/* Select (Figma 538:6694) — mirrors the canonical @podo/web select CSS.
+/* Select (Figma 538:6694) — mirrors the canonical @podoui/web select CSS.
    data-open is Figma "focused"; danger keeps its color under focus. */
 .podo-select {
   display: inline-flex;
@@ -749,7 +749,7 @@
   padding: 2px 10px;
 }
 
-/* Textarea (Figma 380:3867) — mirrors the canonical @podo/web textarea CSS. */
+/* Textarea (Figma 380:3867) — mirrors the canonical @podoui/web textarea CSS. */
 .podo-textarea {
   background: #ffffff;
   border: 1px solid #e4e4e7;
@@ -827,7 +827,7 @@
   background-repeat: no-repeat;
 }
 
-/* Switch (Figma 338:2464) — mirrors the canonical @podo/web switch CSS. */
+/* Switch (Figma 338:2464) — mirrors the canonical @podoui/web switch CSS. */
 .podo-switch {
   background: #d1d2d6;
   border: 0;
@@ -940,7 +940,7 @@
   color: #9fa2ad;
 }
 
-/* Checkbox (Figma 328:18039) — mirrors the canonical @podo/web checkbox CSS.
+/* Checkbox (Figma 328:18039) — mirrors the canonical @podoui/web checkbox CSS.
    Fixed 18px radius-4 box; the size variant only scales the label. */
 .podo-checkbox {
   appearance: none;
@@ -1015,7 +1015,7 @@
   color: #9fa2ad;
 }
 
-/* Radio (Figma 379:3350) — mirrors the canonical @podo/web radio CSS.
+/* Radio (Figma 379:3350) — mirrors the canonical @podoui/web radio CSS.
    Fixed 18px circle; the visual rides the native :checked state. */
 .podo-radio {
   appearance: none;
@@ -1081,7 +1081,7 @@
   color: #9fa2ad;
 }
 
-/* Tooltip (Figma 388:2125) — mirrors the canonical @podo/web tooltip CSS. */
+/* Tooltip (Figma 388:2125) — mirrors the canonical @podoui/web tooltip CSS. */
 .podo-tooltip {
   --podo-tooltip-background: #3e424b;
   --podo-tooltip-color: #f9f9f9;
@@ -1154,7 +1154,7 @@
   margin: 0 4px;
 }
 
-/* Toast (Figma 459:1298) — mirrors the canonical @podo/web toast CSS. */
+/* Toast (Figma 459:1298) — mirrors the canonical @podoui/web toast CSS. */
 .podo-toast {
   align-items: flex-start;
   background: #f4f4f5;
@@ -1381,7 +1381,7 @@
   }
 }
 
-/* Field (Figma 538:6691) — mirrors the canonical @podo/web field CSS. */
+/* Field (Figma 538:6691) — mirrors the canonical @podoui/web field CSS. */
 .podo-field {
   display: flex;
   flex-direction: column;
@@ -1450,7 +1450,7 @@
   margin-left: auto;
 }
 
-/* Input (Figma 538:6693) — mirrors the canonical @podo/web input CSS.
+/* Input (Figma 538:6693) — mirrors the canonical @podoui/web input CSS.
    Wrapper carries the box + states; the inner control is borderless. */
 .podo-input {
   align-items: center;

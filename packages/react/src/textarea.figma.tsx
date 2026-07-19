@@ -1,4 +1,4 @@
-// Code Connect: Figma Textarea component set (380:3867) → @podo/react Textarea.
+// Code Connect: Figma Textarea component set (380:3867) → @podoui/react Textarea.
 // - "state" keeps danger→invalid, disabled, and read-only→readOnly;
 //   normal/hover/focused are platform interactions and completed is simply a
 //   filled value

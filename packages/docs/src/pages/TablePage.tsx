@@ -1,4 +1,4 @@
-import { Chip, Table } from "@podo/react";
+import { Chip, Table } from "@podoui/react";
 import { BaseMarker } from "../components/BaseMarker.js";
 import { Card } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
@@ -36,7 +36,7 @@ const USAGE_TABS: CodeTab[] = [
     target: "hono",
     label: "Hono",
     code:
-      `import { Table } from "@podo/hono";\n\n` +
+      `import { Table } from "@podoui/hono";\n\n` +
       `{/* 선택 열은 셀에 Checkbox를 직접 조합해요 (SSR) */}\n` +
       `<Table>\n  <thead>...</thead>\n  <tbody>...</tbody>\n</Table>`,
   },
@@ -174,7 +174,7 @@ export function TablePage() {
       <DocSection
         index={4}
         title="속성 (props)"
-        description="@podo/react의 Table이 받는 속성이에요. 내용은 표준 thead·tbody·tr·th·td 마크업을 그대로 사용해 표 시맨틱과 접근성이 플랫폼에서 나와요. hover·pressed 행 상태는 브라우저 상호작용으로 표현돼요. 행·셀 단위 설정은 마크업에 data-* 속성으로 표시해요 — 아래 표의 data-align, data-disabled 항목을 참고하세요. React Native에는 표 레이아웃이 없어 FlatList 사용을 권장해요."
+        description="@podoui/react의 Table이 받는 속성이에요. 내용은 표준 thead·tbody·tr·th·td 마크업을 그대로 사용해 표 시맨틱과 접근성이 플랫폼에서 나와요. hover·pressed 행 상태는 브라우저 상호작용으로 표현돼요. 행·셀 단위 설정은 마크업에 data-* 속성으로 표시해요 — 아래 표의 data-align, data-disabled 항목을 참고하세요. React Native에는 표 레이아웃이 없어 FlatList 사용을 권장해요."
       >
         <SpecTable
           variant="props"

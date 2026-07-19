@@ -1,4 +1,4 @@
-// Code Connect: Figma Checkbox component set (328:18039) → @podo/react Checkbox.
+// Code Connect: Figma Checkbox component set (328:18039) → @podoui/react Checkbox.
 // state=checked/unchecked maps to the web-standard checked prop and
 // state=indeterminate to the indeterminate prop (announced as mixed). The
 // disabled/bold variants map to the same-named booleans, size passes through

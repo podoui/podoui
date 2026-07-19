@@ -4,7 +4,7 @@ This document maps the first MVP completion checklist to concrete repository evi
 
 | Checklist item                                  | Evidence                                                                                                                                                                     |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| JSON schemas                                    | `@podo/spec` exports token, component, icon, `.podo/config.json`, and `.podo/lock.json` parsers with validation tests in `packages/spec/src/schema.test.ts`.                 |
+| JSON schemas                                    | `@podoui/spec` exports token, component, icon, `.podo/config.json`, and `.podo/lock.json` parsers with validation tests in `packages/spec/src/schema.test.ts`.               |
 | Button/Input/Field/Icon/Typography sample specs | Component samples live in `packages/spec/samples/components`; icon manifest lives in `packages/spec/samples/icons/podo-icons.json`; typography tokens live in token samples. |
 | Landing/dashboard and light/dark token builds   | `packages/tokens/src/index.test.ts` snapshots CSS, TypeScript, React Native, and JSON bundle output across theme and color-scheme combinations.                              |
 | Icon WOFF and manifest generation               | `packages/icons/src/index.test.ts` builds deterministic `PodoIcons.woff`, `PodoIcons.woff2`, CSS, TypeScript names, native glyph map, and metadata from the manifest.        |

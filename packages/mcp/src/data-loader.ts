@@ -14,7 +14,7 @@ import {
   validateIconManifest,
   type ComponentDocument,
   type ValidationIssue,
-} from "@podo/spec";
+} from "@podoui/spec";
 import {
   flattenTokenTree,
   mergeTokenDocuments,
@@ -22,7 +22,7 @@ import {
   validateTokenBuild,
   type ResolvedTokenBundle,
   type TokenSource,
-} from "@podo/tokens";
+} from "@podoui/tokens";
 import { defaultMcpComponents, defaultMcpIconManifest, defaultMcpTokens } from "./defaults.js";
 import type { McpProjectContext, McpTokenMetadata } from "./types.js";
 
@@ -203,7 +203,7 @@ function relativePodoPath(root: string, filePath: string): string {
 
 let packageVersionCache: string | undefined;
 
-/** The published @podo/mcp version, reported in the system overview. */
+/** The published @podoui/mcp version, reported in the system overview. */
 export function mcpPackageVersion(): string {
   if (!packageVersionCache) {
     const pkg = JSON.parse(

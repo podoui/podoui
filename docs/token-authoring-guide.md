@@ -1,6 +1,6 @@
 # Token Authoring Guide
 
-Podo token files use DTCG-style JSON and are validated by `@podo/spec`.
+Podo token files use DTCG-style JSON and are validated by `@podoui/spec`.
 
 ## File Shape
 

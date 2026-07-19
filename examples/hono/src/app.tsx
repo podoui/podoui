@@ -1,7 +1,7 @@
 /** @jsxImportSource hono/jsx */
 
 import { Hono } from "hono";
-import { Button, Field, Icon, Input, Typography, renderCriticalCss } from "@podo/hono";
+import { Button, Field, Icon, Input, Typography, renderCriticalCss } from "@podoui/hono";
 
 export const app = new Hono();
 

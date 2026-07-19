@@ -1,4 +1,4 @@
-import { Radio } from "@podo/react";
+import { Radio } from "@podoui/react";
 import { Card, StageItem } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -33,7 +33,7 @@ const USAGE_TABS: CodeTab[] = [
     target: "hono",
     label: "Hono",
     code:
-      `import { Radio } from "@podo/hono";\n\n` +
+      `import { Radio } from "@podoui/hono";\n\n` +
       `<Radio name="plan" value="basic" checked label="베이직" />\n` +
       `<Radio name="plan" value="pro" label="프로" />`,
   },
@@ -41,7 +41,7 @@ const USAGE_TABS: CodeTab[] = [
     target: "native",
     label: "React Native",
     code:
-      `import { Radio } from "@podo/native";\n\n` +
+      `import { Radio } from "@podoui/native";\n\n` +
       `{/* 네이티브 그룹이 없어 선택 하나 유지는 소비자 몫이에요 */}\n` +
       `<Radio checked={plan === "basic"} onCheckedChange={() => setPlan("basic")} label="베이직" />`,
   },
@@ -103,7 +103,7 @@ export function RadioPage() {
       <DocSection
         index={4}
         title="속성 (props)"
-        description="@podo/react의 Radio가 받는 속성이에요. 웹 표준 input[type=radio] 위에 그려져서 같은 name을 가진 라디오끼리는 플랫폼이 하나만 선택되게 유지하고, 방향키 이동·포커스도 브라우저가 처리해요. 이 밖에 표준 input 속성(name, value, className, aria-* 등)도 그대로 전달돼요."
+        description="@podoui/react의 Radio가 받는 속성이에요. 웹 표준 input[type=radio] 위에 그려져서 같은 name을 가진 라디오끼리는 플랫폼이 하나만 선택되게 유지하고, 방향키 이동·포커스도 브라우저가 처리해요. 이 밖에 표준 input 속성(name, value, className, aria-* 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"

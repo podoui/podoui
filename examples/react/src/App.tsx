@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Button, Field, Icon, Input, PodoThemeProvider, Typography } from "@podo/react";
+import { Button, Field, Icon, Input, PodoThemeProvider, Typography } from "@podoui/react";
 
 export function ReactExampleApp(): React.ReactElement {
   const [darkMode, setDarkMode] = useState(false);

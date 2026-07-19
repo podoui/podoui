@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@podo/icons > emits CSS, TypeScript icon names, native glyph maps, and subsets > icon-css 1`] = `
+exports[`@podoui/icons > emits CSS, TypeScript icon names, native glyph maps, and subsets > icon-css 1`] = `
 "@font-face {
   font-family: "PodoIcons";
   src: url("./PodoIcons.woff") format("woff"),
@@ -24,7 +24,7 @@ exports[`@podo/icons > emits CSS, TypeScript icon names, native glyph maps, and 
 "
 `;
 
-exports[`@podo/icons > emits CSS, TypeScript icon names, native glyph maps, and subsets > icon-types 1`] = `
+exports[`@podoui/icons > emits CSS, TypeScript icon names, native glyph maps, and subsets > icon-types 1`] = `
 "export type PodoIconName = "chevron-left" | "chevron-right" | "menu";
 
 export const podoIconNames = [
@@ -35,7 +35,7 @@ export const podoIconNames = [
 "
 `;
 
-exports[`@podo/icons > emits CSS, TypeScript icon names, native glyph maps, and subsets > native-glyph-map 1`] = `
+exports[`@podoui/icons > emits CSS, TypeScript icon names, native glyph maps, and subsets > native-glyph-map 1`] = `
 "export const podoIconGlyphMap = {
   "chevron-left": 57345,
   "chevron-right": 57346,

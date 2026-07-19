@@ -4,8 +4,8 @@ import type {
   PodoConfig,
   PodoLock,
   ValidationIssue,
-} from "@podo/spec";
-import type { ResolvedToken, ResolvedTokenBundle, TokenSource } from "@podo/tokens";
+} from "@podoui/spec";
+import type { ResolvedToken, ResolvedTokenBundle, TokenSource } from "@podoui/tokens";
 
 export interface McpTokenMetadata {
   roles: string[];

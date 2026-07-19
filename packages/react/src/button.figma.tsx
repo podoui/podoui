@@ -1,4 +1,4 @@
-// Code Connect: Figma Button component set (287:443) → @podo/react Button.
+// Code Connect: Figma Button component set (287:443) → @podoui/react Button.
 // Translation rules live here on purpose (see figma-props-alignment.md):
 // - theme/size variant values pass through 1:1
 // - the "type" variant (text/prefix/suffix) becomes the prefix/suffix slots

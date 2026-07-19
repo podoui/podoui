@@ -4,7 +4,7 @@ import {
   createFieldA11y,
   createInputBehavior,
   createSwitchBehavior,
-} from "@podo/core";
+} from "@podoui/core";
 
 export interface RegisterPodoElementsOptions {
   registry?: CustomElementRegistry;
@@ -1703,7 +1703,7 @@ input {
   line-height: var(--podo-typography-heading-xlarge-lineHeight, 1.2);
 }`;
 
-// The spec-driven component token CSS layer (@podo/codegen emitComponentTokenCss,
+// The spec-driven component token CSS layer (@podoui/codegen emitComponentTokenCss,
 // emitted to components.css at build). Consumers register it so per-variant and
 // per-state token overrides apply inside each component's shadow root, which is
 // where the binding-key vars (--podo-<id>-<part>-<prop>) the components read live.

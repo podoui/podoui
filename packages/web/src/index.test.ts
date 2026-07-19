@@ -8,7 +8,7 @@ import {
   registerPodoElements,
 } from "./index.js";
 
-describe("@podo/web", () => {
+describe("@podoui/web", () => {
   it("registers standard custom elements once", () => {
     registerPodoElements();
     registerPodoElements();

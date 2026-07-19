@@ -1,4 +1,4 @@
-// Code Connect: Figma Radio component set (379:3350) → @podo/react Radio.
+// Code Connect: Figma Radio component set (379:3350) → @podoui/react Radio.
 // The checked/disabled/bold variants map to the same-named booleans, size
 // passes through (it only scales the label — the circle is a fixed 18px), and
 // the text/label pair becomes the label prop. Group membership (name) is a

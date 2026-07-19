@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parseComponentDocument, type ComponentDocument } from "@podo/spec";
+import { parseComponentDocument, type ComponentDocument } from "@podoui/spec";
 import {
   createButtonBehavior,
   createCheckboxBehavior,
@@ -15,7 +15,7 @@ import {
 
 const componentRoot = resolve(process.cwd(), "packages/spec/samples/components");
 
-describe("@podo/core", () => {
+describe("@podoui/core", () => {
   it("indexes component specs by id, name, category, and target", () => {
     const registry = createComponentRegistry(loadComponents());
 

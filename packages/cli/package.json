@@ -1,5 +1,5 @@
 {
-  "name": "@podo/cli",
+  "name": "@podoui/cli",
   "version": "2.0.0",
   "type": "module",
   "description": "Podo command-line interface.",
@@ -24,12 +24,12 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/codegen": "workspace:*",
-    "@podo/icons": "workspace:*",
-    "@podo/migration": "workspace:*",
-    "@podo/mcp": "workspace:*",
-    "@podo/spec": "workspace:*",
-    "@podo/tokens": "workspace:*"
+    "@podoui/codegen": "workspace:*",
+    "@podoui/icons": "workspace:*",
+    "@podoui/migration": "workspace:*",
+    "@podoui/mcp": "workspace:*",
+    "@podoui/spec": "workspace:*",
+    "@podoui/tokens": "workspace:*"
   },
   "author": "hada0127 <work@tarucy.net>",
   "repository": {

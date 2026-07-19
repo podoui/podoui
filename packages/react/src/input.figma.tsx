@@ -1,4 +1,4 @@
-// Code Connect: Figma Input component set (302:607) → @podo/react Input.
+// Code Connect: Figma Input component set (302:607) → @podoui/react Input.
 // - prefix-icon/suffix-icon/suffix-text booleans become content slots
 // - "state" keeps only danger→invalid and disabled; normal/hover/focused are
 //   platform interactions and completed is simply a filled value

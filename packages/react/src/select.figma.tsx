@@ -1,4 +1,4 @@
-// Code Connect: Figma Select component set (318:2237) → @podo/react Select.
+// Code Connect: Figma Select component set (318:2237) → @podoui/react Select.
 // The set's theme vocabulary (text/slot) translates to the multiple prop —
 // slot is the chip-listing multi-select look. hover/focused are interactions
 // (:hover / open menu) and never become props; completed derives from having

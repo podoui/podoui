@@ -18,8 +18,8 @@ import {
   collectTokenPaths,
   type PodoCloneDocument,
   type ValidationIssue,
-} from "@podo/spec";
-import { mergeTokenDocuments, validateTokenBuild, type TokenSource } from "@podo/tokens";
+} from "@podoui/spec";
+import { mergeTokenDocuments, validateTokenBuild, type TokenSource } from "@podoui/tokens";
 import { convertPodoClone, type ConvertedFile } from "./figma-convert.js";
 import {
   findProjectRoot,

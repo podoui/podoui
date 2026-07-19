@@ -21,7 +21,7 @@ import {
   renderCriticalCss,
 } from "./index.js";
 
-describe("@podo/hono", () => {
+describe("@podoui/hono", () => {
   it("renders static SSR HTML for form components", () => {
     const html = renderToString(
       <Field

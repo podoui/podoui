@@ -26,7 +26,7 @@ import {
   type PodoLock,
   type TokenDocument,
   type ValidationIssue,
-} from "@podo/spec";
+} from "@podoui/spec";
 import {
   emitCssVariables,
   emitReactNativeTokens,
@@ -36,15 +36,15 @@ import {
   resolveTokenDocument,
   validateTokenBuild,
   type TokenSource,
-} from "@podo/tokens";
-import { loadTokenDocuments } from "@podo/tokens/node";
-import { buildIconAssets, emitIconCss, emitIconTypes, emitNativeGlyphMap } from "@podo/icons";
+} from "@podoui/tokens";
+import { loadTokenDocuments } from "@podoui/tokens/node";
+import { buildIconAssets, emitIconCss, emitIconTypes, emitNativeGlyphMap } from "@podoui/icons";
 import {
   emitComponentTokenCss,
   generateComponentFiles,
   generateIndexFile,
   type CodegenTarget,
-} from "@podo/codegen";
+} from "@podoui/codegen";
 import {
   createDefaultMigrationManifest,
   hashJson as hashMigrationJson,
@@ -55,11 +55,11 @@ import {
   type MigrationFile,
   type MigrationManifest,
   type MigrationPlan,
-} from "@podo/migration";
-import { startMcpServer } from "@podo/mcp";
+} from "@podoui/migration";
+import { startMcpServer } from "@podoui/mcp";
 import { importProject } from "./figma-import.js";
 
-export const packageName = "@podo/cli";
+export const packageName = "@podoui/cli";
 
 export type CliCommandName =
   | "init"
@@ -852,16 +852,16 @@ async function writeBootstrapFiles(
 ): Promise<void> {
   const base = join(root, ".podo/bootstrap");
   const files: Record<string, string> = {
-    "react.tsx": `import { PodoThemeProvider } from "@podo/react";\n\nexport const podoTheme = { theme: ${JSON.stringify(
+    "react.tsx": `import { PodoThemeProvider } from "@podoui/react";\n\nexport const podoTheme = { theme: ${JSON.stringify(
       options.theme
     )}, colorScheme: "light" as const };\n\nexport { PodoThemeProvider };\n`,
-    "hono.tsx": `import { renderCriticalCss } from "@podo/hono";\n\nexport function podoHead() {\n  return renderCriticalCss({ theme: ${JSON.stringify(
+    "hono.tsx": `import { renderCriticalCss } from "@podoui/hono";\n\nexport function podoHead() {\n  return renderCriticalCss({ theme: ${JSON.stringify(
       options.theme
     )}, colorScheme: "light" });\n}\n`,
-    "native.tsx": `import { PodoNativeThemeProvider } from "@podo/native";\n\nexport const podoNativeTheme = { theme: ${JSON.stringify(
+    "native.tsx": `import { PodoNativeThemeProvider } from "@podoui/native";\n\nexport const podoNativeTheme = { theme: ${JSON.stringify(
       options.theme
     )}, colorScheme: "light" as const };\n\nexport { PodoNativeThemeProvider };\n`,
-    "web.ts": `import { registerPodoElements } from "@podo/web";\n\nexport function registerPodo() {\n  registerPodoElements();\n}\n`,
+    "web.ts": `import { registerPodoElements } from "@podoui/web";\n\nexport function registerPodo() {\n  registerPodoElements();\n}\n`,
   };
   for (const [file, contents] of Object.entries(files)) {
     await writeText(join(base, file), contents, force);
@@ -997,7 +997,7 @@ async function readJsonFiles(dir: string): Promise<unknown[]> {
 
 let packageVersionCache: string | undefined;
 
-/** The published @podo/cli version — stamped into `.podo/lock.json`. */
+/** The published @podoui/cli version — stamped into `.podo/lock.json`. */
 async function cliPackageVersion(): Promise<string> {
   if (!packageVersionCache) {
     const pkg = JSON.parse(

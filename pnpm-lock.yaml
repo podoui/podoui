@@ -65,7 +65,7 @@ importers:
 
   examples/hono:
     dependencies:
-      '@podo/hono':
+      '@podoui/hono':
         specifier: workspace:*
         version: link:../../packages/hono
       hono:
@@ -74,7 +74,7 @@ importers:
 
   examples/native:
     dependencies:
-      '@podo/native':
+      '@podoui/native':
         specifier: workspace:*
         version: link:../../packages/native
       react:
@@ -83,7 +83,7 @@ importers:
 
   examples/react:
     dependencies:
-      '@podo/react':
+      '@podoui/react':
         specifier: workspace:*
         version: link:../../packages/react
       react:
@@ -92,46 +92,46 @@ importers:
 
   examples/web:
     dependencies:
-      '@podo/web':
+      '@podoui/web':
         specifier: workspace:*
         version: link:../../packages/web
 
   packages/cli:
     dependencies:
-      '@podo/codegen':
+      '@podoui/codegen':
         specifier: workspace:*
         version: link:../codegen
-      '@podo/icons':
+      '@podoui/icons':
         specifier: workspace:*
         version: link:../icons
-      '@podo/mcp':
+      '@podoui/mcp':
         specifier: workspace:*
         version: link:../mcp
-      '@podo/migration':
+      '@podoui/migration':
         specifier: workspace:*
         version: link:../migration
-      '@podo/spec':
+      '@podoui/spec':
         specifier: workspace:*
         version: link:../spec
-      '@podo/tokens':
+      '@podoui/tokens':
         specifier: workspace:*
         version: link:../tokens
 
   packages/codegen:
     dependencies:
-      '@podo/spec':
+      '@podoui/spec':
         specifier: workspace:*
         version: link:../spec
 
   packages/core:
     dependencies:
-      '@podo/spec':
+      '@podoui/spec':
         specifier: workspace:*
         version: link:../spec
 
   packages/docs:
     dependencies:
-      '@podo/react':
+      '@podoui/react':
         specifier: workspace:*
         version: link:../react
       react:
@@ -150,7 +150,7 @@ importers:
 
   packages/hono:
     dependencies:
-      '@podo/core':
+      '@podoui/core':
         specifier: workspace:*
         version: link:../core
       hono:
@@ -159,7 +159,7 @@ importers:
 
   packages/icon-build:
     dependencies:
-      '@podo/spec':
+      '@podoui/spec':
         specifier: workspace:*
         version: link:../spec
       opentype.js:
@@ -174,10 +174,10 @@ importers:
 
   packages/icons:
     dependencies:
-      '@podo/icon-build':
+      '@podoui/icon-build':
         specifier: workspace:*
         version: link:../icon-build
-      '@podo/spec':
+      '@podoui/spec':
         specifier: workspace:*
         version: link:../spec
       fantasticon:
@@ -195,10 +195,10 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.29.0
         version: 1.29.0(zod@4.4.3)
-      '@podo/spec':
+      '@podoui/spec':
         specifier: workspace:*
         version: link:../spec
-      '@podo/tokens':
+      '@podoui/tokens':
         specifier: workspace:*
         version: link:../tokens
       zod:
@@ -207,7 +207,7 @@ importers:
 
   packages/migration:
     dependencies:
-      '@podo/spec':
+      '@podoui/spec':
         specifier: workspace:*
         version: link:../spec
       zod:
@@ -216,7 +216,7 @@ importers:
 
   packages/native:
     dependencies:
-      '@podo/core':
+      '@podoui/core':
         specifier: workspace:*
         version: link:../core
       react:
@@ -226,15 +226,42 @@ importers:
         specifier: '>=0.73'
         version: 0.86.0(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.7)
 
+  packages/podo-ui:
+    dependencies:
+      '@podoui/core':
+        specifier: workspace:*
+        version: link:../core
+      '@podoui/hono':
+        specifier: workspace:*
+        version: link:../hono
+      '@podoui/icons':
+        specifier: workspace:*
+        version: link:../icons
+      '@podoui/native':
+        specifier: workspace:*
+        version: link:../native
+      '@podoui/react':
+        specifier: workspace:*
+        version: link:../react
+      '@podoui/spec':
+        specifier: workspace:*
+        version: link:../spec
+      '@podoui/tokens':
+        specifier: workspace:*
+        version: link:../tokens
+      '@podoui/web':
+        specifier: workspace:*
+        version: link:../web
+
   packages/podoui:
     dependencies:
-      '@podo/cli':
+      '@podoui/cli':
         specifier: workspace:*
         version: link:../cli
 
   packages/react:
     dependencies:
-      '@podo/core':
+      '@podoui/core':
         specifier: workspace:*
         version: link:../core
       react:
@@ -252,13 +279,13 @@ importers:
 
   packages/tokens:
     dependencies:
-      '@podo/spec':
+      '@podoui/spec':
         specifier: workspace:*
         version: link:../spec
 
   packages/web:
     dependencies:
-      '@podo/core':
+      '@podoui/core':
         specifier: workspace:*
         version: link:../core
 

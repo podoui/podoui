@@ -1,4 +1,4 @@
-import { Switch } from "@podo/react";
+import { Switch } from "@podoui/react";
 import { Card, StageItem } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -25,12 +25,12 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Switch } from "@podo/hono";\n\n<Switch checked label="알림 받기" />`,
+    code: `import { Switch } from "@podoui/hono";\n\n<Switch checked label="알림 받기" />`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Switch } from "@podo/native";\n\n<Switch label="알림 받기" checked={enabled} onCheckedChange={setEnabled} />`,
+    code: `import { Switch } from "@podoui/native";\n\n<Switch label="알림 받기" checked={enabled} onCheckedChange={setEnabled} />`,
   },
 ];
 
@@ -88,7 +88,7 @@ export function SwitchPage() {
       <DocSection
         index={4}
         title="속성 (props)"
-        description="@podo/react의 Switch가 받는 속성이에요. 시안의 state(on·off)는 코드에서 웹 표준(role=switch, aria-checked)에 맞춘 checked로 표현돼요. checked를 생략하면 스스로 상태를 관리하는 비제어형으로 동작해요. 이 밖에 표준 button 속성(className, aria-* 등)도 그대로 전달돼요."
+        description="@podoui/react의 Switch가 받는 속성이에요. 시안의 state(on·off)는 코드에서 웹 표준(role=switch, aria-checked)에 맞춘 checked로 표현돼요. checked를 생략하면 스스로 상태를 관리하는 비제어형으로 동작해요. 이 밖에 표준 button 속성(className, aria-* 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"

@@ -26,7 +26,7 @@ import {
   usePodoTheme,
 } from "./index.js";
 
-describe("@podo/react", () => {
+describe("@podoui/react", () => {
   // The toast store is a module singleton — flush any leftovers between tests
   // (dismiss marks leaving, then the 180ms exit timer unmounts) so a lingering
   // toast can't bleed into the next test.

@@ -2,7 +2,7 @@
   "name": "podoui",
   "version": "2.0.0",
   "type": "module",
-  "description": "Podo design system CLI entry (npx podoui) — interactive menu over @podo/cli.",
+  "description": "Podo design system CLI entry (npx podoui) — interactive menu over @podoui/cli.",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -24,7 +24,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/cli": "workspace:*"
+    "@podoui/cli": "workspace:*"
   },
   "author": "hada0127 <work@tarucy.net>",
   "repository": {

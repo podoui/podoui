@@ -1,6 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { selectThemeTokens } from "@podo/tokens";
+import { selectThemeTokens } from "@podoui/tokens";
 import type { McpToolContext } from "../types.js";
 import { fail, ok, textMatches, toTextResult } from "./shared.js";
 

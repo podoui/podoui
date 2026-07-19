@@ -11,7 +11,7 @@ import {
   type CliIO,
 } from "./index.js";
 
-describe("@podo/cli", () => {
+describe("@podoui/cli", () => {
   it("parses commands and finds project roots", async () => {
     const root = await createProject({ dependencies: { react: "^19.0.0" } });
     expect(parseArgs(["init", "--target", "react"]).command).toBe("init");
@@ -401,7 +401,7 @@ describe("@podo/cli", () => {
       (file) => file.path === "src/podo/components/react/button.react.ts"
     );
     expect(dryRun.dryRun).toBe(true);
-    expect(generatedButton?.preview).toContain('export { Button } from "@podo/react";');
+    expect(generatedButton?.preview).toContain('export { Button } from "@podoui/react";');
     await expect(stat(join(root, "src/podo/components/react/button.react.ts"))).rejects.toThrow();
 
     const built = await buildProject(parseArgs(["build"]), io);

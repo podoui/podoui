@@ -1,5 +1,5 @@
 {
-  "name": "@podo/native",
+  "name": "@podoui/native",
   "version": "2.0.0",
   "type": "module",
   "description": "React Native runtime and token adapter for Podo.",
@@ -22,7 +22,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/core": "workspace:*"
+    "@podoui/core": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=18",

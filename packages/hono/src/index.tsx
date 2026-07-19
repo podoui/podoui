@@ -10,7 +10,7 @@ import {
   createFieldA11y,
   createInputBehavior,
   createSwitchBehavior,
-} from "@podo/core";
+} from "@podoui/core";
 
 export type HonoButtonTheme =
   | "solid-primary"

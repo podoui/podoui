@@ -3,8 +3,8 @@ import { mkdtemp, readFile, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { buildIconFontWoff2 } from "@podo/icon-build";
-import { computeIconsHash, parseIconManifest } from "@podo/spec";
+import { buildIconFontWoff2 } from "@podoui/icon-build";
+import { computeIconsHash, parseIconManifest } from "@podoui/spec";
 import {
   buildIconAssets,
   emitIconCss,
@@ -19,7 +19,7 @@ import {
 const manifestPath = resolve(process.cwd(), "packages/spec/samples/icons/podo-icons.json");
 const svgRoot = resolve(process.cwd(), "packages/icons/samples");
 
-describe("@podo/icons", () => {
+describe("@podoui/icons", () => {
   it("validates SVG source rules and optimizes SVG input", () => {
     const validSvg = '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M0 0H24V24H0z"/></svg>';
     const invalidSvg = '<svg width="24" height="24"><path fill="red" d="M0 0H24V24H0z"/></svg>';
@@ -140,7 +140,7 @@ describe("@podo/icons", () => {
     // Only the always-woff2 artifact is emitted (no legacy woff).
     await expect(stat(join(outDir, "PodoIcons.woff"))).rejects.toThrow();
     const writtenWoff2 = await readFile(join(outDir, "PodoIcons.woff2"));
-    // The Node build's bytes match the browser @podo/icon-build output exactly.
+    // The Node build's bytes match the browser @podoui/icon-build output exactly.
     expect(Buffer.compare(writtenWoff2, Buffer.from(built.woff2))).toBe(0);
     expect(result.metadata.fontFiles).toEqual(["woff2"]);
     expect(result.metadata.woff2).toBe(true);

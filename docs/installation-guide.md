@@ -5,10 +5,10 @@ This guide covers the first project setup path for an app that installs Podo v2.
 ## Install
 
 ```sh
-pnpm add @podo/cli @podo/react @podo/web @podo/hono @podo/native
+pnpm add @podoui/cli @podoui/react @podoui/web @podoui/hono @podoui/native
 ```
 
-Use the packages needed by the target app. A React app usually installs `@podo/react` and `@podo/cli`; a Custom Elements app installs `@podo/web`; Hono installs `@podo/hono`; React Native installs `@podo/native`.
+Use the packages needed by the target app. A React app usually installs `@podoui/react` and `@podoui/cli`; a Custom Elements app installs `@podoui/web`; Hono installs `@podoui/hono`; React Native installs `@podoui/native`.
 
 ## Initialize `.podo`
 
@@ -45,7 +45,7 @@ podo build --dry-run
 Web:
 
 ```ts
-import { registerPodoElements } from "@podo/web";
+import { registerPodoElements } from "@podoui/web";
 
 registerPodoElements();
 ```
@@ -53,7 +53,7 @@ registerPodoElements();
 React:
 
 ```tsx
-import { Button, PodoThemeProvider } from "@podo/react";
+import { Button, PodoThemeProvider } from "@podoui/react";
 
 export function App() {
   return (
@@ -68,7 +68,7 @@ Hono:
 
 ```tsx
 /** @jsxImportSource hono/jsx */
-import { Button, renderCriticalCss } from "@podo/hono";
+import { Button, renderCriticalCss } from "@podoui/hono";
 
 const css = ".podo-button{color:var(--podo-component-button-text)}";
 
@@ -85,7 +85,7 @@ export const page = (
 React Native:
 
 ```tsx
-import { Button, PodoNativeThemeProvider } from "@podo/native";
+import { Button, PodoNativeThemeProvider } from "@podoui/native";
 
 export function App() {
   return (

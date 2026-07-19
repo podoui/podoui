@@ -19,7 +19,7 @@ const domNative = createNativeComponents({
   View: TestView,
 });
 
-describe("@podo/native", () => {
+describe("@podoui/native", () => {
   it("adapts token units for React Native", () => {
     expect(
       adaptReactNativeTokens({

@@ -26,7 +26,7 @@
 - [x] main 브랜치 배포 구조 분석 결과 반영
   - 완료 기준: npm `exports`, `files`, `bin`, `prepublishOnly` 설계 초안이 root 또는 docs에 반영된다.
 - [x] 패키지 네이밍 최종 결정
-  - 완료 기준: `@podo/*` scoped package와 단일 `podo-ui` subpath export 중 1차 배포 전략이 확정된다.
+  - 완료 기준: `@podoui/*` scoped package와 단일 `podo-ui` subpath export 중 1차 배포 전략이 확정된다.
 
 ## Phase 1: 스펙 고정
 
@@ -97,7 +97,7 @@
 
 ### Validation
 
-- [x] `@podo/spec` 패키지 생성
+- [x] `@podoui/spec` 패키지 생성
   - 완료 기준: schema, zod parser, TypeScript type export가 포함된다.
 - [x] schema validation test 작성
   - 완료 기준: valid sample은 통과하고 invalid sample은 명확한 에러를 낸다.
@@ -110,7 +110,7 @@
 
 ### Token Resolver
 
-- [x] `@podo/tokens` 패키지 생성
+- [x] `@podoui/tokens` 패키지 생성
   - 완료 기준: token load, merge, resolve API가 export된다.
 - [x] token file loader 구현
   - 완료 기준: package default와 `.podo/tokens`를 함께 로드한다.
@@ -145,7 +145,7 @@
 
 ### Icon Build
 
-- [x] `@podo/icons` 패키지 생성
+- [x] `@podoui/icons` 패키지 생성
   - 완료 기준: icon manifest parser와 build API가 export된다.
 - [x] SVG source 규칙 정의
   - 완료 기준: viewBox, currentColor, width/height 제거 규칙이 문서화된다.
@@ -179,7 +179,7 @@
 
 ### 공통 Core
 
-- [x] `@podo/core` 패키지 생성
+- [x] `@podoui/core` 패키지 생성
   - 완료 기준: 공통 state, interaction, a11y helper를 export한다.
 - [x] component registry 구현
   - 완료 기준: component spec을 이름/category/target으로 조회할 수 있다.
@@ -192,7 +192,7 @@
 
 ### Web Components
 
-- [x] `@podo/web` 패키지 생성
+- [x] `@podoui/web` 패키지 생성
   - 완료 기준: Custom Element 등록 API와 CSS import가 제공된다.
 - [x] Web Component 기반 기술 확정
   - 완료 기준: Lit 사용 여부와 직접 Custom Element 구현 범위가 문서화된다.
@@ -211,7 +211,7 @@
 
 ### React
 
-- [x] `@podo/react` 패키지 생성
+- [x] `@podoui/react` 패키지 생성
   - 완료 기준: React entry와 typed component exports가 제공된다.
 - [x] React 구현 전략 확정
   - 완료 기준: Web Component wrapper와 native React renderer 중 MVP 전략이 결정된다.
@@ -228,7 +228,7 @@
 
 ### Hono TSX
 
-- [x] `@podo/hono` 패키지 생성
+- [x] `@podoui/hono` 패키지 생성
   - 완료 기준: Hono JSX에서 import 가능한 TSX 컴포넌트를 제공한다.
 - [x] Hono renderer 범위 확정
   - 완료 기준: SSR/정적 컴포넌트와 interactive 컴포넌트의 경계가 문서화된다.
@@ -245,7 +245,7 @@
 
 ### React Native
 
-- [x] `@podo/native` 패키지 생성
+- [x] `@podoui/native` 패키지 생성
   - 완료 기준: RN entry와 typed component exports가 제공된다.
 - [x] RN token adapter 구현
   - 완료 기준: px/rem 등 웹 단위가 RN number/string으로 변환된다.
@@ -264,7 +264,7 @@
 
 ### Codegen
 
-- [x] `@podo/codegen` 또는 내부 codegen 모듈 생성
+- [x] `@podoui/codegen` 또는 내부 codegen 모듈 생성
   - 완료 기준: component spec에서 target별 파일을 생성할 수 있다.
 - [x] codegen template 구조 작성
   - 완료 기준: renderer별 template와 shared helper가 분리된다.
@@ -277,7 +277,7 @@
 
 ### CLI Foundation
 
-- [x] `@podo/cli` 패키지 생성
+- [x] `@podoui/cli` 패키지 생성
   - 완료 기준: `podo` bin이 로컬에서 실행된다.
 - [x] CLI command router 구현
   - 완료 기준: `init`, `build`, `validate`, `update`, `migrate`, `mcp` 명령이 등록된다.
@@ -327,7 +327,7 @@
 
 ### MCP Server
 
-- [x] `@podo/mcp` 패키지 생성
+- [x] `@podoui/mcp` 패키지 생성
   - 완료 기준: MCP stdio server가 실행된다.
 - [x] `podo mcp` CLI 연결
   - 완료 기준: `npx podo mcp` 또는 동등한 명령으로 서버가 시작된다.
@@ -434,14 +434,14 @@
 
 ## Phase 11: 문서 사이트 (Docs Site)
 
-기준: shadcn/ui 스타일 문서 사이트. `@podo/react`를 그대로 렌더링하는 라이브 프리뷰. 정적(Vite) 빌드.
+기준: shadcn/ui 스타일 문서 사이트. `@podoui/react`를 그대로 렌더링하는 라이브 프리뷰. 정적(Vite) 빌드.
 
-- [ ] `@podo/docs` 패키지 뼈대
-  - 완료 기준: `packages/docs`가 pnpm workspace로 인식되고 `@podo/react`를 workspace 의존성으로 import한다.
+- [ ] `@podoui/docs` 패키지 뼈대
+  - 완료 기준: `packages/docs`가 pnpm workspace로 인식되고 `@podoui/react`를 workspace 의존성으로 import한다.
   - 완료 기준: Vite + React로 dev 서버 실행과 정적 `dist` 빌드가 된다.
   - 완료 기준: 헤더, 사이드바 내비게이션, 콘텐츠 레이아웃, 컴포넌트별 라우팅 틀이 있어 컴포넌트 추가가 라우트/사이드바 항목 추가만으로 가능하다.
 - [ ] Button 문서 페이지
-  - 완료 기준: 현재 `@podo/react`의 Button을 실제로 렌더링하는 라이브 프리뷰가 있다(hover/disabled 동작).
+  - 완료 기준: 현재 `@podoui/react`의 Button을 실제로 렌더링하는 라이브 프리뷰가 있다(hover/disabled 동작).
   - 완료 기준: react/web/hono/native 4타깃 코드 스니펫을 탭으로 보여준다. react/web은 `button.component.json`의 examples와, hono/native는 각 렌더러 사용법과 일치한다.
   - 완료 기준: variant(solid/soft/outline/ghost) × size(sm/md/lg)와 disabled/loading을 보여주는 variants 쇼케이스가 있다.
   - 완료 기준: variant/size/disabled/loading/onPress를 담은 props 테이블이 있고, 값이 `button.component.json`과 일치한다.
@@ -450,7 +450,7 @@
 
 기준: `plan.md` 18장. 플러그인 export(podo-clone JSON)를 localhost 브리지로 CLI에 전송해 `.podo`에 반영한다.
 
-- [x] podo-clone schema를 `@podo/spec`에 추가
+- [x] podo-clone schema를 `@podoui/spec`에 추가
   - 완료 기준: `figma-plugin/src/schema.ts`의 PodoExport 형식이 CLI 쪽에서 Zod로 검증된다.
   - 완료 기준: 커밋된 축소 export 픽스처(`packages/spec/samples/podo-clone.sample.json`)가 valid sample로 상시 통과하고, 로컬 전용(gitignored) `figma-plugin/snapshot.json`은 존재할 때만 추가 검증한다(fresh clone 재현성 유지).
 - [x] 플러그인 "프로젝트로 보내기" 구현
@@ -516,7 +516,7 @@
 - [x] React를 Web Component wrapper로 만들지 native React renderer로 만들지 결정
 - [x] Hono에서 Declarative Shadow DOM을 공식 지원 범위에 넣을지 결정
 - [x] React Native 아이콘을 font glyph로 갈지 SVG component로 갈지 결정
-- [x] 단일 `podo-ui` 패키지와 `@podo/*` 멀티 패키지 배포 중 1차 전략 결정
+- [x] 단일 `podo-ui` 패키지와 `@podoui/*` 멀티 패키지 배포 중 1차 전략 결정
 - [x] Figma 연동을 plugin, REST sync, GitHub Action 중 어디까지 1차 지원할지 결정
 
 ## Claude 보고서 기반 보정 작업
@@ -545,7 +545,7 @@
   - 완료 기준: 권한 부여 또는 계정 전환 후 `origin/main`이 로컬과 동기화된다.
 - [ ] npm 배포 파이프라인 가동
   - 전 패키지가 `0.0.0` 미배포라 외부 프로젝트에서 설치 불가. Changesets 인프라는 준비됨.
-  - 완료 기준: 빈 외부 프로젝트에서 `npm install @podo/react @podo/cli`가 동작한다.
+  - 완료 기준: 빈 외부 프로젝트에서 `npm install @podoui/react @podoui/cli`가 동작한다.
 - [ ] 배포 후 docs를 "진짜 소비자"로 전환
   - 현재 `packages/docs`의 `theme.css`는 컴포넌트 CSS 수동 미러, `data/colors.ts`·`typography.ts`는 토큰 값 복제.
   - 완료 기준: docs가 `podo build` 산출물(tokens.css, components.css)을 소비하고 수동 미러·값 복제가 제거된다.

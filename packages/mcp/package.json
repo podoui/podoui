@@ -1,5 +1,5 @@
 {
-  "name": "@podo/mcp",
+  "name": "@podoui/mcp",
   "version": "2.0.0",
   "type": "module",
   "description": "Model Context Protocol server for Podo specs.",
@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "@podo/spec": "workspace:*",
-    "@podo/tokens": "workspace:*",
+    "@podoui/spec": "workspace:*",
+    "@podoui/tokens": "workspace:*",
     "zod": "^4.4.3"
   },
   "author": "hada0127 <work@tarucy.net>",

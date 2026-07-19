@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseArgs } from "@podo/cli";
+import { parseArgs } from "@podoui/cli";
 import { MENU } from "./index.js";
 
 describe("podoui menu", () => {

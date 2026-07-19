@@ -50,6 +50,6 @@ Canary releases use npm dist-tags and must not replace `latest`.
 2. Run `pnpm changeset version --snapshot canary` on a disposable release branch or CI workspace.
 3. Run `pnpm build && pnpm release:verify && pnpm changeset:dry-run`.
 4. Publish with `changeset publish --tag canary --no-git-tag`.
-5. Install in a sample project with `npm install @podo/cli@canary @podo/react@canary` and run `podo init`, `podo build --dry-run`, and `podo validate`.
+5. Install in a sample project with `npm install @podoui/cli@canary @podoui/react@canary` and run `podo init`, `podo build --dry-run`, and `podo validate`.
 
 Installing directly from `main` is allowed only for canary validation. Reproducible project installs should use npm versions or explicit git tags.

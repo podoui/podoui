@@ -1,5 +1,5 @@
 {
-  "name": "@podo/icon-build",
+  "name": "@podoui/icon-build",
   "version": "2.0.0",
   "type": "module",
   "description": "Deterministic, isomorphic SVG-to-woff2 icon font builder for browser and Node icon builds.",
@@ -22,7 +22,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/spec": "workspace:*",
+    "@podoui/spec": "workspace:*",
     "opentype.js": "2.0.0",
     "svgpath": "2.6.0",
     "woff2-encoder": "2.0.0"

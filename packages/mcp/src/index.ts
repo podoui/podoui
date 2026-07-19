@@ -7,7 +7,7 @@ import { resolve } from "node:path";
 import { loadMcpProject, mcpPackageVersion } from "./data-loader.js";
 import { registerPodoTools } from "./tools/index.js";
 
-export const packageName = "@podo/mcp";
+export const packageName = "@podoui/mcp";
 
 export interface McpServerOptions {
   root?: string;

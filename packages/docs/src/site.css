@@ -3,7 +3,7 @@
  *
  * Neutral placeholder look. Every value lives in the custom properties below —
  * swap them for the real Podo design-system tokens later and the whole site
- * follows. This styles ONLY the docs chrome; the live @podo/react components
+ * follows. This styles ONLY the docs chrome; the live @podoui/react components
  * inside previews keep their own Podo styling (theme.css).
  */
 

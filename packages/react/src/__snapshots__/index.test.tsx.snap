@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@podo/react > snapshots themed variant markup for visual regression 1`] = `
+exports[`@podoui/react > snapshots themed variant markup for visual regression 1`] = `
 <div
   data-color-scheme="dark"
   data-podo-theme="dashboard"

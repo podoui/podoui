@@ -1,5 +1,5 @@
 {
-  "name": "@podo/hono",
+  "name": "@podoui/hono",
   "version": "2.0.0",
   "type": "module",
   "description": "Hono TSX and SSR helpers for Podo.",
@@ -22,7 +22,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/core": "workspace:*",
+    "@podoui/core": "workspace:*",
     "hono": "^4.12.25"
   },
   "author": "hada0127 <work@tarucy.net>",

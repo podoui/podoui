@@ -1,11 +1,11 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
-import { parseTokenDocument } from "@podo/spec";
+import { parseTokenDocument } from "@podoui/spec";
 import type { LoadTokenDocumentsOptions, TokenSource, TokenSourceTier } from "./index.js";
 
 /**
- * Node-only token file loading. Kept in a separate entry (`@podo/tokens/node`)
- * so the browser-safe `@podo/tokens` main entry carries no `node:` imports and
+ * Node-only token file loading. Kept in a separate entry (`@podoui/tokens/node`)
+ * so the browser-safe `@podoui/tokens` main entry carries no `node:` imports and
  * can be bundled for browser consumers.
  */
 export async function loadTokenDocument(

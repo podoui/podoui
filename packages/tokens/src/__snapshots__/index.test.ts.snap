@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > json-bundle 1`] = `
+exports[`@podoui/tokens > emits CSS, TypeScript, React Native, and JSON bundles > json-bundle 1`] = `
 "{
   "tokens": {
     "color.base.red.5": {
@@ -4871,7 +4871,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
 "
 `;
 
-exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > react-native-tokens 1`] = `
+exports[`@podoui/tokens > emits CSS, TypeScript, React Native, and JSON bundles > react-native-tokens 1`] = `
 "export const tokens = {
   "color": {
     "base": {
@@ -5510,7 +5510,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
 "
 `;
 
-exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > theme-css 1`] = `
+exports[`@podoui/tokens > emits CSS, TypeScript, React Native, and JSON bundles > theme-css 1`] = `
 "[data-podo-theme="landing"][data-color-scheme="light"] {
   --podo-border-control-default-color: #14151A;
   --podo-border-control-default-style: solid;
@@ -7233,7 +7233,7 @@ exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > 
 "
 `;
 
-exports[`@podo/tokens > emits CSS, TypeScript, React Native, and JSON bundles > typescript-tokens 1`] = `
+exports[`@podoui/tokens > emits CSS, TypeScript, React Native, and JSON bundles > typescript-tokens 1`] = `
 "export const tokens = {
   "color": {
     "base": {

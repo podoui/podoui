@@ -47,7 +47,7 @@ Example:
 Groups let the icon builder emit a subset font:
 
 ```ts
-import { buildIconAssets } from "@podo/icons";
+import { buildIconAssets } from "@podoui/icons";
 
 await buildIconAssets({
   manifest,

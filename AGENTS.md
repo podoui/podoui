@@ -39,7 +39,7 @@ Use the Phase sections in `todo.md` as the default review gate. If a Phase is to
 
 - Use TypeScript as the default implementation language.
 - Use pnpm workspaces.
-- Prefer `@podo/*` scoped packages for v2.
+- Prefer `@podoui/*` scoped packages for v2.
 - Keep JSON specs as the source of truth.
 - Generated outputs must be reproducible from JSON specs and TypeScript source.
 - Keep installed-project state inside `.podo`.

@@ -1,6 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import type { ComponentDocument } from "@podo/spec";
+import type { ComponentDocument } from "@podoui/spec";
 import type { McpToolContext } from "../types.js";
 import { fail, ok, textMatches, toTextResult } from "./shared.js";
 

@@ -1,5 +1,5 @@
 {
-  "name": "@podo/tokens",
+  "name": "@podoui/tokens",
   "version": "2.0.0",
   "type": "module",
   "description": "Token loading, merging, resolving, and target emitters for Podo.",
@@ -26,7 +26,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/spec": "workspace:*"
+    "@podoui/spec": "workspace:*"
   },
   "author": "hada0127 <work@tarucy.net>",
   "repository": {

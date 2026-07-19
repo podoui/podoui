@@ -14,7 +14,7 @@ import {
   createInputBehavior,
   createRadioBehavior,
   createSwitchBehavior,
-} from "@podo/core";
+} from "@podoui/core";
 
 export type NativeHostComponent = string | React.ComponentType<Record<string, unknown>>;
 

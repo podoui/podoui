@@ -1,4 +1,4 @@
-// Code Connect: Figma Table component set (474:1795) → @podo/react Table.
+// Code Connect: Figma Table component set (474:1795) → @podoui/react Table.
 // The thead/tbody slots are native table markup in code; row interaction
 // states (hover/pressed) are platform CSS and disabled rows use data-disabled.
 import React from "react";

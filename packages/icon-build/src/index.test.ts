@@ -28,7 +28,7 @@ function woff2Signature(bytes: Uint8Array): string {
   return String.fromCharCode(...bytes.subarray(0, 4));
 }
 
-describe("@podo/icon-build", () => {
+describe("@podoui/icon-build", () => {
   it("builds a valid, deterministic woff2", async () => {
     const first = await buildIconFontWoff2({ fontFamily: "PodoIcons", glyphs: [triangle, box] });
     const second = await buildIconFontWoff2({ fontFamily: "PodoIcons", glyphs: [box, triangle] });

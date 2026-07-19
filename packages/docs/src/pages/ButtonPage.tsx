@@ -1,4 +1,4 @@
-import { Button } from "@podo/react";
+import { Button } from "@podoui/react";
 import { Card, StageItem } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -24,19 +24,19 @@ const INTRO =
   "크기·스타일·색상·상태를 규칙에 맞게 구분해 행동의 중요도와 우선순위를 빠르게 인지하게 해주며, 화면 " +
   "전반의 조작성과 시각적 완성도를 높이는 역할을 해요.";
 
-// Usage stays: live @podo/react preview with per-target code tabs.
+// Usage stays: live @podoui/react preview with per-target code tabs.
 const USAGE_TABS: CodeTab[] = [
   { target: "react", label: "React", code: `<Button theme="solid-primary">Save</Button>` },
   { target: "web", label: "Web", code: `<podo-button theme="solid-primary">Save</podo-button>` },
   {
     target: "hono",
     label: "Hono",
-    code: `import { Button } from "@podo/hono";\n\n<Button theme="solid-primary">Save</Button>`,
+    code: `import { Button } from "@podoui/hono";\n\n<Button theme="solid-primary">Save</Button>`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Button } from "@podo/native";\n\n<Button theme="solid-primary">Save</Button>`,
+    code: `import { Button } from "@podoui/native";\n\n<Button theme="solid-primary">Save</Button>`,
   },
 ];
 
@@ -132,7 +132,7 @@ export function ButtonPage() {
       <DocSection
         index={5}
         title="속성 (props)"
-        description="@podo/react의 Button이 받는 속성이에요. 앞서 시안의 layout(text·prefix·suffix)은 코드에서는 prefix·suffix 두 슬롯(ReactNode)으로 표현하며, 둘을 동시에 넣을 수도 있어요. 이 밖에 표준 button 속성(className, aria-*, type 등)도 그대로 전달돼요."
+        description="@podoui/react의 Button이 받는 속성이에요. 앞서 시안의 layout(text·prefix·suffix)은 코드에서는 prefix·suffix 두 슬롯(ReactNode)으로 표현하며, 둘을 동시에 넣을 수도 있어요. 이 밖에 표준 button 속성(className, aria-*, type 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"

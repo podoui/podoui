@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "tsconfig.tsbuildinfo"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.test.ts"],
+  "references": [
+    { "path": "../spec" },
+    { "path": "../tokens" },
+    { "path": "../icons" },
+    { "path": "../core" },
+    { "path": "../web" },
+    { "path": "../react" },
+    { "path": "../hono" },
+    { "path": "../native" }
+  ]
+}

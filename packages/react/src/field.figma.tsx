@@ -1,4 +1,4 @@
-// Code Connect: Figma Field component (334:1049) → @podo/react Field.
+// Code Connect: Figma Field component (334:1049) → @podoui/react Field.
 // - boolean toggles (sub-label, helper-text, character-count, suffix-icon)
 //   become the corresponding camelCase props/slots
 // - the Slot swap is the control slot: any input/button/combobox goes inside

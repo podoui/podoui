@@ -9,7 +9,7 @@ import {
   type MigrationManifest,
 } from "./index.js";
 
-describe("@podo/migration", () => {
+describe("@podoui/migration", () => {
   it("parses migration manifests and applies JSON Patch operations", () => {
     const manifest = parseMigrationManifest({
       schemaVersion: "2.0.0",

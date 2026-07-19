@@ -1,4 +1,4 @@
-// Code Connect: Figma Chip component set (328:14276) → @podo/react Chip.
+// Code Connect: Figma Chip component set (328:14276) → @podoui/react Chip.
 // The size vocabulary matches the set (md 14px base / lg 16px), and the
 // selection states map to the selected boolean — the pressed variants are
 // platform interactions (:active) and never become props.

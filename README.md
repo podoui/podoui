@@ -4,13 +4,13 @@ Podo UI v2 is a JSON-spec-first TypeScript design system. Design tokens, compone
 
 ## Packages
 
-- `@podo/spec`: JSON schemas, parsers, and TypeScript contracts.
-- `@podo/tokens`: token loading, merging, resolving, and target emitters.
-- `@podo/icons`: icon manifest validation and font/native asset builders.
-- `@podo/core`: shared behavior, accessibility, registry, and state helpers.
-- `@podo/web`, `@podo/react`, `@podo/hono`, `@podo/native`: runtime component targets.
-- `@podo/cli`: `podo` project setup/build/update command.
-- `@podo/mcp`: Model Context Protocol server for AI tool access to Podo specs.
+- `@podoui/spec`: JSON schemas, parsers, and TypeScript contracts.
+- `@podoui/tokens`: token loading, merging, resolving, and target emitters.
+- `@podoui/icons`: icon manifest validation and font/native asset builders.
+- `@podoui/core`: shared behavior, accessibility, registry, and state helpers.
+- `@podoui/web`, `@podoui/react`, `@podoui/hono`, `@podoui/native`: runtime component targets.
+- `@podoui/cli`: `podo` project setup/build/update command.
+- `@podoui/mcp`: Model Context Protocol server for AI tool access to Podo specs.
 
 ## Local Workflow
 

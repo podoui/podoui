@@ -265,7 +265,7 @@ podo mcp
 - pixel width helpers `.w-{0..5000}px`
 - gap/padding은 기존 spacing scale 기준: PC `s(6)` 24px, tablet/mobile `s(5)` 16px
 
-v2에서는 이 grid를 `@podo/web` 또는 호환 CSS 산출물에서 그대로 제공하고, 새 JSON 기반 layout/token 시스템과 별도로 취급한다. grid 관련 변경은 bug fix 외에는 breaking change로 본다.
+v2에서는 이 grid를 `@podoui/web` 또는 호환 CSS 산출물에서 그대로 제공하고, 새 JSON 기반 layout/token 시스템과 별도로 취급한다. grid 관련 변경은 bug fix 외에는 breaking change로 본다.
 
 ## 9. 테마 전략
 
@@ -347,7 +347,7 @@ datepicker/
 }
 ```
 
-Phase 7의 기본 구현은 `@podo/migration`을 공통 계층으로 두고 CLI가 dry-run plan, conflict detector, lockfile update 로직을 사용한다. 적용 범위는 `.podo` JSON 상태로 제한하고 rollback은 VCS 기반으로 수행한다.
+Phase 7의 기본 구현은 `@podoui/migration`을 공통 계층으로 두고 CLI가 dry-run plan, conflict detector, lockfile update 로직을 사용한다. 적용 범위는 `.podo` JSON 상태로 제한하고 rollback은 VCS 기반으로 수행한다.
 
 ## 13. MCP 설계
 
@@ -374,25 +374,25 @@ claude mcp add podo -- npx podo mcp
 ## 14. 배포 전략
 
 - npm 패키지 배포는 `main` 브랜치의 `prepublishOnly`와 `exports` 설계를 참고한다.
-- v2는 `@podo/*` scoped package를 권장한다.
+- v2는 `@podoui/*` scoped package를 권장한다. (2026-07-20: 원래 계획이던 `@podo` 스코프는 npm에서 타인 소유 org로 확인되어 `@podoui`로 확정. GitHub org `podoui`, podoui.com, CLI 패키지 `podoui`와 일관.)
 - Changesets로 버전, changelog, publish를 관리한다.
 - `main` 브랜치 직접 설치는 canary 검증 용도로만 둔다.
 
 패키지 후보:
 
 ```text
-@podo/spec
-@podo/tokens
-@podo/icons
-@podo/web
-@podo/react
-@podo/hono
-@podo/native
-@podo/cli
-@podo/mcp
+@podoui/spec
+@podoui/tokens
+@podoui/icons
+@podoui/web
+@podoui/react
+@podoui/hono
+@podoui/native
+@podoui/cli
+@podoui/mcp
 ```
 
-단일 패키지 배포가 필요하면 `podo-ui`의 subpath export로 제공한다.
+단일 패키지 배포가 필요하면 `podo-ui`의 subpath export로 제공한다. (2026-07-20 구현: `packages/podo-ui`가 기존 npm 주소(podo-ui)를 v2 메타 패키지로 이어받아 `podo-ui/react` 등 subpath로 `@podoui/*`를 재수출한다.)
 
 ## 15. 단계별 로드맵
 
@@ -404,7 +404,7 @@ claude mcp add podo -- npx podo mcp
 - main 브랜치 배포 구조 분석 결과 반영
 - 패키지 네이밍 최종 결정
 
-완료 기준: `@podo/*` 패키지 골격이 workspace에서 인식되고 `pnpm check`, `pnpm build`가 통과한다.
+완료 기준: `@podoui/*` 패키지 골격이 workspace에서 인식되고 `pnpm check`, `pnpm build`가 통과한다.
 
 ### Phase 1: 스펙 고정
 
@@ -428,13 +428,13 @@ claude mcp add podo -- npx podo mcp
 ### Phase 3: 컴포넌트 코드 생성 MVP
 
 - Button, Input, Field, Icon, Typography 컴포넌트 스펙 작성
-- `@podo/core`에 component registry, renderer contract, a11y helper, behavior helper를 둔다.
+- `@podoui/core`에 component registry, renderer contract, a11y helper, behavior helper를 둔다.
 - web renderer 작성
 - web renderer는 dependency-free Custom Elements로 구현한다.
 - react renderer는 Web Component wrapper가 아닌 native React renderer로 구현한다.
 - hono renderer는 Hono TSX 기반 정적 SSR renderer를 1차 범위로 둔다.
 - native renderer는 React Native host adapter 기반으로 Pressable/Text/TextInput/View를 주입 가능하게 구현한다.
-- `@podo/codegen`은 component spec에서 target별 generated file과 barrel을 결정적으로 만든다.
+- `@podoui/codegen`은 component spec에서 target별 generated file과 barrel을 결정적으로 만든다.
 
 완료 기준: 네 타깃 예제 앱에서 같은 스펙의 Button/Input을 렌더링한다.
 
@@ -454,7 +454,7 @@ claude mcp add podo -- npx podo mcp
 
 ### Phase 6: MCP
 
-- `@podo/mcp`는 `@modelcontextprotocol/sdk` 기반 stdio server를 제공한다.
+- `@podoui/mcp`는 `@modelcontextprotocol/sdk` 기반 stdio server를 제공한다.
 - `podo mcp`와 `podo-mcp` bin으로 서버를 실행할 수 있다.
 - MCP data loader는 package default token/component/icon spec과 설치 프로젝트 `.podo` override를 함께 읽는다.
 - tool registration은 overview, token, component, validation/migration, suggest tool 파일로 분리한다.
@@ -537,9 +537,9 @@ claude mcp add podo -- npx podo mcp
 - 플러그인 UI iframe의 origin이 null이므로 `Access-Control-Allow-Origin: *`와 OPTIONS preflight(PNA 헤더 포함) 응답이 필요하다. CORS `*` + PNA 허용은 브라우저의 127.0.0.1 보호를 해제하므로 127.0.0.1 바인딩만으로는 사용자의 브라우저에 대해 경계가 되지 않는다. 따라서 (1) `Origin` 헤더가 존재하면서 `null`이 아닌 요청(드라이브바이 웹페이지)은 403으로 거부하고, (2) 네트워크로 수신한 payload는 `--yes`와 무관하게 항상 대화식 확인을 거친 뒤에만 쓴다(`--yes` 무인 적용은 검토 가능한 `--file` 경로 전용).
 - 유효한 요청 한 건을 처리하면 서버를 종료한다. 거부된 요청(origin 불일치, schema 불합격)은 세션을 종료시키지 않고 계속 대기한다. 기본 포트 4141, 점유 시 4142부터 순차 시도하고 플러그인 UI에서 포트를 바꿀 수 있다.
 - `figma-plugin/manifest.json`의 `networkAccess.allowedDomains`에 localhost 허용을 추가한다.
-- 수신 payload는 `@podo/spec`의 podo-clone schema로 검증한 뒤에만 변환을 시작한다.
+- 수신 payload는 `@podoui/spec`의 podo-clone schema로 검증한 뒤에만 변환을 시작한다.
 
-### 18.3 변환: podo-clone → `@podo/spec` 문서
+### 18.3 변환: podo-clone → `@podoui/spec` 문서
 
 전체 파이프라인에서 실제 개발량의 중심. 매핑 규칙:
 
@@ -554,7 +554,7 @@ claude mcp add podo -- npx podo mcp
 
 ### 18.5 `npx podoui` 진입점
 
-- npm에 `podoui` 패키지를 추가한다. `@podo/cli`를 재사용하는 thin wrapper로, bin 이름 `podoui`에 인터랙티브 메뉴(가져오기, init, build 등)를 얹는다.
+- npm에 `podoui` 패키지를 추가한다. `@podoui/cli`를 재사용하는 thin wrapper로, bin 이름 `podoui`에 인터랙티브 메뉴(가져오기, init, build 등)를 얹는다.
 - 기존 `podo` 명령 체계는 그대로 유지하고, 가져오기는 `podo import`(비대화식 옵션 포함)로도 실행 가능해야 한다.
 - npm에서 `podoui` 이름 확보 여부를 배포 전에 확인한다. (2026-07-20 확인: `npm view podoui` 404 — 미등록, 사용 가능)
 

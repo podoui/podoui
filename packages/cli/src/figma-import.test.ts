@@ -10,7 +10,7 @@ import {
   parseTokenDocument,
   type ComponentDocument,
   type TokenDocument,
-} from "@podo/spec";
+} from "@podoui/spec";
 import { convertPodoClone } from "./figma-convert.js";
 import { runCli, validateProject, parseArgs, type CliIO } from "./index.js";
 

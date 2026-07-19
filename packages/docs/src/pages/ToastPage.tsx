@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Icon, Toast, Toaster, toast, type ToasterPosition } from "@podo/react";
+import { Button, Icon, Toast, Toaster, toast, type ToasterPosition } from "@podoui/react";
 import { Card } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -34,14 +34,14 @@ const USAGE_TABS: CodeTab[] = [
     target: "hono",
     label: "Hono",
     code:
-      `import { Toast } from "@podo/hono";\n\n` +
+      `import { Toast } from "@podoui/hono";\n\n` +
       `<Toast state="success" closable>저장됐어요</Toast>`,
   },
   {
     target: "native",
     label: "React Native",
     code:
-      `import { Toast } from "@podo/native";\n\n` +
+      `import { Toast } from "@podoui/native";\n\n` +
       `{/* 앱의 오버레이 안에 배치해요 */}\n` +
       `<Toast state="success" onClose={hide}>저장됐어요</Toast>`,
   },
@@ -165,7 +165,7 @@ export function ToastPage() {
       <DocSection
         index={4}
         title="Toast 속성 (props)"
-        description="@podo/react의 Toast — 카드 하나의 생김새를 정하는 속성이에요. Toast를 직접 놓거나 web·hono·native에서 카드를 배치할 때 써요. danger일 때 role=alert, 나머지는 role=status로 안내되고 포커스를 뺏지 않아요. 시안의 suffix-icon 기본값은 닫기 X라 코드에서는 onClose로 표현돼요."
+        description="@podoui/react의 Toast — 카드 하나의 생김새를 정하는 속성이에요. Toast를 직접 놓거나 web·hono·native에서 카드를 배치할 때 써요. danger일 때 role=alert, 나머지는 role=status로 안내되고 포커스를 뺏지 않아요. 시안의 suffix-icon 기본값은 닫기 X라 코드에서는 onClose로 표현돼요."
       >
         <SpecTable
           variant="props"

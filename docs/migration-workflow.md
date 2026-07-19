@@ -1,6 +1,6 @@
 # Migration Workflow
 
-Phase 7 introduces `@podo/migration`, `podo update`, and `podo migrate`.
+Phase 7 introduces `@podoui/migration`, `podo update`, and `podo migrate`.
 
 ## Manifest Contract
 
@@ -10,7 +10,7 @@ Migration manifests are JSON specs:
 {
   "schemaVersion": "2.0.0",
   "kind": "migration-manifest",
-  "packageName": "@podo/ui",
+  "packageName": "@podoui/ui",
   "packageVersion": "2.1.0",
   "from": "2.0.0",
   "to": "2.1.0",

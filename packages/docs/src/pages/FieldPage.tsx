@@ -1,4 +1,4 @@
-import { Field, Input } from "@podo/react";
+import { Field, Input } from "@podoui/react";
 import { Card } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -44,7 +44,7 @@ const USAGE_TABS: CodeTab[] = [
     target: "hono",
     label: "Hono",
     code:
-      `import { Field, Input } from "@podo/hono";\n\n` +
+      `import { Field, Input } from "@podoui/hono";\n\n` +
       `<Field label="제목" required helperText="도움말 텍스트" countMax={500}>\n` +
       `  <Input name="title" />\n` +
       `</Field>`,
@@ -53,7 +53,7 @@ const USAGE_TABS: CodeTab[] = [
     target: "native",
     label: "React Native",
     code:
-      `import { Field, Input } from "@podo/native";\n\n` +
+      `import { Field, Input } from "@podoui/native";\n\n` +
       `<Field label="제목" required helperText="도움말 텍스트" countMax={500}>\n` +
       `  <Input />\n` +
       `</Field>`,
@@ -110,7 +110,7 @@ export function FieldPage() {
       <DocSection
         index={2}
         title="속성 (props)"
-        description="@podo/react의 Field가 받는 속성이에요. children은 슬롯이라 인풋뿐 아니라 버튼, 콤보박스 등 어떤 컨트롤이든 넣을 수 있고, 필드가 레이블·설명의 접근성 연결(aria)을 자동으로 처리해요. 이 밖에 표준 div 속성(className, id 등)도 그대로 전달돼요."
+        description="@podoui/react의 Field가 받는 속성이에요. children은 슬롯이라 인풋뿐 아니라 버튼, 콤보박스 등 어떤 컨트롤이든 넣을 수 있고, 필드가 레이블·설명의 접근성 연결(aria)을 자동으로 처리해요. 이 밖에 표준 div 속성(className, id 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"

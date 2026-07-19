@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parseComponentDocument, type ComponentDocument } from "@podo/spec";
+import { parseComponentDocument, type ComponentDocument } from "@podoui/spec";
 import { generateComponentFiles, type CodegenTarget } from "./index.js";
 
 const componentRoot = resolve(process.cwd(), "packages/spec/samples/components");

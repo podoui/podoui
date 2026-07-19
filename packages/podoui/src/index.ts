@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * `npx podoui` — thin interactive wrapper over `@podo/cli`.
+ * `npx podoui` — thin interactive wrapper over `@podoui/cli`.
  *
  * With arguments it is a pass-through (`podoui import --file x.json` ===
  * `podo import --file x.json`); with no arguments on a terminal it shows a
@@ -13,7 +13,7 @@ import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { stdin as nodeStdin, stdout as nodeStdout } from "node:process";
 import { createInterface } from "node:readline/promises";
-import { runCli } from "@podo/cli";
+import { runCli } from "@podoui/cli";
 
 interface MenuEntry {
   key: string;

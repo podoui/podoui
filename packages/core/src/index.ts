@@ -1,4 +1,4 @@
-import type { ComponentDocument } from "@podo/spec";
+import type { ComponentDocument } from "@podoui/spec";
 
 export type PodoTarget = "web" | "react" | "hono" | "native";
 

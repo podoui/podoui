@@ -1,4 +1,4 @@
-import { podoWebComponentCss, registerPodoElements } from "@podo/web";
+import { podoWebComponentCss, registerPodoElements } from "@podoui/web";
 
 const iconFontCss = `@font-face {
   font-family: "PodoIcons";

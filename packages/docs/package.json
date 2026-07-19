@@ -1,9 +1,9 @@
 {
-  "name": "@podo/docs",
+  "name": "@podoui/docs",
   "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Podo UI documentation site. Renders live @podo/react components.",
+  "description": "Podo UI documentation site. Renders live @podoui/react components.",
   "scripts": {
     "predev": "tsc -b ../core ../react",
     "dev": "vite",
@@ -14,7 +14,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/react": "workspace:*",
+    "@podoui/react": "workspace:*",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

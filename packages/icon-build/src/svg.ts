@@ -1,4 +1,4 @@
-import { PodoEditError } from "@podo/spec";
+import { PodoEditError } from "@podoui/spec";
 import { ICON_CANONICAL_VIEWBOX } from "./constants.js";
 import type { ViewBox } from "./font.js";
 

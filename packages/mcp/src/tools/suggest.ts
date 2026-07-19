@@ -1,6 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { PODO_SCHEMA_VERSION, parseComponentDocument, type ComponentDocument } from "@podo/spec";
+import { PODO_SCHEMA_VERSION, parseComponentDocument, type ComponentDocument } from "@podoui/spec";
 import type { ComponentSuggestionInput, McpToolContext } from "../types.js";
 import { ok, toTextResult } from "./shared.js";
 

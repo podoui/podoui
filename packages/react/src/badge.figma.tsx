@@ -1,4 +1,4 @@
-// Code Connect: Figma Badge-count component set (474:3218) → @podo/react Badge.
+// Code Connect: Figma Badge-count component set (474:3218) → @podoui/react Badge.
 // The set's `state` boolean is derivable from the theme (system-state themes
 // are state=true, color-label themes state=false), so only theme + dot map.
 import React from "react";

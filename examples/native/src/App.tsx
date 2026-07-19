@@ -6,7 +6,7 @@ import {
   Input,
   PodoNativeThemeProvider,
   usePodoNativeTheme,
-} from "@podo/native";
+} from "@podoui/native";
 
 export function App(): React.ReactElement {
   const [darkMode, setDarkMode] = useState(false);

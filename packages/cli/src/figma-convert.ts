@@ -30,7 +30,7 @@ import {
   type PodoCloneVariable,
   type TokenDocument,
   type TokenTree,
-} from "@podo/spec";
+} from "@podoui/spec";
 
 export interface ConvertedFile {
   /** Repo-root-relative path, always inside `.podo/`. */

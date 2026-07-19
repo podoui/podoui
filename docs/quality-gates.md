@@ -27,18 +27,18 @@ pnpm build
 
 Budgets are measured on published ESM output after tree-shaking/minification in CI. They are starting limits for MVP and should only be raised with a release note.
 
-| Package        |       Budget |
-| -------------- | -----------: |
-| `@podo/web`    |  16 KiB gzip |
-| `@podo/react`  |  18 KiB gzip |
-| `@podo/native` |  18 KiB gzip |
-| `@podo/cli`    | 300 KiB gzip |
-| `@podo/mcp`    | 220 KiB gzip |
+| Package          |       Budget |
+| ---------------- | -----------: |
+| `@podoui/web`    |  16 KiB gzip |
+| `@podoui/react`  |  18 KiB gzip |
+| `@podoui/native` |  18 KiB gzip |
+| `@podoui/cli`    | 300 KiB gzip |
+| `@podoui/mcp`    | 220 KiB gzip |
 
 Rules:
 
 - Runtime packages must not pull CLI-only dependencies.
-- `@podo/react` and `@podo/native` keep React as a peer dependency.
+- `@podoui/react` and `@podoui/native` keep React as a peer dependency.
 - Binary icon fonts are budgeted as generated assets, not runtime JavaScript.
 
 ## Release Blocking Rules

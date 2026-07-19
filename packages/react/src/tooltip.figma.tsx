@@ -1,4 +1,4 @@
-// Code Connect: Figma Tooltip component set (388:2125) → @podo/react Tooltip.
+// Code Connect: Figma Tooltip component set (388:2125) → @podoui/react Tooltip.
 // position/ordinal pass through and the label text becomes the label prop.
 // The theme vocabulary is SWAPPED between the set and the code: the team's
 // default is the dark bubble, which the Figma set names "reverse" — this

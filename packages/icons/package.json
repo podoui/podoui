@@ -1,5 +1,5 @@
 {
-  "name": "@podo/icons",
+  "name": "@podoui/icons",
   "version": "2.0.0",
   "type": "module",
   "description": "Icon manifests, groups, font builds, and native icon outputs for Podo.",
@@ -22,8 +22,8 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podo/icon-build": "workspace:*",
-    "@podo/spec": "workspace:*",
+    "@podoui/icon-build": "workspace:*",
+    "@podoui/spec": "workspace:*",
     "fantasticon": "^4.1.0",
     "svgo": "^4.0.1",
     "wawoff2": "^2.0.1"

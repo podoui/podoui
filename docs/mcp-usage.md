@@ -1,6 +1,6 @@
 # MCP Usage
 
-Phase 6 adds `@podo/mcp`, a Model Context Protocol stdio server for Podo v2 specs.
+Phase 6 adds `@podoui/mcp`, a Model Context Protocol stdio server for Podo v2 specs.
 
 ## Start
 

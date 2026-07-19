@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Chip } from "@podo/react";
+import { Chip } from "@podoui/react";
 import { Card, StageItem } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -24,12 +24,12 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Chip } from "@podo/hono";\n\n<Chip>Label</Chip>`,
+    code: `import { Chip } from "@podoui/hono";\n\n<Chip>Label</Chip>`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Chip } from "@podo/native";\n\n<Chip onPress={toggle}>Label</Chip>`,
+    code: `import { Chip } from "@podoui/native";\n\n<Chip onPress={toggle}>Label</Chip>`,
   },
 ];
 
@@ -155,7 +155,7 @@ export function ChipPage() {
       <DocSection
         index={6}
         title="속성 (props)"
-        description="@podo/react의 Chip이 받는 속성이에요. pressed 계열은 누르는 동안(:active) 자동으로 표현되고, 선택 여부만 selected로 제어해요. 이 밖에 표준 button 속성(className, type, aria-* 등)도 그대로 전달돼요."
+        description="@podoui/react의 Chip이 받는 속성이에요. pressed 계열은 누르는 동안(:active) 자동으로 표현되고, 선택 여부만 selected로 제어해요. 이 밖에 표준 button 속성(className, type, aria-* 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"

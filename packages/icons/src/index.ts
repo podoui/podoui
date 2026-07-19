@@ -4,14 +4,14 @@ import { join } from "node:path";
 import { FontAssetType, generateFonts } from "fantasticon";
 import { optimize, type Config } from "svgo";
 import { compress } from "wawoff2";
-import { buildIconFontWoff2 } from "@podo/icon-build";
+import { buildIconFontWoff2 } from "@podoui/icon-build";
 import {
   parseIconManifest,
   validateIconManifest,
   validateInlineSvg,
   type IconManifest,
   type ValidationIssue,
-} from "@podo/spec";
+} from "@podoui/spec";
 
 export interface IconBuildOptions {
   manifest: IconManifest;
@@ -49,7 +49,7 @@ export function validateIconBuild(manifest: IconManifest): ValidationIssue[] {
 }
 
 export function validateSvgSource(iconName: string, svg: string): SvgRuleResult {
-  // Delegates to the shared inline-svg rules in @podo/spec so the browser build
+  // Delegates to the shared inline-svg rules in @podoui/spec so the browser build
   // and this Node build validate against one source of truth.
   const issues = validateInlineSvg(iconName, svg);
   return { valid: issues.length === 0, issues };
@@ -103,7 +103,7 @@ export async function buildIconAssets(options: IconBuildOptions): Promise<IconBu
   const iconNames = selectIconNames(options.manifest, options.groups);
 
   // Inline manifests (the browser build's output) are built with the shared
-  // deterministic @podo/icon-build pipeline so the on-disk woff2 is byte-identical
+  // deterministic @podoui/icon-build pipeline so the on-disk woff2 is byte-identical
   // to the browser-embedded font (a single source of bytes). The fantasticon path
   // below stays for legacy file-path manifests with arbitrary SVG sources. A
   // manifest must be entirely one kind; reject a partial mix with a clear error.
@@ -208,7 +208,7 @@ export async function buildIconAssets(options: IconBuildOptions): Promise<IconBu
 
 /**
  * Build an inline (browser) icon manifest to disk using the shared
- * deterministic @podo/icon-build pipeline. The emitted woff2 is byte-identical to
+ * deterministic @podoui/icon-build pipeline. The emitted woff2 is byte-identical to
  * the manifest's embedded `fontAsset`, and only woff2 is produced (the always-woff2
  * artifact). Inline SVGs are already normalized single-path sources.
  */

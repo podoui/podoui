@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@podo/web > renders button slots, states, and activation event 1`] = `
+exports[`@podoui/web > renders button slots, states, and activation event 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;
@@ -1635,7 +1635,7 @@ input {
 </button>"
 `;
 
-exports[`@podo/web > renders input, field, icon, and typography components > checkbox 1`] = `
+exports[`@podoui/web > renders input, field, icon, and typography components > checkbox 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;
@@ -3266,7 +3266,7 @@ input {
 <label class="podo-checkbox-wrap" part="wrap" data-size="md"><input class="podo-checkbox" part="box" type="checkbox" data-state="checked" checked=""><span class="podo-checkbox__text" part="label">이용약관</span></label>"
 `;
 
-exports[`@podo/web > renders input, field, icon, and typography components > chip 1`] = `
+exports[`@podoui/web > renders input, field, icon, and typography components > chip 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;
@@ -4901,7 +4901,7 @@ input {
 </button>"
 `;
 
-exports[`@podo/web > renders input, field, icon, and typography components > field 1`] = `
+exports[`@podoui/web > renders input, field, icon, and typography components > field 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;
@@ -6545,7 +6545,7 @@ input {
 </div>"
 `;
 
-exports[`@podo/web > renders input, field, icon, and typography components > icon 1`] = `
+exports[`@podoui/web > renders input, field, icon, and typography components > icon 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;
@@ -8175,7 +8175,7 @@ input {
 }</style><span class="podo-icon podo-icon-menu" part="icon" aria-hidden="true"></span>"
 `;
 
-exports[`@podo/web > renders input, field, icon, and typography components > input 1`] = `
+exports[`@podoui/web > renders input, field, icon, and typography components > input 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;
@@ -9808,7 +9808,7 @@ input {
 </div>"
 `;
 
-exports[`@podo/web > renders input, field, icon, and typography components > switch 1`] = `
+exports[`@podoui/web > renders input, field, icon, and typography components > switch 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;
@@ -11441,7 +11441,7 @@ input {
 </button>"
 `;
 
-exports[`@podo/web > renders input, field, icon, and typography components > text 1`] = `
+exports[`@podoui/web > renders input, field, icon, and typography components > text 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;
@@ -13071,7 +13071,7 @@ input {
 }</style><span class="podo-text podo-typography" data-as="h1" part="text"><slot></slot></span>"
 `;
 
-exports[`@podo/web > renders input, field, icon, and typography components > textarea 1`] = `
+exports[`@podoui/web > renders input, field, icon, and typography components > textarea 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;
@@ -14702,7 +14702,7 @@ input {
 <textarea class="podo-textarea" part="root" data-state="invalid" data-resize="false" placeholder="메모" aria-invalid="true"></textarea>"
 `;
 
-exports[`@podo/web > renders input, field, icon, and typography components > toast 1`] = `
+exports[`@podoui/web > renders input, field, icon, and typography components > toast 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;
@@ -16342,7 +16342,7 @@ input {
 </div>"
 `;
 
-exports[`@podo/web > renders input, field, icon, and typography components > tooltip 1`] = `
+exports[`@podoui/web > renders input, field, icon, and typography components > tooltip 1`] = `
 "<style>:host {
   box-sizing: border-box;
   font: inherit;

@@ -5,7 +5,7 @@ import { mkdtemp } from "node:fs/promises";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { describe, expect, it } from "vitest";
-import { PODO_SCHEMA_VERSION } from "@podo/spec";
+import { PODO_SCHEMA_VERSION } from "@podoui/spec";
 import {
   createPodoMcpServer,
   explainMigration,
@@ -21,7 +21,7 @@ import {
   type McpToolContext,
 } from "./index.js";
 
-describe("@podo/mcp", () => {
+describe("@podoui/mcp", () => {
   it("loads package defaults and project .podo overrides", async () => {
     const root = await createProject();
     const context = await loadMcpProject(root);
