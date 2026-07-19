@@ -70,7 +70,7 @@ app.get("/", (c) =>
         <main class="podo-hono-page">
           <Typography as="h1">SSR account form</Typography>
           <form method="post" action="/settings">
-            <Field id="email" label="Email" description="Work email" required>
+            <Field id="email" label="Email" helperText="Work email" required>
               <Input name="email" placeholder="team@podo.dev" required />
             </Field>
             <Button type="submit">

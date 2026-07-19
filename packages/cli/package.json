@@ -1,6 +1,6 @@
 {
   "name": "@podo/cli",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "Podo command-line interface.",
   "license": "MIT",
@@ -30,5 +30,15 @@
     "@podo/mcp": "workspace:*",
     "@podo/spec": "workspace:*",
     "@podo/tokens": "workspace:*"
+  },
+  "author": "hada0127 <work@tarucy.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hada0127/podo-ui.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://podoui.com",
+  "bugs": {
+    "url": "https://github.com/hada0127/podo-ui/issues"
   }
 }

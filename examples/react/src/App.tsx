@@ -15,16 +15,12 @@ export function ReactExampleApp(): React.ReactElement {
         <Field
           id="workspace-email"
           label="Workspace email"
-          description="Provider, Field, Input, and Button use the same dashboard theme context."
+          helperText="Provider, Field, Input, and Button use the same dashboard theme context."
           required
         >
           <Input name="email" placeholder="team@podo.dev" required />
         </Field>
-        <Button
-          variant="solid"
-          leftIcon={<Icon name="menu" />}
-          onPress={() => setDarkMode((current) => !current)}
-        >
+        <Button prefix={<Icon name="menu" />} onPress={() => setDarkMode((current) => !current)}>
           Toggle dark mode
         </Button>
       </section>

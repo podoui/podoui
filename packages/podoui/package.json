@@ -1,6 +1,6 @@
 {
   "name": "podoui",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "Podo design system CLI entry (npx podoui) — interactive menu over @podo/cli.",
   "license": "MIT",
@@ -25,5 +25,15 @@
   },
   "dependencies": {
     "@podo/cli": "workspace:*"
+  },
+  "author": "hada0127 <work@tarucy.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hada0127/podo-ui.git",
+    "directory": "packages/podoui"
+  },
+  "homepage": "https://podoui.com",
+  "bugs": {
+    "url": "https://github.com/hada0127/podo-ui/issues"
   }
 }

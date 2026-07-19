@@ -4,7 +4,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
-import { loadMcpProject } from "./data-loader.js";
+import { loadMcpProject, mcpPackageVersion } from "./data-loader.js";
 import { registerPodoTools } from "./tools/index.js";
 
 export const packageName = "@podo/mcp";
@@ -17,7 +17,7 @@ export function createPodoMcpServer(options: McpServerOptions = {}): McpServer {
   const root = options.root ? resolve(options.root) : process.cwd();
   const server = new McpServer({
     name: "podo-v2-mcp",
-    version: "0.0.0",
+    version: mcpPackageVersion(),
   });
   registerPodoTools(server, { load: () => loadMcpProject(root) });
   return server;

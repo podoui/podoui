@@ -1,6 +1,6 @@
 {
   "name": "@podo/icons",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "Icon manifests, groups, font builds, and native icon outputs for Podo.",
   "license": "MIT",
@@ -27,5 +27,15 @@
     "fantasticon": "^4.1.0",
     "svgo": "^4.0.1",
     "wawoff2": "^2.0.1"
+  },
+  "author": "hada0127 <work@tarucy.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hada0127/podo-ui.git",
+    "directory": "packages/icons"
+  },
+  "homepage": "https://podoui.com",
+  "bugs": {
+    "url": "https://github.com/hada0127/podo-ui/issues"
   }
 }

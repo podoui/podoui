@@ -260,7 +260,7 @@ export async function initProject(args: ParsedArgs, io: CliIO): Promise<void> {
   };
   const lock: PodoLock = {
     schemaVersion: PODO_SCHEMA_VERSION,
-    packageVersion: "0.0.0",
+    packageVersion: await cliPackageVersion(),
     migrations: [],
     generatedHash: hashJson(config),
   };
@@ -417,7 +417,7 @@ export async function buildProject(args: ParsedArgs, io: CliIO): Promise<BuildPl
     join(podoRoot, "lock.json"),
     {
       schemaVersion: PODO_SCHEMA_VERSION,
-      packageVersion: "0.0.0",
+      packageVersion: await cliPackageVersion(),
       migrations: [],
       generatedHash: buildHash,
     } satisfies PodoLock,
@@ -993,6 +993,19 @@ async function readJsonFiles(dir: string): Promise<unknown[]> {
     })
   );
   return files.flat();
+}
+
+let packageVersionCache: string | undefined;
+
+/** The published @podo/cli version — stamped into `.podo/lock.json`. */
+async function cliPackageVersion(): Promise<string> {
+  if (!packageVersionCache) {
+    const pkg = JSON.parse(
+      await readFile(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8")
+    ) as { version?: string };
+    packageVersionCache = pkg.version ?? "0.0.0";
+  }
+  return packageVersionCache;
 }
 
 async function exists(path: string): Promise<boolean> {

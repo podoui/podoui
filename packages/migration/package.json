@@ -1,6 +1,6 @@
 {
   "name": "@podo/migration",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "Migration manifest, JSON Patch runner, and conflict detection for Podo projects.",
   "license": "MIT",
@@ -24,5 +24,15 @@
   "dependencies": {
     "@podo/spec": "workspace:*",
     "zod": "^4.4.3"
+  },
+  "author": "hada0127 <work@tarucy.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hada0127/podo-ui.git",
+    "directory": "packages/migration"
+  },
+  "homepage": "https://podoui.com",
+  "bugs": {
+    "url": "https://github.com/hada0127/podo-ui/issues"
   }
 }

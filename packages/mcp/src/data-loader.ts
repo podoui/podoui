@@ -1,6 +1,7 @@
-import type { Dirent } from "node:fs";
+import { readFileSync, type Dirent } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   collectTokenPaths,
   parseComponentDocument,
@@ -56,7 +57,7 @@ export async function loadMcpProject(root = process.cwd()): Promise<McpProjectCo
 
   return {
     root: projectRoot,
-    version: "0.0.0",
+    version: mcpPackageVersion(),
     schemaVersion: PODO_SCHEMA_VERSION,
     tokenSources,
     tokens: resolvedTokens,
@@ -198,4 +199,17 @@ async function exists(path: string): Promise<boolean> {
 
 function relativePodoPath(root: string, filePath: string): string {
   return filePath.replace(resolve(root), "").replace(/^\/+/, "");
+}
+
+let packageVersionCache: string | undefined;
+
+/** The published @podo/mcp version, reported in the system overview. */
+export function mcpPackageVersion(): string {
+  if (!packageVersionCache) {
+    const pkg = JSON.parse(
+      readFileSync(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8")
+    ) as { version?: string };
+    packageVersionCache = pkg.version ?? "0.0.0";
+  }
+  return packageVersionCache;
 }

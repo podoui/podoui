@@ -36,12 +36,12 @@ function ExampleContent({ onToggleScheme }: { onToggleScheme: () => void }): Rea
     <>
       <Field
         label={`Email (${theme.theme}/${theme.colorScheme})`}
-        description="Theme provider, Field and Input share one native context."
+        helperText="Theme provider, Field and Input share one native context."
         required
       >
         <Input accessibilityLabel="Email" placeholder="team@podo.dev" required />
       </Field>
-      <Button leftIcon={<Icon name="menu" />} onPress={onToggleScheme}>
+      <Button prefix={<Icon name="menu" />} onPress={onToggleScheme}>
         Toggle dark mode
       </Button>
     </>

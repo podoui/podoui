@@ -1,6 +1,6 @@
 {
   "name": "@podo/codegen",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "Component spec code generation templates for Podo targets.",
   "license": "MIT",
@@ -23,5 +23,15 @@
   },
   "dependencies": {
     "@podo/spec": "workspace:*"
+  },
+  "author": "hada0127 <work@tarucy.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hada0127/podo-ui.git",
+    "directory": "packages/codegen"
+  },
+  "homepage": "https://podoui.com",
+  "bugs": {
+    "url": "https://github.com/hada0127/podo-ui/issues"
   }
 }

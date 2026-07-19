@@ -76,7 +76,8 @@ function assertRootScripts(rootPackage) {
 async function verifyPackage(directory) {
   const packagePath = join(packagesRoot, directory, "package.json");
   const manifest = await readJson(packagePath);
-  if (!manifest.name?.startsWith("@podo/")) {
+  // Private workspace packages (e.g. the @podo/docs site) are never published.
+  if (manifest.private === true || !manifest.name?.startsWith("@podo/")) {
     return;
   }
 

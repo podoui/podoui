@@ -1,6 +1,6 @@
 {
   "name": "@podo/react",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "React runtime and typed component exports for Podo.",
   "license": "MIT",
@@ -27,5 +27,15 @@
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"
+  },
+  "author": "hada0127 <work@tarucy.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hada0127/podo-ui.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://podoui.com",
+  "bugs": {
+    "url": "https://github.com/hada0127/podo-ui/issues"
   }
 }

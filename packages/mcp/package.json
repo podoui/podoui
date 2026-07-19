@@ -1,6 +1,6 @@
 {
   "name": "@podo/mcp",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "Model Context Protocol server for Podo specs.",
   "license": "MIT",
@@ -28,5 +28,15 @@
     "@podo/spec": "workspace:*",
     "@podo/tokens": "workspace:*",
     "zod": "^4.4.3"
+  },
+  "author": "hada0127 <work@tarucy.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hada0127/podo-ui.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://podoui.com",
+  "bugs": {
+    "url": "https://github.com/hada0127/podo-ui/issues"
   }
 }

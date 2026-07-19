@@ -30,7 +30,7 @@
     "changeset:dry-run": "changeset status --verbose && pnpm --filter './packages/*' pack --dry-run",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "pnpm check && pnpm build && pnpm release:verify && pnpm changeset:dry-run && changeset publish",
+    "release": "pnpm check && pnpm build && pnpm release:verify && pnpm changeset:dry-run && pnpm -r publish --access public",
     "prepublishOnly": "pnpm check && pnpm build && pnpm release:verify && pnpm changeset:dry-run"
   },
   "devDependencies": {
