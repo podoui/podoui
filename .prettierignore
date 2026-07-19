@@ -3,3 +3,8 @@ dist
 coverage
 .turbo
 pnpm-lock.yaml
+# Standalone Figma plugin subproject (own build; snapshot.json is a 12MB
+# generated artifact prettier should never rewrite).
+figma-plugin
+# Committed reduced export fixture (minified on purpose).
+packages/spec/samples/podo-clone.sample.json

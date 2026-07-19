@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createHash } from "node:crypto";
-import type { Dirent } from "node:fs";
+import { realpathSync, type Dirent } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { stdin as nodeStdin, stdout as nodeStdout } from "node:process";
 import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
@@ -57,10 +57,18 @@ import {
   type MigrationPlan,
 } from "@podo/migration";
 import { startMcpServer } from "@podo/mcp";
+import { importProject } from "./figma-import.js";
 
 export const packageName = "@podo/cli";
 
-export type CliCommandName = "init" | "build" | "validate" | "update" | "migrate" | "mcp";
+export type CliCommandName =
+  | "init"
+  | "build"
+  | "validate"
+  | "update"
+  | "migrate"
+  | "import"
+  | "mcp";
 
 export interface CliIO {
   cwd: string;
@@ -97,7 +105,15 @@ export interface ValidationReport {
   issues: ValidationIssue[];
 }
 
-const commandNames: CliCommandName[] = ["init", "build", "validate", "update", "migrate", "mcp"];
+const commandNames: CliCommandName[] = [
+  "init",
+  "build",
+  "validate",
+  "update",
+  "migrate",
+  "import",
+  "mcp",
+];
 
 export async function runCli(
   argv = process.argv.slice(2),
@@ -133,6 +149,10 @@ export async function runCli(
     }
     if (args.command === "migrate") {
       await migrateProject(args, io);
+      return 0;
+    }
+    if (args.command === "import") {
+      await importProject(args, io);
       return 0;
     }
     if (args.command === "mcp") {
@@ -654,7 +674,7 @@ function logMigrationPlan(scope: "update" | "migrate", plan: MigrationPlan, io: 
   }
 }
 
-function resolvePodoFilePath(root: string, unsafePath: string): string {
+export function resolvePodoFilePath(root: string, unsafePath: string): string {
   const normalized = unsafePath.replaceAll("\\", "/").replace(/^\/+/, "");
   if (normalized !== ".podo" && !normalized.startsWith(".podo/")) {
     throw new Error(`Podo migration writes are limited to .podo paths. Received ${unsafePath}.`);
@@ -721,7 +741,7 @@ async function resolveInitOptions(args: ParsedArgs, root: string, io: CliIO): Pr
   }
 }
 
-async function loadBuildTokenSources(root: string): Promise<TokenSource[]> {
+export async function loadBuildTokenSources(root: string): Promise<TokenSource[]> {
   const projectTokensDir = join(root, ".podo/tokens");
   const projectThemesDir = join(root, ".podo/themes");
   const sources: TokenSource[] = [
@@ -891,6 +911,7 @@ function helpText(): string {
     "  validate   Validate .podo config, tokens, components, and icons",
     "  update     Plan package/schema migrations without writing files",
     "  migrate    Apply reviewed migrations to .podo specs and lockfile",
+    "  import     Receive a Figma plugin export (or --file) and write .podo specs",
     "  mcp        Start the Podo MCP stdio server",
   ].join("\n");
 }
@@ -1174,8 +1195,18 @@ function supportedTargets(): ComponentDocument["targets"] {
   };
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+// npm installs bins as symlinks (node_modules/.bin/podo → dist/index.js), so
+// the main-module check must compare realpaths or `npx podo` silently no-ops.
+if (process.argv[1] && fileURLToPath(import.meta.url) === safeRealpath(process.argv[1])) {
   runCli().then((code) => {
     process.exitCode = code;
   });
+}
+
+function safeRealpath(path: string): string | undefined {
+  try {
+    return realpathSync(path);
+  } catch {
+    return undefined;
+  }
 }

@@ -8,6 +8,9 @@
  *
  * All values must be JSON-safe (structuredClone of plugin objects is NOT
  * JSON-safe when it contains symbols like figma.mixed — serialize explicitly).
+ *
+ * A third consumer exists: `packages/spec/src/podo-clone.ts` is the Zod
+ * mirror the CLI uses to validate received exports. Keep it in sync too.
  */
 
 export const FORMAT = 'podo-clone' as const;

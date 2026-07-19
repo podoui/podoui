@@ -509,7 +509,56 @@ claude mcp add podo -- npx podo mcp
 5. token resolver와 CSS variables 출력을 먼저 구현한다.
 6. `main`의 MCP 구조를 참고해 v2 MCP skeleton을 만든다.
 
-## 18. 참고 자료
+## 18. Figma 가져오기 파이프라인 (Figma → 프로젝트)
+
+작성일: 2026-07-20
+
+피그마에서 수정한 디자인 시스템(변수, 스타일, 컴포넌트)을 플러그인 버튼 한 번으로 로컬 설치 프로젝트에 반영한다.
+
+### 18.1 경로 결정: REST가 아니라 플러그인 export
+
+- Figma Variables REST read API는 Enterprise 플랜 전용이라 URL+PAT 경로로는 변수(컬렉션·모드)를 가져올 수 없다.
+- `figma-plugin/src/export`는 이미 변수(모드 포함), 스타일, 폰트, 컴포넌트 노드 트리, 이미지를 `podo-clone` JSON(`snapshot.json` 형식)으로 완전하게 내보낸다.
+- 따라서 기본 경로는 플러그인 export를 재사용하고, 전송만 새로 만든다. URL+REST 보조 경로는 변수 구조가 소실되므로 1차 범위에서 제외한다.
+
+### 18.2 전송: localhost 브리지
+
+플러그인은 로컬 파일시스템에 쓸 수 없으므로 CLI가 로컬 HTTP 수신자가 된다.
+
+```text
+[터미널] npx podoui → 가져오기 → 127.0.0.1:4141 수신 대기
+[피그마] 플러그인 → "프로젝트로 보내기" → 기존 export 실행 → POST http://127.0.0.1:4141/import
+[터미널] podo-clone JSON 수신 → schema 검증 → spec 문서로 변환 → dry-run diff → 승인 → .podo에 쓰기 → 서버 종료
+```
+
+규약:
+
+- CLI는 Node 내장 `http.createServer`로 127.0.0.1에만 바인딩한다. 의존성을 추가하지 않는다.
+- 플러그인 UI iframe의 origin이 null이므로 `Access-Control-Allow-Origin: *`와 OPTIONS preflight(PNA 헤더 포함) 응답이 필요하다. CORS `*` + PNA 허용은 브라우저의 127.0.0.1 보호를 해제하므로 127.0.0.1 바인딩만으로는 사용자의 브라우저에 대해 경계가 되지 않는다. 따라서 (1) `Origin` 헤더가 존재하면서 `null`이 아닌 요청(드라이브바이 웹페이지)은 403으로 거부하고, (2) 네트워크로 수신한 payload는 `--yes`와 무관하게 항상 대화식 확인을 거친 뒤에만 쓴다(`--yes` 무인 적용은 검토 가능한 `--file` 경로 전용).
+- 유효한 요청 한 건을 처리하면 서버를 종료한다. 거부된 요청(origin 불일치, schema 불합격)은 세션을 종료시키지 않고 계속 대기한다. 기본 포트 4141, 점유 시 4142부터 순차 시도하고 플러그인 UI에서 포트를 바꿀 수 있다.
+- `figma-plugin/manifest.json`의 `networkAccess.allowedDomains`에 localhost 허용을 추가한다.
+- 수신 payload는 `@podo/spec`의 podo-clone schema로 검증한 뒤에만 변환을 시작한다.
+
+### 18.3 변환: podo-clone → `@podo/spec` 문서
+
+전체 파이프라인에서 실제 개발량의 중심. 매핑 규칙:
+
+- 변수 컬렉션 → token document. 컬렉션 이름으로 primitive/semantic/component/theme 계층을 판별하고, 모드는 theme/color-scheme override로 변환한다.
+- 스타일(텍스트·이펙트) → typography/shadow 토큰.
+- 컴포넌트 노드 트리 → component spec 초안. variant 속성 → props, 노드의 boundVariables → component token binding으로 변환한다.
+- 매핑할 수 없는 항목은 실패가 아니라 warning 목록으로 리포트한다(예: 이미지 fill, 알 수 없는 컬렉션 이름, 변수 미바인딩 하드코딩 값).
+
+### 18.4 쓰기 정책
+
+기존 원칙을 그대로 따른다: `.podo` 경로 안에만 쓰고, dry-run diff를 먼저 보여주고 승인 후에 쓴다. 대상은 `.podo/tokens/`, `.podo/themes/`, `.podo/components/local/`.
+
+### 18.5 `npx podoui` 진입점
+
+- npm에 `podoui` 패키지를 추가한다. `@podo/cli`를 재사용하는 thin wrapper로, bin 이름 `podoui`에 인터랙티브 메뉴(가져오기, init, build 등)를 얹는다.
+- 기존 `podo` 명령 체계는 그대로 유지하고, 가져오기는 `podo import`(비대화식 옵션 포함)로도 실행 가능해야 한다.
+- npm에서 `podoui` 이름 확보 여부를 배포 전에 확인한다. (2026-07-20 확인: `npm view podoui` 404 — 미등록, 사용 가능)
+
+## 19. 참고 자료
 
 - Design Tokens Format Module: https://www.designtokens.org/tr/drafts/format/
 - Style Dictionary: https://styledictionary.com/

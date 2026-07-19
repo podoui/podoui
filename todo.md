@@ -446,6 +446,36 @@
   - 완료 기준: variant(solid/soft/outline/ghost) × size(sm/md/lg)와 disabled/loading을 보여주는 variants 쇼케이스가 있다.
   - 완료 기준: variant/size/disabled/loading/onPress를 담은 props 테이블이 있고, 값이 `button.component.json`과 일치한다.
 
+## Phase 12: Figma 가져오기 (plugin → CLI 원스텝)
+
+기준: `plan.md` 18장. 플러그인 export(podo-clone JSON)를 localhost 브리지로 CLI에 전송해 `.podo`에 반영한다.
+
+- [x] podo-clone schema를 `@podo/spec`에 추가
+  - 완료 기준: `figma-plugin/src/schema.ts`의 PodoExport 형식이 CLI 쪽에서 Zod로 검증된다.
+  - 완료 기준: 커밋된 축소 export 픽스처(`packages/spec/samples/podo-clone.sample.json`)가 valid sample로 상시 통과하고, 로컬 전용(gitignored) `figma-plugin/snapshot.json`은 존재할 때만 추가 검증한다(fresh clone 재현성 유지).
+- [x] 플러그인 "프로젝트로 보내기" 구현
+  - 완료 기준: `manifest.json` `networkAccess.allowedDomains`에 localhost가 추가되고, UI 버튼이 기존 export 결과를 `POST http://127.0.0.1:<port>/import`로 전송한다. 포트는 UI에서 변경 가능하다.
+  - 완료 기준: 전송 성공/실패(CLI 미대기 포함)가 플러그인 UI에 표시된다.
+- [x] CLI 로컬 수신 서버 구현
+  - 완료 기준: Node 내장 `http`만 사용, 127.0.0.1 바인딩, CORS(`*`)와 OPTIONS preflight(PNA 포함) 처리, 유효 요청 1건 처리 후 종료한다. `Origin`이 존재하면서 `null`이 아닌 요청은 403으로 거부하고, 거부/불합격 요청은 세션을 끊지 않고 계속 대기한다.
+  - 완료 기준: 기본 포트 4141 점유 시 순차 fallback하고 실제 대기 포트를 안내 메시지로 출력한다.
+  - 완료 기준: 수신 payload가 schema 검증을 통과하지 못하면 쓰기 없이 명확한 에러를 출력한다.
+- [x] podo-clone → spec 변환기 구현
+  - 완료 기준: 변수 컬렉션·모드가 token document(theme/color-scheme override 포함)로 변환된다.
+  - 완료 기준: 텍스트·이펙트 스타일이 typography/shadow 토큰으로 변환된다.
+  - 완료 기준: 컴포넌트(variant 속성, boundVariables)가 component spec 초안과 token binding으로 변환된다.
+  - 완료 기준: 매핑 불가 항목이 실패가 아닌 warning 목록으로 리포트된다.
+  - 완료 기준: 커밋된 `podo-clone.sample.json` 픽스처 기반 변환 테스트가 있고 idempotent하다(로컬 `snapshot.json`이 있으면 전체 변환도 추가 검증).
+- [x] `.podo` 쓰기 플로우 연결
+  - 완료 기준: 변환 결과가 `.podo/tokens/`, `.podo/themes/`, `.podo/components/local/`에만 쓰이고, dry-run diff 승인 후에만 실제 쓰기가 일어난다. 네트워크 수신 payload는 `--yes`와 무관하게 항상 대화식 확인을 요구한다(`--yes` 무인 적용은 `--file` 전용).
+  - 완료 기준: 기존 `.podo` 오버라이드와의 충돌이 diff에 표시된다.
+- [x] `podo import` 명령 등록
+  - 완료 기준: `podo import`(대기 모드)와 `podo import --file <path>`(export JSON 직접 지정, 비대화식)가 동작한다.
+- [x] `podoui` wrapper 패키지 생성
+  - 완료 기준: npm 이름 `podoui` 확보가 확인되고, bin `podoui` 실행 시 인터랙티브 메뉴(가져오기/init/build)가 뜨며 가져오기가 `podo import`와 동일 코드 경로를 탄다.
+- [x] e2e 테스트
+  - 완료 기준: temp project에서 수신 서버에 픽스처 JSON을 POST하면 dry-run 리포트가 생성되고, 승인 시 `.podo`에 결과가 쓰인다.
+
 ## 릴리스 준비 체크리스트
 
 - [x] 모든 package `exports` 검증
@@ -545,7 +575,7 @@
   - Select 메뉴 최대 높이 규정 없음 — 코드는 10줄(474px)에서 잘라 내부 스크롤로 결정. 확정 요청
   - Select 상태 섹션(523:14405) 설명 오타 "사용지가" → "사용자가" (코드 문서에는 교정해서 반영)
   - Select 다중 선택 "모두 해제" 표시 시안 규정 없음 — 코드는 clearable prop으로 체브론 앞 ✕ 버튼(gray.50, hover gray.60)으로 결정. 확정 요청
-- [ ] (보류) Figma→코드 동기화 파이프라인 (`podo figma-sync`, 트리거 버튼) — 이전 논의 기록은 auto-memory 참고
+- [ ] ~~(보류) Figma→코드 동기화 파이프라인~~ → Phase 12 (Figma 가져오기)로 승격 (2026-07-20)
 
 ### C. 컴포넌트·품질
 
