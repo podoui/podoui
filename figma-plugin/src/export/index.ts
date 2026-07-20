@@ -12,9 +12,12 @@ import { serializeReferencedComponents, serializeTopLevel } from './nodes';
 /**
  * Pages whose components are exported as-is. Components on other pages are
  * embedded only when actually referenced (see serializeReferencedComponents).
- * Adjust when the source file's page names change.
+ * '_podo' makes "프로젝트로 보내기" work from files where the design system
+ * was INSTALLED by this plugin (and then customized) — components there live
+ * under the _podo page's sections, which findAllWithCriteria still reaches.
+ * When neither page exists, the fallback below exports every page.
  */
-const EXPORT_PAGE_NAMES: readonly string[] = ['Component'];
+const EXPORT_PAGE_NAMES: readonly string[] = ['Component', '_podo'];
 
 export type ProgressFn = (phase: string, done: number, total: number) => void;
 export type WarnFn = (message: string) => void;
