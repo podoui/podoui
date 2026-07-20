@@ -875,9 +875,7 @@ function iconSvgFromNode(
               : "";
           for (const path of child.vector.vectorPaths) {
             const fillRule =
-              paint.kind === "fill" && path.windingRule === "EVENODD"
-                ? ' fill-rule="evenodd"'
-                : "";
+              paint.kind === "fill" && path.windingRule === "EVENODD" ? ' fill-rule="evenodd"' : "";
             shapes.push(`<path d="${path.data}"${paint.attributes}${fillRule}${transform}/>`);
           }
         }
