@@ -17,7 +17,7 @@ npm install podo-ui
 Run one init command per project. The CLI writes project state under `.podo`.
 
 ```sh
-npx podo init --target react --theme dashboard --out-dir src/podo --yes
+npx podo-ui init --target react --theme dashboard --out-dir src/podo --yes
 ```
 
 Common target values:
@@ -30,14 +30,14 @@ Common target values:
 Dark mode is configured during init:
 
 ```sh
-npx podo init --target web --theme landing --dark-mode --out-dir src/podo --yes
+npx podo-ui init --target web --theme landing --dark-mode --out-dir src/podo --yes
 ```
 
 ## Build
 
 ```sh
-npx podo build
-npx podo build --dry-run
+npx podo-ui build
+npx podo-ui build --dry-run
 ```
 
 `podo build --dry-run` prints the files that would be created or updated. Normal build reads package defaults plus `.podo/tokens`, `.podo/components`, and `.podo/icons`, then writes generated files to the configured `build.outDir`.
@@ -101,7 +101,7 @@ export function App() {
 ## Validate
 
 ```sh
-npx podo validate
+npx podo-ui validate
 pnpm check
 ```
 

@@ -50,6 +50,6 @@ Canary releases use npm dist-tags and must not replace `latest`.
 2. Set a snapshot version (e.g. `2.1.0-canary.0`) in `packages/podo-ui/package.json` on a disposable branch.
 3. Run `pnpm build && pnpm release:verify && pnpm changeset:dry-run`.
 4. Publish with `pnpm --filter podo-ui publish --access public --tag canary`.
-5. Install in a sample project with `npm install podo-ui@canary` and run `npx podo init`, `npx podo build --dry-run`, and `npx podo validate`.
+5. Install in a sample project with `npm install podo-ui@canary` and run `npx podo-ui init`, `npx podo-ui build --dry-run`, and `npx podo-ui validate`.
 
 Installing directly from `main` is allowed only for canary validation. Reproducible project installs should use npm versions or explicit git tags.

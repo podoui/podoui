@@ -8,8 +8,8 @@ Everything ships as the single npm package [`podo-ui`](https://www.npmjs.com/pac
 
 ```sh
 npm install podo-ui
-npx podo init --target react --theme dashboard
-npx podo build
+npx podo-ui init --target react --theme dashboard
+npx podo-ui build
 ```
 
 ```ts
@@ -25,9 +25,11 @@ import { Button, PodoThemeProvider } from "podo-ui/react";
 
 The [Figma plugin](./figma-plugin) can send the design system (variables, styles, components) straight into a project:
 
-1. In the project terminal run `npx podo-ui` → "피그마에서 가져오기" (or `npx podo import`). The CLI listens on `http://localhost:4141-4145`.
+1. In the project terminal run `npx podo-ui` → "피그마에서 가져오기" (or `npx podo-ui import`). The CLI listens on `http://localhost:4141-4145`.
 2. In Figma open the PODO plugin and press **프로젝트로 보내기**.
-3. Review the plan (files, warnings, conflicts) in the terminal, confirm, then run `podo build`.
+3. Review the plan (files, warnings, conflicts) in the terminal, confirm, then run `npx podo-ui build`.
+
+After a local install the short `podo` bin works too (`npx podo build`), but plain `npx podo` without podo-ui installed resolves to an unrelated npm package — docs standardize on `npx podo-ui`.
 
 ## Workspace layout
 

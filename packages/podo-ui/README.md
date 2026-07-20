@@ -39,16 +39,16 @@ import { Button, Field, Input, PodoThemeProvider } from "podo-ui/react";
 ## CLI
 
 ```bash
-npx podo init      # .podo 생성 (또는: npx podo-ui — 인터랙티브 메뉴)
-npx podo build     # 토큰/아이콘/컴포넌트 산출물 생성
-npx podo import    # 피그마 플러그인에서 디자인 시스템 가져오기
-npx podo validate
+npx podo-ui init      # .podo 생성 (또는: npx podo-ui — 인터랙티브 메뉴)
+npx podo-ui build     # 토큰/아이콘/컴포넌트 산출물 생성
+npx podo-ui import    # 피그마 플러그인에서 디자인 시스템 가져오기
+npx podo-ui validate
 ```
 
 ## MCP
 
 ```bash
-claude mcp add podo -- npx podo mcp
+claude mcp add podo -- npx podo-ui mcp
 ```
 
 문서: https://podoui.com
