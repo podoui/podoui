@@ -99,6 +99,7 @@ await writeFile(
 );
 
 await chmod(join(outRoot, "cli/index.js"), 0o755);
+await chmod(join(outRoot, "cli/menu.js"), 0o755);
 await chmod(join(outRoot, "mcp/index.js"), 0o755);
 
 process.stdout.write(`Assembled podo-ui dist from ${MODULES.length} internal packages.\n`);

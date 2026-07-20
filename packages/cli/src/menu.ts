@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 
 /**
- * `npx podoui` — thin interactive wrapper over `@podoui/cli`.
+ * `npx podo-ui` — interactive menu over the podo CLI.
  *
- * With arguments it is a pass-through (`podoui import --file x.json` ===
+ * With arguments it is a pass-through (`podo-ui import --file x.json` ===
  * `podo import --file x.json`); with no arguments on a terminal it shows a
  * small menu so designers/developers can start the Figma import without
- * memorizing commands.
+ * memorizing commands. (npm rejects the name "podoui" as too similar to
+ * podo-ui, so the menu ships as the podo-ui package's own bin.)
  */
 
 import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { stdin as nodeStdin, stdout as nodeStdout } from "node:process";
 import { createInterface } from "node:readline/promises";
-import { runCli } from "@podoui/cli";
+import { runCli } from "./index.js";
 
 interface MenuEntry {
   key: string;
@@ -28,7 +29,7 @@ export const MENU: MenuEntry[] = [
   { key: "4", label: "검증 (podo validate)", argv: ["validate"] },
 ];
 
-export async function runPodoui(argv = process.argv.slice(2)): Promise<number> {
+export async function runMenu(argv = process.argv.slice(2)): Promise<number> {
   if (argv.length > 0) {
     return runCli(argv);
   }
@@ -56,10 +57,10 @@ export async function runPodoui(argv = process.argv.slice(2)): Promise<number> {
   }
 }
 
-// npm installs bins as symlinks (node_modules/.bin/podoui → dist/index.js), so
-// the main-module check must compare realpaths or `npx podoui` silently no-ops.
+// npm installs bins as symlinks (node_modules/.bin/podo-ui → dist/menu.js), so
+// the main-module check must compare realpaths or `npx podo-ui` silently no-ops.
 if (process.argv[1] && fileURLToPath(import.meta.url) === safeRealpath(process.argv[1])) {
-  runPodoui().then((code) => {
+  runMenu().then((code) => {
     process.exitCode = code;
   });
 }

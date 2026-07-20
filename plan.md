@@ -526,7 +526,7 @@ claude mcp add podo -- npx podo mcp
 플러그인은 로컬 파일시스템에 쓸 수 없으므로 CLI가 로컬 HTTP 수신자가 된다.
 
 ```text
-[터미널] npx podoui → 가져오기 → 127.0.0.1:4141 수신 대기
+[터미널] npx podo-ui → 가져오기 → 127.0.0.1:4141 수신 대기
 [피그마] 플러그인 → "프로젝트로 보내기" → 기존 export 실행 → POST http://127.0.0.1:4141/import
 [터미널] podo-clone JSON 수신 → schema 검증 → spec 문서로 변환 → dry-run diff → 승인 → .podo에 쓰기 → 서버 종료
 ```
@@ -552,7 +552,7 @@ claude mcp add podo -- npx podo mcp
 
 기존 원칙을 그대로 따른다: `.podo` 경로 안에만 쓰고, dry-run diff를 먼저 보여주고 승인 후에 쓴다. 대상은 `.podo/tokens/`, `.podo/themes/`, `.podo/components/local/`.
 
-### 18.5 `npx podoui` 진입점
+### 18.5 `npx podo-ui` 진입점
 
 - npm에 `podoui` 패키지를 추가한다. `@podoui/cli`를 재사용하는 thin wrapper로, bin 이름 `podoui`에 인터랙티브 메뉴(가져오기, init, build 등)를 얹는다.
 - 기존 `podo` 명령 체계는 그대로 유지하고, 가져오기는 `podo import`(비대화식 옵션 포함)로도 실행 가능해야 한다.
