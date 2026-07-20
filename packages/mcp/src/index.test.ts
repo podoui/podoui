@@ -53,7 +53,7 @@ describe("@podoui/mcp", () => {
         themeValues: {
           landing: {
             light: {
-              value: "#14151A",
+              value: "#18181B",
             },
           },
         },

@@ -95,7 +95,7 @@ describe("@podoui/cli", () => {
     expect(built.skipped).toBe(false);
     await expect(stat(join(root, "src/generated/podo/tokens.css"))).resolves.toBeDefined();
     expect(await readFile(join(root, "src/generated/podo/tokens.css"), "utf8")).toContain(
-      "--podo-component-button-background: #14151A;"
+      "--podo-component-button-background: #18181B;"
     );
     await expect(
       stat(join(root, "src/generated/podo/components/hono/button.hono.ts"))
