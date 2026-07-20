@@ -17,9 +17,12 @@
 
 import {
   parseComponentDocument,
+  parseIconManifest,
   parseTokenDocument,
+  validateIconManifest,
   PODO_SCHEMA_VERSION,
   type ComponentDocument,
+  type IconManifest,
   type DesignToken,
   type PodoCloneCollection,
   type PodoCloneDocument,
@@ -32,11 +35,19 @@ import {
   type TokenTree,
 } from "@podoui/spec";
 
-export interface ConvertedFile {
-  /** Repo-root-relative path, always inside `.podo/`. */
-  path: string;
-  document: TokenDocument | ComponentDocument;
-}
+export type ConvertedFile =
+  | {
+      /** Repo-root-relative path, always inside `.podo/`. */
+      path: string;
+      document: TokenDocument | ComponentDocument | IconManifest;
+      contents?: undefined;
+    }
+  | {
+      /** Raw text file (e.g. an extracted icon SVG). */
+      path: string;
+      contents: string;
+      document?: undefined;
+    };
 
 export interface ConversionResult {
   files: ConvertedFile[];
@@ -84,6 +95,7 @@ export function convertPodoClone(document: PodoCloneDocument): ConversionResult 
   }
 
   files.push(...convertComponents(document, variableIndex, warnings));
+  files.push(...convertIcons(document, warnings));
 
   if (Object.keys(document.images).length > 0) {
     warnings.push(
@@ -469,6 +481,10 @@ function convertComponents(
       if (node.type !== "COMPONENT" && node.type !== "COMPONENT_SET") {
         continue;
       }
+      // Icon-* 세트는 컴포넌트 스펙이 아니라 아이콘 파이프라인(manifest)으로 간다.
+      if (ICON_SET_PREFIX.test(node.name)) {
+        continue;
+      }
       let id = sanitizeIdentifier(node.name);
       if (!id) {
         warnings.push(`Component "${node.name}" has no usable identifier; skipped.`);
@@ -695,6 +711,179 @@ function radiusBinding(node: PodoCloneNode, index: Map<string, VariableEntry>): 
   }
   const entry = index.get(first);
   return entry ? `{${entry.path}}` : undefined;
+}
+
+// --------------------------------------------------------------------- icons
+
+const ICON_SET_PREFIX = /^icon-/i;
+
+/**
+ * `Icon-*` component sets → inline-SVG icon manifest.
+ *
+ * Each variant child becomes one icon (axis `name`, e.g. Icon-arrow/name=left
+ * → `arrow-left`); a `size` axis contributes only its default value. Vector
+ * children serialize via vectorPaths into a currentColor SVG; codepoints are
+ * assigned sequentially over the sorted final name list (re-import regenerates
+ * manifest + codepointLock together, so the lock stays self-consistent).
+ */
+function convertIcons(document: PodoCloneDocument, warnings: string[]): ConvertedFile[] {
+  const icons = new Map<string, string>();
+
+  for (const page of document.pages) {
+    for (const item of page.items) {
+      const node = item.node;
+      if (
+        (node.type !== "COMPONENT" && node.type !== "COMPONENT_SET") ||
+        !ICON_SET_PREFIX.test(node.name)
+      ) {
+        continue;
+      }
+      const suffix = sanitizeIdentifier(node.name.replace(ICON_SET_PREFIX, ""));
+      if (!suffix) {
+        warnings.push(`Icon set "${node.name}" has no usable icon name; skipped.`);
+        continue;
+      }
+      const defaultSize = defaultVariantValue(node, "size");
+      const children = node.type === "COMPONENT_SET" ? (node.children ?? [node]) : [node];
+      for (const child of children) {
+        const pairs = parseVariantPairs(child.name);
+        const size = pairs.get("size");
+        if (defaultSize && size && size !== defaultSize) {
+          continue;
+        }
+        const variantValue = pairs.get("name");
+        let iconName = suffix;
+        if (variantValue) {
+          const variant = sanitizeIdentifier(variantValue);
+          if (!variant) {
+            warnings.push(`Icon "${node.name}/${child.name}": unusable variant name; skipped.`);
+            continue;
+          }
+          if (variant !== suffix) {
+            iconName = `${suffix}-${variant}`;
+          }
+        }
+        if (icons.has(iconName)) {
+          warnings.push(`Duplicate icon name "${iconName}" (from "${node.name}"); skipped.`);
+          continue;
+        }
+        const svg = iconSvgFromNode(child, `${node.name}/${child.name}`, warnings);
+        if (svg) {
+          icons.set(iconName, svg);
+        }
+      }
+    }
+  }
+
+  if (icons.size === 0) {
+    return [];
+  }
+
+  const names = [...icons.keys()].sort();
+  const manifestIcons: Record<string, unknown> = {};
+  const codepointLock: Record<string, string> = {};
+  // 인라인 svg manifest는 브라우저 에디터 규칙상 임베디드 폰트를 요구하므로
+  // CLI 세계 관례인 파일 기반(source) manifest + svg 파일로 낸다.
+  const svgFiles: ConvertedFile[] = names.map((name) => ({
+    path: `.podo/icons/svg/figma/${name}.svg`,
+    contents: `${icons.get(name)!}\n`,
+  }));
+  names.forEach((name, index) => {
+    const codepoint = (0xe001 + index).toString(16).toUpperCase();
+    manifestIcons[name] = { source: `figma/${name}.svg`, codepoint, tags: ["figma"] };
+    codepointLock[name] = codepoint;
+  });
+
+  let manifest: IconManifest;
+  try {
+    manifest = parseIconManifest({
+      schemaVersion: PODO_SCHEMA_VERSION,
+      kind: "icons",
+      fontFamily: "PodoIcons",
+      icons: manifestIcons,
+      groups: { figma: names },
+      codepointLock,
+    });
+  } catch (error) {
+    warnings.push(`Icon manifest could not be assembled; icons skipped. ${firstIssue(error)}`);
+    return [];
+  }
+  const issues = validateIconManifest(manifest);
+  if (issues.length > 0) {
+    warnings.push(
+      `Icon manifest failed validation; icons skipped. ${issues
+        .slice(0, 3)
+        .map((item) => item.message)
+        .join(" ")}`
+    );
+    return [];
+  }
+
+  warnings.push(`${names.length} Figma icon component(s) imported into the icon manifest.`);
+  return [{ path: ".podo/icons/manifest.json", document: manifest }, ...svgFiles];
+}
+
+function parseVariantPairs(name: string): Map<string, string> {
+  const pairs = new Map<string, string>();
+  if (!name.includes("=")) {
+    return pairs;
+  }
+  for (const pair of name.split(",")) {
+    const [key, ...rest] = pair.split("=");
+    if (key && rest.length > 0) {
+      pairs.set(key.trim(), rest.join("=").trim());
+    }
+  }
+  return pairs;
+}
+
+function defaultVariantValue(node: PodoCloneNode, axis: string): string | undefined {
+  const defs = (node.componentSet ?? node.component)?.propertyDefs ?? [];
+  const def = defs.find((item) => item.type === "VARIANT" && item.name === axis);
+  return typeof def?.defaultValue === "string" ? def.defaultValue : undefined;
+}
+
+/** Serialize an icon component's vector children into a currentColor SVG. */
+function iconSvgFromNode(
+  node: PodoCloneNode,
+  label: string,
+  warnings: string[]
+): string | undefined {
+  const shapes: string[] = [];
+  let unsupported = false;
+
+  const walk = (current: PodoCloneNode, offsetX: number, offsetY: number): void => {
+    for (const child of current.children ?? []) {
+      const childX = offsetX + (child.relativeTransform[0]?.[2] ?? 0);
+      const childY = offsetY + (child.relativeTransform[1]?.[2] ?? 0);
+      if (child.vector?.vectorPaths?.length) {
+        const transform =
+          roundValue(childX) !== 0 || roundValue(childY) !== 0
+            ? ` transform="translate(${roundValue(childX)} ${roundValue(childY)})"`
+            : "";
+        for (const path of child.vector.vectorPaths) {
+          const fillRule = path.windingRule === "EVENODD" ? ' fill-rule="evenodd"' : "";
+          shapes.push(`<path d="${path.data}"${fillRule}${transform}/>`);
+        }
+      } else if (child.vector?.svg) {
+        // Complex vector networks fall back to whole-node SVG markup, which we
+        // cannot safely inline into a composed glyph — skip the icon honestly.
+        unsupported = true;
+      }
+      walk(child, childX, childY);
+    }
+  };
+  walk(node, 0, 0);
+
+  if (unsupported || shapes.length === 0) {
+    warnings.push(
+      `Icon "${label}" could not be vector-serialized (${unsupported ? "complex vector network" : "no vector children"}); skipped.`
+    );
+    return undefined;
+  }
+  const width = roundValue(node.width);
+  const height = roundValue(node.height);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" fill="currentColor">${shapes.join("")}</svg>`;
 }
 
 // ------------------------------------------------------------------- helpers

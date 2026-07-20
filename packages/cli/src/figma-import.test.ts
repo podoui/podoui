@@ -184,6 +184,7 @@ function fixtureDocument(): Record<string, unknown> {
         items: [
           { x: 0, y: 0, node: buttonSetNode() },
           { x: 100, y: 0, node: { ...buttonSetNode(), id: "20:0" } },
+          { x: 200, y: 0, node: iconSetNode() },
         ],
       },
     ],
@@ -277,6 +278,61 @@ function buttonSetNode(): Record<string, unknown> {
   };
 }
 
+function iconSetNode(): Record<string, unknown> {
+  const vector = (id: string, tx: number) => ({
+    id,
+    type: "VECTOR",
+    name: "Vector",
+    props: {},
+    width: 16,
+    height: 16,
+    relativeTransform: [
+      [1, 0, tx],
+      [0, 1, 4],
+    ],
+    vector: { vectorPaths: [{ windingRule: "EVENODD", data: "M0 0L16 16" }] },
+  });
+  const variant = (id: string, name: string, children: unknown[]) => ({
+    id,
+    type: "COMPONENT",
+    name,
+    props: {},
+    width: 24,
+    height: 24,
+    relativeTransform: [
+      [1, 0, 0],
+      [0, 1, 0],
+    ],
+    children,
+  });
+  return {
+    id: "30:0",
+    type: "COMPONENT_SET",
+    name: "Icon-arrow",
+    props: {},
+    width: 120,
+    height: 24,
+    relativeTransform: [
+      [1, 0, 0],
+      [0, 1, 0],
+    ],
+    componentSet: {
+      description: "",
+      documentationLinks: [],
+      key: "iconkey",
+      propertyDefs: [
+        { name: "name", type: "VARIANT", defaultValue: "left", variantOptions: ["left", "right"] },
+        { name: "size", type: "VARIANT", defaultValue: "24", variantOptions: ["24", "16"] },
+      ],
+    },
+    children: [
+      variant("30:1", "name=left, size=24", [vector("30:2", 4)]),
+      variant("30:3", "name=right, size=24", [vector("30:4", 0)]),
+      variant("30:5", "name=left, size=16", [vector("30:6", 0)]),
+    ],
+  };
+}
+
 function fileBy(result: ReturnType<typeof convertPodoClone>, path: string) {
   const file = result.files.find((item) => item.path === path);
   expect(file, `expected ${path} in ${result.files.map((f) => f.path).join(", ")}`).toBeDefined();
@@ -361,6 +417,27 @@ describe("convertPodoClone", () => {
       "root.radius": "{radius.md}",
       "label.color": "{text.basic}",
     });
+  });
+
+  it("imports Icon-* sets into an inline-svg icon manifest, not component specs", () => {
+    const file = fileBy(result, ".podo/icons/manifest.json");
+    const manifest = file.document as {
+      icons: Record<string, { source: string; codepoint: string }>;
+      codepointLock: Record<string, string>;
+      groups: Record<string, string[]>;
+    };
+    // size 축은 기본값(24)만: left/right 두 아이콘, 16 사이즈 변형은 제외.
+    expect(Object.keys(manifest.icons).sort()).toEqual(["arrow-left", "arrow-right"]);
+    expect(manifest.icons["arrow-left"]!.source).toBe("figma/arrow-left.svg");
+    const svgFile = fileBy(result, ".podo/icons/svg/figma/arrow-left.svg");
+    expect(svgFile.contents).toContain('viewBox="0 0 24 24"');
+    expect(svgFile.contents).toContain('fill="currentColor"');
+    expect(svgFile.contents).toContain('transform="translate(4 4)"');
+    expect(svgFile.contents).toContain('fill-rule="evenodd"');
+    expect(manifest.codepointLock["arrow-left"]).toBe("E001");
+    expect(manifest.groups.figma).toEqual(["arrow-left", "arrow-right"]);
+    // 컴포넌트 스펙으로는 생성되지 않는다.
+    expect(result.files.some((item) => item.path.includes("icon-arrow.component"))).toBe(false);
   });
 
   it("suffixes duplicate component names and forwards export warnings", () => {

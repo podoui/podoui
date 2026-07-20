@@ -94,7 +94,10 @@ export async function importProject(args: ParsedArgs, io: CliIO): Promise<Import
   for (const file of conversion.files) {
     const filePath = resolvePodoFilePath(root, file.path);
     await mkdir(dirname(filePath), { recursive: true });
-    await writeFile(filePath, `${JSON.stringify(file.document, null, 2)}\n`);
+    await writeFile(
+      filePath,
+      file.contents !== undefined ? file.contents : `${JSON.stringify(file.document, null, 2)}\n`
+    );
   }
   io.stdout.log(
     info(
@@ -272,7 +275,7 @@ async function detectConflicts(root: string, files: ConvertedFile[]): Promise<Va
     (source) => !replaced.has(resolve(root, source.filePath))
   );
   const imported: TokenSource[] = files
-    .filter((file) => file.document.kind === "tokens")
+    .filter((file) => file.document?.kind === "tokens")
     .map((file) => ({
       document: file.document as TokenSource["document"],
       filePath: file.path,
@@ -283,7 +286,7 @@ async function detectConflicts(root: string, files: ConvertedFile[]): Promise<Va
 
   const tokenPaths = collectTokenPaths(mergeTokenDocuments(sources).tokens);
   for (const file of files) {
-    if (file.document.kind === "component") {
+    if (file.document?.kind === "component") {
       issues.push(...validateComponentTokenBindings(file.document, tokenPaths));
     }
   }
