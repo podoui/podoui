@@ -330,7 +330,16 @@ function iconSetNode(): Record<string, unknown> {
     },
     children: [
       variant("30:1", "name=left, size=24", [vector("30:2", 4)]),
-      variant("30:3", "name=right, size=24", [vector("30:4", 0)]),
+      // right = left를 90° 회전한 변형 (rt [[0,-1,16],[1,0,0]]).
+      variant("30:3", "name=right, size=24", [
+        {
+          ...vector("30:4", 0),
+          relativeTransform: [
+            [0, -1, 16],
+            [1, 0, 0],
+          ],
+        },
+      ]),
       variant("30:5", "name=left, size=16", [vector("30:6", 0)]),
     ],
   };
@@ -440,6 +449,9 @@ describe("convertPodoClone", () => {
     // 오프셋(4,4)은 transform 속성이 아니라 path 데이터에 직접 구워진다.
     expect(svgFile.contents).toContain('d="M4 4L20 20"');
     expect(svgFile.contents).not.toContain("transform=");
+    // 회전 변형(90°)도 행렬 합성으로 path에 구워진다: (0,0)→(16,0), (16,16)→(0,16).
+    const rotated = fileBy(result, ".podo/icons/svg/figma/arrow-right.svg");
+    expect(rotated.contents).toContain('d="M16 0L0 16"');
     expect(manifest.codepointLock["arrow-left"]).toBe("E001");
     expect(manifest.groups.figma).toEqual(["arrow-left", "arrow-right"]);
     // 컴포넌트 스펙으로는 생성되지 않는다.

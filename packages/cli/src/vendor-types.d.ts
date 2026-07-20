@@ -4,6 +4,7 @@ declare module "svgpath" {
   interface SvgPath {
     round(precision: number): SvgPath;
     translate(x: number, y?: number): SvgPath;
+    matrix(matrix: number[]): SvgPath;
     toString(): string;
   }
   function svgpath(path: string): SvgPath;

@@ -860,10 +860,31 @@ function iconSvgFromNode(
   const shapes: string[] = [];
   let unsupported = false;
 
-  const walk = (current: PodoCloneNode, offsetX: number, offsetY: number): void => {
+  // SVG matrix(a b c d e f) 표기: x' = a·x + c·y + e, y' = b·x + d·y + f.
+  const IDENTITY: readonly number[] = [1, 0, 0, 1, 0, 0];
+  const fromRelativeTransform = (rt: number[][]): number[] => [
+    rt[0]?.[0] ?? 1,
+    rt[1]?.[0] ?? 0,
+    rt[0]?.[1] ?? 0,
+    rt[1]?.[1] ?? 1,
+    rt[0]?.[2] ?? 0,
+    rt[1]?.[2] ?? 0,
+  ];
+  const compose = (m: readonly number[], n: readonly number[]): number[] => [
+    m[0]! * n[0]! + m[2]! * n[1]!,
+    m[1]! * n[0]! + m[3]! * n[1]!,
+    m[0]! * n[2]! + m[2]! * n[3]!,
+    m[1]! * n[2]! + m[3]! * n[3]!,
+    m[0]! * n[4]! + m[2]! * n[5]! + m[4]!,
+    m[1]! * n[4]! + m[3]! * n[5]! + m[5]!,
+  ];
+
+  const walk = (current: PodoCloneNode, parentMatrix: readonly number[]): void => {
     for (const child of current.children ?? []) {
-      const childX = offsetX + (child.relativeTransform[0]?.[2] ?? 0);
-      const childY = offsetY + (child.relativeTransform[1]?.[2] ?? 0);
+      // 회전/미러 변형(방향 변형 아이콘 등)까지 보존해야 하므로 평행이동만이
+      // 아니라 2×3 아핀 행렬 전체를 합성해 path 데이터에 직접 굽는다 —
+      // 글리프 파이프라인(stroke.ts)은 transform 속성을 해석하지 않는다.
+      const matrix = compose(parentMatrix, fromRelativeTransform(child.relativeTransform));
       if (child.vector?.vectorPaths?.length) {
         const paint = vectorPaintAttributes(child);
         if (!paint) {
@@ -871,12 +892,7 @@ function iconSvgFromNode(
           unsupported = true;
         } else {
           for (const path of child.vector.vectorPaths) {
-            // 오프셋은 transform 속성 대신 path 데이터에 직접 굽는다 —
-            // 글리프 파이프라인(stroke.ts)은 transform을 해석하지 않는다.
-            const data = svgpath(path.data)
-              .translate(roundValue(childX), roundValue(childY))
-              .round(4)
-              .toString();
+            const data = svgpath(path.data).matrix(matrix).round(4).toString();
             const fillRule =
               paint.kind === "fill" && path.windingRule === "EVENODD" ? ' fill-rule="evenodd"' : "";
             shapes.push(`<path d="${data}"${paint.attributes}${fillRule}/>`);
@@ -887,10 +903,10 @@ function iconSvgFromNode(
         // cannot safely inline into a composed glyph — skip the icon honestly.
         unsupported = true;
       }
-      walk(child, childX, childY);
+      walk(child, matrix);
     }
   };
-  walk(node, 0, 0);
+  walk(node, IDENTITY);
 
   if (unsupported || shapes.length === 0) {
     warnings.push(
