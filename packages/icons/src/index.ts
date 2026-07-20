@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { FontAssetType, generateFonts } from "fantasticon";
 import { optimize, type Config } from "svgo";
 import { compress } from "wawoff2";
-import { buildIconFontWoff2 } from "@podoui/icon-build";
+import { buildIconFontWoff2, parseSvgViewBox, svgToFillPathData } from "@podoui/icon-build";
 import {
   parseIconManifest,
   validateIconManifest,
@@ -139,7 +139,16 @@ export async function buildIconAssets(options: IconBuildOptions): Promise<IconBu
       );
     }
 
-    await writeFile(join(inputDir, `${iconName}.svg`), optimizeSvg(rawSvg));
+    // fantasticon(svgicons2svgfont)은 stroke를 확장하지 못한다 — Podo 아이콘은
+    // stroke centerline로 저작되므로, 인라인 파이프라인과 동일한 stroke→fill
+    // 평탄화(svgToFillPathData)를 거친 단일 filled path로 정규화해 넘긴다.
+    const viewBox = parseSvgViewBox(rawSvg);
+    const filledPathData = svgToFillPathData(rawSvg);
+    if (!filledPathData) {
+      throw new Error(`Icon "${iconName}" produced no fill geometry from ${icon.source}.`);
+    }
+    const normalized = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}"><path d="${filledPathData}" fill="currentColor"/></svg>`;
+    await writeFile(join(inputDir, `${iconName}.svg`), optimizeSvg(normalized));
   }
 
   const codepoints = Object.fromEntries(

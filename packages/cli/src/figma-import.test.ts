@@ -437,7 +437,9 @@ describe("convertPodoClone", () => {
     // stroke 아이콘은 centerline을 유지한다 (폰트 빌드가 fill로 확장).
     expect(svgFile.contents).toContain('fill="none" stroke="currentColor" stroke-width="1.2"');
     expect(svgFile.contents).toContain('stroke-linecap="round" stroke-linejoin="round"');
-    expect(svgFile.contents).toContain('transform="translate(4 4)"');
+    // 오프셋(4,4)은 transform 속성이 아니라 path 데이터에 직접 구워진다.
+    expect(svgFile.contents).toContain('d="M4 4L20 20"');
+    expect(svgFile.contents).not.toContain("transform=");
     expect(manifest.codepointLock["arrow-left"]).toBe("E001");
     expect(manifest.groups.figma).toEqual(["arrow-left", "arrow-right"]);
     // 컴포넌트 스펙으로는 생성되지 않는다.

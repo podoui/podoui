@@ -15,6 +15,7 @@
  *   taken from the default-variant node (fills/strokes/radius/text color).
  */
 
+import svgpath from "svgpath";
 import {
   parseComponentDocument,
   parseIconManifest,
@@ -869,14 +870,16 @@ function iconSvgFromNode(
           warnings.push(`Icon "${label}": a vector child has no visible fill or stroke; skipped.`);
           unsupported = true;
         } else {
-          const transform =
-            roundValue(childX) !== 0 || roundValue(childY) !== 0
-              ? ` transform="translate(${roundValue(childX)} ${roundValue(childY)})"`
-              : "";
           for (const path of child.vector.vectorPaths) {
+            // 오프셋은 transform 속성 대신 path 데이터에 직접 굽는다 —
+            // 글리프 파이프라인(stroke.ts)은 transform을 해석하지 않는다.
+            const data = svgpath(path.data)
+              .translate(roundValue(childX), roundValue(childY))
+              .round(4)
+              .toString();
             const fillRule =
               paint.kind === "fill" && path.windingRule === "EVENODD" ? ' fill-rule="evenodd"' : "";
-            shapes.push(`<path d="${path.data}"${paint.attributes}${fillRule}${transform}/>`);
+            shapes.push(`<path d="${data}"${paint.attributes}${fillRule}/>`);
           }
         }
       } else if (child.vector?.svg) {
