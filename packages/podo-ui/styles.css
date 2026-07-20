@@ -6,6 +6,11 @@
  * Pair with the token build outputs (tokens.css + components.css from
  * `podo build`) so component token vars resolve. The docs site consumes this
  * same file — do not fork it back into docs.
+ *
+ * Colors consume --podo-* token vars; each fallback is the light default, so a
+ * consumer that never loads the token CSS renders exactly as before (zero
+ * visual regression), while dark mode and Figma-imported custom colors flow in
+ * automatically once the tokens are present.
  */
 
 .podo-button {
@@ -67,85 +72,110 @@
 
 /* Themes */
 .podo-button[data-theme="solid-primary"] {
-  --podo-button-root-background: #426ced;
-  --podo-button-label-color: #ffffff;
+  --podo-button-root-background: var(--podo-button-background-solid-primary, #426ced);
+  --podo-button-label-color: var(--podo-text-static-invert, #ffffff);
 }
 .podo-button[data-theme="solid-primary"]:hover:not([disabled]) {
-  --podo-button-root-background: #1245e2;
+  --podo-button-root-background: var(--podo-button-background-solid-primary-hover, #1245e2);
 }
 .podo-button[data-theme="solid-primary"]:active:not([disabled]) {
-  --podo-button-root-background: #123bba;
+  --podo-button-root-background: var(--podo-button-background-solid-primary-pressed, #123bba);
 }
 .podo-button[data-theme="solid-assistive"] {
-  --podo-button-root-background: #f4f4f5;
-  --podo-button-label-color: #18181b;
+  --podo-button-root-background: var(--podo-button-background-solid-assistive, #f4f4f5);
+  --podo-button-label-color: var(--podo-text-basic, #18181b);
 }
 .podo-button[data-theme="solid-assistive"]:hover:not([disabled]) {
-  --podo-button-root-background: #e4e4e7;
+  --podo-button-root-background: var(--podo-button-background-solid-assistive-hover, #e4e4e7);
+}
+.podo-button[data-theme="solid-assistive"]:active:not([disabled]) {
+  --podo-button-root-background: var(--podo-button-background-solid-assistive-pressed, #d1d2d6);
 }
 .podo-button[data-theme="solid-white"] {
-  --podo-button-root-background: #ffffff;
-  --podo-button-label-color: #18181b;
+  --podo-button-root-background: var(--podo-button-background-solid-white, #ffffff);
+  --podo-button-label-color: var(--podo-text-basic, #18181b);
 }
 .podo-button[data-theme="solid-white"]:hover:not([disabled]) {
-  --podo-button-root-background: #f4f4f5;
+  --podo-button-root-background: var(--podo-button-background-solid-white-hover, #f4f4f5);
+}
+.podo-button[data-theme="solid-white"]:active:not([disabled]) {
+  --podo-button-root-background: var(--podo-button-background-solid-white-pressed, #e4e4e7);
 }
 .podo-button[data-theme="solid-danger"] {
-  --podo-button-root-background: #f23b3b;
-  --podo-button-label-color: #ffffff;
+  --podo-button-root-background: var(--podo-button-background-solid-danger, #f23b3b);
+  --podo-button-label-color: var(--podo-text-static-invert, #ffffff);
 }
 .podo-button[data-theme="solid-danger"]:hover:not([disabled]) {
-  --podo-button-root-background: #ee1818;
+  --podo-button-root-background: var(--podo-button-background-solid-danger-hover, #ee1818);
 }
 .podo-button[data-theme="solid-danger"]:active:not([disabled]) {
-  --podo-button-root-background: #cd0404;
+  --podo-button-root-background: var(--podo-button-background-solid-danger-pressed, #cd0404);
 }
 .podo-button[data-theme="outline-primary"] {
-  --podo-button-root-background: #ffffff;
-  --podo-button-root-borderColor: #426ced;
-  --podo-button-label-color: #426ced;
+  --podo-button-root-background: var(--podo-button-background-outline-primary, #ffffff);
+  --podo-button-root-borderColor: var(--podo-button-border-primary, #426ced);
+  --podo-button-label-color: var(--podo-foreground-primary, #426ced);
 }
 .podo-button[data-theme="outline-primary"]:hover:not([disabled]) {
-  --podo-button-root-background: #f4f7fe;
+  --podo-button-root-background: var(--podo-button-background-outline-primary-hover, #f1f4fd);
+}
+.podo-button[data-theme="outline-primary"]:active:not([disabled]) {
+  --podo-button-root-background: var(--podo-button-background-outline-primary-pressed, #d0dbfb);
 }
 .podo-button[data-theme="outline-assistive"] {
-  --podo-button-root-background: #f9f9f9;
-  --podo-button-root-borderColor: #d1d2d6;
-  --podo-button-label-color: #18181b;
+  --podo-button-root-background: var(--podo-button-background-outline-assistive, #f9f9f9);
+  --podo-button-root-borderColor: var(--podo-button-border-assistive, #d1d2d6);
+  --podo-button-label-color: var(--podo-text-basic, #18181b);
 }
 .podo-button[data-theme="outline-assistive"]:hover:not([disabled]) {
-  --podo-button-root-background: #f4f4f5;
+  --podo-button-root-background: var(--podo-button-background-outline-assistive-hover, #f4f4f5);
+}
+.podo-button[data-theme="outline-assistive"]:active:not([disabled]) {
+  --podo-button-root-background: var(--podo-button-background-outline-assistive-pressed, #e4e4e7);
 }
 .podo-button[data-theme="outline-white"] {
-  --podo-button-root-background: #ffffff;
-  --podo-button-root-borderColor: #d1d2d6;
-  --podo-button-label-color: #18181b;
+  --podo-button-root-background: var(--podo-button-background-outline-white, #ffffff);
+  --podo-button-root-borderColor: var(--podo-button-border-white, #d1d2d6);
+  --podo-button-label-color: var(--podo-text-basic, #18181b);
 }
 .podo-button[data-theme="outline-white"]:hover:not([disabled]) {
-  --podo-button-root-background: #f9f9f9;
+  --podo-button-root-background: var(
+    --podo-button-background-outline-white-hover,
+    rgba(0, 0, 0, 0.05)
+  );
+}
+.podo-button[data-theme="outline-white"]:active:not([disabled]) {
+  --podo-button-root-background: var(
+    --podo-button-background-outline-white-pressed,
+    rgba(0, 0, 0, 0.1)
+  );
 }
 .podo-button[data-theme="outline-danger"] {
-  --podo-button-root-background: #ffffff;
-  --podo-button-root-borderColor: #f23b3b;
-  --podo-button-label-color: #f23b3b;
+  --podo-button-root-background: var(--podo-button-background-outline-danger, #ffffff);
+  --podo-button-root-borderColor: var(--podo-button-border-danger, #f23b3b);
+  --podo-button-label-color: var(--podo-foreground-danger, #f23b3b);
 }
 .podo-button[data-theme="outline-danger"]:hover:not([disabled]) {
-  --podo-button-root-background: #fef1f1;
+  --podo-button-root-background: var(--podo-button-background-outline-danger-hover, #fef1f1);
 }
 .podo-button[data-theme="outline-danger"]:active:not([disabled]) {
-  --podo-button-root-background: #ffe0df;
+  --podo-button-root-background: var(--podo-button-background-outline-danger-pressed, #ffe0df);
 }
 
 .podo-button:focus-visible {
-  outline: 2px solid #426ced;
+  outline: 2px solid var(--podo-border-primary, #426ced);
   outline-offset: 2px;
 }
 
 .podo-button[disabled] {
-  --podo-button-root-background: #e4e4e7;
+  --podo-button-root-background: var(--podo-button-background-disabled, #e4e4e7);
   --podo-button-root-borderColor: transparent;
-  --podo-button-label-color: #9fa2ad;
+  --podo-button-label-color: var(--podo-text-disabled, #9fa2ad);
   cursor: not-allowed;
+}
+/* Figma: outline 계열은 disabled에서도 테두리를 유지한다. */
+.podo-button[data-theme^="outline"][disabled] {
+  --podo-button-root-borderColor: var(--podo-button-border-disabled, #d1d2d6);
 }
 
 /* Badge (Figma 474:3218) — mirrors the canonical @podoui/web badge CSS.
@@ -153,9 +183,9 @@
    soft color labels; data-dot collapses to a 6px presence dot. */
 .podo-badge {
   align-items: center;
-  background: #3e424b;
+  background: var(--podo-foreground-basic-reverse, #3e424b);
   border-radius: 9999px;
-  color: #f9f9f9;
+  color: var(--podo-text-basic-reverse, #f9f9f9);
   display: inline-flex;
   font: inherit;
   font-size: 14px;
@@ -166,54 +196,54 @@
 }
 
 .podo-badge[data-theme="danger"] {
-  background: #f23b3b;
+  background: var(--podo-foreground-danger, #f23b3b);
 }
 
 .podo-badge[data-theme="success"] {
-  background: #3ea856;
+  background: var(--podo-foreground-success, #3ea856);
 }
 
 .podo-badge[data-theme="warning"] {
-  background: #ffaa00;
+  background: var(--podo-foreground-warning, #ffaa00);
 }
 
 .podo-badge[data-theme="info"] {
-  background: #0095ff;
+  background: var(--podo-foreground-info, #0095ff);
 }
 
 .podo-badge[data-theme="gray"] {
-  background: #f4f4f5;
-  color: #18181b;
+  background: var(--podo-foreground-gray-light, #f4f4f5);
+  color: var(--podo-text-basic, #18181b);
 }
 
 .podo-badge[data-theme="red"] {
-  background: #fef1f1;
-  color: #f23b3b;
+  background: var(--podo-foreground-danger-light, #fef1f1);
+  color: var(--podo-text-danger, #f23b3b);
 }
 
 .podo-badge[data-theme="green"] {
-  background: #ecf8ef;
-  color: #3ea856;
+  background: var(--podo-foreground-success-light, #ecf8ef);
+  color: var(--podo-text-success, #3ea856);
 }
 
 .podo-badge[data-theme="yellow"] {
-  background: #fff7e6;
-  color: #ffaa00;
+  background: var(--podo-foreground-warning-light, #fff7e6);
+  color: var(--podo-text-warning, #ffaa00);
 }
 
 .podo-badge[data-theme="blue"] {
-  background: #ebf5ff;
-  color: #0095ff;
+  background: var(--podo-foreground-info-light, #ebf5ff);
+  color: var(--podo-text-info, #0095ff);
 }
 
 .podo-badge[data-theme="purple"] {
-  background: #f8f5ff;
-  color: #8e51ff;
+  background: var(--podo-color-vlolet-5, #f8f5ff);
+  color: var(--podo-color-vlolet-50, #8e51ff);
 }
 
 .podo-badge[data-theme="orange"] {
-  background: #fff4f0;
-  color: #ff6a33;
+  background: var(--podo-color-orange-5, #fff4f0);
+  color: var(--podo-color-orange-50, #ff6a33);
 }
 
 .podo-badge[data-dot] {
@@ -224,43 +254,43 @@
 }
 
 .podo-badge[data-theme="gray"][data-dot] {
-  background: #3e424b;
+  background: var(--podo-foreground-basic-reverse, #3e424b);
 }
 
 /* Figma red dot is accent.50 (#f15764), not the label's error.50 —
    mirrored as-is pending a design check. */
 .podo-badge[data-theme="red"][data-dot] {
-  background: #f15764;
+  background: var(--podo-foreground-point, #f15764);
 }
 
 .podo-badge[data-theme="green"][data-dot] {
-  background: #3ea856;
+  background: var(--podo-foreground-success, #3ea856);
 }
 
 .podo-badge[data-theme="yellow"][data-dot] {
-  background: #ffaa00;
+  background: var(--podo-foreground-warning, #ffaa00);
 }
 
 .podo-badge[data-theme="blue"][data-dot] {
-  background: #0095ff;
+  background: var(--podo-foreground-info, #0095ff);
 }
 
 .podo-badge[data-theme="purple"][data-dot] {
-  background: #8e51ff;
+  background: var(--podo-color-vlolet-50, #8e51ff);
 }
 
 .podo-badge[data-theme="orange"][data-dot] {
-  background: #ff6a33;
+  background: var(--podo-color-orange-50, #ff6a33);
 }
 
 /* Chip (Figma 538:6615) — mirrors the canonical @podoui/web chip CSS.
    Unselected is the base look; data-state="selected" turns the fill on. */
 .podo-chip {
   align-items: center;
-  background: #f4f4f5;
+  background: var(--podo-foreground-gray-light, #f4f4f5);
   border: 1px solid transparent;
   border-radius: 9999px;
-  color: #18181b;
+  color: var(--podo-text-basic, #18181b);
   cursor: pointer;
   display: inline-flex;
   font: inherit;
@@ -280,33 +310,33 @@
 .podo-chip[data-theme="outline-strong"],
 .podo-chip[data-theme="outline-weak"] {
   background: transparent;
-  border-color: #e4e4e7;
+  border-color: var(--podo-border-gary, #e4e4e7);
 }
 
 .podo-chip[data-theme="solid"]:active:not([disabled]):not([data-state="selected"]),
 .podo-chip[data-theme="solid"].is-pressed:not([data-state="selected"]) {
-  background: #e4e4e7;
+  background: var(--podo-foreground-gray-lightdeep, #e4e4e7);
 }
 
 .podo-chip[data-theme="outline-strong"]:active:not([disabled]):not([data-state="selected"]),
 .podo-chip[data-theme="outline-weak"]:active:not([disabled]):not([data-state="selected"]),
 .podo-chip[data-theme="outline-strong"].is-pressed:not([data-state="selected"]),
 .podo-chip[data-theme="outline-weak"].is-pressed:not([data-state="selected"]) {
-  border-color: #d1d2d6;
+  border-color: var(--podo-border-gray-deep, #d1d2d6);
 }
 
 /* Figma outline-strong selected renders identically to solid — pending a design fix. */
 .podo-chip[data-theme="solid"][data-state="selected"],
 .podo-chip[data-theme="outline-strong"][data-state="selected"] {
-  background: #3e424b;
+  background: var(--podo-foreground-natural, #3e424b);
   border-color: transparent;
-  color: #ffffff;
+  color: var(--podo-text-static-invert, #ffffff);
 }
 
 .podo-chip[data-theme="outline-weak"][data-state="selected"] {
-  background: #f9f9f9;
-  border-color: #767985;
-  color: #18181b;
+  background: var(--podo-foreground-gray, #f9f9f9);
+  border-color: var(--podo-border-natural-deep, #767985);
+  color: var(--podo-text-basic, #18181b);
 }
 
 .podo-chip[data-theme="solid"][data-state="selected"]:active:not([disabled]):not([data-removable]),
@@ -315,20 +345,20 @@
   ),
 .podo-chip[data-theme="solid"][data-state="selected"].is-pressed,
 .podo-chip[data-theme="outline-strong"][data-state="selected"].is-pressed {
-  background: #767985;
+  background: var(--podo-foreground-natural-lightdeep, #767985);
 }
 
 .podo-chip[data-theme="outline-weak"][data-state="selected"]:active:not([disabled]):not(
     [data-removable]
   ),
 .podo-chip[data-theme="outline-weak"][data-state="selected"].is-pressed {
-  background: #f4f4f5;
+  background: var(--podo-foreground-gray-light, #f4f4f5);
 }
 
 .podo-chip[disabled] {
-  background: #e4e4e7;
+  background: var(--podo-foreground-disabled, #e4e4e7);
   border-color: transparent;
-  color: #9fa2ad;
+  color: var(--podo-text-disabled, #9fa2ad);
   cursor: not-allowed;
 }
 
@@ -375,18 +405,18 @@
 
 /* Table (Figma 474:1795) — mirrors the canonical @podoui/web table CSS. */
 .podo-table {
-  background: #ffffff;
+  background: var(--podo-table-table-bg, #ffffff);
   border-collapse: separate;
   border-spacing: 0;
-  color: #18181b;
+  color: var(--podo-text-basic, #18181b);
   font-size: 16px;
   line-height: 1.6;
   width: 100%;
 }
 
 .podo-table th {
-  background: #f4f4f5;
-  border-bottom: 1px solid #e4e4e7;
+  background: var(--podo-table-table-th, #f4f4f5);
+  border-bottom: 1px solid var(--podo-table-table-outline, #e4e4e7);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
@@ -394,7 +424,7 @@
 }
 
 .podo-table td {
-  border-bottom: 1px solid #e4e4e7;
+  border-bottom: 1px solid var(--podo-table-table-outline, #e4e4e7);
   padding: 12px;
   text-align: left;
 }
@@ -415,13 +445,13 @@
 }
 
 .podo-table[data-type="grid"] {
-  border: 1px solid #e4e4e7;
+  border: 1px solid var(--podo-table-table-outline, #e4e4e7);
   border-radius: 8px;
 }
 
 .podo-table[data-type="grid"] th:not(:last-child),
 .podo-table[data-type="grid"] td:not(:last-child) {
-  border-right: 1px solid #e4e4e7;
+  border-right: 1px solid var(--podo-table-table-outline, #e4e4e7);
 }
 
 .podo-table tbody tr:last-child td {
@@ -443,17 +473,17 @@
 
 .podo-table tbody tr:hover:not([data-disabled]) td,
 .podo-table tbody tr.is-hover td {
-  background: #f9f9f9;
+  background: var(--podo-table-table-tr-hover, #f9f9f9);
 }
 
 .podo-table tbody tr:active:not([data-disabled]) td,
 .podo-table tbody tr.is-pressed td {
-  background: #f4f4f5;
+  background: var(--podo-table-table-tr-focused, #f4f4f5);
 }
 
 .podo-table tbody tr[data-disabled] td {
-  background: #f4f4f5;
-  color: #9fa2ad;
+  background: var(--podo-table-table-tr-disabled, #f4f4f5);
+  color: var(--podo-text-disabled, #9fa2ad);
 }
 
 /* Select (Figma 538:6694) — mirrors the canonical @podoui/web select CSS.
@@ -467,8 +497,8 @@
 
 .podo-select__trigger {
   align-items: center;
-  background: #ffffff;
-  border: 1px solid #e4e4e7;
+  background: var(--podo-elevation-basic, #ffffff);
+  border: 1px solid var(--podo-border-gary, #e4e4e7);
   border-radius: 10px;
   cursor: pointer;
   display: flex;
@@ -488,26 +518,26 @@
 
 .podo-select:not([data-state]):not([data-open]) .podo-select__trigger:hover,
 .podo-select.is-hover .podo-select__trigger {
-  border-color: #9fa2ad;
+  border-color: var(--podo-border-natural, #9fa2ad);
 }
 
 .podo-select[data-open] .podo-select__trigger {
-  border-color: #426ced;
-  box-shadow: inset 0 0 0 1px #426ced;
+  border-color: var(--podo-border-primary, #426ced);
+  box-shadow: inset 0 0 0 1px var(--podo-border-primary, #426ced);
 }
 
 .podo-select[data-state="invalid"] .podo-select__trigger {
-  border-color: #f23b3b;
+  border-color: var(--podo-border-danger, #f23b3b);
 }
 
 .podo-select[data-state="invalid"][data-open] .podo-select__trigger {
-  border-color: #f23b3b;
-  box-shadow: inset 0 0 0 1px #f23b3b;
+  border-color: var(--podo-border-danger, #f23b3b);
+  box-shadow: inset 0 0 0 1px var(--podo-border-danger, #f23b3b);
 }
 
 .podo-select[data-state="disabled"] .podo-select__trigger {
-  background: #e4e4e7;
-  border-color: #d1d2d6;
+  background: var(--podo-foreground-disabled, #e4e4e7);
+  border-color: var(--podo-border-disabled, #d1d2d6);
   cursor: not-allowed;
 }
 
@@ -521,7 +551,7 @@
 }
 
 .podo-select__trigger:focus-visible {
-  outline: 2px solid #426ced;
+  outline: 2px solid var(--podo-border-primary, #426ced);
   outline-offset: 2px;
 }
 
@@ -538,7 +568,7 @@
   align-items: center;
   background: none;
   border: 0;
-  color: #767985;
+  color: var(--podo-icon-subtil, #767985);
   cursor: pointer;
   display: inline-flex;
   flex-shrink: 0;
@@ -549,12 +579,12 @@
 }
 
 .podo-select__clear:hover {
-  color: #50555e;
+  color: var(--podo-text-subtil, #50555e);
 }
 
 .podo-select__value {
   align-items: center;
-  color: #18181b;
+  color: var(--podo-text-basic, #18181b);
   display: flex;
   flex: 1 1 0;
   gap: 6px;
@@ -565,7 +595,7 @@
 
 .podo-select__value[data-placeholder],
 .podo-select[data-state="disabled"] .podo-select__value {
-  color: #9fa2ad;
+  color: var(--podo-text-placeholder, #9fa2ad);
 }
 
 .podo-select__value-content {
@@ -585,7 +615,7 @@
 .podo-select__search {
   background: transparent;
   border: 0;
-  color: #18181b;
+  color: var(--podo-text-basic, #18181b);
   font: inherit;
   inset: 0;
   outline: none;
@@ -603,7 +633,7 @@
 }
 
 .podo-select__search::placeholder {
-  color: #9fa2ad;
+  color: var(--podo-text-placeholder, #9fa2ad);
 }
 
 /* Value chips reuse .podo-chip[data-removable]. */
@@ -613,7 +643,7 @@
 
 /* Values past maxChips collapse into plain "+N" text (deselect via the menu). */
 .podo-select__chip-more {
-  color: #50555e;
+  color: var(--podo-text-subtil, #50555e);
   flex-shrink: 0;
   font-size: 14px;
   line-height: 1.6;
@@ -630,8 +660,8 @@
 
 .podo-select__menu {
   backdrop-filter: blur(50px);
-  background: #ffffff;
-  border: 1px solid #e4e4e7;
+  background: var(--podo-elevation-basic, #ffffff);
+  border: 1px solid var(--podo-border-gary, #e4e4e7);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -659,11 +689,11 @@
 
 .podo-select__cell:hover,
 .podo-select__cell[data-active] {
-  background: #f4f4f5;
+  background: var(--podo-foreground-gray-light, #f4f4f5);
 }
 
 .podo-select__cell-label {
-  color: #18181b;
+  color: var(--podo-text-basic, #18181b);
   flex: 1 1 0;
   font-size: 16px;
   line-height: 1.6;
@@ -684,15 +714,15 @@
 .podo-select__menu:not([aria-multiselectable])
   .podo-select__cell[data-state="selected"]
   .podo-select__cell-label {
-  color: #426ced;
+  color: var(--podo-text-primary, #426ced);
 }
 
 .podo-select__checkbox {
   align-items: center;
-  background: #ffffff;
-  border: 1px solid #9fa2ad;
+  background: var(--podo-elevation-basic, #ffffff);
+  border: 1px solid var(--podo-border-natural, #9fa2ad);
   border-radius: 4px;
-  color: #ffffff;
+  color: var(--podo-foreground-static-invert, #ffffff);
   display: inline-flex;
   flex-shrink: 0;
   height: 18px;
@@ -701,8 +731,8 @@
 }
 
 .podo-select__checkbox[data-checked] {
-  background: #426ced;
-  border-color: #426ced;
+  background: var(--podo-foreground-primary, #426ced);
+  border-color: var(--podo-border-primary, #426ced);
 }
 
 .podo-select__add {
@@ -712,9 +742,9 @@
 }
 
 .podo-select__add-input {
-  border: 1px solid #e4e4e7;
+  border: 1px solid var(--podo-border-gary, #e4e4e7);
   border-radius: 6px;
-  color: #18181b;
+  color: var(--podo-text-basic, #18181b);
   flex: 1 1 0;
   font: inherit;
   font-size: 14px;
@@ -726,18 +756,18 @@
 }
 
 .podo-select__add-input::placeholder {
-  color: #9fa2ad;
+  color: var(--podo-text-placeholder, #9fa2ad);
 }
 
 .podo-select__add-input:focus {
-  border-color: #426ced;
+  border-color: var(--podo-border-primary, #426ced);
 }
 
 .podo-select__add-button {
-  background: #426ced;
+  background: var(--podo-button-background-solid-primary, #426ced);
   border: 0;
   border-radius: 6px;
-  color: #ffffff;
+  color: var(--podo-text-static-invert, #ffffff);
   cursor: pointer;
   flex-shrink: 0;
   font: inherit;
@@ -750,10 +780,10 @@
 
 /* Textarea (Figma 380:3867) — mirrors the canonical @podoui/web textarea CSS. */
 .podo-textarea {
-  background: #ffffff;
-  border: 1px solid #e4e4e7;
+  background: var(--podo-elevation-basic, #ffffff);
+  border: 1px solid var(--podo-border-gary, #e4e4e7);
   border-radius: 10px;
-  color: #18181b;
+  color: var(--podo-text-basic, #18181b);
   display: block;
   font-family: inherit;
   font-size: 16px;
@@ -766,7 +796,7 @@
 }
 
 .podo-textarea::placeholder {
-  color: #9fa2ad;
+  color: var(--podo-text-placeholder, #9fa2ad);
 }
 
 .podo-textarea[data-resize="false"] {
@@ -774,29 +804,29 @@
 }
 
 .podo-textarea:hover:not([data-state]):not(:focus) {
-  border-color: #9fa2ad;
+  border-color: var(--podo-border-natural, #9fa2ad);
 }
 
 .podo-textarea:focus:not([data-state="disabled"]),
 .podo-textarea.is-focus {
-  border-color: #426ced;
-  box-shadow: inset 0 0 0 1px #426ced;
+  border-color: var(--podo-border-primary, #426ced);
+  box-shadow: inset 0 0 0 1px var(--podo-border-primary, #426ced);
 }
 
 .podo-textarea.is-hover {
-  border-color: #9fa2ad;
+  border-color: var(--podo-border-natural, #9fa2ad);
 }
 
 .podo-textarea[data-state="invalid"] {
-  border-color: #f23b3b;
+  border-color: var(--podo-border-danger, #f23b3b);
 }
 
 /* Invalid keeps the danger color under focus — only the 2px weight change
    signals focus, so validation auto-focus never masks the state. */
 .podo-textarea[data-state="invalid"]:focus,
 .podo-textarea[data-state="invalid"].is-focus {
-  border-color: #f23b3b;
-  box-shadow: inset 0 0 0 1px #f23b3b;
+  border-color: var(--podo-border-danger, #f23b3b);
+  box-shadow: inset 0 0 0 1px var(--podo-border-danger, #f23b3b);
 }
 
 .podo-textarea[data-state="read-only"] {
@@ -813,9 +843,9 @@
 }
 
 .podo-textarea[data-state="disabled"] {
-  background: #e4e4e7;
-  border-color: #d1d2d6;
-  color: #9fa2ad;
+  background: var(--podo-foreground-disabled, #e4e4e7);
+  border-color: var(--podo-border-disabled, #d1d2d6);
+  color: var(--podo-text-disabled, #9fa2ad);
   cursor: not-allowed;
   resize: none;
 }
@@ -828,7 +858,7 @@
 
 /* Switch (Figma 338:2464) — mirrors the canonical @podoui/web switch CSS. */
 .podo-switch {
-  background: #d1d2d6;
+  background: var(--podo-foreground-gray-dark, #d1d2d6);
   border: 0;
   border-radius: 9999px;
   cursor: pointer;
@@ -839,7 +869,7 @@
 }
 
 .podo-switch__handle {
-  background: #ffffff;
+  background: var(--podo-foreground-static-invert, #ffffff);
   border-radius: 9999px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   left: 2px;
@@ -887,21 +917,21 @@
 }
 
 .podo-switch[data-state="on"] {
-  background: #426ced;
+  background: var(--podo-foreground-primary, #426ced);
 }
 
 .podo-switch:focus-visible {
-  outline: 2px solid #426ced;
+  outline: 2px solid var(--podo-border-primary, #426ced);
   outline-offset: 2px;
 }
 
 .podo-switch[disabled] {
-  background: #e4e4e7;
+  background: var(--podo-foreground-disabled, #e4e4e7);
   cursor: not-allowed;
 }
 
 .podo-switch[disabled] .podo-switch__handle {
-  background: #d1d2d6;
+  background: var(--podo-foreground-disabled-dark, #d1d2d6);
   box-shadow: none;
 }
 
@@ -914,7 +944,7 @@
 }
 
 .podo-switch__text {
-  color: #50555e;
+  color: var(--podo-text-subtil, #50555e);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -936,15 +966,15 @@
 }
 
 .podo-switch-wrap[data-disabled] .podo-switch__text {
-  color: #9fa2ad;
+  color: var(--podo-text-disabled, #9fa2ad);
 }
 
 /* Checkbox (Figma 328:18039) — mirrors the canonical @podoui/web checkbox CSS.
    Fixed 18px radius-4 box; the size variant only scales the label. */
 .podo-checkbox {
   appearance: none;
-  background: #ffffff center / 12px 12px no-repeat;
-  border: 1px solid #9fa2ad;
+  background: var(--podo-elevation-basic, #ffffff) center / 12px 12px no-repeat;
+  border: 1px solid var(--podo-border-natural, #9fa2ad);
   border-radius: 4px;
   cursor: pointer;
   display: inline-block;
@@ -956,7 +986,7 @@
 }
 
 .podo-checkbox[data-state="checked"] {
-  background-color: #426ced;
+  background-color: var(--podo-foreground-primary, #426ced);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   border-color: transparent;
 }
@@ -966,13 +996,13 @@
 }
 
 .podo-checkbox:focus-visible {
-  outline: 2px solid #426ced;
+  outline: 2px solid var(--podo-border-primary, #426ced);
   outline-offset: 2px;
 }
 
 .podo-checkbox[disabled] {
-  background-color: #e4e4e7;
-  border-color: #d1d2d6;
+  background-color: var(--podo-foreground-disabled, #e4e4e7);
+  border-color: var(--podo-border-disabled, #d1d2d6);
   cursor: not-allowed;
 }
 
@@ -993,7 +1023,7 @@
 }
 
 .podo-checkbox__text {
-  color: #50555e;
+  color: var(--podo-text-subtil, #50555e);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -1011,7 +1041,7 @@
 }
 
 .podo-checkbox-wrap[data-disabled] .podo-checkbox__text {
-  color: #9fa2ad;
+  color: var(--podo-text-disabled, #9fa2ad);
 }
 
 /* Radio (Figma 379:3350) — mirrors the canonical @podoui/web radio CSS.
@@ -1019,7 +1049,7 @@
 .podo-radio {
   appearance: none;
   background: transparent center / 12px 12px no-repeat;
-  border: 1px solid #9fa2ad;
+  border: 1px solid var(--podo-border-natural, #9fa2ad);
   border-radius: 9999px;
   cursor: pointer;
   display: inline-block;
@@ -1031,19 +1061,19 @@
 }
 
 .podo-radio:checked {
-  background-color: #426ced;
+  background-color: var(--podo-foreground-primary, #426ced);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Ccircle cx='6' cy='6' r='4' fill='%23FFFFFF'/%3E%3C/svg%3E");
   border-color: transparent;
 }
 
 .podo-radio:focus-visible {
-  outline: 2px solid #426ced;
+  outline: 2px solid var(--podo-border-primary, #426ced);
   outline-offset: 2px;
 }
 
 .podo-radio[disabled] {
-  background-color: #e4e4e7;
-  border-color: #d1d2d6;
+  background-color: var(--podo-foreground-disabled, #e4e4e7);
+  border-color: var(--podo-border-disabled, #d1d2d6);
   cursor: not-allowed;
 }
 
@@ -1059,7 +1089,7 @@
 }
 
 .podo-radio__text {
-  color: #50555e;
+  color: var(--podo-text-subtil, #50555e);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -1077,13 +1107,13 @@
 }
 
 .podo-radio-wrap[data-disabled] .podo-radio__text {
-  color: #9fa2ad;
+  color: var(--podo-text-disabled, #9fa2ad);
 }
 
 /* Tooltip (Figma 388:2125) — mirrors the canonical @podoui/web tooltip CSS. */
 .podo-tooltip {
-  --podo-tooltip-background: #3e424b;
-  --podo-tooltip-color: #f9f9f9;
+  --podo-tooltip-background: var(--podo-foreground-basic-reverse, #3e424b);
+  --podo-tooltip-color: var(--podo-text-basic-reverse, #f9f9f9);
   display: inline-flex;
   filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.1));
   pointer-events: none;
@@ -1092,8 +1122,8 @@
 }
 
 .podo-tooltip[data-theme="reverse"] {
-  --podo-tooltip-background: #ffffff;
-  --podo-tooltip-color: #18181b;
+  --podo-tooltip-background: var(--podo-elevation-basic, #ffffff);
+  --podo-tooltip-color: var(--podo-text-basic, #18181b);
 }
 
 .podo-tooltip[data-position="right"] {
@@ -1156,11 +1186,11 @@
 /* Toast (Figma 459:1298) — mirrors the canonical @podoui/web toast CSS. */
 .podo-toast {
   align-items: flex-start;
-  background: #f4f4f5;
-  border: 1px solid #d1d2d6;
+  background: var(--podo-foreground-gray-light, #f4f4f5);
+  border: 1px solid var(--podo-border-gray-deep, #d1d2d6);
   border-radius: 10px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  color: #18181b;
+  color: var(--podo-text-basic, #18181b);
   display: flex;
   gap: 8px;
   max-width: calc(100vw - 32px);
@@ -1169,23 +1199,23 @@
 }
 
 .podo-toast[data-state="success"] {
-  background: #ecf8ef;
-  border-color: #3ea856;
+  background: var(--podo-foreground-success-light, #ecf8ef);
+  border-color: var(--podo-border-success, #3ea856);
 }
 
 .podo-toast[data-state="danger"] {
-  background: #fef1f1;
-  border-color: #f23b3b;
+  background: var(--podo-foreground-danger-light, #fef1f1);
+  border-color: var(--podo-border-danger, #f23b3b);
 }
 
 .podo-toast[data-state="info"] {
-  background: #ebf5ff;
-  border-color: #0095ff;
+  background: var(--podo-foreground-info-light, #ebf5ff);
+  border-color: var(--podo-border-info, #0095ff);
 }
 
 .podo-toast[data-state="warning"] {
-  background: #fff7e6;
-  border-color: #ffaa00;
+  background: var(--podo-foreground-warning-light, #fff7e6);
+  border-color: var(--podo-border-warning, #ffaa00);
 }
 
 .podo-toast__prefix {
@@ -1254,7 +1284,7 @@
 }
 
 .podo-toast__close:focus-visible {
-  outline: 2px solid #426ced;
+  outline: 2px solid var(--podo-border-primary, #426ced);
   outline-offset: 2px;
 }
 
@@ -1396,7 +1426,7 @@
 
 .podo-field__label {
   align-items: baseline;
-  color: #50555e;
+  color: var(--podo-text-subtil, #50555e);
   display: inline-flex;
   flex: 1 1 0;
   font-size: 14px;
@@ -1406,20 +1436,20 @@
 }
 
 .podo-field__requirement {
-  color: #f23b3b;
+  color: var(--podo-text-danger, #f23b3b);
   font-size: 13px;
   font-weight: 600;
 }
 
 .podo-field__sub-label {
-  color: #9fa2ad;
+  color: var(--podo-text-disabled, #9fa2ad);
   font-size: 13px;
   font-weight: 400;
 }
 
 .podo-field__suffix-icon {
   align-items: center;
-  color: #50555e;
+  color: var(--podo-text-subtil, #50555e);
   display: inline-flex;
   height: 20px;
   justify-content: center;
@@ -1435,17 +1465,17 @@
 }
 
 .podo-field__helper-text {
-  color: #9fa2ad;
+  color: var(--podo-text-disabled, #9fa2ad);
   flex: 1 1 0;
 }
 
 .podo-field__error {
-  color: #f23b3b;
+  color: var(--podo-text-danger, #f23b3b);
   flex: 1 1 0;
 }
 
 .podo-field__count {
-  color: #9fa2ad;
+  color: var(--podo-text-disabled, #9fa2ad);
   margin-left: auto;
 }
 
@@ -1453,8 +1483,8 @@
    Wrapper carries the box + states; the inner control is borderless. */
 .podo-input {
   align-items: center;
-  background: #ffffff;
-  border: 1px solid #e4e4e7;
+  background: var(--podo-elevation-basic, #ffffff);
+  border: 1px solid var(--podo-border-gary, #e4e4e7);
   border-radius: 10px;
   display: flex;
   font-size: 16px;
@@ -1472,30 +1502,30 @@
 
 .podo-input:hover:not([data-state]):not(:focus-within),
 .podo-input.is-hover {
-  border-color: #9fa2ad;
+  border-color: var(--podo-border-natural, #9fa2ad);
 }
 
 .podo-input:focus-within:not([data-state="disabled"]),
 .podo-input.is-focus {
-  border-color: #426ced;
-  box-shadow: inset 0 0 0 1px #426ced;
+  border-color: var(--podo-border-primary, #426ced);
+  box-shadow: inset 0 0 0 1px var(--podo-border-primary, #426ced);
 }
 
 .podo-input[data-state="invalid"] {
-  border-color: #f23b3b;
+  border-color: var(--podo-border-danger, #f23b3b);
 }
 
 /* Invalid keeps the danger color under focus — only the 2px weight change
    signals focus, so validation auto-focus never masks the state. */
 .podo-input[data-state="invalid"]:focus-within,
 .podo-input[data-state="invalid"].is-focus {
-  border-color: #f23b3b;
-  box-shadow: inset 0 0 0 1px #f23b3b;
+  border-color: var(--podo-border-danger, #f23b3b);
+  box-shadow: inset 0 0 0 1px var(--podo-border-danger, #f23b3b);
 }
 
 .podo-input[data-state="disabled"] {
-  background: #e4e4e7;
-  border-color: #d1d2d6;
+  background: var(--podo-foreground-disabled, #e4e4e7);
+  border-color: var(--podo-border-disabled, #d1d2d6);
 }
 
 /* Figma read-only: the value stays visible without the box. */
@@ -1514,7 +1544,7 @@
 .podo-input__control {
   background: transparent;
   border: 0;
-  color: #18181b;
+  color: var(--podo-text-basic, #18181b);
   flex: 1 1 0;
   font: inherit;
   min-width: 0;
@@ -1523,18 +1553,18 @@
 }
 
 .podo-input__control::placeholder {
-  color: #9fa2ad;
+  color: var(--podo-text-placeholder, #9fa2ad);
 }
 
 .podo-input[data-state="disabled"] .podo-input__control {
-  color: #9fa2ad;
+  color: var(--podo-text-disabled, #9fa2ad);
   cursor: not-allowed;
 }
 
 .podo-input__prefix,
 .podo-input__suffix-icon {
   align-items: center;
-  color: #9fa2ad;
+  color: var(--podo-icon-disabled, #9fa2ad);
   display: inline-flex;
   height: 24px;
   justify-content: center;
@@ -1543,9 +1573,56 @@
 
 .podo-input:focus-within .podo-input__prefix,
 .podo-input:focus-within .podo-input__suffix-icon {
-  color: #767985;
+  color: var(--podo-icon-subtil, #767985);
 }
 
 .podo-input__suffix-text {
-  color: #50555e;
+  color: var(--podo-text-subtil, #50555e);
+}
+
+/* Typography (podo-ui/react <Typography>): 토큰 var 소비, 폴백은 라이트 기본값. */
+.podo-text {
+  color: var(--podo-text-basic, #18181b);
+  font-family: var(
+    --podo-typography-body-medium-fontFamily,
+    "Pretendard",
+    "Apple SD Gothic Neo",
+    system-ui,
+    sans-serif
+  );
+  margin: 0;
+}
+
+.podo-text--body {
+  font-size: var(--podo-typography-body-medium-fontSize, 16px);
+  font-weight: var(--podo-typography-body-medium-fontWeight, 400);
+  letter-spacing: var(--podo-typography-body-medium-letterSpacing, 0px);
+  line-height: var(--podo-typography-body-medium-lineHeight, 160%);
+}
+
+.podo-text--h1 {
+  font-size: var(--podo-typography-heading-xlarge-fontSize, 32px);
+  font-weight: var(--podo-typography-heading-xlarge-fontWeight, 700);
+  letter-spacing: var(--podo-typography-heading-xlarge-letterSpacing, 0px);
+  line-height: var(--podo-typography-heading-xlarge-lineHeight, 130%);
+}
+
+/* Field 상태 크롬: disabled는 헤딩류를 흐리게. data-invalid는 컨트롤과
+   __error 라인이 담당하며 Figma상 Field 자체 크롬은 바뀌지 않는다. */
+.podo-field[data-disabled="true"] .podo-field__label,
+.podo-field[data-disabled="true"] .podo-field__sub-label {
+  color: var(--podo-text-disabled, #9fa2ad);
+}
+
+/* 선택된 행 (Table checkbox 선택): Figma tr-focused 배경. */
+.podo-table tbody tr[data-selected="true"] td {
+  background: var(--podo-table-table-tr-focused, #f4f4f5);
+}
+
+/* Icon 베이스 — 글리프 폰트/코드포인트는 생성된 PodoIcons.css가 담당. */
+.podo-icon {
+  color: inherit;
+  display: inline-flex;
+  font-style: normal;
+  line-height: 1;
 }

@@ -12,10 +12,10 @@ export const defaultMcpTokens: TokenDocument = {
   category: "theme",
   tokens: {
     color: {
-      brand: { $type: "color", $value: "#5B5BD6" },
-      text: { $type: "color", $value: "#14151A" },
+      brand: { $type: "color", $value: "#426CED" },
+      text: { $type: "color", $value: "#18181B" },
       inverse: { $type: "color", $value: "#FFFFFF" },
-      danger: { $type: "color", $value: "#D92D20" },
+      danger: { $type: "color", $value: "#F23B3B" },
     },
     semantic: {
       color: {
