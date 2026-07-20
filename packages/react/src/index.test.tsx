@@ -23,6 +23,9 @@ import {
   Tooltip,
   Typography,
   toast,
+  DatePicker,
+  Editor,
+  EditorView,
   usePodoTheme,
 } from "./index.js";
 
@@ -1046,5 +1049,33 @@ describe("@podoui/react", () => {
     );
 
     expect(container.firstElementChild).toMatchSnapshot();
+  });
+});
+
+describe("ported v1 components", () => {
+  it("renders DatePicker input and opens the calendar dropdown", () => {
+    const { container } = render(
+      <DatePicker mode="instant" type="date" value={{}} onChange={() => {}} />
+    );
+    const input = container.querySelector(".podo-dp-inputPart");
+    expect(input).not.toBeNull();
+    fireEvent.click(input!);
+    expect(document.querySelector(".podo-dp-dropdown")).not.toBeNull();
+    expect(document.querySelector(".podo-dp-calendarGrid")).not.toBeNull();
+  });
+
+  it("renders Editor toolbar and content area", () => {
+    const { container } = render(<Editor value="<p>hi</p>" onChange={() => {}} />);
+    expect(container.querySelector(".podo-ed-editor")).not.toBeNull();
+    expect(container.querySelector(".podo-ed-toolbar, .podo-ed-toolbarWrapper")).not.toBeNull();
+    expect(container.querySelector(".podo-ed-editorContent")).not.toBeNull();
+  });
+
+  it("renders EditorView content with shared content classes", () => {
+    const { container } = render(
+      <EditorView value={'<p class="podo-ed-p1">본문</p>'} />
+    );
+    expect(container.querySelector(".podo-ed-editorView")).not.toBeNull();
+    expect(container.querySelector("p.podo-ed-p1")).not.toBeNull();
   });
 });

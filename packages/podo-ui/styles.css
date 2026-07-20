@@ -1626,3 +1626,2812 @@
   font-style: normal;
   line-height: 1;
 }
+
+/* ===== Ported v1 components: DatePicker (.podo-dp-*), Editor (.podo-ed-*) ===== */
+.podo-dp-datepicker,
+.podo-dp-dropdown,
+.podo-ed-editor,
+.podo-ed-editorView {
+  --color-bg-block: var(--podo-foreground-basic, #ffffff);
+  --color-bg-disabled: var(--podo-foreground-disabled, #e4e4e7);
+  --color-bg-elevation: var(--podo-foreground-natural, #fafafa);
+  --color-bg-elevation-1: #ffffff;
+  --color-bg-modal: #ffffff;
+  --color-border: var(--podo-border-gary, #e4e4e7);
+  --color-border-hover: var(--podo-border-gray-deep, #d1d1d7);
+  --color-border-pressed: var(--podo-border-gray-darker, #a1a1aa);
+  --color-danger: var(--podo-foreground-danger, #f04646);
+  --color-danger-fill: var(--podo-foreground-danger-light, #fef2f2);
+  --color-danger-hover: #dc2626;
+  --color-danger-outline: rgba(220, 38, 38, 0.3);
+  --color-default: var(--podo-foreground-gray-light, #f4f4f5);
+  --color-default-fill: var(--podo-foreground-gray-light, #f4f4f5);
+  --color-default-hover: #ececef;
+  --color-default-outline: rgba(209, 209, 215, 0.3);
+  --color-default-pressed: #e3e3e8;
+  --color-default-reverse: #2c2c31;
+  --color-link: #0ea5e9;
+  --color-link-hover: #0284c7;
+  --color-primary: var(--podo-foreground-primary, #7c3aed);
+  --color-primary-fill: #f3e8ff;
+  --color-primary-hover: var(--podo-button-background-solid-primary-hover, #6d28d9);
+  --color-primary-outline: rgba(124, 58, 237, 0.3);
+  --color-primary-reverse: var(--podo-text-static-invert, #ffffff);
+  --color-success: var(--podo-foreground-success, #0d9488);
+  --color-text: var(--podo-text-basic, #2c2c31);
+  --color-text-action: #71717a;
+  --color-text-action-disabled: var(--podo-text-disabled, #a1a1aa);
+  --color-text-action-hover: #52525b;
+  --color-text-action-pressed: #3f3f46;
+  --color-text-body: var(--podo-text-basic, #2c2c31);
+  --color-text-header: var(--podo-text-basic, #1c1c20);
+  --color-text-placeholder: var(--podo-text-placeholder, #a1a1aa);
+  --color-text-primary: var(--podo-text-primary, #7c3aed);
+  --color-text-sub: var(--podo-text-subtil, #71717a);
+}
+
+[data-color-scheme="dark"] .podo-dp-datepicker,
+.podo-dp-datepicker[data-color-scheme="dark"],
+[data-color-scheme="dark"] .podo-dp-dropdown,
+.podo-dp-dropdown[data-color-scheme="dark"],
+[data-color-scheme="dark"] .podo-ed-editor,
+.podo-ed-editor[data-color-scheme="dark"],
+[data-color-scheme="dark"] .podo-ed-editorView,
+.podo-ed-editorView[data-color-scheme="dark"] {
+  --color-bg-block: var(--podo-foreground-basic, rgba(0, 0, 0, 0.09));
+  --color-bg-disabled: var(--podo-foreground-disabled, #2c2c31);
+  --color-bg-elevation: var(--podo-foreground-natural, #09090b);
+  --color-bg-elevation-1: #18181b;
+  --color-bg-modal: #2c2c31;
+  --color-border: var(--podo-border-gary, #52525b);
+  --color-border-hover: var(--podo-border-gray-deep, #71717a);
+  --color-border-pressed: var(--podo-border-gray-darker, #52525b);
+  --color-danger: var(--podo-foreground-danger, #f04646);
+  --color-danger-fill: var(--podo-foreground-danger-light, #1c1c20);
+  --color-danger-hover: #f25959;
+  --color-danger-outline: rgba(242, 89, 89, 0.3);
+  --color-default: var(--podo-foreground-gray-light, #34343a);
+  --color-default-fill: var(--podo-foreground-gray-light, #34343a);
+  --color-default-hover: #3f3f46;
+  --color-default-outline: rgba(63, 63, 70, 0.3);
+  --color-default-pressed: #34343a;
+  --color-default-reverse: #ffffff;
+  --color-link: #0284c7;
+  --color-link-hover: #0ea5e9;
+  --color-primary: var(--podo-foreground-primary, #7c3aed);
+  --color-primary-fill: #111827;
+  --color-primary-hover: var(--podo-button-background-solid-primary-hover, #8b5cf6);
+  --color-primary-outline: rgba(158, 115, 254, 0.3);
+  --color-primary-reverse: var(--podo-text-static-invert, #ffffff);
+  --color-success: var(--podo-foreground-success, #0d9488);
+  --color-text: var(--podo-text-basic, #e4e4e7);
+  --color-text-action: #d1d1d7;
+  --color-text-action-disabled: var(--podo-text-disabled, #52525b);
+  --color-text-action-hover: #f4f4f5;
+  --color-text-action-pressed: #d1d1d7;
+  --color-text-body: var(--podo-text-basic, #e4e4e7);
+  --color-text-header: var(--podo-text-basic, #f4f4f5);
+  --color-text-placeholder: var(--podo-text-placeholder, #71717a);
+  --color-text-primary: var(--podo-text-primary, #7c3aed);
+  --color-text-sub: var(--podo-text-subtil, #a1a1aa);
+}
+.podo-dp-datepicker {
+  position: relative;
+  display: inline-block;
+}
+
+.podo-dp-input {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: var(--color-bg-block);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.podo-dp-input:hover {
+  border-color: var(--color-border-hover);
+}
+.podo-dp-input:focus-within,
+.podo-dp-input.podo-dp-active {
+  border-color: var(--color-primary);
+}
+.podo-dp-input.podo-dp-disabled {
+  background: var(--color-bg-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.podo-dp-inputContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.podo-dp-inputPart {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-dp-inputPart:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-inputPart {
+    font-size: 12px;
+  }
+}
+.podo-dp-inputPart {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: var(--color-text-body);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.podo-dp-inputPart:hover {
+  background: var(--color-default);
+}
+.podo-dp-inputPart.podo-dp-active {
+  background: var(--color-default-fill);
+}
+.podo-dp-inputPart.podo-dp-placeholder {
+  color: var(--color-text-action-disabled);
+}
+
+.podo-dp-timeSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.podo-dp-timeSelect {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-dp-timeSelect:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-timeSelect {
+    font-size: 12px;
+  }
+}
+.podo-dp-timeSelect {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: none;
+  border: none;
+  padding: 0 4px;
+  flex: 1;
+  text-align: center;
+  text-align-last: center;
+  color: var(--color-text-body);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+  font-variant-numeric: tabular-nums;
+}
+.podo-dp-timeSelect:hover {
+  background: var(--color-default);
+}
+.podo-dp-timeSelect:focus {
+  outline: none;
+  background: var(--color-default-fill);
+}
+.podo-dp-timeSelect.podo-dp-placeholder {
+  color: var(--color-text-action-disabled);
+}
+.podo-dp-timeSelect:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.podo-dp-timeSeparator {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-dp-timeSeparator:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-timeSeparator {
+    font-size: 12px;
+  }
+}
+.podo-dp-timeSeparator {
+  color: var(--color-text-body);
+}
+
+.podo-dp-separator {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-dp-separator:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-separator {
+    font-size: 12px;
+  }
+}
+.podo-dp-separator {
+  color: var(--color-text-body);
+  padding: 0 2px;
+}
+
+.podo-dp-inputIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--color-text-sub);
+  flex-shrink: 0;
+}
+
+.podo-dp-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: var(--color-bg-modal);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px -3px rgba(50, 50, 50, 0.06);
+}
+.podo-dp-dropdown.podo-dp-right {
+  left: auto;
+  right: 0;
+}
+
+.podo-dp-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 280px;
+}
+
+.podo-dp-calendarNav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+}
+
+.podo-dp-navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--color-default);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.podo-dp-navButton:hover {
+  background: var(--color-default-hover);
+}
+.podo-dp-navButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.podo-dp-navButton i {
+  font-size: 20px;
+  color: var(--color-text-action);
+}
+
+.podo-dp-navButtonPlaceholder {
+  width: 40px;
+  height: 40px;
+}
+
+.podo-dp-navTitle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.podo-dp-navTitleButton {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-dp-navTitleButton:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-navTitleButton {
+    font-size: 16px;
+  }
+}
+.podo-dp-navTitleButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.podo-dp-navTitleButton:hover {
+  background: var(--color-default);
+}
+.podo-dp-navTitleButton i {
+  font-size: 18px;
+  color: var(--color-text-action);
+}
+
+.podo-dp-navSelectWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.podo-dp-navSelectWrapper::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--color-text-action);
+  pointer-events: none;
+}
+
+.podo-dp-navSelect {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-dp-navSelect:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-navSelect {
+    font-size: 16px;
+  }
+}
+.podo-dp-navSelect {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: none;
+  border: none;
+  padding: 4px 24px 4px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: var(--color-text-body);
+}
+.podo-dp-navSelect:hover {
+  background: var(--color-default);
+}
+.podo-dp-navSelect:focus {
+  outline: none;
+  background: var(--color-default-fill);
+}
+
+.podo-dp-calendarGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.podo-dp-calendarRow {
+  display: flex;
+  width: 100%;
+}
+
+.podo-dp-calendarCell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-dp-calendarCell:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-calendarCell {
+    font-size: 14px;
+  }
+}
+.podo-dp-calendarCell {
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.podo-dp-calendarCell.podo-dp-header {
+  color: var(--color-text-sub);
+  cursor: default;
+}
+.podo-dp-calendarCell.podo-dp-other {
+  color: var(--color-text-action-disabled);
+}
+.podo-dp-calendarCell.podo-dp-today {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+.podo-dp-calendarCell.podo-dp-selected {
+  background: var(--color-primary);
+  color: var(--color-primary-reverse);
+  font-weight: 600;
+}
+.podo-dp-calendarCell.podo-dp-inRange {
+  background: var(--color-primary-fill);
+  border-radius: 0;
+}
+.podo-dp-calendarCell.podo-dp-rangeStart {
+  background: var(--color-primary);
+  color: var(--color-primary-reverse);
+  font-weight: 600;
+  border-radius: 6px;
+}
+.podo-dp-calendarCell.podo-dp-rangeEnd {
+  background: var(--color-primary);
+  color: var(--color-primary-reverse);
+  font-weight: 600;
+  border-radius: 6px;
+}
+.podo-dp-calendarCell.podo-dp-disabled {
+  color: var(--color-text-action-disabled);
+  background: var(--color-default);
+  border: none;
+  border-radius: 0;
+  outline: none;
+  cursor: not-allowed;
+}
+.podo-dp-calendarCell.podo-dp-disabled:hover {
+  background: var(--color-default);
+}
+.podo-dp-calendarCell:not(.podo-dp-header):not(.podo-dp-selected):not(.podo-dp-disabled):not(
+    .podo-dp-rangeStart
+  ):not(.podo-dp-rangeEnd):not(.podo-dp-inRange):hover {
+  background: var(--color-default);
+}
+
+.podo-dp-yearMonthGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.podo-dp-yearMonthCell {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-dp-yearMonthCell:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-yearMonthCell {
+    font-size: 14px;
+  }
+}
+.podo-dp-yearMonthCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.podo-dp-yearMonthCell:hover {
+  background: var(--color-default);
+}
+.podo-dp-yearMonthCell.podo-dp-selected {
+  background: var(--color-primary);
+  color: var(--color-primary-reverse);
+  font-weight: 600;
+}
+.podo-dp-yearMonthCell.podo-dp-current {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.podo-dp-timeSelector {
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  background: var(--color-bg-block);
+  border-radius: 4px;
+}
+
+.podo-dp-timeDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px;
+}
+
+.podo-dp-timeDisplayItem {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-dp-timeDisplayItem:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-timeDisplayItem {
+    font-size: 16px;
+  }
+}
+.podo-dp-timeDisplayItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  background: var(--color-default);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-width: 48px;
+}
+.podo-dp-timeDisplayItem:hover {
+  background: var(--color-default-hover);
+}
+.podo-dp-timeDisplayItem.podo-dp-active {
+  background: var(--color-primary);
+  color: var(--color-primary-reverse);
+}
+
+.podo-dp-timeDisplaySeparator {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-dp-timeDisplaySeparator:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-timeDisplaySeparator {
+    font-size: 16px;
+  }
+}
+.podo-dp-timeDisplaySeparator {
+  color: var(--color-text-body);
+}
+
+.podo-dp-timeColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  border-top: 1px solid var(--color-border);
+}
+.podo-dp-timeColumn::-webkit-scrollbar {
+  width: 4px;
+}
+.podo-dp-timeColumn::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 9999px;
+}
+
+.podo-dp-timeItem {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-dp-timeItem:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-timeItem {
+    font-size: 12px;
+  }
+}
+.podo-dp-timeItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: center;
+}
+.podo-dp-timeItem:hover {
+  background: var(--color-default);
+}
+.podo-dp-timeItem.podo-dp-selected {
+  background: var(--color-primary);
+  color: var(--color-primary-reverse);
+  font-weight: 600;
+}
+
+.podo-dp-bottomActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.podo-dp-periodText {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-dp-periodText:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-periodText {
+    font-size: 14px;
+  }
+}
+.podo-dp-periodText {
+  color: var(--color-primary);
+  flex: 1;
+}
+
+.podo-dp-actionButtons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.podo-dp-actionButton {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-dp-actionButton:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-actionButton {
+    font-size: 14px;
+  }
+}
+.podo-dp-actionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.podo-dp-actionButton i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 18px;
+  line-height: 1;
+}
+.podo-dp-actionButton.podo-dp-reset {
+  background: var(--color-default-fill);
+  border: 1px solid var(--color-border);
+  color: var(--color-default-reverse);
+}
+.podo-dp-actionButton.podo-dp-reset:hover {
+  background: var(--color-default-hover);
+}
+.podo-dp-actionButton.podo-dp-apply {
+  background: var(--color-primary);
+  border: none;
+  color: var(--color-primary-reverse);
+}
+.podo-dp-actionButton.podo-dp-apply:hover {
+  background: var(--color-primary-hover);
+}
+
+.podo-dp-combinedDropdown {
+  display: flex;
+  gap: 16px;
+}
+
+.podo-dp-calendarWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.podo-dp-timeWrapper {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--color-border);
+  padding-left: 16px;
+}
+
+.podo-dp-timeLabel {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-dp-timeLabel:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-dp-timeLabel {
+    font-size: 12px;
+  }
+}
+.podo-dp-timeLabel {
+  color: var(--color-text-sub);
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.podo-dp-periodCalendarWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.podo-dp-periodCalendarNav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+}
+
+.podo-dp-periodCalendarNavSection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.podo-dp-periodCalendarBody {
+  display: flex;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.podo-dp-periodCalendarColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.podo-dp-periodCalendars {
+  display: flex;
+  gap: 12px;
+}
+
+.podo-dp-periodCalendarLeft {
+  flex: 1;
+}
+
+.podo-dp-periodCalendarRight {
+  flex: 1;
+}
+
+.podo-dp-periodCalendar {
+  flex: 1;
+}
+.podo-dp-periodCalendar:not(:last-child) {
+  border-right: 1px solid var(--color-border);
+  padding-right: 12px;
+}
+.podo-ed-editor {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg-modal);
+  overflow: visible;
+  position: relative;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.podo-ed-editor.podo-ed-success {
+  border-color: var(--color-success);
+}
+.podo-ed-editor.podo-ed-danger {
+  border-color: var(--color-danger);
+}
+
+.podo-ed-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: 8px 10px;
+  background: var(--color-bg-elevation);
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 6px 6px 0 0;
+  min-height: 44px;
+  align-items: center;
+  position: relative;
+  overflow: visible;
+}
+
+.podo-ed-toolbarGroup {
+  display: flex;
+  gap: 4px;
+  padding: 0 8px;
+  position: relative;
+}
+.podo-ed-toolbarGroup:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.podo-ed-toolbarButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-action);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.podo-ed-toolbarButton:hover {
+  background: var(--color-default-fill);
+  border-color: var(--color-border-hover);
+  color: var(--color-text-action-hover);
+}
+.podo-ed-toolbarButton:active {
+  background: var(--color-default-pressed);
+  border-color: var(--color-border-pressed);
+  color: var(--color-text-action-pressed);
+}
+.podo-ed-toolbarButton.podo-ed-active {
+  background: var(--color-primary-fill);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+.podo-ed-toolbarButton:focus {
+  outline: 2px solid var(--color-primary-outline);
+  outline-offset: -1px;
+}
+.podo-ed-toolbarButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.podo-ed-toolbarButton:disabled i {
+  opacity: 1;
+}
+.podo-ed-toolbarButton i {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  mask-size: 16px 16px;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: 16px 16px;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+.podo-ed-toolbarButton i.podo-ed-undo {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M125.7 160H176c17.7 0 32 14.3 32 32s-14.3 32-32 32H48c-17.7 0-32-14.3-32-32V64c0-17.7 14.3-32 32-32s32 14.3 32 32v51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M125.7 160H176c17.7 0 32 14.3 32 32s-14.3 32-32 32H48c-17.7 0-32-14.3-32-32V64c0-17.7 14.3-32 32-32s32 14.3 32 32v51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-redo {
+  mask-image: url('data:image/svg+xml,<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m386.3 160h-50.3c-17.7 0-32 14.3-32 32s14.3 32 32 32h128c17.7 0 32-14.3 32-32v-128c0-17.7-14.3-32-32-32s-32 14.3-32 32v51.2l-17.6-17.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8 229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3 163.8-62.5 226.3 0z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m386.3 160h-50.3c-17.7 0-32 14.3-32 32s14.3 32 32 32h128c17.7 0 32-14.3 32-32v-128c0-17.7-14.3-32-32-32s-32 14.3-32 32v51.2l-17.6-17.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8 229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3 163.8-62.5 226.3 0z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-bold {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M0 64C0 46.3 14.3 32 32 32H80 96 224c70.7 0 128 57.3 128 128c0 31.3-11.3 60.1-30 82.3c37.1 22.4 62 63.1 62 109.7c0 70.7-57.3 128-128 128H96 80 32c-17.7 0-32-14.3-32-32s14.3-32 32-32H48V256 96H32C14.3 96 0 81.7 0 64zM224 224c35.3 0 64-28.7 64-64s-28.7-64-64-64H112V224H224zM112 288V416H256c35.3 0 64-28.7 64-64s-28.7-64-64-64H224 112z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M0 64C0 46.3 14.3 32 32 32H80 96 224c70.7 0 128 57.3 128 128c0 31.3-11.3 60.1-30 82.3c37.1 22.4 62 63.1 62 109.7c0 70.7-57.3 128-128 128H96 80 32c-17.7 0-32-14.3-32-32s14.3-32 32-32H48V256 96H32C14.3 96 0 81.7 0 64zM224 224c35.3 0 64-28.7 64-64s-28.7-64-64-64H112V224H224zM112 288V416H256c35.3 0 64-28.7 64-64s-28.7-64-64-64H224 112z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-italic {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M128 64c0-17.7 14.3-32 32-32H352c17.7 0 32 14.3 32 32s-14.3 32-32 32H293.3L160 416h64c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H90.7L224 96H160c-17.7 0-32-14.3-32-32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M128 64c0-17.7 14.3-32 32-32H352c17.7 0 32 14.3 32 32s-14.3 32-32 32H293.3L160 416h64c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H90.7L224 96H160c-17.7 0-32-14.3-32-32z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-underline {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 64c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H128V224c0 53 43 96 96 96s96-43 96-96V96H304c-17.7 0-32-14.3-32-32s14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H384V224c0 88.4-71.6 160-160 160s-160-71.6-160-160V96H48C30.3 96 16 81.7 16 64zM0 448c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 64c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H128V224c0 53 43 96 96 96s96-43 96-96V96H304c-17.7 0-32-14.3-32-32s14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H384V224c0 88.4-71.6 160-160 160s-160-71.6-160-160V96H48C30.3 96 16 81.7 16 64zM0 448c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-strikethrough {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M161.3 144c3.2-17.2 14-30.1 33.7-38.6c21.1-9 51.8-12.3 88.6-6.5c11.9 1.9 48.8 9.1 60.1 12c17.1 4.5 34.6-5.6 39.2-22.7s-5.6-34.6-22.7-39.2c-14.3-3.8-53.6-11.4-66.6-13.4c-44.7-7-88.3-4.2-123.7 10.9c-36.5 15.6-64.4 44.8-71.8 87.3c-.1 .6-.2 1.1-.2 1.7c-2.8 23.9 .5 45.6 10.1 64.6c4.5 9 10.2 16.9 16.7 23.9H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H270.1c-.1 0-.3-.1-.4-.1l-1.1-.3c-36-10.8-65.2-19.6-85.2-33.1c-9.3-6.3-15-12.6-18.2-19.1c-3.1-6.1-5.2-14.6-3.8-27.4zM348.9 337.2c2.7 6.5 4.4 15.8 1.9 30.1c-3 17.6-13.8 30.8-33.9 39.4c-21.1 9-51.7 12.3-88.5 6.5c-18-2.9-49.1-13.5-74.4-22.1c-5.6-1.9-11-3.7-15.9-5.4c-16.8-5.6-34.9 3.5-40.5 20.3s3.5 34.9 20.3 40.5c3.6 1.2 7.9 2.7 12.7 4.3l0 0 0 0c24.9 8.5 63.6 21.7 87.6 25.6l0 0 .2 0c44.7 7 88.3 4.2 123.7-10.9c36.5-15.6 64.4-44.8 71.8-87.3c3.6-21 2.7-40.4-3.1-58.1H335.1c7 5.6 11.4 11.2 13.9 17.2z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M161.3 144c3.2-17.2 14-30.1 33.7-38.6c21.1-9 51.8-12.3 88.6-6.5c11.9 1.9 48.8 9.1 60.1 12c17.1 4.5 34.6-5.6 39.2-22.7s-5.6-34.6-22.7-39.2c-14.3-3.8-53.6-11.4-66.6-13.4c-44.7-7-88.3-4.2-123.7 10.9c-36.5 15.6-64.4 44.8-71.8 87.3c-.1 .6-.2 1.1-.2 1.7c-2.8 23.9 .5 45.6 10.1 64.6c4.5 9 10.2 16.9 16.7 23.9H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H270.1c-.1 0-.3-.1-.4-.1l-1.1-.3c-36-10.8-65.2-19.6-85.2-33.1c-9.3-6.3-15-12.6-18.2-19.1c-3.1-6.1-5.2-14.6-3.8-27.4zM348.9 337.2c2.7 6.5 4.4 15.8 1.9 30.1c-3 17.6-13.8 30.8-33.9 39.4c-21.1 9-51.7 12.3-88.5 6.5c-18-2.9-49.1-13.5-74.4-22.1c-5.6-1.9-11-3.7-15.9-5.4c-16.8-5.6-34.9 3.5-40.5 20.3s3.5 34.9 20.3 40.5c3.6 1.2 7.9 2.7 12.7 4.3l0 0 0 0c24.9 8.5 63.6 21.7 87.6 25.6l0 0 .2 0c44.7 7 88.3 4.2 123.7-10.9c36.5-15.6 64.4-44.8 71.8-87.3c3.6-21 2.7-40.4-3.1-58.1H335.1c7 5.6 11.4 11.2 13.9 17.2z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-alignLeft {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M288 64c0 17.7-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32H256c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H256c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M288 64c0 17.7-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32H256c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H256c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-alignCenter {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M352 64c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32zm96 128c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32zM0 448c0 17.7 14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zM352 320c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M352 64c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32zm96 128c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32zM0 448c0 17.7 14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zM352 320c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-alignRight {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M448 64c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M448 64c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-alignJustify {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M448 64c0-17.7-14.3-32-32-32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32zm0 256c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32zM0 192c0 17.7 14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zM448 448c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M448 64c0-17.7-14.3-32-32-32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32zm0 256c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32zM0 192c0 17.7 14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zM448 448c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-listUl {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M64 144a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM64 464a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm48-208a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M64 144a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM64 464a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm48-208a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-listOl {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M24 56c0-13.3 10.7-24 24-24H80c13.3 0 24 10.7 24 24V176h16c13.3 0 24 10.7 24 24s-10.7 24-24 24H40c-13.3 0-24-10.7-24-24s10.7-24 24-24H56V80H48C34.7 80 24 69.3 24 56zM86.7 341.2c-6.5-7.4-18.3-6.9-24 1.2L51.5 357.9c-7.7 10.8-22.7 13.3-33.5 5.6s-13.3-22.7-5.6-33.5l11.1-15.6c23.7-33.2 72.3-35.6 99.2-4.9c21.3 24.4 20.8 60.9-1.1 84.7L86.8 432H120c13.3 0 24 10.7 24 24s-10.7 24-24 24H32c-9.5 0-18.2-5.6-22-14.4s-2.1-18.9 4.3-25.9l72-78c5.3-5.8 5.4-14.6 .3-20.5zM224 64H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H224c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 160H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H224c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 160H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H224c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M24 56c0-13.3 10.7-24 24-24H80c13.3 0 24 10.7 24 24V176h16c13.3 0 24 10.7 24 24s-10.7 24-24 24H40c-13.3 0-24-10.7-24-24s10.7-24 24-24H56V80H48C34.7 80 24 69.3 24 56zM86.7 341.2c-6.5-7.4-18.3-6.9-24 1.2L51.5 357.9c-7.7 10.8-22.7 13.3-33.5 5.6s-13.3-22.7-5.6-33.5l11.1-15.6c23.7-33.2 72.3-35.6 99.2-4.9c21.3 24.4 20.8 60.9-1.1 84.7L86.8 432H120c13.3 0 24 10.7 24 24s-10.7 24-24 24H32c-9.5 0-18.2-5.6-22-14.4s-2.1-18.9 4.3-25.9l72-78c5.3-5.8 5.4-14.6 .3-20.5zM224 64H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H224c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 160H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H224c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 160H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H224c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-link {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-unlink {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L489.3 358.2l90.5-90.5c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-.5 .7L38.8 5.1zM34 189.1l90.5 90.5c-10.4 10.4-18 22.3-22.6 35.1L5.1 466.9c-10.4 8.2-12.3 23.3-4.1 33.7s23.3 12.3 33.7 4.1l127.4-99.9c29.5 33.7 80.5 39.9 119.8 15l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C109.4 328.6 109.4 277.6 140.9 246.1l33-33 .2-.2 55.4-55.4 .2-.2 33-33c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.8l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6c41.2-57.4 34.7-136.2-15.3-186.2c-56.5-56.5-148-56.5-204.5 0L34 189.1z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L489.3 358.2l90.5-90.5c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-.5 .7L38.8 5.1zM34 189.1l90.5 90.5c-10.4 10.4-18 22.3-22.6 35.1L5.1 466.9c-10.4 8.2-12.3 23.3-4.1 33.7s23.3 12.3 33.7 4.1l127.4-99.9c29.5 33.7 80.5 39.9 119.8 15l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C109.4 328.6 109.4 277.6 140.9 246.1l33-33 .2-.2 55.4-55.4 .2-.2 33-33c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.8l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6c41.2-57.4 34.7-136.2-15.3-186.2c-56.5-56.5-148-56.5-204.5 0L34 189.1z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-eraser {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M290.7 57.4L57.4 290.7c-25 25-25 65.5 0 90.5l80 80c12 12 28.3 18.7 45.3 18.7H288h9.4H512c17.7 0 32-14.3 32-32s-14.3-32-32-32H387.9L518.6 285.3c25-25 25-65.5 0-90.5L381.3 57.4c-25-25-65.5-25-90.5 0zM297.4 416H288l-105.4 0-80-80L227.3 211.3 364.7 348.7 297.4 416z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M290.7 57.4L57.4 290.7c-25 25-25 65.5 0 90.5l80 80c12 12 28.3 18.7 45.3 18.7H288h9.4H512c17.7 0 32-14.3 32-32s-14.3-32-32-32H387.9L518.6 285.3c25-25 25-65.5 0-90.5L381.3 57.4c-25-25-65.5-25-90.5 0zM297.4 416H288l-105.4 0-80-80L227.3 211.3 364.7 348.7 297.4 416z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-fontColor {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M254 52.8C249.3 40.3 237.3 32 224 32s-25.3 8.3-30 20.8L57.8 416H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32h-1.8l18-48H303.8l18 48H320c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H390.2L254 52.8zM279.8 304H168.2L224 155.1 279.8 304z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M254 52.8C249.3 40.3 237.3 32 224 32s-25.3 8.3-30 20.8L57.8 416H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32h-1.8l18-48H303.8l18 48H320c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H390.2L254 52.8zM279.8 304H168.2L224 155.1 279.8 304z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-highlight {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M315 315l158.4-215L444.1 70.6 229 229 315 315zm-187 5l0 0V248.3c0-15.3 7.2-29.6 19.5-38.6L420.6 8.4C428 2.9 437 0 446.2 0c11.4 0 22.4 4.5 30.5 12.6l54.8 54.8c8.1 8.1 12.6 19 12.6 30.5c0 9.2-2.9 18.2-8.4 25.6L334.4 396.5c-9 12.3-23.4 19.5-38.6 19.5H224l-25.4 25.4c-12.5 12.5-32.8 12.5-45.3 0l-50.7-50.7c-12.5-12.5-12.5-32.8 0-45.3L128 320zM7 466.3l63-63 70.6 70.6-31 31c-4.5 4.5-10.6 7-17 7H24c-13.3 0-24-10.7-24-24v-4.7c0-6.4 2.5-12.5 7-17z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M315 315l158.4-215L444.1 70.6 229 229 315 315zm-187 5l0 0V248.3c0-15.3 7.2-29.6 19.5-38.6L420.6 8.4C428 2.9 437 0 446.2 0c11.4 0 22.4 4.5 30.5 12.6l54.8 54.8c8.1 8.1 12.6 19 12.6 30.5c0 9.2-2.9 18.2-8.4 25.6L334.4 396.5c-9 12.3-23.4 19.5-38.6 19.5H224l-25.4 25.4c-12.5 12.5-32.8 12.5-45.3 0l-50.7-50.7c-12.5-12.5-12.5-32.8 0-45.3L128 320zM7 466.3l63-63 70.6 70.6-31 31c-4.5 4.5-10.6 7-17 7H24c-13.3 0-24-10.7-24-24v-4.7c0-6.4 2.5-12.5 7-17z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-image {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM323.8 202.5c-4.5-6.6-11.9-10.5-19.8-10.5s-15.4 3.9-19.8 10.5l-87 127.6L170.7 297c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6h96 32H424c8.9 0 17.1-4.9 21.2-12.8s3.6-17.4-1.4-24.7l-120-176zM112 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM323.8 202.5c-4.5-6.6-11.9-10.5-19.8-10.5s-15.4 3.9-19.8 10.5l-87 127.6L170.7 297c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6h96 32H424c8.9 0 17.1-4.9 21.2-12.8s3.6-17.4-1.4-24.7l-120-176zM112 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-youtube {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-hr {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M0 224c0-17.7 14.3-32 32-32H608c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M0 224c0-17.7 14.3-32 32-32H608c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-code {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z"/></svg>');
+}
+.podo-ed-toolbarButton i.podo-ed-table {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M64 256V160H224v96H64zm0 64H224v96H64V320zm224 96V320H448v96H288zM448 256H288V160H448v96zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M64 256V160H224v96H64zm0 64H224v96H64V320zm224 96V320H448v96H288zM448 256H288V160H448v96zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"/></svg>');
+}
+.podo-ed-toolbarButton:hover i {
+  opacity: 1;
+}
+
+.podo-ed-paragraphButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-modal);
+  color: var(--color-text-body);
+  font-size: 13px;
+  min-width: 100px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 0 2px;
+}
+.podo-ed-paragraphButton:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-default-fill);
+}
+.podo-ed-paragraphButton:focus {
+  outline: 2px solid var(--color-primary-outline);
+  outline-offset: -1px;
+  border-color: var(--color-primary);
+}
+.podo-ed-paragraphButton span {
+  flex: 1;
+  text-align: left;
+}
+
+.podo-ed-dropdownArrow {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--color-text-body);
+  transition: transform 0.2s;
+}
+
+.podo-ed-paragraphDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px;
+  min-width: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: var(--color-bg-modal);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+}
+.podo-ed-paragraphDropdown h1 {
+  font-size: 54px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.podo-ed-paragraphDropdown h1:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-paragraphDropdown h1 {
+    font-size: 24px;
+  }
+}
+.podo-ed-paragraphDropdown h1 {
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+.podo-ed-paragraphDropdown h2 {
+  font-size: 42px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.podo-ed-paragraphDropdown h2:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-paragraphDropdown h2 {
+    font-size: 18px;
+  }
+}
+.podo-ed-paragraphDropdown h2 {
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+.podo-ed-paragraphDropdown h3 {
+  font-size: 36px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.podo-ed-paragraphDropdown h3:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-paragraphDropdown h3 {
+    font-size: 16px;
+  }
+}
+.podo-ed-paragraphDropdown h3 {
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+.podo-ed-paragraphOption {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  border: none;
+  border-radius: 0;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.podo-ed-paragraphOption:hover {
+  background: var(--color-default-hover);
+}
+.podo-ed-paragraphOption.podo-ed-active {
+  background: var(--color-primary-fill);
+}
+
+.podo-ed-alignDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px;
+  padding: 4px;
+  background: var(--color-bg-modal);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.podo-ed-alignOption {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-action);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.podo-ed-alignOption i {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  mask-size: 16px 16px;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: 16px 16px;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+.podo-ed-alignOption .podo-ed-alignLeft {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M288 64c0 17.7-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32H256c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H256c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M288 64c0 17.7-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32H256c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H256c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+}
+.podo-ed-alignOption .podo-ed-alignCenter {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M352 64c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32zm96 128c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32zM0 448c0 17.7 14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zM352 320c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M352 64c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32zm96 128c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32zM0 448c0 17.7 14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zM352 320c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32z"/></svg>');
+}
+.podo-ed-alignOption .podo-ed-alignRight {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M448 64c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M448 64c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+}
+.podo-ed-alignOption:hover {
+  background: var(--color-default-fill);
+  border-color: var(--color-border-hover);
+}
+.podo-ed-alignOption:hover i {
+  opacity: 1;
+}
+.podo-ed-alignOption.podo-ed-active {
+  background: var(--color-primary-fill);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.podo-ed-linkDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px;
+  padding: 12px;
+  background: var(--color-bg-modal);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  min-width: 280px;
+}
+.podo-ed-linkDropdown .podo-ed-linkInput {
+  margin-bottom: 12px;
+}
+.podo-ed-linkDropdown .podo-ed-linkInput label {
+  display: block;
+  font-size: 12px;
+  color: var(--color-text-sub);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.podo-ed-linkDropdown .podo-ed-linkInput input[type="text"] {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.podo-ed-linkDropdown .podo-ed-linkInput input[type="text"]:focus {
+  border-color: var(--color-primary);
+}
+.podo-ed-linkDropdown .podo-ed-linkInput input[type="text"]::placeholder {
+  color: var(--color-text-placeholder);
+}
+.podo-ed-linkDropdown .podo-ed-linkTarget {
+  margin-bottom: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+.podo-ed-linkDropdown .podo-ed-linkTarget label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--color-text-body);
+  cursor: pointer;
+}
+.podo-ed-linkDropdown .podo-ed-linkTarget label:last-child {
+  margin-bottom: 0;
+}
+.podo-ed-linkDropdown .podo-ed-linkTarget label input[type="radio"] {
+  margin-right: 6px;
+  cursor: pointer;
+}
+.podo-ed-linkDropdown .podo-ed-linkActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.podo-ed-linkDropdown .podo-ed-linkActions button {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.podo-ed-linkDropdown .podo-ed-linkActions button.podo-ed-primary {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+.podo-ed-linkDropdown .podo-ed-linkActions button.podo-ed-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+.podo-ed-linkDropdown .podo-ed-linkActions button.podo-ed-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.podo-ed-linkDropdown .podo-ed-linkActions button.podo-ed-default {
+  background-color: transparent;
+  color: inherit;
+  border-color: var(--color-border);
+}
+.podo-ed-linkDropdown .podo-ed-linkActions button.podo-ed-default:hover:not(:disabled) {
+  background-color: var(--color-bg-elevation);
+}
+
+.podo-ed-tableDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px;
+  padding: 12px;
+  background: var(--color-bg-modal);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  min-width: 240px;
+}
+.podo-ed-tableDropdown .podo-ed-tableGridSelector .podo-ed-tableGridLabel {
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-body);
+  margin-bottom: 8px;
+  font-weight: 500;
+  min-height: 20px;
+}
+.podo-ed-tableDropdown .podo-ed-tableGridSelector .podo-ed-tableGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.podo-ed-tableDropdown .podo-ed-tableGridSelector .podo-ed-tableGrid .podo-ed-tableGridRow {
+  display: flex;
+  gap: 2px;
+}
+.podo-ed-tableDropdown
+  .podo-ed-tableGridSelector
+  .podo-ed-tableGrid
+  .podo-ed-tableGridRow
+  .podo-ed-tableGridCell {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevation);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.podo-ed-tableDropdown
+  .podo-ed-tableGridSelector
+  .podo-ed-tableGrid
+  .podo-ed-tableGridRow
+  .podo-ed-tableGridCell:hover {
+  border-color: var(--color-primary);
+}
+.podo-ed-tableDropdown
+  .podo-ed-tableGridSelector
+  .podo-ed-tableGrid
+  .podo-ed-tableGridRow
+  .podo-ed-tableGridCell.podo-ed-active {
+  background: var(--color-primary-fill);
+  border-color: var(--color-primary);
+}
+
+.podo-ed-tableContextMenu {
+  background: var(--color-bg-modal);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  min-width: 180px;
+}
+.podo-ed-tableContextMenu .podo-ed-tableContextMenuHeader {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-primary-fill);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 4px;
+}
+.podo-ed-tableContextMenu .podo-ed-tableContextMenuItem {
+  position: relative;
+}
+.podo-ed-tableContextMenu .podo-ed-tableContextMenuItem .podo-ed-colorPaletteInline {
+  padding: 8px;
+  background: var(--color-bg-elevation);
+  border-top: 1px solid var(--color-border);
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.podo-ed-tableContextMenu .podo-ed-tableContextMenuButton {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-body);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.podo-ed-tableContextMenu .podo-ed-tableContextMenuButton:hover {
+  background: var(--color-bg-elevation);
+}
+.podo-ed-tableContextMenu .podo-ed-tableContextMenuButton:active {
+  background: var(--color-default-pressed);
+}
+.podo-ed-tableContextMenu .podo-ed-tableContextMenuButton .podo-ed-arrow {
+  font-size: 10px;
+  color: var(--color-text-sub);
+}
+.podo-ed-tableContextMenu .podo-ed-tableContextMenuDivider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 4px 0;
+}
+
+.podo-ed-colorPalette {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px;
+  padding: 8px;
+  background: var(--color-bg-modal);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.podo-ed-colorRow {
+  display: flex;
+  gap: 4px;
+}
+
+.podo-ed-colorButton {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.podo-ed-colorButton:hover {
+  transform: scale(1.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-outline);
+}
+.podo-ed-colorButton:active {
+  transform: scale(0.95);
+}
+
+.podo-ed-pDefault {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-pDefault:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-pDefault {
+    font-size: 14px;
+  }
+}
+.podo-ed-pDefault {
+  margin: 0;
+}
+
+.podo-ed-p1Preview {
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.podo-ed-p1Preview:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-p1Preview {
+    font-size: 20px;
+  }
+}
+.podo-ed-p1Preview {
+  margin: 0;
+}
+
+.podo-ed-p1_semiboldPreview {
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.podo-ed-p1_semiboldPreview:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-p1_semiboldPreview {
+    font-size: 20px;
+  }
+}
+.podo-ed-p1_semiboldPreview {
+  font-weight: 600;
+  margin: 0;
+}
+
+.podo-ed-p2Preview {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-p2Preview:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-p2Preview {
+    font-size: 16px;
+  }
+}
+.podo-ed-p2Preview {
+  margin: 0;
+}
+
+.podo-ed-p2_semiboldPreview {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-p2_semiboldPreview:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-p2_semiboldPreview {
+    font-size: 16px;
+  }
+}
+.podo-ed-p2_semiboldPreview {
+  font-weight: 600;
+  margin: 0;
+}
+
+.podo-ed-p3Preview {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-p3Preview:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-p3Preview {
+    font-size: 14px;
+  }
+}
+.podo-ed-p3Preview {
+  margin: 0;
+}
+
+.podo-ed-p3_semiboldPreview {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-ed-p3_semiboldPreview:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-p3_semiboldPreview {
+    font-size: 14px;
+  }
+}
+.podo-ed-p3_semiboldPreview {
+  margin: 0;
+}
+
+.podo-ed-p4Preview {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-p4Preview:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-p4Preview {
+    font-size: 12px;
+  }
+}
+.podo-ed-p4Preview {
+  margin: 0;
+}
+
+.podo-ed-p4_semiboldPreview {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-ed-p4_semiboldPreview:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-p4_semiboldPreview {
+    font-size: 12px;
+  }
+}
+.podo-ed-p4_semiboldPreview {
+  margin: 0;
+}
+
+.podo-ed-p5Preview {
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-p5Preview:not(button) {
+  color: var(--color-text-body);
+}
+.podo-ed-p5Preview {
+  margin: 0;
+}
+
+.podo-ed-p5_semiboldPreview {
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-ed-p5_semiboldPreview:not(button) {
+  color: var(--color-text-body);
+}
+.podo-ed-p5_semiboldPreview {
+  margin: 0;
+}
+
+.podo-ed-editorContainer {
+  background: var(--color-bg-modal);
+  overflow: hidden;
+}
+.podo-ed-editorContainer.podo-ed-resizable {
+  resize: vertical;
+  overflow: auto;
+}
+.podo-ed-editorContainer.podo-ed-resizable::-webkit-resizer {
+  background: transparent;
+}
+
+.podo-ed-editorContent {
+  padding: 16px 20px;
+  color: var(--color-text-body);
+  font-family: inherit;
+  overflow-y: auto;
+  overflow-x: hidden;
+  outline: none;
+  background: transparent;
+  box-sizing: border-box;
+}
+.podo-ed-editorContent:focus {
+  outline: none;
+}
+.podo-ed-editorContent:empty::before {
+  content: attr(data-placeholder);
+  color: var(--color-text-sub);
+  pointer-events: none;
+}
+.podo-ed-editorContent strong,
+.podo-ed-editorContent b {
+  font-weight: bold;
+}
+.podo-ed-editorContent em,
+.podo-ed-editorContent i {
+  font-style: italic;
+}
+.podo-ed-editorContent u {
+  text-decoration: underline;
+}
+.podo-ed-editorContent s,
+.podo-ed-editorContent strike {
+  text-decoration: line-through;
+}
+.podo-ed-editorContent h1 {
+  font-size: 54px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.podo-ed-editorContent h1:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent h1 {
+    font-size: 24px;
+  }
+}
+.podo-ed-editorContent h1 {
+  margin: 0.67em 0;
+}
+.podo-ed-editorContent h2 {
+  font-size: 42px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.podo-ed-editorContent h2:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent h2 {
+    font-size: 18px;
+  }
+}
+.podo-ed-editorContent h2 {
+  margin: 0.75em 0;
+}
+.podo-ed-editorContent h3 {
+  font-size: 36px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.podo-ed-editorContent h3:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent h3 {
+    font-size: 16px;
+  }
+}
+.podo-ed-editorContent h3 {
+  margin: 0.83em 0;
+}
+.podo-ed-editorContent .podo-ed-p1 {
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.podo-ed-editorContent .podo-ed-p1:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent .podo-ed-p1 {
+    font-size: 20px;
+  }
+}
+.podo-ed-editorContent .podo-ed-p2 {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorContent .podo-ed-p2:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent .podo-ed-p2 {
+    font-size: 16px;
+  }
+}
+.podo-ed-editorContent .podo-ed-p3 {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorContent .podo-ed-p3:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent .podo-ed-p3 {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorContent .podo-ed-p4 {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorContent .podo-ed-p4:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent .podo-ed-p4 {
+    font-size: 12px;
+  }
+}
+.podo-ed-editorContent .podo-ed-p5 {
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorContent .podo-ed-p5:not(button) {
+  color: var(--color-text-body);
+}
+.podo-ed-editorContent .podo-ed-p1_semibold {
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.podo-ed-editorContent .podo-ed-p1_semibold:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent .podo-ed-p1_semibold {
+    font-size: 20px;
+  }
+}
+.podo-ed-editorContent .podo-ed-p1_semibold {
+  font-weight: 600;
+}
+.podo-ed-editorContent .podo-ed-p2_semibold {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorContent .podo-ed-p2_semibold:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent .podo-ed-p2_semibold {
+    font-size: 16px;
+  }
+}
+.podo-ed-editorContent .podo-ed-p2_semibold {
+  font-weight: 600;
+}
+.podo-ed-editorContent .podo-ed-p3_semibold {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-ed-editorContent .podo-ed-p3_semibold:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent .podo-ed-p3_semibold {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorContent .podo-ed-p4_semibold {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-ed-editorContent .podo-ed-p4_semibold:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent .podo-ed-p4_semibold {
+    font-size: 12px;
+  }
+}
+.podo-ed-editorContent .podo-ed-p5_semibold {
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-ed-editorContent .podo-ed-p5_semibold:not(button) {
+  color: var(--color-text-body);
+}
+.podo-ed-editorContent p {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorContent p:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent p {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorContent p {
+  margin: 1em 0;
+}
+.podo-ed-editorContent p:first-child {
+  margin-top: 0;
+}
+.podo-ed-editorContent p:last-child {
+  margin-bottom: 0;
+}
+.podo-ed-editorContent a {
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.podo-ed-editorContent a:hover {
+  color: var(--color-link-hover);
+}
+.podo-ed-editorContent ul,
+.podo-ed-editorContent ol {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorContent ul:not(button),
+.podo-ed-editorContent ol:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent ul,
+  .podo-ed-editorContent ol {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorContent ul,
+.podo-ed-editorContent ol {
+  margin: 1em 0 !important;
+  padding-left: 2em !important;
+  padding-top: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+}
+.podo-ed-editorContent ul:first-child,
+.podo-ed-editorContent ol:first-child {
+  margin-top: 0 !important;
+}
+.podo-ed-editorContent ul:last-child,
+.podo-ed-editorContent ol:last-child {
+  margin-bottom: 0 !important;
+}
+.podo-ed-editorContent ul {
+  list-style: disc !important;
+  list-style-type: disc !important;
+  list-style-position: outside !important;
+}
+.podo-ed-editorContent ol {
+  list-style: decimal !important;
+  list-style-type: decimal !important;
+  list-style-position: outside !important;
+}
+.podo-ed-editorContent li {
+  display: list-item !important;
+  margin: 0.5em 0 !important;
+  padding: 0 !important;
+  list-style: inherit !important;
+  list-style-position: outside !important;
+}
+.podo-ed-editorContent li ul,
+.podo-ed-editorContent li ol {
+  margin: 0.5em 0 !important;
+  padding-left: 1.5em !important;
+}
+.podo-ed-editorContent li ul {
+  list-style-type: circle !important;
+}
+.podo-ed-editorContent li ol {
+  list-style-type: lower-alpha !important;
+}
+.podo-ed-editorContent img {
+  display: inline-block !important;
+  vertical-align: middle;
+  max-width: 100%;
+  height: auto;
+}
+.podo-ed-editorContent blockquote {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorContent blockquote:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorContent blockquote {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorContent blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  border-left: 4px solid var(--color-border);
+  color: var(--color-text-sub);
+  font-style: italic;
+}
+
+.podo-ed-validator {
+  padding: 8px 16px;
+  background: var(--color-danger-fill);
+  color: var(--color-danger);
+  font-size: 12px;
+  border-top: 1px solid var(--color-danger-outline);
+}
+
+.podo-ed-imageDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px;
+  padding: 16px;
+  background: var(--color-bg-modal);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  min-width: 360px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.podo-ed-imageDropdown .podo-ed-imageTabSection {
+  margin-bottom: 16px;
+}
+.podo-ed-imageDropdown .podo-ed-imageTabSection .podo-ed-imageTabButtons {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+.podo-ed-imageDropdown .podo-ed-imageTabSection .podo-ed-imageTabButtons button {
+  flex: 1;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--color-text-sub);
+  transition: all 0.15s;
+}
+.podo-ed-imageDropdown .podo-ed-imageTabSection .podo-ed-imageTabButtons button.podo-ed-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 500;
+}
+.podo-ed-imageDropdown .podo-ed-imageTabSection .podo-ed-imageTabButtons button:hover {
+  color: var(--color-text);
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageTabSection
+  .podo-ed-imageFileSection
+  .podo-ed-fileSelectButton {
+  width: 100%;
+  padding: 10px;
+  border: 1px dashed var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg-elevation);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageTabSection
+  .podo-ed-imageFileSection
+  .podo-ed-fileSelectButton:hover {
+  border-color: var(--color-primary);
+  background: var(--color-bg-modal);
+}
+.podo-ed-imageDropdown .podo-ed-imageTabSection .podo-ed-imageFileSection .podo-ed-imagePreviewBox {
+  margin-top: 12px;
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg-elevation);
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageTabSection
+  .podo-ed-imageFileSection
+  .podo-ed-imagePreviewBox
+  img {
+  width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+}
+.podo-ed-imageDropdown .podo-ed-imageTabSection .podo-ed-imageUrlSection input[type="text"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.podo-ed-imageDropdown .podo-ed-imageTabSection .podo-ed-imageUrlSection input[type="text"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+.podo-ed-imageDropdown .podo-ed-imageOptions {
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+.podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow:last-child {
+  margin-bottom: 0;
+}
+.podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow label {
+  flex: 0 0 80px;
+  font-size: 12px;
+  color: var(--color-text-sub);
+  font-weight: 500;
+}
+.podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow select,
+.podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow input[type="text"] {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 12px;
+  transition: all 0.15s;
+}
+.podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow select:focus,
+.podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow input[type="text"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+.podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow .podo-ed-imageSizeButtons {
+  flex: 1;
+  display: flex;
+  gap: 4px;
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageSizeButtons
+  button {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg-modal);
+  color: var(--color-text-sub);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageSizeButtons
+  button:hover {
+  background: var(--color-bg-elevation);
+  color: var(--color-text-body);
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageSizeButtons
+  button.podo-ed-active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+.podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow .podo-ed-imageAlignButtons {
+  flex: 1;
+  display: flex;
+  gap: 4px;
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageAlignButtons
+  button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg-modal);
+  color: var(--color-text-sub);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageAlignButtons
+  button
+  i {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  mask-size: 14px 14px;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: 14px 14px;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageAlignButtons
+  button
+  i.podo-ed-alignLeft {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M288 64c0 17.7-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32H256c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H256c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M288 64c0 17.7-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32H256c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H256c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageAlignButtons
+  button
+  i.podo-ed-alignCenter {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M352 64c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32zm96 128c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32zM0 448c0 17.7 14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zM352 320c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M352 64c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32zm96 128c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32zM0 448c0 17.7 14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zM352 320c0-17.7-14.3-32-32-32H128c-17.7 0-32 14.3-32 32s14.3 32 32 32H320c17.7 0 32-14.3 32-32z"/></svg>');
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageAlignButtons
+  button
+  i.podo-ed-alignRight {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M448 64c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M448 64c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>');
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageAlignButtons
+  button:hover {
+  background: var(--color-bg-elevation);
+  color: var(--color-text-body);
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageAlignButtons
+  button:hover
+  i {
+  opacity: 1;
+}
+.podo-ed-imageDropdown
+  .podo-ed-imageOptions
+  .podo-ed-imageOptionRow
+  .podo-ed-imageAlignButtons
+  button.podo-ed-active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+.podo-ed-imageDropdown .podo-ed-imageActions {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.podo-ed-imageDropdown .podo-ed-imageActions button {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.podo-ed-imageDropdown .podo-ed-imageActions button.podo-ed-primary {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+.podo-ed-imageDropdown .podo-ed-imageActions button.podo-ed-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+.podo-ed-imageDropdown .podo-ed-imageActions button.podo-ed-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.podo-ed-imageDropdown .podo-ed-imageActions button.podo-ed-danger {
+  background-color: var(--color-danger);
+  color: white;
+  border-color: var(--color-danger);
+}
+.podo-ed-imageDropdown .podo-ed-imageActions button.podo-ed-danger:hover:not(:disabled) {
+  background-color: var(--color-danger-hover);
+  border-color: var(--color-danger-hover);
+}
+.podo-ed-imageDropdown .podo-ed-imageActions button.podo-ed-default {
+  background-color: transparent;
+  color: inherit;
+  border-color: var(--color-border);
+}
+.podo-ed-imageDropdown .podo-ed-imageActions button.podo-ed-default:hover:not(:disabled) {
+  background-color: var(--color-bg-elevation);
+}
+
+.podo-ed-editLinkPopup {
+  position: absolute;
+  padding: 12px;
+  background: var(--color-bg-modal);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  min-width: 300px;
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkInput {
+  margin-bottom: 12px;
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkInput label {
+  display: block;
+  font-size: 12px;
+  color: var(--color-text-sub);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkInput input[type="text"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkInput input[type="text"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkTarget {
+  margin-bottom: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkTarget label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkTarget label:last-child {
+  margin-bottom: 0;
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkTarget label input[type="radio"] {
+  margin-right: 6px;
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkActions {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkActions button {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkActions button.podo-ed-primary {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+.podo-ed-editLinkPopup
+  .podo-ed-editLinkContent
+  .podo-ed-editLinkActions
+  button.podo-ed-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+.podo-ed-editLinkPopup
+  .podo-ed-editLinkContent
+  .podo-ed-editLinkActions
+  button.podo-ed-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkActions button.podo-ed-danger {
+  background-color: var(--color-danger);
+  color: white;
+  border-color: var(--color-danger);
+}
+.podo-ed-editLinkPopup
+  .podo-ed-editLinkContent
+  .podo-ed-editLinkActions
+  button.podo-ed-danger:hover:not(:disabled) {
+  background-color: var(--color-danger-hover);
+  border-color: var(--color-danger-hover);
+}
+.podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkActions button.podo-ed-default {
+  background-color: transparent;
+  color: inherit;
+  border-color: var(--color-border);
+}
+.podo-ed-editLinkPopup
+  .podo-ed-editLinkContent
+  .podo-ed-editLinkActions
+  button.podo-ed-default:hover:not(:disabled) {
+  background-color: var(--color-bg-elevation);
+}
+
+.podo-ed-codeEditor {
+  padding: 16px 20px;
+  font-size: 13px;
+  line-height: 1.5;
+  background: transparent;
+  color: var(--color-text-primary);
+  border: none;
+  outline: none;
+  white-space: pre;
+  overflow-y: auto;
+  tab-size: 2;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.podo-ed-editorContent .selected-cell {
+  outline: 2px solid var(--color-primary) !important;
+  outline-offset: -2px !important;
+  position: relative;
+}
+.podo-ed-editorView {
+  color: var(--color-text-body);
+  font-family: inherit;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.podo-ed-editorView strong,
+.podo-ed-editorView b {
+  font-weight: bold;
+}
+.podo-ed-editorView em,
+.podo-ed-editorView i {
+  font-style: italic;
+}
+.podo-ed-editorView u {
+  text-decoration: underline;
+}
+.podo-ed-editorView s,
+.podo-ed-editorView strike {
+  text-decoration: line-through;
+}
+.podo-ed-editorView h1 {
+  font-size: 54px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.podo-ed-editorView h1:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView h1 {
+    font-size: 24px;
+  }
+}
+.podo-ed-editorView h1 {
+  margin: 0.67em 0;
+}
+.podo-ed-editorView h2 {
+  font-size: 42px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.podo-ed-editorView h2:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView h2 {
+    font-size: 18px;
+  }
+}
+.podo-ed-editorView h2 {
+  margin: 0.75em 0;
+}
+.podo-ed-editorView h3 {
+  font-size: 36px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.podo-ed-editorView h3:not(button) {
+  color: var(--color-text-header);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView h3 {
+    font-size: 16px;
+  }
+}
+.podo-ed-editorView h3 {
+  margin: 0.83em 0;
+}
+.podo-ed-editorView .podo-ed-p1 {
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.podo-ed-editorView .podo-ed-p1:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView .podo-ed-p1 {
+    font-size: 20px;
+  }
+}
+.podo-ed-editorView .podo-ed-p2 {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorView .podo-ed-p2:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView .podo-ed-p2 {
+    font-size: 16px;
+  }
+}
+.podo-ed-editorView .podo-ed-p3 {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorView .podo-ed-p3:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView .podo-ed-p3 {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorView .podo-ed-p4 {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorView .podo-ed-p4:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView .podo-ed-p4 {
+    font-size: 12px;
+  }
+}
+.podo-ed-editorView .podo-ed-p5 {
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorView .podo-ed-p5:not(button) {
+  color: var(--color-text-body);
+}
+.podo-ed-editorView .podo-ed-p1_semibold {
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.podo-ed-editorView .podo-ed-p1_semibold:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView .podo-ed-p1_semibold {
+    font-size: 20px;
+  }
+}
+.podo-ed-editorView .podo-ed-p1_semibold {
+  font-weight: 600;
+}
+.podo-ed-editorView .podo-ed-p2_semibold {
+  font-size: 20px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorView .podo-ed-p2_semibold:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView .podo-ed-p2_semibold {
+    font-size: 16px;
+  }
+}
+.podo-ed-editorView .podo-ed-p2_semibold {
+  font-weight: 600;
+}
+.podo-ed-editorView .podo-ed-p3_semibold {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-ed-editorView .podo-ed-p3_semibold:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView .podo-ed-p3_semibold {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorView .podo-ed-p4_semibold {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-ed-editorView .podo-ed-p4_semibold:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView .podo-ed-p4_semibold {
+    font-size: 12px;
+  }
+}
+.podo-ed-editorView .podo-ed-p5_semibold {
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.podo-ed-editorView .podo-ed-p5_semibold:not(button) {
+  color: var(--color-text-body);
+}
+.podo-ed-editorView p {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorView p:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView p {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorView p {
+  margin: 1em 0;
+}
+.podo-ed-editorView p:first-child {
+  margin-top: 0;
+}
+.podo-ed-editorView p:last-child {
+  margin-bottom: 0;
+}
+.podo-ed-editorView a {
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.podo-ed-editorView a:hover {
+  color: var(--color-link-hover);
+}
+.podo-ed-editorView ul,
+.podo-ed-editorView ol {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorView ul:not(button),
+.podo-ed-editorView ol:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView ul,
+  .podo-ed-editorView ol {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorView ul,
+.podo-ed-editorView ol {
+  margin: 1em 0 !important;
+  padding-left: 2em !important;
+  padding-top: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+}
+.podo-ed-editorView ul:first-child,
+.podo-ed-editorView ol:first-child {
+  margin-top: 0 !important;
+}
+.podo-ed-editorView ul:last-child,
+.podo-ed-editorView ol:last-child {
+  margin-bottom: 0 !important;
+}
+.podo-ed-editorView ul {
+  list-style: disc !important;
+  list-style-type: disc !important;
+  list-style-position: outside !important;
+}
+.podo-ed-editorView ol {
+  list-style: decimal !important;
+  list-style-type: decimal !important;
+  list-style-position: outside !important;
+}
+.podo-ed-editorView li {
+  display: list-item !important;
+  margin: 0.5em 0 !important;
+  padding: 0 !important;
+  list-style: inherit !important;
+  list-style-position: outside !important;
+}
+.podo-ed-editorView li ul,
+.podo-ed-editorView li ol {
+  margin: 0.5em 0 !important;
+  padding-left: 1.5em !important;
+}
+.podo-ed-editorView li ul {
+  list-style-type: circle !important;
+}
+.podo-ed-editorView li ol {
+  list-style-type: lower-alpha !important;
+}
+.podo-ed-editorView img {
+  display: inline-block !important;
+  vertical-align: middle;
+  max-width: 100%;
+  height: auto;
+}
+.podo-ed-editorView blockquote {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorView blockquote:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView blockquote {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorView blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  border-left: 4px solid var(--color-border);
+  color: var(--color-text-sub);
+  font-style: italic;
+}
+.podo-ed-editorView .youtube-container {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+.podo-ed-editorView .youtube-container iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.podo-ed-editorView .youtube-container .youtube-overlay {
+  display: none;
+}
+.podo-ed-editorView code {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorView code:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView code {
+    font-size: 12px;
+  }
+}
+.podo-ed-editorView code {
+  background: var(--color-bg-elevation-1);
+  color: var(--color-text-body);
+  padding: 2px 6px;
+  border-radius: 2px;
+  border: 1px solid var(--color-default-outline);
+}
+.podo-ed-editorView pre {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.podo-ed-editorView pre:not(button) {
+  color: var(--color-text-body);
+}
+@media screen and (max-width: calc(768px - 1px)) {
+  .podo-ed-editorView pre {
+    font-size: 14px;
+  }
+}
+.podo-ed-editorView pre {
+  background: var(--color-bg-elevation-1);
+  color: var(--color-text-body);
+  padding: 12px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--color-default-outline);
+  overflow-x: auto;
+  margin: 1em 0;
+}
+.podo-ed-editorView pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.podo-ed-editorView span[style*="background-color"] {
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+.podo-ed-editorView span[style*="color: #fff"],
+.podo-ed-editorView span[style*="color: white"],
+.podo-ed-editorView span[style*="color: rgb(255, 255, 255)"] {
+  color: var(--color-text-body) !important;
+}
+.podo-ed-editorView span[style*="color: #000"],
+.podo-ed-editorView span[style*="color: black"],
+.podo-ed-editorView span[style*="color: rgb(0, 0, 0)"] {
+  color: var(--color-text-body) !important;
+}

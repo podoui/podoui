@@ -322,6 +322,9 @@ importers:
       react-dom:
         specifier: '>=18'
         version: 19.2.7(react@19.2.7)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/spec:
     dependencies:

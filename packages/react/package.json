@@ -23,7 +23,8 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@podoui/core": "workspace:*"
+    "@podoui/core": "workspace:*",
+    "zod": "^4.4.3"
   },
   "peerDependencies": {
     "react": ">=18",

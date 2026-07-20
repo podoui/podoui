@@ -18,6 +18,14 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    // v1에서 포팅한 vendor 소스 — 미사용 심볼/any 정리는 후속 리팩토링에서.
+    files: ["packages/react/src/datepicker.tsx", "packages/react/src/editor/**"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
+  {
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",

@@ -2146,3 +2146,21 @@ function initialControlLength(children: ReactNode): number {
   });
   return length;
 }
+
+// ---- v1 포팅 컴포넌트 (SRP 구조 유지: datepicker.tsx, editor/) ----
+export { default as DatePicker } from "./datepicker.js";
+export type {
+  DatePickerProps,
+  DatePickerValue,
+  DatePickerMode,
+  DatePickerType,
+  TimeValue,
+  DateRange,
+  DateCondition,
+  DateTimeLimit,
+  MinuteStep,
+} from "./datepicker.js";
+export { default as Editor } from "./editor/index.js";
+export type { EditorProps, ToolbarItem } from "./editor/types.js";
+export { default as EditorView } from "./editor/view.js";
+export type { EditorViewProps } from "./editor/view.js";
