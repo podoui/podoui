@@ -2,7 +2,7 @@
   "name": "podo-ui",
   "version": "2.0.0",
   "type": "module",
-  "description": "Podo UI v2 — JSON-spec-first design system for web, React, Hono, and React Native. Meta package over @podoui/*.",
+  "description": "Podo UI v2 — JSON-spec-first design system for web, React, Hono, and React Native. Includes the podo CLI and MCP server.",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -10,48 +10,104 @@
   "files": [
     "dist"
   ],
+  "bin": {
+    "podo": "./dist/cli/index.js",
+    "podo-mcp": "./dist/mcp/index.js"
+  },
   "exports": {
     "./spec": {
-      "types": "./dist/spec.d.ts",
-      "import": "./dist/spec.js"
+      "types": "./dist/spec/index.d.ts",
+      "import": "./dist/spec/index.js"
     },
     "./tokens": {
-      "types": "./dist/tokens.d.ts",
-      "import": "./dist/tokens.js"
+      "types": "./dist/tokens/index.d.ts",
+      "import": "./dist/tokens/index.js"
+    },
+    "./tokens/node": {
+      "types": "./dist/tokens/node.d.ts",
+      "import": "./dist/tokens/node.js"
     },
     "./icons": {
-      "types": "./dist/icons.d.ts",
-      "import": "./dist/icons.js"
+      "types": "./dist/icons/index.d.ts",
+      "import": "./dist/icons/index.js"
     },
     "./core": {
-      "types": "./dist/core.d.ts",
-      "import": "./dist/core.js"
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
     },
     "./web": {
-      "types": "./dist/web.d.ts",
-      "import": "./dist/web.js"
+      "types": "./dist/web/index.d.ts",
+      "import": "./dist/web/index.js"
     },
     "./react": {
-      "types": "./dist/react.d.ts",
-      "import": "./dist/react.js"
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js"
     },
     "./hono": {
-      "types": "./dist/hono.d.ts",
-      "import": "./dist/hono.js"
+      "types": "./dist/hono/index.d.ts",
+      "import": "./dist/hono/index.js"
     },
     "./native": {
-      "types": "./dist/native.d.ts",
-      "import": "./dist/native.js"
+      "types": "./dist/native/index.d.ts",
+      "import": "./dist/native/index.js"
+    },
+    "./codegen": {
+      "types": "./dist/codegen/index.d.ts",
+      "import": "./dist/codegen/index.js"
+    },
+    "./migration": {
+      "types": "./dist/migration/index.d.ts",
+      "import": "./dist/migration/index.js"
+    },
+    "./mcp": {
+      "types": "./dist/mcp/index.d.ts",
+      "import": "./dist/mcp/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli/index.d.ts",
+      "import": "./dist/cli/index.js"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node build.mjs",
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "fantasticon": "^4.1.0",
+    "hono": "^4.12.25",
+    "opentype.js": "2.0.0",
+    "svgo": "^4.0.1",
+    "svgpath": "2.6.0",
+    "wawoff2": "^2.0.1",
+    "woff2-encoder": "2.0.0",
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "react-native": ">=0.73"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@podoui/cli": "workspace:*",
+    "@podoui/codegen": "workspace:*",
     "@podoui/core": "workspace:*",
     "@podoui/hono": "workspace:*",
+    "@podoui/icon-build": "workspace:*",
     "@podoui/icons": "workspace:*",
+    "@podoui/mcp": "workspace:*",
+    "@podoui/migration": "workspace:*",
     "@podoui/native": "workspace:*",
     "@podoui/react": "workspace:*",
     "@podoui/spec": "workspace:*",

@@ -1,6 +1,7 @@
 {
   "name": "@podoui/migration",
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "description": "Migration manifest, JSON Patch runner, and conflict detection for Podo projects.",
   "license": "MIT",

@@ -1,6 +1,7 @@
 {
   "name": "@podoui/native",
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "description": "React Native runtime and token adapter for Podo.",
   "license": "MIT",

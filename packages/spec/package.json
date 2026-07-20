@@ -1,6 +1,7 @@
 {
   "name": "@podoui/spec",
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "description": "JSON schemas and TypeScript contracts for Podo design specs.",
   "license": "MIT",

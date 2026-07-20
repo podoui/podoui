@@ -1,6 +1,7 @@
 {
   "name": "@podoui/hono",
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "description": "Hono TSX and SSR helpers for Podo.",
   "license": "MIT",

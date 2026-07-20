@@ -1,6 +1,7 @@
 {
   "name": "@podoui/core",
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "description": "Shared behavior, accessibility, state, and registry utilities for Podo.",
   "license": "MIT",

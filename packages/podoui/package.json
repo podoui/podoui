@@ -20,10 +20,13 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json && chmod +x dist/index.js",
+    "build": "tsc -p tsconfig.json && node rewrite-dist.mjs && chmod +x dist/index.js",
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
+    "podo-ui": "workspace:*"
+  },
+  "devDependencies": {
     "@podoui/cli": "workspace:*"
   },
   "author": "hada0127 <work@tarucy.net>",

@@ -1,6 +1,7 @@
 {
   "name": "@podoui/tokens",
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "description": "Token loading, merging, resolving, and target emitters for Podo.",
   "license": "MIT",

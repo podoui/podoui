@@ -1,6 +1,7 @@
 {
   "name": "@podoui/icons",
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "description": "Icon manifests, groups, font builds, and native icon outputs for Podo.",
   "license": "MIT",

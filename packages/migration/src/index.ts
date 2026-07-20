@@ -86,7 +86,7 @@ export const migrationOperationSchema = z.discriminatedUnion("op", [
 export const migrationManifestSchema = z.object({
   schemaVersion: z.literal(PODO_SCHEMA_VERSION),
   kind: z.literal("migration-manifest"),
-  packageName: z.string().min(1).default("@podoui/ui"),
+  packageName: z.string().min(1).default("podo-ui"),
   packageVersion: z.string().min(1),
   from: z.string().min(1),
   to: z.string().min(1),
@@ -145,7 +145,7 @@ export function createDefaultMigrationManifest(input: {
   return parseMigrationManifest({
     schemaVersion: PODO_SCHEMA_VERSION,
     kind: "migration-manifest",
-    packageName: "@podoui/ui",
+    packageName: "podo-ui",
     packageVersion: input.packageVersion ?? input.to,
     from: input.from,
     to: input.to,

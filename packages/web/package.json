@@ -1,6 +1,7 @@
 {
   "name": "@podoui/web",
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "description": "Standard Web Component runtime for Podo.",
   "license": "MIT",

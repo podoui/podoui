@@ -1,6 +1,7 @@
 {
   "name": "@podoui/codegen",
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "description": "Component spec code generation templates for Podo targets.",
   "license": "MIT",

@@ -10,7 +10,7 @@ Migration manifests are JSON specs:
 {
   "schemaVersion": "2.0.0",
   "kind": "migration-manifest",
-  "packageName": "@podoui/ui",
+  "packageName": "podo-ui",
   "packageVersion": "2.1.0",
   "from": "2.0.0",
   "to": "2.1.0",

@@ -1,6 +1,7 @@
 {
   "name": "@podoui/react",
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "description": "React runtime and typed component exports for Podo.",
   "license": "MIT",

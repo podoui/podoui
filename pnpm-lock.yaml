@@ -228,15 +228,67 @@ importers:
 
   packages/podo-ui:
     dependencies:
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.29.0
+        version: 1.29.0(zod@4.4.3)
+      fantasticon:
+        specifier: ^4.1.0
+        version: 4.1.0
+      hono:
+        specifier: ^4.12.25
+        version: 4.12.25
+      opentype.js:
+        specifier: 2.0.0
+        version: 2.0.0
+      react:
+        specifier: '>=18'
+        version: 19.2.7
+      react-dom:
+        specifier: '>=18'
+        version: 19.2.7(react@19.2.7)
+      react-native:
+        specifier: '>=0.73'
+        version: 0.86.0(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.7)
+      svgo:
+        specifier: ^4.0.1
+        version: 4.0.1
+      svgpath:
+        specifier: 2.6.0
+        version: 2.6.0
+      wawoff2:
+        specifier: ^2.0.1
+        version: 2.0.1
+      woff2-encoder:
+        specifier: 2.0.0
+        version: 2.0.0
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@podoui/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@podoui/codegen':
+        specifier: workspace:*
+        version: link:../codegen
       '@podoui/core':
         specifier: workspace:*
         version: link:../core
       '@podoui/hono':
         specifier: workspace:*
         version: link:../hono
+      '@podoui/icon-build':
+        specifier: workspace:*
+        version: link:../icon-build
       '@podoui/icons':
         specifier: workspace:*
         version: link:../icons
+      '@podoui/mcp':
+        specifier: workspace:*
+        version: link:../mcp
+      '@podoui/migration':
+        specifier: workspace:*
+        version: link:../migration
       '@podoui/native':
         specifier: workspace:*
         version: link:../native
@@ -255,6 +307,10 @@ importers:
 
   packages/podoui:
     dependencies:
+      podo-ui:
+        specifier: workspace:*
+        version: link:../podo-ui
+    devDependencies:
       '@podoui/cli':
         specifier: workspace:*
         version: link:../cli
