@@ -9,6 +9,7 @@ import {
   normalizeIconSvg,
   parseSvgViewBox,
   sanitizeIconSvg,
+  svgToFillPathData,
   validateInlineSvg,
   type IconGlyphInput,
 } from "./index.js";
@@ -87,6 +88,38 @@ describe("@podoui/icon-build", () => {
       glyphs: [{ name: "shape", codepoint: "E900", svg: normalized }],
     });
     expect(woff2Signature(result.woff2)).toBe("wOF2");
+  });
+
+  it("drops degenerate stroke contours that would rasterize as hairlines", () => {
+    // A micro L-segment (0.001 long) used to emit a zero-area quad; TrueType
+    // dropout control renders such contours as stray hairlines.
+    const svg =
+      '<svg viewBox="0 0 24 24" fill="none">' +
+      '<path d="M4 12L12 12L12.001 12L20 12" stroke="currentColor" stroke-width="1.2"/></svg>';
+    const contours = svgToFillPathData(svg).split("Z").filter(Boolean);
+    expect(contours.length).toBeGreaterThan(0);
+    for (const contour of contours) {
+      const pts = [...contour.matchAll(/[ML](-?[\d.]+) (-?[\d.]+)/g)].map((m): [number, number] => [
+        Number(m[1]),
+        Number(m[2]),
+      ]);
+      let area = 0;
+      for (let i = 0; i < pts.length; i += 1) {
+        const j = (i + 1) % pts.length;
+        area += pts[i]![0] * pts[j]![1] - pts[j]![0] * pts[i]![1];
+      }
+      expect(Math.abs(area / 2)).toBeGreaterThanOrEqual(0.05);
+    }
+  });
+
+  it("drops zero-area subpaths from verbatim fill paths", () => {
+    const svg =
+      '<svg viewBox="0 0 24 24">' +
+      '<path d="M18 15L12 9 6 15Z" fill="currentColor"/>' +
+      '<path d="M18 15L6 15" fill="currentColor"/></svg>';
+    const out = svgToFillPathData(svg);
+    expect(out).toContain("M18 15L12 9 6 15Z"); // real triangle kept verbatim
+    expect(out.replace("M18 15L12 9 6 15Z", "")).not.toMatch(/L6 15/); // stray line dropped
   });
 
   it("rejects SVG with no drawable geometry", async () => {

@@ -33,6 +33,17 @@ const DISC_SEGMENTS = 16; // polygon segments for a round cap / round join disc
 const CORNER_ANGLE = 0.4; // rad; sharper joins get a round disc, smoother ones a cheap wedge
 const DEPTH_SAMPLE_EPS = 0.05; // inward nudge (user units) for even-odd nesting tests
 const COORD_DECIMALS = 2;
+// Contours whose |area| is below this (user units², 24px-viewBox sources) are
+// dropped: after em scaling they round to zero-area contours, which TrueType
+// rasterizers with dropout control draw as stray hairlines. Neighboring quads,
+// discs, and wedges always cover the sub-hairline gap a dropped sliver leaves.
+const DEGENERATE_AREA = 0.05;
+// Minimum spacing (user units) between flattened stroke points. Curve
+// flattening emits micro-segments whose quads are ~1 font unit thick after em
+// scaling; integer rounding collapses those into zero-area bowties that render
+// as hairline slivers. Coalescing keeps every quad ≥ ~2 font units thick
+// (chord error ≤ MIN_SEGMENT²/8r — sub-pixel for any icon-scale radius).
+const MIN_SEGMENT = 0.1;
 
 function round(value: number): number {
   const factor = 10 ** COORD_DECIMALS;
@@ -151,19 +162,20 @@ function polygon(points: Point[]): string {
 
 /** Emit a contour forced counter-clockwise (positive winding) for nonzero union fill. */
 function emitCcw(points: Point[]): string {
-  if (points.length < 3) {
+  const area = signedArea(points);
+  if (points.length < 3 || Math.abs(area) < DEGENERATE_AREA) {
     return "";
   }
-  return polygon(signedArea(points) < 0 ? [...points].reverse() : points);
+  return polygon(area < 0 ? [...points].reverse() : points);
 }
 
 /** Emit a contour with the requested winding so nonzero can reproduce even-odd holes. */
 function emitOriented(points: Point[], wantCcw: boolean): string {
-  if (points.length < 3) {
+  const area = signedArea(points);
+  if (points.length < 3 || Math.abs(area) < DEGENERATE_AREA) {
     return "";
   }
-  const isCcw = signedArea(points) > 0;
-  return polygon(isCcw === wantCcw ? points : [...points].reverse());
+  return polygon(area > 0 === wantCcw ? points : [...points].reverse());
 }
 
 function leftNormal(a: Point, b: Point): Point {
@@ -272,17 +284,18 @@ function outlineStroke(data: string, width: number): string {
     const points: Point[] = [];
     for (const point of sub.points) {
       const last = points[points.length - 1];
-      if (!last || Math.hypot(point[0] - last[0], point[1] - last[1]) > 1e-6) {
+      if (!last || Math.hypot(point[0] - last[0], point[1] - last[1]) > MIN_SEGMENT) {
         points.push(point);
       }
     }
-    let pts = points;
-    if (
+    const pts = points;
+    while (
       sub.closed &&
       pts.length > 1 &&
-      Math.hypot(pts[0]![0] - pts[pts.length - 1]![0], pts[0]![1] - pts[pts.length - 1]![1]) < 1e-6
+      Math.hypot(pts[0]![0] - pts[pts.length - 1]![0], pts[0]![1] - pts[pts.length - 1]![1]) <
+        MIN_SEGMENT
     ) {
-      pts = pts.slice(0, -1);
+      pts.pop();
     }
     const n = pts.length;
     if (n === 0) {
@@ -290,6 +303,18 @@ function outlineStroke(data: string, width: number): string {
     }
     if (n === 1) {
       out += disc(pts[0]![0], pts[0]![1], half);
+      continue;
+    }
+    // A subpath entirely within half a stroke-width of its centroid (e.g. a
+    // bullet dot drawn as a tiny circle) strokes to one solid disc; expanding
+    // it per-segment yields folded micro-quads that round to hairline slivers.
+    const cx = pts.reduce((sum, p) => sum + p[0], 0) / n;
+    const cy = pts.reduce((sum, p) => sum + p[1], 0) / n;
+    const maxR = Math.max(...pts.map((p) => Math.hypot(p[0] - cx, p[1] - cy)));
+    // Tolerance: a hole up to 0.05 user units (sub-pixel at render sizes) is
+    // filled rather than expanded into quads that fold through the centroid.
+    if (maxR <= half + 0.05) {
+      out += disc(cx, cy, maxR + half);
       continue;
     }
     const segmentEnd = sub.closed ? n : n - 1;
@@ -325,6 +350,19 @@ function outlineStroke(data: string, width: number): string {
     }
   }
   return out;
+}
+
+/**
+ * Drop zero-area subpaths from a verbatim fill path (Figma exports stray filled
+ * lines, e.g. a triangle's detached base edge) — they rasterize as hairlines.
+ * Returns the input untouched when every subpath is fine (v1 byte round-trip).
+ */
+function dropDegenerateFillSubpaths(data: string): string {
+  const parts = svgpathFactory(data).abs().toString().split(/(?=M)/);
+  const keep = parts.filter((part) =>
+    flattenPath(part).some((sub) => Math.abs(signedArea(sub.points)) >= DEGENERATE_AREA)
+  );
+  return keep.length === parts.length ? data : keep.join("");
 }
 
 const ELEMENT_RE = /<(path|rect|circle|ellipse|line|polyline|polygon)\b([^>]*?)\/?>/gi;
@@ -444,7 +482,9 @@ export function svgToFillPathData(svg: string): string {
     if (fillVisible) {
       // A plain nonzero <path> is passed through verbatim (keeps curves, byte-for-byte
       // v1 round-trip); shapes and even-odd fills are flattened to nonzero contours.
-      segments.push(tag === "path" && !evenOdd ? data : fillEvenOdd(data));
+      segments.push(
+        tag === "path" && !evenOdd ? dropDegenerateFillSubpaths(data) : fillEvenOdd(data)
+      );
     }
     if (strokeVisible) {
       segments.push(outlineStroke(data, strokeWidth));
