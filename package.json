@@ -8,10 +8,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hada0127/podo-ui.git"
+    "url": "git+https://github.com/podoui/podoui.git"
   },
   "bugs": {
-    "url": "https://github.com/hada0127/podo-ui/issues"
+    "url": "https://github.com/podoui/podoui/issues"
   },
   "homepage": "https://podoui.com",
   "scripts": {

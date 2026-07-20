@@ -1,0 +1,43 @@
+name: Publish podo-ui
+
+# npm Trusted Publisher(OIDC)로 podo-ui를 배포한다 — 토큰/OTP 불필요.
+# npmjs.com의 podo-ui 패키지 설정에 이 저장소의 "notify-publish.yml"이
+# trusted publisher로 등록되어 있으므로 파일명을 바꾸면 안 된다.
+# 트리거: v* 태그 push 또는 수동 실행.
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write # npm OIDC 교환에 필요
+
+concurrency:
+  group: notify-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24 # npm 11+ (OIDC trusted publishing 지원)
+
+      # corepack이 package.json packageManager의 pnpm 버전을 사용한다
+      # (pnpm 10.13+ 는 OIDC trusted publishing을 자체 지원).
+      - run: corepack enable
+
+      - run: pnpm install --frozen-lockfile
+
+      # 릴리스 게이트: check(타입/린트/테스트/포맷) → build → verify
+      - run: pnpm check
+      - run: pnpm build
+      - run: pnpm release:verify
+
+      - name: Publish to npm (OIDC)
+        working-directory: packages/podo-ui
+        run: pnpm publish --access public --no-git-checks
