@@ -8,6 +8,8 @@ const TOP_NAV: { label: string; href?: string }[] = [
   { label: "Doc" },
   { label: "Foundation", href: "#/color" },
   { label: "Component", href: "#/button" },
+  // v1(SCSS 기반) 문서 — 외부 링크는 새 탭으로 연다.
+  { label: "v1 Docs", href: "https://v1.podoui.com" },
 ];
 
 function currentSlug(): string {
@@ -51,7 +53,14 @@ export function App() {
             <nav className="gnb__nav" aria-label="Sections">
               {TOP_NAV.map((item) =>
                 item.href ? (
-                  <a key={item.label} className="gnb__nav-link" href={item.href}>
+                  <a
+                    key={item.label}
+                    className="gnb__nav-link"
+                    href={item.href}
+                    {...(item.href.startsWith("http")
+                      ? { target: "_blank", rel: "noreferrer" }
+                      : {})}
+                  >
                     {item.label}
                   </a>
                 ) : (
