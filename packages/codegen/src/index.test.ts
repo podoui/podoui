@@ -41,9 +41,21 @@ describe("@podoui/codegen", () => {
       first.find((file) => file.path.endsWith("native/button.native.ts"))?.contents
     ).toMatchSnapshot("native button output");
     expect(first.find((file) => file.path.endsWith("react/button.react.ts"))?.contents).toContain(
-      'export { Button } from "@podoui/react";'
+      'export { Button } from "podo-ui/react";'
     );
     expect(first.every((file) => file.contents.startsWith(generatedFileHeader))).toBe(true);
+  });
+
+  it("skips runtime wrappers for draft specs (no implementation to re-export)", () => {
+    const [base] = loadComponents();
+    const draft = parseComponentDocument({ ...base!, id: "figma-import", status: "draft" });
+    const files = generateComponentFiles({
+      specs: [base!, draft],
+      targets: ["web", "react", "hono", "native"],
+      outDir: "g",
+    });
+    expect(files.some((file) => file.path.includes(`/${base!.id}.`))).toBe(true);
+    expect(files.some((file) => file.path.includes("figma-import"))).toBe(false);
   });
 
   it("generates an idempotent barrel file", () => {

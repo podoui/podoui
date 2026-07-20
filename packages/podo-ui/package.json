@@ -1,6 +1,6 @@
 {
   "name": "podo-ui",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "type": "module",
   "description": "Podo UI v2 — JSON-spec-first design system for web, React, Hono, and React Native. Includes the podo CLI and MCP server.",
   "license": "MIT",

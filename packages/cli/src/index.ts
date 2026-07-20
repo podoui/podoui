@@ -135,12 +135,12 @@ export async function runCli(
       return 0;
     }
     if (args.command === "validate") {
+      // validateProject already logs the success line; don't log it twice.
       const report = await validateProject(args, io);
       if (!report.ok) {
         logIssues(report.issues, io);
         return 1;
       }
-      io.stdout.log(formatInfo("validate", "No validation issues found."));
       return 0;
     }
     if (args.command === "update") {
@@ -851,17 +851,23 @@ async function writeBootstrapFiles(
   force: boolean
 ): Promise<void> {
   const base = join(root, ".podo/bootstrap");
+  // Bootstrap files land in CONSUMER projects: import from the published
+  // "podo-ui/<target>" subpaths, never the workspace-internal @podoui names
+  // (consumers don't have them, and the podo-ui bundle assembler rewrites
+  // @podoui import-shaped strings). Specifiers are built via JSON.stringify
+  // to stay out of import-shaped positions in this file too.
+  const runtime = (target: string) => JSON.stringify(`podo-ui/${target}`);
   const files: Record<string, string> = {
-    "react.tsx": `import { PodoThemeProvider } from "@podoui/react";\n\nexport const podoTheme = { theme: ${JSON.stringify(
+    "react.tsx": `import { PodoThemeProvider } from ${runtime("react")};\n\nexport const podoTheme = { theme: ${JSON.stringify(
       options.theme
     )}, colorScheme: "light" as const };\n\nexport { PodoThemeProvider };\n`,
-    "hono.tsx": `import { renderCriticalCss } from "@podoui/hono";\n\nexport function podoHead() {\n  return renderCriticalCss({ theme: ${JSON.stringify(
+    "hono.tsx": `import { renderCriticalCss } from ${runtime("hono")};\n\nexport function podoHead() {\n  return renderCriticalCss({ theme: ${JSON.stringify(
       options.theme
     )}, colorScheme: "light" });\n}\n`,
-    "native.tsx": `import { PodoNativeThemeProvider } from "@podoui/native";\n\nexport const podoNativeTheme = { theme: ${JSON.stringify(
+    "native.tsx": `import { PodoNativeThemeProvider } from ${runtime("native")};\n\nexport const podoNativeTheme = { theme: ${JSON.stringify(
       options.theme
     )}, colorScheme: "light" as const };\n\nexport { PodoNativeThemeProvider };\n`,
-    "web.ts": `import { registerPodoElements } from "@podoui/web";\n\nexport function registerPodo() {\n  registerPodoElements();\n}\n`,
+    "web.ts": `import { registerPodoElements } from ${runtime("web")};\n\nexport function registerPodo() {\n  registerPodoElements();\n}\n`,
   };
   for (const [file, contents] of Object.entries(files)) {
     await writeText(join(base, file), contents, force);

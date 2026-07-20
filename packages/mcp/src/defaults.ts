@@ -102,18 +102,18 @@ export const defaultMcpComponents: ComponentDocument[] = [
       {
         target: "react",
         title: "React button",
-        code: 'import { Button } from "@podoui/react";\n\n<Button>Save</Button>',
+        code: 'import { Button } from "podo-ui/react";\n\n<Button>Save</Button>',
       },
       {
         target: "hono",
         title: "Hono button",
-        code: 'import { Button } from "@podoui/hono";\n\n<Button>Save</Button>',
+        code: 'import { Button } from "podo-ui/hono";\n\n<Button>Save</Button>',
       },
       { target: "web", title: "Web button", code: "<podo-button>Save</podo-button>" },
       {
         target: "native",
         title: "Native button",
-        code: 'import { Button } from "@podoui/native";\n\n<Button>Save</Button>',
+        code: 'import { Button } from "podo-ui/native";\n\n<Button>Save</Button>',
       },
     ],
   }),
@@ -143,12 +143,12 @@ export const defaultMcpComponents: ComponentDocument[] = [
       {
         target: "react",
         title: "React input",
-        code: 'import { Input } from "@podoui/react";\n\n<Input />',
+        code: 'import { Input } from "podo-ui/react";\n\n<Input />',
       },
       {
         target: "hono",
         title: "Hono input",
-        code: 'import { Input } from "@podoui/hono";\n\n<Input name="email" />',
+        code: 'import { Input } from "podo-ui/hono";\n\n<Input name="email" />',
       },
     ],
   }),
@@ -179,7 +179,7 @@ export const defaultMcpComponents: ComponentDocument[] = [
       {
         target: "react",
         title: "React field",
-        code: 'import { Field, Input } from "@podoui/react";\n\n<Field label="Email"><Input /></Field>',
+        code: 'import { Field, Input } from "podo-ui/react";\n\n<Field label="Email"><Input /></Field>',
       },
     ],
   }),

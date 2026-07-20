@@ -18,12 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4 # 버전은 package.json packageManager를 따른다
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
+
+      # corepack이 package.json packageManager 필드의 pnpm 버전을 사용한다
+      # (서드파티 액션 없이 github 공식 액션만 사용).
+      - run: corepack enable
 
       - run: pnpm install --frozen-lockfile
 

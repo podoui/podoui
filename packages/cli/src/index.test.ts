@@ -401,7 +401,7 @@ describe("@podoui/cli", () => {
       (file) => file.path === "src/podo/components/react/button.react.ts"
     );
     expect(dryRun.dryRun).toBe(true);
-    expect(generatedButton?.preview).toContain('export { Button } from "@podoui/react";');
+    expect(generatedButton?.preview).toContain('export { Button } from "podo-ui/react";');
     await expect(stat(join(root, "src/podo/components/react/button.react.ts"))).rejects.toThrow();
 
     const built = await buildProject(parseArgs(["build"]), io);

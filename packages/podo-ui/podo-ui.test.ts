@@ -62,6 +62,56 @@ describe("podo-ui assembled package", () => {
     expect(stamped.version).toBe(manifest.version);
   });
 
+  it("bundled codegen emits consumer package specifiers, not internal/relative ones", async () => {
+    const codegen = (await import(pathToFileURL(join(dist, "codegen/index.js")).href)) as {
+      generateComponentFiles: (options: unknown) => { path: string; contents: string }[];
+    };
+    const spec = (await import(pathToFileURL(join(dist, "spec/index.js")).href)) as {
+      parseComponentDocument: (input: unknown) => unknown;
+    };
+    const button = spec.parseComponentDocument({
+      schemaVersion: "2.0.0",
+      kind: "component",
+      id: "button",
+      name: "Button",
+      category: "atom",
+      status: "stable",
+      anatomy: [{ name: "root" }],
+      slots: [],
+      props: [],
+      variants: [],
+      states: [],
+      tokens: {},
+      targets: {
+        web: { supported: true, limitations: [] },
+        react: { supported: true, limitations: [] },
+        hono: { supported: true, limitations: [] },
+        native: { supported: true, limitations: [] },
+      },
+      accessibility: { aria: [], keyboard: [] },
+    });
+    const files = codegen.generateComponentFiles({
+      specs: [button],
+      targets: ["react", "hono", "native"],
+      outDir: "g",
+    });
+    for (const file of files) {
+      // The e2e-found bug: the bundle assembler rewrote template strings to
+      // `from "../react/index.js"`, and before that they pointed at @podoui/*.
+      // Only import specifiers matter — the generated header comment may
+      // mention @podoui/codegen.
+      expect(file.contents, file.path).not.toMatch(/from "@podoui\//);
+      expect(file.contents, file.path).not.toMatch(/from "\.\./);
+      expect(file.contents, file.path).toMatch(/from "podo-ui\/(react|hono|native)"/);
+    }
+  });
+
+  it("bundled react entry keeps the use client directive", () => {
+    expect(readFileSync(join(dist, "react/index.js"), "utf8").startsWith('"use client";')).toBe(
+      true
+    );
+  });
+
   it("leaks no workspace-internal @podoui import specifiers", () => {
     // Import contexts only: `packageName = "@podoui/cli"`-style data
     // constants are expected to survive as-is.
