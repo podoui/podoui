@@ -540,12 +540,15 @@
 
 ### A. 배포·인프라
 
-- [ ] 원격 push 권한 해결
-  - 현재 `git push`가 403 (계정 `innerbloo`에 `podoui/podoui` 쓰기 권한 없음). 로컬 `main`이 원격보다 다수 커밋 앞선 상태.
-  - 완료 기준: 권한 부여 또는 계정 전환 후 `origin/main`이 로컬과 동기화된다.
-- [ ] npm 배포 파이프라인 가동
-  - 전 패키지가 `0.0.0` 미배포라 외부 프로젝트에서 설치 불가. Changesets 인프라는 준비됨.
-  - 완료 기준: 빈 외부 프로젝트에서 `npm install @podoui/react @podoui/cli`가 동작한다.
+- [x] 원격 push 권한 해결 (2026-07-20 확인: `git push` 정상 동작, origin/main 동기화됨)
+- [x] npm 배포 파이프라인 가동 (2026-07-20 완료)
+  - `podo-ui@2.0.1` 배포됨 (기존 주소 유지). 단일 패키지에 전 모듈 내장,
+    `podo-ui/react` 등 subpath + `podo`/`podo-ui`(메뉴)/`podo-mcp` bin.
+  - `@podoui/*`는 워크스페이스 내부 이름(전부 private) — npm `@podo` org는 타인
+    소유, `podoui` 이름은 npm 유사명 정책으로 등록 불가.
+  - 검증: 빈 외부 프로젝트에서 `npm install podo-ui` 후 subpath import,
+    `npx podo init/validate`, `npx podo-ui` 동작 확인. 배포는 `pnpm release`
+    (podo-ui만 publish; changeset publish는 workspace: 미치환이라 사용 안 함).
 - [ ] 배포 후 docs를 "진짜 소비자"로 전환
   - 현재 `packages/docs`의 `theme.css`는 컴포넌트 CSS 수동 미러, `data/colors.ts`·`typography.ts`는 토큰 값 복제.
   - 완료 기준: docs가 `podo build` 산출물(tokens.css, components.css)을 소비하고 수동 미러·값 복제가 제거된다.
