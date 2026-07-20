@@ -898,6 +898,14 @@ function iconSvgFromNode(
             shapes.push(`<path d="${data}"${paint.attributes}${fillRule}/>`);
           }
         }
+      } else if (shapePathData(child)) {
+        // 기본 도형 노드(RECTANGLE/ELLIPSE/LINE)는 vector 데이터가 없다 —
+        // 자체 좌표계 path로 합성해 같은 행렬을 굽는다 (mail 봉투 몸통 등).
+        const paint = vectorPaintAttributes(child);
+        if (paint) {
+          const data = svgpath(shapePathData(child)!).matrix(matrix).round(4).toString();
+          shapes.push(`<path d="${data}"${paint.attributes}/>`);
+        }
       } else if (child.vector?.svg) {
         // Complex vector networks fall back to whole-node SVG markup, which we
         // cannot safely inline into a composed glyph — skip the icon honestly.
@@ -917,6 +925,51 @@ function iconSvgFromNode(
   const width = roundValue(node.width);
   const height = roundValue(node.height);
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">${shapes.join("")}</svg>`;
+}
+
+/**
+ * 기본 도형 노드의 자체 좌표계 path 데이터. VECTOR가 아닌 RECTANGLE/
+ * ELLIPSE/LINE은 vector 필드가 없으므로 width/height/cornerRadius로 합성한다.
+ */
+function shapePathData(node: PodoCloneNode): string | undefined {
+  const w = node.width;
+  const h = node.height;
+  if (node.type === "RECTANGLE") {
+    const base = typeof node.props.cornerRadius === "number" ? node.props.cornerRadius : 0;
+    const corner = (key: string): number => {
+      const value = node.props[key];
+      return Math.min(typeof value === "number" ? value : base, w / 2, h / 2);
+    };
+    const [tl, tr, br, bl] = [
+      corner("topLeftRadius"),
+      corner("topRightRadius"),
+      corner("bottomRightRadius"),
+      corner("bottomLeftRadius"),
+    ];
+    if (tl === 0 && tr === 0 && br === 0 && bl === 0) {
+      return `M0 0H${w}V${h}H0Z`;
+    }
+    return (
+      `M${tl} 0H${w - tr}` +
+      (tr ? `A${tr} ${tr} 0 0 1 ${w} ${tr}` : "") +
+      `V${h - br}` +
+      (br ? `A${br} ${br} 0 0 1 ${w - br} ${h}` : "") +
+      `H${bl}` +
+      (bl ? `A${bl} ${bl} 0 0 1 0 ${h - bl}` : "") +
+      `V${tl}` +
+      (tl ? `A${tl} ${tl} 0 0 1 ${tl} 0` : "") +
+      "Z"
+    );
+  }
+  if (node.type === "ELLIPSE") {
+    const rx = w / 2;
+    const ry = h / 2;
+    return `M0 ${ry}A${rx} ${ry} 0 1 0 ${w} ${ry}A${rx} ${ry} 0 1 0 0 ${ry}Z`;
+  }
+  if (node.type === "LINE") {
+    return `M0 0L${w} ${h}`;
+  }
+  return undefined;
 }
 
 /** fill/stroke presentation attributes for one vector node (currentColor). */

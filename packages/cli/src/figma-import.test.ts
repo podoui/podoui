@@ -329,7 +329,24 @@ function iconSetNode(): Record<string, unknown> {
       ],
     },
     children: [
-      variant("30:1", "name=left, size=24", [vector("30:2", 4)]),
+      variant("30:1", "name=left, size=24", [
+        vector("30:2", 4),
+        // 기본 도형 노드(RECTANGLE)도 직렬화되어야 한다 (mail 봉투 몸통 부류).
+        {
+          id: "30:7",
+          type: "RECTANGLE",
+          name: "body",
+          props: { strokeWeight: 1.2, cornerRadius: 2 },
+          width: 20,
+          height: 14,
+          relativeTransform: [
+            [1, 0, 2],
+            [0, 1, 5],
+          ],
+          fills: [],
+          strokes: [{ type: "SOLID", color: { r: 0.15, g: 0.15, b: 0.16 } }],
+        },
+      ]),
       // right = left를 90° 회전한 변형 (rt [[0,-1,16],[1,0,0]]).
       variant("30:3", "name=right, size=24", [
         {
@@ -452,6 +469,10 @@ describe("convertPodoClone", () => {
     // 회전 변형(90°)도 행렬 합성으로 path에 구워진다: (0,0)→(16,0), (16,16)→(0,16).
     const rotated = fileBy(result, ".podo/icons/svg/figma/arrow-right.svg");
     expect(rotated.contents).toContain('d="M16 0L0 16"');
+    // RECTANGLE 도형 노드(둥근 모서리 2, 오프셋 2,5)도 path로 합성된다.
+    expect(svgFile.contents).toContain(
+      'd="M4 5H20A2 2 0 0 1 22 7V17A2 2 0 0 1 20 19H4A2 2 0 0 1 2 17V7A2 2 0 0 1 4 5Z"'
+    );
     expect(manifest.codepointLock["arrow-left"]).toBe("E001");
     expect(manifest.groups.figma).toEqual(["arrow-left", "arrow-right"]);
     // 컴포넌트 스펙으로는 생성되지 않는다.
