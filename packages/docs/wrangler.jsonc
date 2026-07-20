@@ -1,7 +1,8 @@
 // Cloudflare Workers (static assets) deploy config for the Podo UI docs site.
 // Deploy: pnpm build && npx wrangler deploy  (account: tarucy@gmail.com)
 {
-  "name": "podoui-docs",
+  // Worker 이름 "podoui" — podoui.com 커스텀 도메인이 이 Worker에 묶여 있다.
+  "name": "podoui",
   // Tarucy@gmail.com's Account — the token in ~/.zshenv covers several
   // accounts, so pin the deploy target explicitly.
   "account_id": "f4ff770fb924e8c46020c9b7124cb49e",
