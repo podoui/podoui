@@ -289,7 +289,8 @@ export interface InstanceData {
     string,
     {
       type: 'BOOLEAN' | 'TEXT' | 'INSTANCE_SWAP' | 'VARIANT' | 'SLOT';
-      value: boolean | string;
+      /** SLOT properties can have no value at runtime (observed in real files). */
+      value?: boolean | string;
       /** Source variable id bound to this property value (boundVariables.value). */
       bound?: string;
       /**

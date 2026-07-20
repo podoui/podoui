@@ -217,7 +217,9 @@ const vectorSchema = z.object({
 
 const instancePropertySchema = z.object({
   type: componentPropertyTypeSchema,
-  value: z.union([z.boolean(), z.string()]),
+  // SLOT properties can carry no value at runtime (the plugin API exposes
+  // none), so real exports may omit this field entirely.
+  value: z.union([z.boolean(), z.string()]).optional(),
   bound: z.string().optional(),
   valueKey: z.string().optional(),
   valueRemote: z.boolean().optional(),

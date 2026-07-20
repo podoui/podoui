@@ -133,6 +133,32 @@ describe("podo-clone schema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("accepts an instance SLOT property without a value (real-file shape)", () => {
+    const document = minimalDocument();
+    const page = (document.pages as { items: { node: Record<string, unknown> }[] }[])[0]!;
+    page.items[0]!.node.children = [
+      {
+        id: "20:1",
+        type: "INSTANCE",
+        name: "menu-item",
+        props: {},
+        width: 40,
+        height: 20,
+        relativeTransform: [
+          [1, 0, 0],
+          [0, 1, 0],
+        ],
+        instance: {
+          componentId: "30:1",
+          componentKey: "k",
+          remote: false,
+          componentProperties: { "menu#1:9915": { type: "SLOT" } },
+        },
+      },
+    ];
+    expect(podoCloneDocumentSchema.safeParse(document).success).toBe(true);
+  });
+
   it("rejects a node without geometry", () => {
     const document = minimalDocument();
     const page = (document.pages as { items: { node: Record<string, unknown> }[] }[])[0]!;
