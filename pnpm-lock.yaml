@@ -134,6 +134,9 @@ importers:
       '@podoui/react':
         specifier: workspace:*
         version: link:../react
+      podo-ui:
+        specifier: workspace:*
+        version: link:../podo-ui
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -304,16 +307,6 @@ importers:
       '@podoui/web':
         specifier: workspace:*
         version: link:../web
-
-  packages/podoui:
-    dependencies:
-      podo-ui:
-        specifier: workspace:*
-        version: link:../podo-ui
-    devDependencies:
-      '@podoui/cli':
-        specifier: workspace:*
-        version: link:../cli
 
   packages/react:
     dependencies:

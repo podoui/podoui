@@ -197,6 +197,13 @@ async function verifyPublishedEntry(directory, manifest) {
     );
   }
   for (const [subpath, entry] of Object.entries(manifest.exports ?? {})) {
+    if (typeof entry === "string") {
+      await assertFile(
+        join(packagesRoot, directory, entry),
+        `${manifest.name} exports["${subpath}"]`
+      );
+      continue;
+    }
     for (const key of ["types", "import"]) {
       if (entry?.[key]) {
         await assertFile(

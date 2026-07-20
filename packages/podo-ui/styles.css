@@ -1,12 +1,11 @@
 /*
- * Preview styling for the live @podoui/react Button.
+ * podo-ui component chrome (light-DOM renderers: react/hono).
  *
- * The React Button renders `class="podo-button"` with `data-theme` / `data-size`
- * and reads its colors from CSS custom properties. It ships no CSS of its own —
- * in a real install those come from the token build (components.css). Here we
- * mirror the canonical @podoui/web button CSS (the same Figma values) so previews
- * render each theme and size distinctly, WITHOUT wiring the token pipeline into
- * the docs app. Replace this with the generated token CSS once available.
+ * Canonical component base CSS shipped with the package:
+ *   import "podo-ui/styles.css";
+ * Pair with the token build outputs (tokens.css + components.css from
+ * `podo build`) so component token vars resolve. The docs site consumes this
+ * same file — do not fork it back into docs.
  */
 
 .podo-button {

@@ -8,7 +8,8 @@
     "access": "public"
   },
   "files": [
-    "dist"
+    "dist",
+    "styles.css"
   ],
   "bin": {
     "podo": "./dist/cli/index.js",
@@ -16,6 +17,7 @@
     "podo-mcp": "./dist/mcp/index.js"
   },
   "exports": {
+    "./styles.css": "./styles.css",
     "./spec": {
       "types": "./dist/spec/index.d.ts",
       "import": "./dist/spec/index.js"

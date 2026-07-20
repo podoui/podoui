@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App.js";
 import "./site.css";
-import "./theme.css";
+import "podo-ui/styles.css";
 
 const root = document.getElementById("root");
 if (!root) {
