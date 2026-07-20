@@ -279,18 +279,21 @@ function buttonSetNode(): Record<string, unknown> {
 }
 
 function iconSetNode(): Record<string, unknown> {
+  // Podo 아이콘 원본 형태: 열린 centerline + stroke (fills 없음).
   const vector = (id: string, tx: number) => ({
     id,
     type: "VECTOR",
     name: "Vector",
-    props: {},
+    props: { strokeWeight: 1.2000000476837158, strokeCap: "ROUND", strokeJoin: "ROUND" },
     width: 16,
     height: 16,
     relativeTransform: [
       [1, 0, tx],
       [0, 1, 4],
     ],
-    vector: { vectorPaths: [{ windingRule: "EVENODD", data: "M0 0L16 16" }] },
+    fills: [],
+    strokes: [{ type: "SOLID", color: { r: 0.15, g: 0.15, b: 0.16 } }],
+    vector: { vectorPaths: [{ windingRule: "NONE", data: "M0 0L16 16" }] },
   });
   const variant = (id: string, name: string, children: unknown[]) => ({
     id,
@@ -431,9 +434,10 @@ describe("convertPodoClone", () => {
     expect(manifest.icons["arrow-left"]!.source).toBe("figma/arrow-left.svg");
     const svgFile = fileBy(result, ".podo/icons/svg/figma/arrow-left.svg");
     expect(svgFile.contents).toContain('viewBox="0 0 24 24"');
-    expect(svgFile.contents).toContain('fill="currentColor"');
+    // stroke 아이콘은 centerline을 유지한다 (폰트 빌드가 fill로 확장).
+    expect(svgFile.contents).toContain('fill="none" stroke="currentColor" stroke-width="1.2"');
+    expect(svgFile.contents).toContain('stroke-linecap="round" stroke-linejoin="round"');
     expect(svgFile.contents).toContain('transform="translate(4 4)"');
-    expect(svgFile.contents).toContain('fill-rule="evenodd"');
     expect(manifest.codepointLock["arrow-left"]).toBe("E001");
     expect(manifest.groups.figma).toEqual(["arrow-left", "arrow-right"]);
     // 컴포넌트 스펙으로는 생성되지 않는다.

@@ -843,7 +843,14 @@ function defaultVariantValue(node: PodoCloneNode, axis: string): string | undefi
   return typeof def?.defaultValue === "string" ? def.defaultValue : undefined;
 }
 
-/** Serialize an icon component's vector children into a currentColor SVG. */
+/**
+ * Serialize an icon component's vector children into a currentColor SVG.
+ *
+ * Podo icons are authored as STROKE centerlines (24px outline set,
+ * stroke-width ~1.2, round caps/joins) — the icon font build expands strokes
+ * into fills (`@podoui/icon-build` stroke.ts), so the extracted source must
+ * preserve stroke attributes instead of force-filling open paths.
+ */
 function iconSvgFromNode(
   node: PodoCloneNode,
   label: string,
@@ -857,13 +864,22 @@ function iconSvgFromNode(
       const childX = offsetX + (child.relativeTransform[0]?.[2] ?? 0);
       const childY = offsetY + (child.relativeTransform[1]?.[2] ?? 0);
       if (child.vector?.vectorPaths?.length) {
-        const transform =
-          roundValue(childX) !== 0 || roundValue(childY) !== 0
-            ? ` transform="translate(${roundValue(childX)} ${roundValue(childY)})"`
-            : "";
-        for (const path of child.vector.vectorPaths) {
-          const fillRule = path.windingRule === "EVENODD" ? ' fill-rule="evenodd"' : "";
-          shapes.push(`<path d="${path.data}"${fillRule}${transform}/>`);
+        const paint = vectorPaintAttributes(child);
+        if (!paint) {
+          warnings.push(`Icon "${label}": a vector child has no visible fill or stroke; skipped.`);
+          unsupported = true;
+        } else {
+          const transform =
+            roundValue(childX) !== 0 || roundValue(childY) !== 0
+              ? ` transform="translate(${roundValue(childX)} ${roundValue(childY)})"`
+              : "";
+          for (const path of child.vector.vectorPaths) {
+            const fillRule =
+              paint.kind === "fill" && path.windingRule === "EVENODD"
+                ? ' fill-rule="evenodd"'
+                : "";
+            shapes.push(`<path d="${path.data}"${paint.attributes}${fillRule}${transform}/>`);
+          }
         }
       } else if (child.vector?.svg) {
         // Complex vector networks fall back to whole-node SVG markup, which we
@@ -883,7 +899,32 @@ function iconSvgFromNode(
   }
   const width = roundValue(node.width);
   const height = roundValue(node.height);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" fill="currentColor">${shapes.join("")}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">${shapes.join("")}</svg>`;
+}
+
+/** fill/stroke presentation attributes for one vector node (currentColor). */
+function vectorPaintAttributes(
+  node: PodoCloneNode
+): { kind: "fill" | "stroke"; attributes: string } | undefined {
+  const visibleSolid = (paints?: PodoClonePaint[] | null): boolean =>
+    (paints ?? []).some((paint) => paint.type === "SOLID" && paint.visible !== false);
+
+  if (visibleSolid(node.fills)) {
+    return { kind: "fill", attributes: ' fill="currentColor"' };
+  }
+  if (visibleSolid(node.strokes)) {
+    const weight = typeof node.props.strokeWeight === "number" ? node.props.strokeWeight : 1;
+    const cap = typeof node.props.strokeCap === "string" ? node.props.strokeCap.toLowerCase() : "";
+    const join =
+      typeof node.props.strokeJoin === "string" ? node.props.strokeJoin.toLowerCase() : "";
+    const capAttr = cap === "round" || cap === "square" ? ` stroke-linecap="${cap}"` : "";
+    const joinAttr = join === "round" || join === "bevel" ? ` stroke-linejoin="${join}"` : "";
+    return {
+      kind: "stroke",
+      attributes: ` fill="none" stroke="currentColor" stroke-width="${roundValue(weight)}"${capAttr}${joinAttr}`,
+    };
+  }
+  return undefined;
 }
 
 // ------------------------------------------------------------------- helpers
