@@ -7,12 +7,12 @@
   "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": [
-      "http://127.0.0.1:4141",
-      "http://127.0.0.1:4142",
-      "http://127.0.0.1:4143",
-      "http://127.0.0.1:4144",
-      "http://127.0.0.1:4145"
+      "http://localhost:4141",
+      "http://localhost:4142",
+      "http://localhost:4143",
+      "http://localhost:4144",
+      "http://localhost:4145"
     ],
-    "reasoning": "Sends the exported design system to the local podo CLI (podo import) listening on 127.0.0.1."
+    "reasoning": "Sends the exported design system to the local podo CLI (podo import) listening on the loopback interface."
   }
 }

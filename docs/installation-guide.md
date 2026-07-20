@@ -4,18 +4,20 @@ This guide covers the first project setup path for an app that installs Podo v2.
 
 ## Install
 
+Everything (all four runtime targets, the `podo` CLI, and the MCP server) ships as the single `podo-ui` package:
+
 ```sh
-pnpm add @podoui/cli @podoui/react @podoui/web @podoui/hono @podoui/native
+npm install podo-ui
 ```
 
-Use the packages needed by the target app. A React app usually installs `@podoui/react` and `@podoui/cli`; a Custom Elements app installs `@podoui/web`; Hono installs `@podoui/hono`; React Native installs `@podoui/native`.
+`react`/`react-dom`/`react-native` are optional peer dependencies — install them only for the targets you use. The `@podoui/*` names are workspace-internal and are not published; consumers always import `podo-ui/<target>` subpaths.
 
 ## Initialize `.podo`
 
 Run one init command per project. The CLI writes project state under `.podo`.
 
 ```sh
-podo init --target react --theme dashboard --out-dir src/podo --yes
+npx podo init --target react --theme dashboard --out-dir src/podo --yes
 ```
 
 Common target values:
@@ -28,14 +30,14 @@ Common target values:
 Dark mode is configured during init:
 
 ```sh
-podo init --target web --theme landing --dark-mode --out-dir src/podo --yes
+npx podo init --target web --theme landing --dark-mode --out-dir src/podo --yes
 ```
 
 ## Build
 
 ```sh
-podo build
-podo build --dry-run
+npx podo build
+npx podo build --dry-run
 ```
 
 `podo build --dry-run` prints the files that would be created or updated. Normal build reads package defaults plus `.podo/tokens`, `.podo/components`, and `.podo/icons`, then writes generated files to the configured `build.outDir`.
@@ -45,7 +47,7 @@ podo build --dry-run
 Web:
 
 ```ts
-import { registerPodoElements } from "@podoui/web";
+import { registerPodoElements } from "podo-ui/web";
 
 registerPodoElements();
 ```
@@ -53,7 +55,7 @@ registerPodoElements();
 React:
 
 ```tsx
-import { Button, PodoThemeProvider } from "@podoui/react";
+import { Button, PodoThemeProvider } from "podo-ui/react";
 
 export function App() {
   return (
@@ -68,7 +70,7 @@ Hono:
 
 ```tsx
 /** @jsxImportSource hono/jsx */
-import { Button, renderCriticalCss } from "@podoui/hono";
+import { Button, renderCriticalCss } from "podo-ui/hono";
 
 const css = ".podo-button{color:var(--podo-component-button-text)}";
 
@@ -85,7 +87,7 @@ export const page = (
 React Native:
 
 ```tsx
-import { Button, PodoNativeThemeProvider } from "@podoui/native";
+import { Button, PodoNativeThemeProvider } from "podo-ui/native";
 
 export function App() {
   return (
@@ -99,7 +101,7 @@ export function App() {
 ## Validate
 
 ```sh
-podo validate
+npx podo validate
 pnpm check
 ```
 

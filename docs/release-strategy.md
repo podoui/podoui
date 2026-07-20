@@ -23,11 +23,11 @@ Podo v2 replaces SCSS-first build inputs with JSON-first build inputs:
 4. Resolve tokens and component bindings.
 5. Emit target-specific packages and generated project files.
 
-## Versioning
+## Versioning (2026-07-20 현행)
 
-Changesets is the default versioning and publishing tool. The root package is private. Runtime packages are public and versioned through Changesets.
+The only published package is **`podo-ui`** (plus its bins `podo`, `podo-ui`, `podo-mcp`); `packages/podo-ui/build.mjs` assembles it from the private workspace-internal `@podoui/*` packages. The npm `@podo` scope is third-party-owned and the `podoui` name is blocked by npm's similarity rule, which is why nothing else publishes.
 
-The Changesets base branch is currently `v2` because this branch is an orphan rebuild branch. When v2 becomes the release base or merges back into the normal release branch, revisit `.changeset/config.json`.
+Version bumps are manual edits to `packages/podo-ui/package.json` (internal packages may stay behind). Changesets remains for status/dry-run tooling with base branch `main`; **`changeset publish` is not used** because it does not rewrite `workspace:` protocol ranges — `pnpm publish` does, so `pnpm release` ends with `pnpm --filter podo-ui publish --access public`. The final publish step requires an npm 2FA OTP.
 
 ## Release Verification
 
@@ -46,10 +46,10 @@ pnpm changeset:dry-run
 
 Canary releases use npm dist-tags and must not replace `latest`.
 
-1. Run the release gate above on `v2`.
-2. Run `pnpm changeset version --snapshot canary` on a disposable release branch or CI workspace.
+1. Run the release gate above on `main`.
+2. Set a snapshot version (e.g. `2.1.0-canary.0`) in `packages/podo-ui/package.json` on a disposable branch.
 3. Run `pnpm build && pnpm release:verify && pnpm changeset:dry-run`.
-4. Publish with `changeset publish --tag canary --no-git-tag`.
-5. Install in a sample project with `npm install @podoui/cli@canary @podoui/react@canary` and run `podo init`, `podo build --dry-run`, and `podo validate`.
+4. Publish with `pnpm --filter podo-ui publish --access public --tag canary`.
+5. Install in a sample project with `npm install podo-ui@canary` and run `npx podo init`, `npx podo build --dry-run`, and `npx podo validate`.
 
 Installing directly from `main` is allowed only for canary validation. Reproducible project installs should use npm versions or explicit git tags.

@@ -150,7 +150,7 @@ async function receiveFromPlugin(args: ParsedArgs, io: CliIO): Promise<PodoClone
   io.stdout.log(
     info(
       "import",
-      `Waiting for the Figma plugin on http://127.0.0.1:${port}/import — open the PODO plugin and press "프로젝트로 보내기"${port === IMPORT_PORTS[0] ? "" : ` (set the plugin port to ${port})`}. Press Ctrl+C to cancel.`
+      `Waiting for the Figma plugin on http://localhost:${port}/import — open the PODO plugin and press "프로젝트로 보내기"${port === IMPORT_PORTS[0] ? "" : ` (set the plugin port to ${port})`}. Press Ctrl+C to cancel.`
     )
   );
 
