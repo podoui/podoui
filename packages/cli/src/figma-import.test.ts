@@ -566,7 +566,7 @@ function fakeTtyStdin(): NodeJS.ReadStream {
 async function waitForListeningPort(io: { out: string[] }): Promise<number> {
   for (let attempt = 0; attempt < 200; attempt += 1) {
     const line = io.out.find((entry) => entry.includes("Waiting for the Figma plugin"));
-    const match = line?.match(/127\.0\.0\.1:(\d+)/);
+    const match = line?.match(/localhost:(\d+)/);
     if (match) {
       return Number.parseInt(match[1]!, 10);
     }
