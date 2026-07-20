@@ -1,0 +1,37 @@
+name: Deploy docs
+
+# main에 push될 때마다 문서 사이트를 Cloudflare Workers(podoui-docs)로 배포한다.
+# 계정은 packages/docs/wrangler.jsonc의 account_id로 고정되어 있고,
+# 인증은 저장소 시크릿 CLOUDFLARE_API_TOKEN을 사용한다.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-docs
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4 # 버전은 package.json packageManager를 따른다
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build docs
+        run: pnpm --filter "@podoui/docs" build
+
+      - name: Deploy to Cloudflare Workers
+        working-directory: packages/docs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx wrangler deploy
