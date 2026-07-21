@@ -584,9 +584,10 @@
 ### C. 컴포넌트·품질
 
 - [ ] 다음 컴포넌트 시안 작업 계속 (Button/Chip/Input/Field 완료; 워크플로: 스펙 → 4렌더러 → 테스트 → docs → figma.tsx)
-- [ ] Pretendard 폰트 자산 확정
+- [x] Pretendard 폰트 자산 확정
   - 토큰의 `fontAsset.dataUrl`이 `"AAAA"` 플레이스홀더. docs는 임시로 jsDelivr CDN 로드 중.
   - 완료 기준: 실제 woff2 임베드 또는 CDN 전략 확정이 토큰/빌드에 반영된다.
+  - (2026-07-21 확정: CDN 미사용 — `pretendard` npm 패키지 셀프호스팅(동적 서브셋)으로 docs/examples가 로드하고, 샘플 토큰 fontAsset.dataUrl은 실제 PretendardVariable 서브셋(8.2KB, OFL-1.1) 바이트로 교체. 전체 폰트 임베드는 웹 성능상 배제.)
 - [x] 옛 primary(#5B5BD6) 잔재 정리 여부 결정
   - 남은 위치: `plan.md`(설계 기록), `packages/mcp/src/defaults.ts`, `packages/cli/src/index.ts` (bootstrap 기본 brand 색).
   - 완료 기준: 새 프로젝트 bootstrap 기본색을 #426CED로 바꿀지 결정하고 반영한다.

@@ -15,9 +15,10 @@
   },
   "dependencies": {
     "@podoui/react": "workspace:*",
+    "podo-ui": "workspace:*",
+    "pretendard": "^1.3.9",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "podo-ui": "workspace:*"
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",

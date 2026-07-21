@@ -4,12 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Podo UI</title>
-    <!-- Pretendard = the design system's typography font (font.family.sans token).
-         Load it for real so the docs chrome renders in the system typeface, not a fallback. -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
-    />
+    <!-- Pretendard(font.family.sans 토큰)는 CDN이 아니라 pretendard npm 패키지를
+         main.tsx에서 import해 셀프호스팅한다 — Vite가 동적 서브셋 woff2를 로컬
+         자산으로 번들하고 unicode-range로 필요한 청크만 로드된다. -->
   </head>
   <body>
     <div id="root"></div>
