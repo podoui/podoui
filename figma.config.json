@@ -1,7 +1,7 @@
 {
   "codeConnect": {
     "parser": "react",
-    "include": ["packages/react/src/**/*.figma.tsx"],
+    "include": ["packages/react/src/**/*.tsx"],
     "importPaths": {
       "packages/react/src/*": "@podoui/react"
     }
