@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.2.0 (2026-07-21)
+
+- native: Chip `defaultSelected`, Switch/Checkbox/Radio `defaultChecked`,
+  Select `defaultValue`/`defaultValues` 비제어 상태 API (제어 프롭이 항상
+  우선, 콜백은 양쪽 모드에서 동일하게 발화) — 스펙 패리티 완성
+- native: Field 라벨 press가 감싼 컨트롤을 포커스 (`inputRef` 병합 전달,
+  disabled Field에선 no-op)
+- spec: Typography variant 기본값이 `as`에서 유도되는 공통 동작(react/hono)을
+  스펙 문서에 명문화
+- repo: examples/react를 `podo init/build` 실사용 Vite 소비자 앱으로 복구,
+  2026-07 검증 캠페인 증거(리포트·명령 로그·codex 리뷰 6라운드)를
+  docs/verification/2026-07에 보관
+
 ## 2.1.0 (2026-07-21)
 
 전 컴포넌트를 React/Next.js/Hono/React Native 실소비 하니스에서 브라우저
