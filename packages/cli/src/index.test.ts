@@ -94,9 +94,40 @@ describe("@podoui/cli", () => {
     const built = await buildProject(parseArgs(["build"]), io);
     expect(built.skipped).toBe(false);
     await expect(stat(join(root, "src/generated/podo/tokens.css"))).resolves.toBeDefined();
-    expect(await readFile(join(root, "src/generated/podo/tokens.css"), "utf8")).toContain(
-      "--podo-component-button-background: #18181B;"
-    );
+    const tokensCss = await readFile(join(root, "src/generated/podo/tokens.css"), "utf8");
+    expect(tokensCss).toContain("--podo-component-button-background: #18181B;");
+    // styles.css의 .podo-text--h1/.podo-text--body가 소비하는 변수는 기본 빌드가
+    // 반드시 발행해야 한다 (pc 기본값 + tablet/mobile 반응형 오버라이드).
+    expect(tokensCss).toContain("--podo-typography-heading-xlarge-fontSize: 32px;");
+    expect(tokensCss).toContain("--podo-typography-heading-xlarge-fontSize: 28px;");
+    expect(tokensCss).toContain("--podo-typography-heading-xlarge-fontSize: 24px;");
+    expect(tokensCss).toContain("--podo-typography-body-medium-fontSize: 16px;");
+    expect(tokensCss).toContain("--podo-typography-body-medium-lineHeight: 160%;");
+    // styles.css의 Badge가 소비하는 바인딩 변수를 기본 빌드가 발행한다
+    // (기본 badge 컴포넌트 문서 + color.palette 토큰).
+    const componentsCss = await readFile(join(root, "src/generated/podo/components.css"), "utf8");
+    expect(componentsCss).toContain("--podo-badge-root-background:");
+    expect(componentsCss).toContain("--podo-badge-label-color:");
+    expect(componentsCss).toContain("--podo-badge-dot-color:");
+    expect(componentsCss).toContain('.podo-badge[data-theme="red"]');
+    expect(componentsCss).toContain("var(--podo-color-palette-error-5)");
+    expect(tokensCss).toContain("--podo-color-palette-error-5: #FEF1F1;");
+    expect(tokensCss).toContain("--podo-color-palette-accent-50: #F15764;");
+    // DatePicker가 참조하는 글리프가 기본 아이콘 빌드에 모두 포함된다.
+    const iconCss = await readFile(join(root, "src/generated/podo/icons/PodoIcons.css"), "utf8");
+    for (const glyph of [
+      "menu",
+      "chevron-left",
+      "chevron-right",
+      "calendar",
+      "time",
+      "refresh",
+      "check",
+      "close",
+      "search",
+    ]) {
+      expect(iconCss).toContain(`.podo-icon-${glyph}::before`);
+    }
     await expect(
       stat(join(root, "src/generated/podo/components/hono/button.hono.ts"))
     ).resolves.toBeDefined();

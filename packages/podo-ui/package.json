@@ -18,6 +18,7 @@
   },
   "exports": {
     "./styles.css": "./styles.css",
+    "./icons.css": "./dist/icons-assets/PodoIcons.css",
     "./spec": {
       "types": "./dist/spec/index.d.ts",
       "import": "./dist/spec/index.js"

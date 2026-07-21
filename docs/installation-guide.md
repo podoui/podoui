@@ -84,10 +84,20 @@ export const page = (
 );
 ```
 
-React Native:
+React Native — 실제 RN 앱에서는 반드시 `createNativeComponents`에 RN 호스트
+컴포넌트를 주입해 사용합니다 (`plan.md`의 host adapter 계약):
 
 ```tsx
-import { Button, PodoNativeThemeProvider } from "podo-ui/native";
+import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { createNativeComponents, PodoNativeThemeProvider } from "podo-ui/native";
+
+const { Button, Field, Input } = createNativeComponents({
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+});
 
 export function App() {
   return (
@@ -97,6 +107,12 @@ export function App() {
   );
 }
 ```
+
+`podo-ui/native`의 top-level export(`import { Button } from "podo-ui/native"`)는
+문자열 호스트 태그(`defaultNativeHost`)에 바인딩된 테스트 렌더러 전용
+편의 export입니다. react-test-renderer 류에서는 동작하지만 실제 React
+Native 렌더러는 문자열 호스트를 해석하지 못하므로 앱 코드에서는 위처럼
+주입 방식을 사용하세요.
 
 ## Validate
 

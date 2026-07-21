@@ -2,6 +2,29 @@ import { useState, useCallback, RefObject } from "react";
 import { UseSelectionManagerReturn } from "./useSelectionManager.js";
 import { paragraphOptions, alignOptions } from "../constants.js";
 
+/**
+ * 블록 레벨 요소 셀렉터 — 이런 요소를 인라인 span으로 감싸면
+ * `<span><h1>…</h1></span>` 같은 유효하지 않은 HTML이 된다.
+ */
+const blockElementSelector =
+  "p,h1,h2,h3,h4,h5,h6,div,ul,ol,li,table,thead,tbody,tfoot,tr,td,th," +
+  "blockquote,pre,hr,figure,figcaption,section,article,header,footer,nav,aside,main";
+
+/**
+ * 텍스트 런을 직접 렌더링할 수 없는 구조 컨테이너 태그 —
+ * 이들 바로 아래의 공백 텍스트를 span으로 감싸면 또 다른 잘못된 마크업(tr > span 등)이 된다.
+ */
+const structuralContainerTags = new Set([
+  "TABLE",
+  "THEAD",
+  "TBODY",
+  "TFOOT",
+  "TR",
+  "UL",
+  "OL",
+  "COLGROUP",
+]);
+
 export interface UseTextStyleProps {
   editorRef: RefObject<HTMLDivElement | null>;
   selectionManager: UseSelectionManagerReturn;
@@ -402,6 +425,118 @@ export const useTextStyle = ({
         }
         return false;
       };
+
+      // 색상 지정 헬퍼 — 일반 경로의 기존 직렬화(!important)를 유지한다
+      const setColorOn = (element: HTMLElement) => {
+        if (styleProperty === "color") {
+          element.style.setProperty("color", color, "important");
+        } else if (styleProperty === "background-color") {
+          element.style.setProperty("background-color", color, "important");
+        }
+      };
+
+      // 스타일 적용 후 캐럿을 해당 요소 내용 끝으로 이동 (기존 동작과 동일)
+      const placeCaretAtEnd = (element: HTMLElement) => {
+        const caret = document.createRange();
+        caret.selectNodeContents(element);
+        caret.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(caret);
+      };
+
+      // 선택 영역에 블록 요소가 포함되어 있으면 통째로 span에 감싸는 대신
+      // 각 블록 내부의 선택된 텍스트 런 단위로 스타일을 적용한다.
+      if (range.cloneContents().querySelector(blockElementSelector) !== null) {
+        // 경계 텍스트 노드를 분할해 선택된 부분만 남긴다.
+        // 끝 경계를 먼저 분할한다 — 분할 지점(offset)과 같은 위치의 Range 경계는
+        // 이동하지 않으므로 기존 range 끝은 잘린 노드의 끝에 그대로 남는다.
+        const endContainer = range.endContainer;
+        if (
+          endContainer.nodeType === Node.TEXT_NODE &&
+          range.endOffset > 0 &&
+          range.endOffset < (endContainer as Text).length
+        ) {
+          (endContainer as Text).splitText(range.endOffset);
+        }
+        const startContainer = range.startContainer;
+        if (startContainer.nodeType === Node.TEXT_NODE && range.startOffset > 0) {
+          const rest = (startContainer as Text).splitText(range.startOffset);
+          range.setStart(rest, 0);
+        }
+
+        // 선택 영역에 완전히 포함된 텍스트 노드 수집
+        const walkRoot =
+          commonAncestor.nodeType === Node.TEXT_NODE
+            ? (commonAncestor.parentNode ?? commonAncestor)
+            : commonAncestor;
+        const walker = document.createTreeWalker(walkRoot, NodeFilter.SHOW_TEXT);
+        const targets: Text[] = [];
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          const text = node as Text;
+          if (!text.data) continue;
+          if (range.comparePoint(text, 0) !== 0 || range.comparePoint(text, text.length) !== 0) {
+            continue;
+          }
+          // 표/목록 구조 노드 바로 아래의 공백 텍스트는 감싸지 않는다
+          const parentTag = text.parentElement?.tagName ?? "";
+          if (!text.data.trim() && structuralContainerTags.has(parentTag)) continue;
+          targets.push(text);
+        }
+
+        const styled: HTMLElement[] = [];
+        targets.forEach((text) => {
+          const parent = text.parentElement;
+          // 같은 텍스트 런에 재적용하는 경우 기존 span을 갱신해 중첩을 피한다
+          if (parent && parent.tagName === "SPAN" && parent.childNodes.length === 1) {
+            setColorOn(parent);
+            styled.push(parent);
+            return;
+          }
+          const span = document.createElement("span");
+          setColorOn(span);
+          text.parentNode?.insertBefore(span, text);
+          span.appendChild(text);
+          styled.push(span);
+        });
+
+        if (styled.length > 0) {
+          placeCaretAtEnd(styled[styled.length - 1]);
+        }
+
+        editorRef.current?.focus();
+
+        if (onInput) {
+          onInput();
+        }
+        return;
+      }
+
+      // 인라인 전용 선택이 기존 span의 전체 텍스트와 정확히 일치하면
+      // 새 span으로 다시 감싸는 대신(스팬 중첩 방지) 그 span의 색상만 갱신한다.
+      const selectedText = range.toString();
+      const ancestorElement =
+        commonAncestor.nodeType === Node.TEXT_NODE
+          ? commonAncestor.parentElement
+          : (commonAncestor as Element);
+      const wrappingSpan =
+        ancestorElement instanceof HTMLElement
+          ? (ancestorElement.closest("span") as HTMLElement | null)
+          : null;
+      if (
+        wrappingSpan &&
+        editorRef.current?.contains(wrappingSpan) &&
+        selectedText !== "" &&
+        wrappingSpan.textContent === selectedText
+      ) {
+        setColorOn(wrappingSpan);
+        placeCaretAtEnd(wrappingSpan);
+        editorRef.current?.focus();
+
+        if (onInput) {
+          onInput();
+        }
+        return;
+      }
 
       // 표 셀 내부에서의 색상 변경 (단일 셀)
       if (isInTableCell(commonAncestor)) {

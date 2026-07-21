@@ -10,6 +10,7 @@ import {
   createFieldA11y,
   createInputBehavior,
   createSwitchBehavior,
+  joinIds,
 } from "@podoui/core";
 
 export type HonoButtonTheme =
@@ -24,6 +25,8 @@ export type HonoButtonTheme =
 
 export interface HonoButtonProps {
   children: Child;
+  /** Field의 컨트롤 슬롯에 놓일 때 label[for]가 가리킬 id — Field가 주입해요. */
+  id?: string;
   theme?: HonoButtonTheme;
   size?: "xs" | "sm" | "md" | "lg";
   disabled?: boolean;
@@ -33,6 +36,8 @@ export interface HonoButtonProps {
   suffix?: Child;
   type?: "button" | "submit" | "reset";
   class?: string;
+  /** 버튼을 설명하는 외부 요소(헬퍼/에러) id — Field가 주입해요. */
+  "aria-describedby"?: string;
 }
 
 export interface HonoChipProps {
@@ -82,6 +87,7 @@ export interface HonoBadgeProps {
   /** 숫자·텍스트 없이 6px 점만 표시 (Figma dot). */
   dot?: boolean;
   class?: string;
+  /** dot의 접근성 이름 — dot과 함께 쓰면 role="img"로 렌더돼요. */
   "aria-label"?: string;
 }
 
@@ -190,6 +196,20 @@ export interface HonoSelectOption {
 }
 
 export interface HonoSelectProps {
+  /**
+   * 콤보박스 트리거의 id이자 리스트박스 id(`{id}-listbox`)의 시드 —
+   * aria-controls 연결에 쓰여요. SSR이라 자동 생성이 없어요.
+   */
+  id?: string;
+  /** 시각적 라벨이 없을 때 콤보박스의 접근성 이름. */
+  "aria-label"?: string;
+  /** 콤보박스를 이름 짓는 외부 라벨 요소의 id. */
+  "aria-labelledby"?: string;
+  /** 콤보박스를 설명하는 외부 요소(헬퍼/에러) id — Field가 주입해요. */
+  "aria-describedby"?: string;
+  /** Field가 주입하는 값이 invalid prop으로 계산한 값보다 우선해요. */
+  "aria-invalid"?: string;
+  "aria-required"?: string;
   /** 메뉴 항목 목록 — 셀 마크업은 컴포넌트가 그려요. */
   options: HonoSelectOption[];
   /** 값이 없을 때 트리거에 표시 (Figma 플레이스 홀더). */
@@ -262,7 +282,19 @@ const HONO_CHIP_CLOSE = (
   </svg>
 );
 
+// raw 문자열로 유지 — JSX로 쓰면 <path/>가 <path></path>로 직렬화돼
+// 스냅샷이 의미 없이 바뀌어요.
+const HONO_TOAST_CLOSE = raw(
+  '<svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
+);
+
 export function Select({
+  id,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
   options,
   placeholder,
   size = "md",
@@ -284,20 +316,31 @@ export function Select({
   const selected = options.find((o) => o.value === value);
   const hasValue = multiple ? selectedValues.length > 0 : Boolean(selected);
   const state = invalid ? "invalid" : disabled ? "disabled" : readOnly ? "read-only" : undefined;
+  // read-only/disabled는 열리지 않아요 (spec: "열리지 않고 칩의 X도 사라져요").
+  const isOpen = Boolean(open) && !readOnly && !disabled;
+  const listboxId = id ? `${id}-listbox` : undefined;
 
   return (
     <div
       class={joinClass("podo-select", className)}
       data-size={size}
       data-state={state}
-      data-open={open ? "true" : undefined}
+      data-open={isOpen ? "true" : undefined}
     >
       <div
+        id={id}
         class="podo-select__trigger"
         role="combobox"
         aria-haspopup="listbox"
-        aria-expanded={open ? "true" : "false"}
+        aria-expanded={isOpen ? "true" : "false"}
+        aria-controls={isOpen ? listboxId : undefined}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
         aria-disabled={disabled ? "true" : undefined}
+        aria-readonly={readOnly ? "true" : undefined}
+        aria-invalid={ariaInvalid ?? (invalid ? "true" : undefined)}
+        aria-required={ariaRequired}
         tabindex={disabled ? -1 : 0}
       >
         {prefix ? <span class="podo-select__prefix">{prefix}</span> : null}
@@ -307,8 +350,8 @@ export function Select({
               {selectedValues.slice(0, maxChips).map((v) => {
                 const label = options.find((o) => o.value === v)?.label ?? v;
                 // 선택 값 칩은 Chip의 제거형 모드를 그대로 재사용해요.
-                // read-only는 지울 수 없으니 X 없는 정적 칩으로 렌더해요.
-                if (readOnly) {
+                // read-only/disabled는 지울 수 없으니 X 없는 정적 칩으로 렌더해요.
+                if (readOnly || disabled) {
                   return (
                     <span
                       class="podo-chip"
@@ -316,6 +359,7 @@ export function Select({
                       data-size="md"
                       data-state="selected"
                       data-removable="true"
+                      data-disabled={disabled ? "true" : undefined}
                     >
                       <span class="podo-chip__label">{label}</span>
                     </span>
@@ -347,13 +391,12 @@ export function Select({
         ) : null}
         {readOnly ? null : <span class="podo-select__chevron">{HONO_SELECT_CHEVRON}</span>}
       </div>
-      {open ? (
+      {isOpen ? (
         <div class="podo-select__menu-list">
-          <div
-            class="podo-select__menu"
-            role="listbox"
-            aria-multiselectable={multiple ? "true" : undefined}
-          >
+          {/* 박스(.podo-select__menu)와 리스트박스를 분리해요 — role="listbox"의
+              자식은 option/group만 허용되므로 추가 입력줄은 리스트박스 밖,
+              같은 박스 안 위쪽에 렌더해요. */}
+          <div class="podo-select__menu">
             {addable ? (
               <div class="podo-select__add">
                 <input class="podo-select__add-input" placeholder={addPlaceholder} />
@@ -362,32 +405,39 @@ export function Select({
                 </button>
               </div>
             ) : null}
-            {options.map((option) => {
-              const isSelected = multiple
-                ? selectedValues.includes(option.value)
-                : option.value === value;
-              return (
-                <div
-                  class="podo-select__cell"
-                  role="option"
-                  aria-selected={isSelected ? "true" : "false"}
-                  data-state={isSelected ? "selected" : undefined}
-                >
-                  {multiple ? (
-                    <span
-                      class="podo-select__checkbox"
-                      data-checked={isSelected ? "true" : undefined}
-                    >
-                      {isSelected ? HONO_SELECT_BOX_CHECK : null}
-                    </span>
-                  ) : null}
-                  <span class="podo-select__cell-label">{option.label}</span>
-                  {!multiple && isSelected ? (
-                    <span class="podo-select__cell-check">{HONO_SELECT_CHECK}</span>
-                  ) : null}
-                </div>
-              );
-            })}
+            <div
+              id={listboxId}
+              class="podo-select__listbox"
+              role="listbox"
+              aria-multiselectable={multiple ? "true" : undefined}
+            >
+              {options.map((option) => {
+                const isSelected = multiple
+                  ? selectedValues.includes(option.value)
+                  : option.value === value;
+                return (
+                  <div
+                    class="podo-select__cell"
+                    role="option"
+                    aria-selected={isSelected ? "true" : "false"}
+                    data-state={isSelected ? "selected" : undefined}
+                  >
+                    {multiple ? (
+                      <span
+                        class="podo-select__checkbox"
+                        data-checked={isSelected ? "true" : undefined}
+                      >
+                        {isSelected ? HONO_SELECT_BOX_CHECK : null}
+                      </span>
+                    ) : null}
+                    <span class="podo-select__cell-label">{option.label}</span>
+                    {!multiple && isSelected ? (
+                      <span class="podo-select__cell-check">{HONO_SELECT_CHECK}</span>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       ) : null}
@@ -407,6 +457,13 @@ const HONO_TOOLTIP_ARROWS: Record<string, string> = {
 export interface HonoTooltipProps {
   /** 말풍선 내용 (Figma label). */
   label: Child;
+  /**
+   * 말풍선(role="tooltip") 요소의 id. hono는 SSR 말풍선만 제공하고 트리거는
+   * 배포하지 않으므로 (honoRendererScope), 스펙의 aria-describedby 계약은
+   * 소비자가 자신의 트리거에 `aria-describedby={id}`를 달아 이 id를
+   * 가리키는 방식으로 완성돼요.
+   */
+  id?: string;
   /** 대상 기준 표시 방향 — 화살표가 대상을 가리켜요 (Figma position). */
   position?: "right" | "left" | "bottom" | "top";
   /** 화살표가 말풍선의 시작/가운데/끝 어디에 붙는지 (Figma ordinal). */
@@ -419,6 +476,7 @@ export interface HonoTooltipProps {
 // Static bubble: hover triggering and portal positioning need client code.
 export function Tooltip({
   label,
+  id,
   position = "right",
   ordinal = "first",
   theme = "default",
@@ -426,6 +484,7 @@ export function Tooltip({
 }: HonoTooltipProps): JSX.Element {
   return (
     <div
+      id={id}
       class={joinClass("podo-tooltip", className)}
       role="tooltip"
       data-theme={theme}
@@ -474,10 +533,10 @@ export function Toast({
       <span class="podo-toast__suffix">
         {suffixText != null ? <span class="podo-toast__suffix-text">{suffixText}</span> : null}
         {closable ? (
+          // React 렌더러와 동일: closable이면 suffixIcon이 기본 X 글리프를
+          // 대체해 닫기 버튼의 아이콘이 돼요.
           <button class="podo-toast__close" type="button" aria-label="닫기">
-            {raw(
-              '<svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
-            )}
+            {suffixIcon ?? HONO_TOAST_CLOSE}
           </button>
         ) : suffixIcon != null ? (
           <span class="podo-toast__suffix-icon">{suffixIcon}</span>
@@ -524,6 +583,12 @@ export function Table({
 
 export interface HonoFieldProps {
   children: Child;
+  /**
+   * control/label/description/error id의 시드. SSR엔 useId가 없어 기본값은
+   * label 텍스트의 슬러그(`podo-field-<label>`)로 결정적으로 파생돼요 — 같은
+   * label의 Field가 한 페이지에 여럿이거나 label이 텍스트가 아니면 중복
+   * id가 되므로 명시적 id를 넘겨 주세요.
+   */
   id?: string;
   label: Child;
   /** Supplementary text next to the label (Figma sub-label). */
@@ -551,6 +616,7 @@ export interface HonoCriticalCssOptions {
 
 export function Button({
   children,
+  id,
   theme = "solid-primary",
   size = "md",
   disabled,
@@ -559,15 +625,18 @@ export function Button({
   suffix,
   type,
   class: className,
+  "aria-describedby": ariaDescribedBy,
 }: HonoButtonProps): JSX.Element {
   const behavior = createButtonBehavior({ disabled, type });
 
   return (
     <button
+      id={id}
       class={joinClass("podo-button", className)}
       type={behavior.root.type}
       disabled={behavior.root.disabled}
       aria-disabled={behavior.root.ariaDisabled}
+      aria-describedby={ariaDescribedBy}
       tabIndex={behavior.root.tabIndex}
       data-theme={theme}
       data-size={size}
@@ -598,6 +667,8 @@ export function Chip({
 
   if (removable) {
     // Removable chip: selected look, no toggle — the X is the only control.
+    // disabled면 루트는 data-disabled(스팬이라 [disabled]가 안 붙어요)로
+    // 표시하고 제거 버튼도 실제로 비활성화해요.
     return (
       <span
         class={joinClass("podo-chip", className)}
@@ -605,10 +676,17 @@ export function Chip({
         data-size={size}
         data-state="selected"
         data-removable="true"
+        data-disabled={disabled ? "true" : undefined}
       >
         {prefix ? <span class="podo-chip__prefix">{prefix}</span> : null}
         <span class="podo-chip__label">{children}</span>
-        <button type="button" class="podo-chip__remove" aria-label={removeLabel}>
+        <button
+          type="button"
+          class="podo-chip__remove"
+          aria-label={removeLabel}
+          disabled={behavior.root.disabled}
+          aria-disabled={behavior.root.ariaDisabled}
+        >
           {HONO_CHIP_CLOSE}
         </button>
       </span>
@@ -645,6 +723,10 @@ export function Badge({
   return (
     <span
       class={joinClass("podo-badge", className)}
+      // A generic span cannot take an author-provided name, so a labeled dot
+      // announces as a named image (mirrors Icon's decorative={false}
+      // pattern). Non-dot badges keep their visible text as the name.
+      role={dot && ariaLabel != null ? "img" : undefined}
       data-theme={theme}
       data-dot={dot ? "true" : undefined}
       aria-label={ariaLabel}
@@ -657,6 +739,8 @@ export function Badge({
 export interface HonoSwitchProps {
   /** On/off value rendered statically (Figma state=on/off). */
   checked?: boolean;
+  /** Field의 label[for]가 가리킬 스위치 버튼의 id — Field가 주입해요. */
+  id?: string;
   /** Track size (Figma: sm 30x18 — base, md 40x24, lg 56x32). */
   size?: "sm" | "md" | "lg";
   /** SemiBold label for emphasized items (Figma bold). */
@@ -665,28 +749,44 @@ export interface HonoSwitchProps {
   label?: Child;
   disabled?: boolean;
   "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: string;
+  "aria-required"?: string;
   class?: string;
 }
 
 export function Switch({
   checked,
+  id,
   size = "sm",
   bold,
   label,
   disabled,
   "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
   class: className,
 }: HonoSwitchProps): JSX.Element {
   const behavior = createSwitchBehavior({ checked, disabled });
 
   const control = (
     <button
+      id={id}
       class={joinClass("podo-switch", className)}
       type="button"
       role="switch"
       aria-checked={behavior.checked ? "true" : "false"}
       aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      aria-invalid={ariaInvalid}
+      aria-required={ariaRequired}
       disabled={behavior.disabled}
+      // switch.component.json의 aria 요건 — core의 root["aria-disabled"]와 동일.
+      aria-disabled={behavior.disabled ? "true" : undefined}
       data-size={size}
       data-state={behavior.checked ? "on" : "off"}
     >
@@ -717,6 +817,8 @@ export interface HonoCheckboxProps {
   checked?: boolean;
   /** Partial-selection look (Figma state=indeterminate); the DOM mixed property needs client code. */
   indeterminate?: boolean;
+  /** Field의 label[for]가 가리킬 체크박스 input의 id — Field가 주입해요. */
+  id?: string;
   /** Label size only — the 18px box is fixed (Figma: md 14 — base, lg 16). */
   size?: "md" | "lg";
   /** SemiBold label for emphasized items (Figma bold). */
@@ -724,35 +826,56 @@ export interface HonoCheckboxProps {
   /** Visible label next to the box (Figma label/text); also names the checkbox. */
   label?: Child;
   disabled?: boolean;
+  /** Native required validation; Field injects its required here. */
+  required?: boolean;
   name?: string;
   value?: string;
   "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: string;
+  "aria-required"?: string;
   class?: string;
 }
 
 export function Checkbox({
   checked,
   indeterminate,
+  id,
   size = "md",
   bold,
   label,
   disabled,
+  required,
   name,
   value,
   "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
   class: className,
 }: HonoCheckboxProps): JSX.Element {
   const behavior = createCheckboxBehavior({ checked, indeterminate, disabled });
 
   const control = (
     <input
+      id={id}
       class={joinClass("podo-checkbox", className)}
       type="checkbox"
       name={name}
       value={value}
       checked={behavior.checked}
       disabled={behavior.disabled}
+      required={required}
       aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      aria-invalid={ariaInvalid}
+      aria-required={ariaRequired ?? (required ? "true" : undefined)}
+      // Native checked covers true/false; the mixed state only exists as the
+      // core-computed aria attribute until client JS sets .indeterminate.
+      aria-checked={behavior.indeterminate ? "mixed" : undefined}
       data-state={behavior.dataState["data-state"]}
     />
   );
@@ -778,6 +901,8 @@ export function Checkbox({
 export interface HonoRadioProps {
   /** Value rendered statically; the visual rides the native checked state. */
   checked?: boolean;
+  /** Field의 label[for]가 가리킬 라디오 input의 id — Field가 주입해요. */
+  id?: string;
   /** Label size only — the 18px circle is fixed (Figma: md 14 — base, lg 16). */
   size?: "md" | "lg";
   /** SemiBold label for emphasized items (Figma bold). */
@@ -785,33 +910,51 @@ export interface HonoRadioProps {
   /** Visible label next to the circle (Figma label/text); also names the radio. */
   label?: Child;
   disabled?: boolean;
+  /** Native required validation; Field injects its required here. */
+  required?: boolean;
   /** Same-name radios form a native exclusive group. */
   name?: string;
   value?: string;
   "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: string;
+  "aria-required"?: string;
   class?: string;
 }
 
 export function Radio({
   checked,
+  id,
   size = "md",
   bold,
   label,
   disabled,
+  required,
   name,
   value,
   "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
   class: className,
 }: HonoRadioProps): JSX.Element {
   const control = (
     <input
+      id={id}
       class={joinClass("podo-radio", className)}
       type="radio"
       name={name}
       value={value}
       checked={checked}
       disabled={disabled}
+      required={required}
       aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      aria-invalid={ariaInvalid}
+      aria-required={ariaRequired ?? (required ? "true" : undefined)}
     />
   );
 
@@ -891,7 +1034,7 @@ export function Input({
 }
 
 export function Field({
-  id = "podo-field",
+  id,
   label,
   subLabel,
   suffixIcon,
@@ -909,12 +1052,15 @@ export function Field({
   const showError = Boolean(error);
   const showHelper = Boolean(helperText) && !showError;
   const a11y = createFieldA11y({
-    id,
+    id: id ?? defaultFieldId(label),
     invalid,
     required,
     hasDescription: showHelper,
     hasError: showError,
   });
+  // 자식이 id를 직접 지정했다면 wireHonoControl이 그 id를 유지하므로,
+  // 레이블의 for=도 같은 id를 가리켜야 연결이 끊기지 않아요.
+  const controlId = explicitControlId(children) ?? a11y.ids.controlId;
 
   return (
     <div
@@ -924,7 +1070,7 @@ export function Field({
       data-required={required ? "true" : undefined}
     >
       <div class="podo-field__heading">
-        <label class="podo-field__label" id={a11y.ids.labelId} for={a11y.ids.controlId}>
+        <label class="podo-field__label" id={a11y.ids.labelId} for={controlId}>
           {label}
           {required ? (
             <span class="podo-field__requirement" aria-hidden="true">
@@ -938,7 +1084,9 @@ export function Field({
       <div class="podo-field__control">
         {wireHonoControl(
           children,
-          countMax != null ? { ...a11y.control, maxLength: countMax } : a11y.control
+          countMax != null ? { ...a11y.control, maxLength: countMax } : a11y.control,
+          disabled,
+          invalid
         )}
       </div>
       {showError || showHelper || countMax != null ? (
@@ -964,8 +1112,35 @@ export function Field({
   );
 }
 
-export function Icon({ name }: { name: string }): JSX.Element {
-  return <i class={`podo-icon podo-icon-${name}`} aria-hidden="true" />;
+export interface HonoIconProps {
+  /** Icon name from the generated PodoIconName union. */
+  name: string;
+  /**
+   * Glyph scale (icon.component.json size variant: sm, md — base, lg).
+   * 다른 컴포넌트와 동일하게 data-size 어휘로 노출돼요.
+   */
+  size?: "sm" | "md" | "lg";
+  /** Decorative icons are hidden from assistive technology (spec default). */
+  decorative?: boolean;
+  /** 비장식(decorative=false) 아이콘의 접근성 이름 — role="img"로 렌더돼요. */
+  "aria-label"?: string;
+}
+
+export function Icon({
+  name,
+  size = "md",
+  decorative = true,
+  "aria-label": ariaLabel,
+}: HonoIconProps): JSX.Element {
+  return (
+    <i
+      class={`podo-icon podo-icon-${name}`}
+      data-size={size}
+      role={decorative ? undefined : "img"}
+      aria-hidden={decorative ? "true" : undefined}
+      aria-label={decorative ? undefined : ariaLabel}
+    />
+  );
 }
 
 export function Typography({
@@ -988,16 +1163,35 @@ export function renderCriticalCss({
 }: HonoCriticalCssOptions = {}): JSX.Element {
   return (
     <>
-      <style data-podo-critical>{raw(css)}</style>
+      <style data-podo-critical>{raw(styleCss(css))}</style>
       <script data-podo-theme>
         {raw(
-          `document.documentElement.dataset.podoTheme=${JSON.stringify(
+          `document.documentElement.dataset.podoTheme=${scriptJson(
             theme
-          )};document.documentElement.dataset.colorScheme=${JSON.stringify(colorScheme)};`
+          )};document.documentElement.dataset.colorScheme=${scriptJson(colorScheme)};`
         )}
       </script>
     </>
   );
+}
+
+/**
+ * JSON for inline <script> embedding. The HTML parser runs before JS, so a
+ * value containing "</script>" would close the element; escaping "<" keeps
+ * the payload inert (standard safe-embed pattern).
+ */
+function scriptJson(value: string): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
+/**
+ * CSS for inline <style> embedding. The HTML parser ends the element at the
+ * first "</style" regardless of CSS syntax, so the sequence (case-insensitive)
+ * is neutralized with a CSS escape ("<\/style") — the same characters to the
+ * CSS parser, but no longer an end tag to the HTML parser.
+ */
+function styleCss(value: string): string {
+  return value.replace(/<\/(style)/gi, "<\\/$1");
 }
 
 export const honoRendererScope =
@@ -1007,17 +1201,83 @@ function joinClass(...classes: Array<string | false | null | undefined>): string
   return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * Deterministic default Field id — SSR has no useId, and the snapshot output
+ * must be stable, so the seed derives from the label text. Fields with the
+ * same label (or a non-text label) collide and need an explicit id.
+ */
+function defaultFieldId(label: Child): string {
+  const text = typeof label === "string" || typeof label === "number" ? String(label) : "";
+  const slug = text
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}_-]+/gu, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug ? `podo-field-${slug}` : "podo-field";
+}
+
+/**
+ * First explicit id found on the wired control children — the Field's label
+ * must point its for= at the same id that wireHonoControl preserves.
+ */
+function explicitControlId(child: Child): string | undefined {
+  if (Array.isArray(child)) {
+    for (const item of child) {
+      const found = explicitControlId(item);
+      if (found) {
+        return found;
+      }
+    }
+    return undefined;
+  }
+  if (!isValidElement(child)) {
+    return undefined;
+  }
+  const id = (child.props as Record<string, unknown>).id;
+  return typeof id === "string" && id ? id : undefined;
+}
+
 function wireHonoControl(
   child: Child,
-  controlAttributes: Record<string, string | boolean | number>
+  controlAttributes: Record<string, string | boolean | number>,
+  disabled?: boolean,
+  invalid?: boolean
 ): Child {
   if (Array.isArray(child)) {
-    return child.map((item) => wireHonoControl(item, controlAttributes));
+    return child.map((item) => wireHonoControl(item, controlAttributes, disabled, invalid));
   }
 
   if (!isValidElement(child)) {
     return child;
   }
 
-  return cloneElement(child, Object.fromEntries(Object.entries(controlAttributes)));
+  // Mirror wireReactControl in @podoui/react: an explicit child id wins over
+  // the generated one, and described-by lists are joined, not clobbered.
+  const existing = child.props as Record<string, unknown>;
+  const merged: Record<string, string | boolean | number> = { ...controlAttributes };
+  // 크로스 렌더러 결정(OR 의미론): disabled/invalid Field는 감싼 컨트롤도
+  // 강제로 disabled/invalid로 만들어요 — 자식 prop으로 해제할 수 없어요.
+  // Field가 정상일 때는 자식 자신의 값이 그대로 유지돼요.
+  if (disabled) {
+    merged.disabled = true;
+  }
+  if (invalid) {
+    merged.invalid = true;
+  }
+  if (typeof existing.id === "string" && existing.id) {
+    merged.id = existing.id;
+  }
+  const describedBy = joinIds(
+    typeof existing["aria-describedby"] === "string" ? existing["aria-describedby"] : undefined,
+    typeof controlAttributes["aria-describedby"] === "string"
+      ? controlAttributes["aria-describedby"]
+      : undefined
+  );
+  if (describedBy) {
+    merged["aria-describedby"] = describedBy;
+  } else {
+    delete merged["aria-describedby"];
+  }
+
+  return cloneElement(child, merged);
 }

@@ -230,7 +230,12 @@ input {
 
 /* Badge (Figma 474:3218): count/status pill. natural~info are strong system
    fills with light text (natural — base); gray~orange are soft color labels;
-   data-dot collapses the badge to a 6px presence dot. */
+   data-dot collapses the badge to a 6px presence dot. Every themed rule
+   consumes the spec binding vars (--podo-badge-root-background /
+   --podo-badge-label-color / --podo-badge-dot-color, emitted per-theme by the
+   generated components.css) with the current Figma value as fallback, so
+   project token overrides restyle the badge; the rules never set the vars
+   themselves, which would clobber the generated layer. */
 .podo-badge {
   align-items: center;
   background: var(--podo-badge-root-background, #3E424B);
@@ -247,71 +252,94 @@ input {
 }
 
 .podo-badge[data-theme="danger"] {
-  --podo-badge-root-background: #F23B3B;
+  background: var(--podo-badge-root-background, #F23B3B);
 }
 
 .podo-badge[data-theme="success"] {
-  --podo-badge-root-background: #3EA856;
+  background: var(--podo-badge-root-background, #3EA856);
 }
 
 .podo-badge[data-theme="warning"] {
-  --podo-badge-root-background: #FFAA00;
+  background: var(--podo-badge-root-background, #FFAA00);
 }
 
 .podo-badge[data-theme="info"] {
-  --podo-badge-root-background: #0095FF;
+  background: var(--podo-badge-root-background, #0095FF);
 }
 
 .podo-badge[data-theme="gray"] {
-  --podo-badge-root-background: #F4F4F5;
-  --podo-badge-label-color: #18181B;
-  --podo-badge-dot-color: #3E424B;
+  background: var(--podo-badge-root-background, #F4F4F5);
+  color: var(--podo-badge-label-color, #18181B);
 }
 
-/* Figma red dot is accent.50 (#F15764), not the label's error.50 —
-   mirrored as-is pending a design check. */
 .podo-badge[data-theme="red"] {
-  --podo-badge-root-background: #FEF1F1;
-  --podo-badge-label-color: #F23B3B;
-  --podo-badge-dot-color: #F15764;
+  background: var(--podo-badge-root-background, #FEF1F1);
+  color: var(--podo-badge-label-color, #F23B3B);
 }
 
 .podo-badge[data-theme="green"] {
-  --podo-badge-root-background: #ECF8EF;
-  --podo-badge-label-color: #3EA856;
-  --podo-badge-dot-color: #3EA856;
+  background: var(--podo-badge-root-background, #ECF8EF);
+  color: var(--podo-badge-label-color, #3EA856);
 }
 
 .podo-badge[data-theme="yellow"] {
-  --podo-badge-root-background: #FFF7E6;
-  --podo-badge-label-color: #FFAA00;
-  --podo-badge-dot-color: #FFAA00;
+  background: var(--podo-badge-root-background, #FFF7E6);
+  color: var(--podo-badge-label-color, #FFAA00);
 }
 
 .podo-badge[data-theme="blue"] {
-  --podo-badge-root-background: #EBF5FF;
-  --podo-badge-label-color: #0095FF;
-  --podo-badge-dot-color: #0095FF;
+  background: var(--podo-badge-root-background, #EBF5FF);
+  color: var(--podo-badge-label-color, #0095FF);
 }
 
 .podo-badge[data-theme="purple"] {
-  --podo-badge-root-background: #F8F5FF;
-  --podo-badge-label-color: #8E51FF;
-  --podo-badge-dot-color: #8E51FF;
+  background: var(--podo-badge-root-background, #F8F5FF);
+  color: var(--podo-badge-label-color, #8E51FF);
 }
 
 .podo-badge[data-theme="orange"] {
-  --podo-badge-root-background: #FFF4F0;
-  --podo-badge-label-color: #FF6A33;
-  --podo-badge-dot-color: #FF6A33;
+  background: var(--podo-badge-root-background, #FFF4F0);
+  color: var(--podo-badge-label-color, #FF6A33);
 }
 
+/* Dot geometry only — strong themes (natural~info) keep the themed root
+   background as the dot fill; soft themes override below with the spec's
+   dot.color binding. */
 .podo-badge[data-dot] {
-  background: var(--podo-badge-dot-color, var(--podo-badge-root-background, #3E424B));
   height: 6px;
   min-width: 6px;
   padding: 0;
   width: 6px;
+}
+
+.podo-badge[data-theme="gray"][data-dot] {
+  background: var(--podo-badge-dot-color, #3E424B);
+}
+
+/* Figma red dot is accent.50 (#F15764), not the label's error.50 —
+   mirrored as-is pending a design check. */
+.podo-badge[data-theme="red"][data-dot] {
+  background: var(--podo-badge-dot-color, #F15764);
+}
+
+.podo-badge[data-theme="green"][data-dot] {
+  background: var(--podo-badge-dot-color, #3EA856);
+}
+
+.podo-badge[data-theme="yellow"][data-dot] {
+  background: var(--podo-badge-dot-color, #FFAA00);
+}
+
+.podo-badge[data-theme="blue"][data-dot] {
+  background: var(--podo-badge-dot-color, #0095FF);
+}
+
+.podo-badge[data-theme="purple"][data-dot] {
+  background: var(--podo-badge-dot-color, #8E51FF);
+}
+
+.podo-badge[data-theme="orange"][data-dot] {
+  background: var(--podo-badge-dot-color, #FF6A33);
 }
 
 /* Chip (Figma 538:6615): pill tag with prefix/suffix icon slots and a
@@ -566,7 +594,9 @@ input {
   width: 18px;
 }
 
-.podo-checkbox[data-state="checked"] {
+/* Checked paint keys off the live :checked pseudo-class (like .podo-radio) so
+   JS-less SSR consumers (hono) repaint on toggle; data-state stays for markup. */
+.podo-checkbox:checked {
   background-color: #426CED;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   border-color: transparent;
@@ -587,7 +617,7 @@ input {
   cursor: not-allowed;
 }
 
-.podo-checkbox[disabled][data-state="checked"] {
+.podo-checkbox[disabled]:checked {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   border-color: transparent;
 }
@@ -1689,6 +1719,20 @@ input {
   line-height: 1;
 }
 
+/* Sizes (icon.component.json size variant, default md): md renders the glyph
+   1:1 with its 24×24 SVG source grid at 24px; sm/lg step to 16px/32px. */
+.podo-icon[data-size="sm"] {
+  font-size: 16px;
+}
+
+.podo-icon[data-size="md"] {
+  font-size: 24px;
+}
+
+.podo-icon[data-size="lg"] {
+  font-size: 32px;
+}
+
 .podo-text {
   color: var(--podo-typography-root-color, var(--podo-semantic-color-text-default, #14151A));
   font-family: var(--podo-typography-body-medium-fontFamily, inherit);
@@ -2607,7 +2651,7 @@ function createFieldElement(): CustomElementConstructor {
 function createIconElement(): CustomElementConstructor {
   return class PodoIconElement extends HTMLElement {
     static get observedAttributes(): string[] {
-      return ["codepoint", "name"];
+      return ["aria-label", "codepoint", "decorative", "name", "size"];
     }
 
     readonly shadow = this.attachShadow({ mode: "open" });
@@ -2624,9 +2668,17 @@ function createIconElement(): CustomElementConstructor {
       const name = attr(this, "name", "");
       const codepoint = attr(this, "codepoint", defaultWebIconCodepoints[name] ?? "");
       const glyph = codepoint ? `&#x${escapeHtml(codepoint)};` : "";
+      // hono/react Icon과 동일한 어휘: 장식(기본) 아이콘은 aria-hidden으로 AT에서
+      // 숨기고, decorative="false"는 role="img" + 호스트의 aria-label을 노출한다.
+      const decorative = attr(this, "decorative", "") !== "false";
+      const a11yAttrs = decorative
+        ? 'aria-hidden="true"'
+        : ['role="img"', attrString("aria-label", attr(this, "aria-label", ""))]
+            .filter(Boolean)
+            .join(" ");
       this.shadow.innerHTML = `${componentStyleBlock()}<span class="podo-icon podo-icon-${escapeHtml(
         name
-      )}" part="icon" aria-hidden="true">${glyph}</span>`;
+      )}" part="icon" data-size="${escapeHtml(attr(this, "size", "md"))}" ${a11yAttrs}>${glyph}</span>`;
     }
   };
 }

@@ -26,6 +26,8 @@ export interface EditorProps {
   validator?: z.ZodType<unknown>;
   placeholder?: string;
   toolbar?: ToolbarItem[]; // 사용할 툴바 아이템 (없으면 전부)
+  /** 편집 영역의 접근성 이름 (기본값: "리치 텍스트 편집기") */
+  ariaLabel?: string;
 }
 
 export interface ParagraphOption {

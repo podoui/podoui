@@ -4,6 +4,9 @@ import React, {
   createElement,
   isValidElement,
   useContext,
+  useEffect,
+  useId,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -14,12 +17,15 @@ import {
   createInputBehavior,
   createRadioBehavior,
   createSwitchBehavior,
+  joinIds,
 } from "@podoui/core";
 
 export type NativeHostComponent = string | React.ComponentType<Record<string, unknown>>;
 
 export interface NativeHost {
   Pressable: NativeHostComponent;
+  /** Optional scroll container — the Select menu uses it for its ten-row cap. */
+  ScrollView?: NativeHostComponent;
   Text: NativeHostComponent;
   TextInput: NativeHostComponent;
   View: NativeHostComponent;
@@ -29,6 +35,12 @@ export interface NativeTheme {
   theme: string;
   colorScheme: "light" | "dark";
   tokens?: Record<string, unknown>;
+  /**
+   * Icon name → glyph character map consumed by Icon. Build it from the
+   * generated RN glyph map (`podo build` → `PodoIcons.native.ts`, whose
+   * `podoIconGlyphMap` maps name → codepoint) with `String.fromCodePoint`.
+   */
+  iconGlyphs?: Record<string, string>;
 }
 
 export interface NativeThemeProviderProps extends NativeTheme {
@@ -106,7 +118,11 @@ export interface NativeBadgeProps {
     | "orange";
   /** 숫자·텍스트 없이 6px 점만 표시 (Figma dot). */
   dot?: boolean;
-  /** dot처럼 텍스트가 없을 때 의미를 이름으로 제공해요. */
+  /**
+   * dot처럼 텍스트가 없을 때 의미를 이름으로 제공해요. 라벨이 있는 dot은
+   * accessible한 named image(accessibilityRole "image" / RN Web role "img")로
+   * 안내돼요.
+   */
   accessibilityLabel?: string;
   testID?: string;
 }
@@ -145,6 +161,14 @@ export interface NativeCheckboxProps {
   testID?: string;
 }
 
+/**
+ * Standalone radio — there is no group container on native, so the consumer
+ * keeps exactly one checked (radio.component.json native limitation). The
+ * spec's "Arrow keys move within the same-name group" keyboard contract
+ * therefore cannot be implemented here: roving Arrow navigation needs a
+ * future RadioGroup primitive that owns the sibling list. Space (RN Web)
+ * selects the focused radio.
+ */
 export interface NativeRadioProps {
   /** Controlled value (Figma checked). Group exclusivity is the consumer's. */
   checked?: boolean;
@@ -272,8 +296,34 @@ export interface NativeFieldProps {
 }
 
 export interface NativeIconProps {
+  /**
+   * Manifest icon name. Without an explicit glyph, the name is looked up in
+   * the provider's iconGlyphs map (`PodoNativeThemeProvider iconGlyphs` —
+   * consumers pass the generated glyph map there); if neither resolves, the
+   * raw name renders as readable fallback text.
+   */
   name: string;
+  /**
+   * Explicit glyph character — wins over the provider map. Resolution order:
+   * `glyph ?? theme.iconGlyphs?.[name] ?? name`.
+   */
   glyph?: string;
+  /**
+   * Glyph scale (icon.component.json size variant). Maps to the glyph
+   * fontSize: sm 16 / md 24 / lg 32 — md (the default) matches the 24×24
+   * SVG grid the icon font is built from, sm/lg step ±8.
+   */
+  size?: "sm" | "md" | "lg";
+  /**
+   * Decorative icons (the default) are hidden from every platform's a11y
+   * tree. Pass `decorative={false}` together with `accessibilityLabel` to
+   * expose the icon as a named image instead (role/accessibilityRole
+   * img/image); without a label the icon stays hidden — an unnamed image
+   * would only announce noise.
+   */
+  decorative?: boolean;
+  /** Accessible name for meaningful (`decorative={false}`) icons. */
+  accessibilityLabel?: string;
   testID?: string;
 }
 
@@ -324,6 +374,7 @@ export type NativeStyle = Record<string, string | number | undefined>;
 
 export const defaultNativeHost: NativeHost = {
   Pressable: "Pressable",
+  ScrollView: "ScrollView",
   Text: "Text",
   TextInput: "TextInput",
   View: "View",
@@ -338,10 +389,15 @@ export function PodoNativeThemeProvider({
   theme,
   colorScheme,
   tokens,
+  iconGlyphs,
   children,
 }: NativeThemeProviderProps): React.ReactElement {
-  const value =
-    typeof tokens === "undefined" ? { theme, colorScheme } : { theme, colorScheme, tokens };
+  const value = {
+    theme,
+    colorScheme,
+    ...(typeof tokens === "undefined" ? {} : { tokens }),
+    ...(typeof iconGlyphs === "undefined" ? {} : { iconGlyphs }),
+  };
 
   return <NativeThemeContext.Provider value={value}>{children}</NativeThemeContext.Provider>;
 }
@@ -399,12 +455,125 @@ const BADGE_COLORS: Record<
   orange: { fill: "#FFF4F0", label: "#FF6A33", dot: "#FF6A33" },
 };
 
+// Button themes — base and pressed values from podo-ui/styles.css
+// ("/* Themes */", Figma light values like BADGE_COLORS). Native has no hover
+// state; Pressable's pressed state maps to the CSS :active `*-pressed` fill.
+// Solid themes keep a transparent border so every theme shares the same box.
+const BUTTON_COLORS: Record<
+  NativeButtonTheme,
+  { fill: string; label: string; border: string; pressed: string }
+> = {
+  "solid-primary": { fill: "#426CED", label: "#FFFFFF", border: "transparent", pressed: "#123BBA" },
+  "solid-assistive": {
+    fill: "#F4F4F5",
+    label: "#18181B",
+    border: "transparent",
+    pressed: "#D1D2D6",
+  },
+  "solid-white": { fill: "#FFFFFF", label: "#18181B", border: "transparent", pressed: "#E4E4E7" },
+  "solid-danger": { fill: "#F23B3B", label: "#FFFFFF", border: "transparent", pressed: "#CD0404" },
+  "outline-primary": { fill: "#FFFFFF", label: "#426CED", border: "#426CED", pressed: "#D0DBFB" },
+  "outline-assistive": {
+    fill: "#F9F9F9",
+    label: "#18181B",
+    border: "#D1D2D6",
+    pressed: "#E4E4E7",
+  },
+  "outline-white": {
+    fill: "#FFFFFF",
+    label: "#18181B",
+    border: "#D1D2D6",
+    pressed: "rgba(0, 0, 0, 0.1)",
+  },
+  "outline-danger": { fill: "#FFFFFF", label: "#F23B3B", border: "#F23B3B", pressed: "#FFE0DF" },
+};
+
+// .podo-button[disabled] (podo-ui/styles.css): the disabled state has its own
+// fill/label pair — no opacity in the spec. Outline themes keep a visible
+// disabled border (styles.css [data-theme^="outline"][disabled]).
+const BUTTON_DISABLED = { fill: "#E4E4E7", label: "#9FA2AD" };
+const BUTTON_DISABLED_OUTLINE_BORDER = "#D1D2D6";
+
+// Button sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) — height, padding,
+// radius, and font size mirror podo-ui/styles.css ("/* Sizes */").
+const BUTTON_SIZES: Record<
+  NonNullable<NativeButtonProps["size"]>,
+  {
+    borderRadius: number;
+    fontSize: number;
+    minHeight: number;
+    paddingHorizontal: number;
+    paddingVertical: number;
+  }
+> = {
+  xs: { borderRadius: 6, fontSize: 14, minHeight: 32, paddingHorizontal: 10, paddingVertical: 2 },
+  sm: { borderRadius: 8, fontSize: 14, minHeight: 36, paddingHorizontal: 16, paddingVertical: 2 },
+  md: { borderRadius: 10, fontSize: 16, minHeight: 42, paddingHorizontal: 16, paddingVertical: 2 },
+  lg: { borderRadius: 12, fontSize: 16, minHeight: 52, paddingHorizontal: 20, paddingVertical: 10 },
+};
+
+// Icon size → glyph fontSize (icon.component.json size variant: sm/md/lg,
+// default md). md 24 matches the 24×24 SVG grid the icon font is built from
+// (packages/icons optimizes sources to viewBox 0 0 24 24); sm/lg step ±8.
+const ICON_SIZES: Record<NonNullable<NativeIconProps["size"]>, number> = {
+  sm: 16,
+  md: 24,
+  lg: 32,
+};
+
+// Select menu ten-row cap (select.component.json: the menu "caps at ten 42px
+// rows (474px) and scrolls beyond"). Computed from this file's own styles:
+// 10 rows × selectCell minHeight 42 + 9 gaps × selectMenuContent gap 4
+// + 2 × selectMenuContent padding 8 + 2 × selectMenu borderWidth 1 = 474.
+// RN styles size border-box, so the box border counts toward maxHeight; the
+// content padding scrolls with the cells inside the content container.
+const SELECT_MENU_MAX_HEIGHT = 10 * 42 + 9 * 4 + 2 * 8 + 2 * 1;
+
 export function createNativeComponents(host: NativeHost = defaultNativeHost): NativeComponents {
   const components: NativeComponents = {
     Button: (props) => {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
       const behavior = createButtonBehavior({ disabled: props.disabled });
+      const themeName = props.theme ?? "solid-primary";
+      const size = props.size ?? "md";
+      const box = BUTTON_COLORS[themeName];
+      const metrics = BUTTON_SIZES[size];
+      // Disabled swaps in the design system's own treatment
+      // (.podo-button[disabled]: gray fill + muted label, no opacity) instead
+      // of dimming the theme color.
+      const colors = behavior.pressable
+        ? box
+        : {
+            fill: BUTTON_DISABLED.fill,
+            label: BUTTON_DISABLED.label,
+            border: themeName.startsWith("outline-")
+              ? BUTTON_DISABLED_OUTLINE_BORDER
+              : "transparent",
+          };
+      const restingStyle = {
+        ...styles.button,
+        backgroundColor: colors.fill,
+        borderColor: colors.border,
+        borderRadius: metrics.borderRadius,
+        minHeight: metrics.minHeight,
+        paddingHorizontal: metrics.paddingHorizontal,
+        paddingVertical: metrics.paddingVertical,
+        ...(props.fill ? { alignSelf: "stretch" } : {}),
+      };
+      // Pressed feedback uses RN Pressable's style-as-function form with the
+      // theme's `*-pressed` fill (styles.css :active). Only component hosts
+      // (the real RN Pressable) get the function: string-tag hosts
+      // (defaultNativeHost under test renderers/react-dom demos) render DOM
+      // elements whose style prop must be a plain object — a function there
+      // would throw — so they keep the static resting style.
+      const style =
+        typeof host.Pressable === "string"
+          ? restingStyle
+          : ({ pressed }: { pressed: boolean }) =>
+              pressed && behavior.pressable
+                ? { ...restingStyle, backgroundColor: box.pressed }
+                : restingStyle;
       return createElement(
         host.Pressable,
         {
@@ -412,17 +581,17 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           accessibilityState: { disabled: !behavior.pressable },
           disabled: !behavior.pressable,
           onPress: behavior.pressable ? props.onPress : undefined,
-          style: {
-            ...styles.button,
-            ...(props.fill ? { alignSelf: "stretch" } : {}),
-            opacity: behavior.pressable ? 1 : 0.56,
-          },
+          style,
           testID: props.testID,
-          "data-theme": props.theme ?? "solid-primary",
-          "data-size": props.size ?? "md",
+          "data-theme": themeName,
+          "data-size": size,
         },
         props.prefix,
-        createElement(host.Text, { style: styles.buttonLabel }, props.children),
+        createElement(
+          host.Text,
+          { style: { ...styles.buttonLabel, color: colors.label, fontSize: metrics.fontSize } },
+          props.children
+        ),
         props.suffix
       );
     },
@@ -435,9 +604,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const selected = props.selected === true;
       if (props.onRemove) {
         // Removable chip: born in the selected look, no toggle — the X is the
-        // only control, so the root is a plain View.
-        const box =
-          themeName === "outline-weak"
+        // only control, so the root is a plain View. Disabled keeps the same
+        // treatment as the non-removable disabled chip and inerts the X
+        // (react parity: data-disabled="true" + disabled remove button).
+        const box = behavior.disabled
+          ? { fill: "#E4E4E7", border: "transparent", label: "#9FA2AD" }
+          : themeName === "outline-weak"
             ? { fill: "#F9F9F9", border: "#767985", label: "#18181B" }
             : { fill: "#3E424B", border: "transparent", label: "#FFFFFF" };
         return createElement(
@@ -452,6 +624,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             "data-theme": themeName,
             "data-size": size,
             "data-state": "selected",
+            "data-disabled": behavior.disabled ? "true" : undefined,
           },
           props.prefix,
           createElement(
@@ -470,7 +643,9 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             {
               accessibilityRole: "button",
               accessibilityLabel: props.removeLabel ?? "제거",
-              onPress: props.onRemove,
+              accessibilityState: { disabled: behavior.disabled },
+              disabled: behavior.disabled,
+              onPress: behavior.pressable ? props.onRemove : undefined,
             },
             createElement(host.Text, { style: { color: box.label, fontSize: 14 } }, "✕")
           )
@@ -487,11 +662,45 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           : themeName === "solid"
             ? { fill: "#F4F4F5", border: "transparent", label: "#18181B" }
             : { fill: "transparent", border: "#E4E4E7", label: "#18181B" };
+      // Pressed feedback (podo-ui/styles.css .podo-chip :active rules):
+      // unselected solid darkens the fill to #E4E4E7, unselected outlines
+      // darken the border to #D1D2D6, selected solid/outline-strong lighten
+      // to #767985, selected outline-weak fills #F4F4F5.
+      const pressedBox = selected
+        ? themeName === "outline-weak"
+          ? { ...box, fill: "#F4F4F5" }
+          : { ...box, fill: "#767985" }
+        : themeName === "solid"
+          ? { ...box, fill: "#E4E4E7" }
+          : { ...box, border: "#D1D2D6" };
+      const restingStyle = {
+        ...styles.chip,
+        backgroundColor: box.fill,
+        borderColor: box.border,
+      };
+      // Same host-type guard as Button: only component hosts (the real RN
+      // Pressable) accept RN's style-as-function form — string-tag hosts
+      // render DOM elements whose style prop must stay a plain object.
+      const style =
+        typeof host.Pressable === "string"
+          ? restingStyle
+          : ({ pressed }: { pressed: boolean }) =>
+              pressed && behavior.pressable
+                ? {
+                    ...restingStyle,
+                    backgroundColor: pressedBox.fill,
+                    borderColor: pressedBox.border,
+                  }
+                : restingStyle;
       return createElement(
         host.Pressable,
         {
           accessibilityRole: "button",
           accessibilityState: { disabled: !behavior.pressable, selected },
+          // Toggle chips are pressed-state buttons (chip.component.json aria:
+          // "aria-pressed (selection toggle)") — RNW passes aria-pressed
+          // through; real RN keeps announcing via accessibilityState.selected.
+          "aria-pressed": selected,
           disabled: !behavior.pressable,
           // Chips toggle: pressing reports the next selected value.
           onPress: behavior.pressable
@@ -500,11 +709,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                 props.onPress?.();
               }
             : undefined,
-          style: {
-            ...styles.chip,
-            backgroundColor: box.fill,
-            borderColor: box.border,
-          },
+          style,
           testID: props.testID,
           "data-theme": themeName,
           "data-size": size,
@@ -525,8 +730,21 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const themeName = props.theme ?? "natural";
       const box = BADGE_COLORS[themeName];
       if (props.dot) {
+        // Non-touchable Views are not accessibility elements by default on
+        // real RN, so a labeled dot must opt in with accessible plus a named
+        // image role — accessibilityRole "image" for real RN and the web-ish
+        // role prop for RN Web (renders role="img"), mirroring Icon's
+        // decorative={false} pattern. An unlabeled dot stays decorative.
+        const labeled = props.accessibilityLabel != null;
         return createElement(host.View, {
-          accessibilityLabel: props.accessibilityLabel,
+          ...(labeled
+            ? {
+                accessible: true,
+                accessibilityRole: "image",
+                role: "img",
+                accessibilityLabel: props.accessibilityLabel,
+              }
+            : {}),
           style: { backgroundColor: box.dot, borderRadius: 3, height: 6, width: 6 },
           testID: props.testID,
           "data-theme": themeName,
@@ -553,10 +771,18 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     Select: function NativeSelect(props) {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
-      const [open, setOpen] = useState(false);
+      const [openState, setOpen] = useState(false);
+      const [activeIndex, setActiveIndex] = useState(0);
       const multiple = props.multiple === true;
       const disabled = props.disabled === true;
       const readOnly = props.readOnly === true;
+      // 내부 open 상태는 disabled/readOnly와 항상 재조정돼요: 메뉴가 열린 채
+      // 잠기면 즉시 닫히고, 다시 풀려도 저절로 되열리지 않아요 (render-phase
+      // adjustment — react 렌더러의 가드와 같은 결과).
+      if (openState && (disabled || readOnly)) {
+        setOpen(false);
+      }
+      const open = openState && !disabled && !readOnly;
       const selectedValues = props.values ?? [];
       const selected = props.options.find((o) => o.value === props.value);
       const hasValue = multiple ? selectedValues.length > 0 : Boolean(selected);
@@ -570,7 +796,18 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               ? { color: "#F23B3B", width: 1 }
               : { color: "#E4E4E7", width: 1 };
 
+      // The lock is read through a ref kept current on every render: a queued
+      // press handler captured before a disabled/readOnly flip would otherwise
+      // see the stale (unlocked) closure values from its defining render.
+      const lockRef = useRef(disabled || readOnly);
+      lockRef.current = disabled || readOnly;
+
       const pick = (optionValue: string) => {
+        // Guard stale presses (e.g. a queued native press landing after the
+        // disabled/readOnly flip) — mirrors the react renderer's guards.
+        if (lockRef.current) {
+          return;
+        }
         if (multiple) {
           const next = selectedValues.includes(optionValue)
             ? selectedValues.filter((v) => v !== optionValue)
@@ -582,24 +819,130 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         }
       };
 
+      const clearAll = () => {
+        // Same stale-press guard as pick(): a clear-all press queued before a
+        // disabled/readOnly flip must not mutate values after the lock.
+        if (lockRef.current) {
+          return;
+        }
+        props.onValuesChange?.([]);
+      };
+
+      // Stable per-instance option ids for aria-activedescendant (useId
+      // delimiters stripped, like Field's generated ids).
+      const reactId = useId();
+      const menuId = `podo-select-${reactId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+      const optionId = (index: number): string => `${menuId}-option-${index}`;
+      // Options can change while open — keep the active cell in range.
+      const lastIndex = props.options.length - 1;
+      const active = Math.max(0, Math.min(activeIndex, lastIndex));
+
+      // Keyboard navigation keeps the active option inside the 474px viewport:
+      // whenever the active cell changes while open, scroll the menu container
+      // to the cell's offset (index × (cell minHeight 42 + menu gap 4)). Only
+      // host instances that expose an RN ScrollView-like scrollTo are driven —
+      // string-tag hosts (and the plain View fallback) yield refs without one
+      // and simply ignore the follow behavior.
+      const menuRef = useRef<unknown>(null);
+      useEffect(() => {
+        if (!open) {
+          return;
+        }
+        const node = menuRef.current as {
+          scrollTo?: (options: { x?: number; y?: number; animated?: boolean }) => void;
+        } | null;
+        if (!node || typeof node.scrollTo !== "function") {
+          return;
+        }
+        try {
+          node.scrollTo({ y: active * (42 + 4), animated: false });
+        } catch {
+          // Hosts whose scrollTo throws (e.g. jsdom stubs) are unscrollable.
+        }
+      }, [open, active]);
+
+      const openMenu = () => {
+        if (disabled || readOnly) {
+          return;
+        }
+        // The active cell starts on the current single selection, or on the
+        // first option (multiple always starts at the top).
+        const selectedIndex = multiple
+          ? -1
+          : props.options.findIndex((o) => o.value === props.value);
+        setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0);
+        setOpen(true);
+      };
+
+      // Published keyboard contract (select.component.json accessibility):
+      // Enter/Space/ArrowDown opens, ArrowUp/ArrowDown moves the active
+      // option, Enter picks it, Escape closes. Focus never leaves the
+      // trigger — the active cell is pointed at via aria-activedescendant.
+      // RN Web delivers onKeyDown on Pressable; native RN ignores the prop.
+      // RN Web의 PressResponder는 포커스된 트리거의 Enter에서 onPress도
+      // 합성하므로, Enter를 여기서 처리했을 땐 바로 다음 합성 press 한 번을
+      // 삼켜 이중 토글을 막아요 (실제 RN은 onKeyDown이 없어 플래그가 항상
+      // false — 터치 onPress는 그대로 동작해요).
+      const suppressSynthPress = useRef(false);
+      const onTriggerKeyDown = (event?: { key?: string; preventDefault?: () => void }) => {
+        const key = event?.key;
+        if (!key || disabled || readOnly) {
+          return;
+        }
+        suppressSynthPress.current = false;
+        if (!open) {
+          if (key === "Enter" || key === " " || key === "ArrowDown") {
+            event?.preventDefault?.();
+            suppressSynthPress.current = key === "Enter";
+            openMenu();
+          }
+          return;
+        }
+        if (key === "ArrowDown") {
+          event?.preventDefault?.();
+          setActiveIndex(Math.min(active + 1, lastIndex));
+        } else if (key === "ArrowUp") {
+          event?.preventDefault?.();
+          setActiveIndex(Math.max(active - 1, 0));
+        } else if (key === "Enter") {
+          event?.preventDefault?.();
+          suppressSynthPress.current = true;
+          const option = props.options[active];
+          if (option) {
+            pick(option.value);
+          }
+        } else if (key === "Escape") {
+          event?.preventDefault?.();
+          setOpen(false);
+        }
+      };
+
       // 선택 값 칩은 Chip 컴포넌트의 제거형 모드를 그대로 재사용하고,
       // maxChips를 넘는 값은 "+N"으로 축약해요 (해제는 메뉴에서).
       const maxChips = props.maxChips ?? 3;
       const hiddenChipCount = Math.max(0, selectedValues.length - maxChips);
       const chips: ReactNode[] = selectedValues.slice(0, maxChips).map((v) => {
         const label = props.options.find((o) => o.value === v)?.label ?? v;
-        // read-only는 지울 수 없으니 X 없는 정적 칩으로 렌더해요.
-        if (readOnly) {
+        // read-only·disabled는 지울 수 없으니 X 없는 정적 칩으로 렌더해요
+        // (disabled는 비활성 칩과 같은 색으로).
+        if (readOnly || disabled) {
           return createElement(
             host.View,
             {
               key: v,
-              style: { ...styles.chip, backgroundColor: "#3E424B" },
+              style: { ...styles.chip, backgroundColor: disabled ? "#E4E4E7" : "#3E424B" },
               "data-state": "selected",
+              "data-disabled": disabled ? "true" : undefined,
             },
             createElement(
               host.Text,
-              { style: { ...styles.chipLabel, color: "#FFFFFF", fontSize: 14 } },
+              {
+                style: {
+                  ...styles.chipLabel,
+                  color: disabled ? "#9FA2AD" : "#FFFFFF",
+                  fontSize: 14,
+                },
+              },
               label
             )
           );
@@ -644,19 +987,35 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               ),
             ];
 
-      const cells = props.options.map((option) => {
+      const cells = props.options.map((option, index) => {
         const isSelected = multiple
           ? selectedValues.includes(option.value)
           : option.value === props.value;
+        const isActive = index === active;
         return createElement(
           host.Pressable,
           {
             key: option.value,
-            accessibilityRole: "button",
+            // Listbox option semantics (select.component.json aria) — the
+            // web-ish role prop (RN ≥0.71) instead of a button role; string
+            // hosts just carry the attribute through.
+            role: "option",
+            nativeID: optionId(index),
             accessibilityState: { selected: isSelected },
+            "aria-selected": isSelected,
+            // Focus never enters the list (select.component.json
+            // focusManagement: "Focus stays on the trigger") — the trigger
+            // points at the active cell via aria-activedescendant instead.
+            // RNW honors both focusable:false and tabIndex:-1 (Pressables are
+            // focusable by default there); real RN ignores them.
+            focusable: false,
+            tabIndex: -1,
             onPress: () => pick(option.value),
-            style: styles.selectCell,
+            // The active (keyboard) cell shows the hover/active fill
+            // (.podo-select__cell[data-active] in podo-ui/styles.css).
+            style: { ...styles.selectCell, ...(isActive ? styles.selectCellActive : {}) },
             "data-state": isSelected ? "selected" : undefined,
+            "data-active": isActive ? "true" : undefined,
           },
           multiple
             ? createElement(
@@ -700,7 +1059,6 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       return createElement(
         host.View,
         {
-          accessibilityLabel: props.accessibilityLabel,
           style: { flexDirection: "column", gap: 6 },
           testID: props.testID,
           "data-size": props.size ?? "md",
@@ -716,10 +1074,40 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         createElement(
           host.Pressable,
           {
-            accessibilityRole: "button",
+            // combobox — matches the react/web trigger role and keeps the
+            // interactive chip-remove/clear pressables (role=button) from
+            // nesting inside another button (invalid HTML under RN Web).
+            accessibilityRole: "combobox",
+            // The accessible name belongs on the interactive trigger, not the
+            // outer layout View.
+            accessibilityLabel: props.accessibilityLabel,
             accessibilityState: { disabled, expanded: open },
             disabled,
-            onPress: disabled || readOnly ? undefined : () => setOpen(!open),
+            onPress:
+              disabled || readOnly
+                ? undefined
+                : () => {
+                    // 처리된 Enter 키가 합성한 press는 한 번만 삼켜요.
+                    if (suppressSynthPress.current) {
+                      suppressSynthPress.current = false;
+                      return;
+                    }
+                    if (open) {
+                      setOpen(false);
+                    } else {
+                      openMenu();
+                    }
+                  },
+            onKeyDown: disabled || readOnly ? undefined : onTriggerKeyDown,
+            // Combobox wiring (select.component.json aria: "combobox trigger
+            // with aria-expanded/aria-haspopup/aria-controls") — RNW passes
+            // the aria-* props through; real RN ignores them and keeps
+            // announcing via accessibilityState.expanded above.
+            "aria-haspopup": "listbox",
+            "aria-controls": open ? menuId : undefined,
+            "aria-expanded": String(open),
+            // Focus stays here — the active option is only pointed at.
+            "aria-activedescendant": open && lastIndex >= 0 ? optionId(active) : undefined,
             style: {
               ...styles.selectTrigger,
               ...(props.size === "lg" ? { borderRadius: 12, minHeight: 52, minWidth: 120 } : {}),
@@ -737,7 +1125,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                 {
                   accessibilityRole: "button",
                   accessibilityLabel: "모두 해제",
-                  onPress: () => props.onValuesChange?.([]),
+                  onPress: clearAll,
                 },
                 createElement(host.Text, { style: { color: "#767985", fontSize: 14 } }, "✕")
               )
@@ -746,7 +1134,38 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             ? null
             : createElement(host.Text, { style: { color: "#27272A", fontSize: 16 } }, "▾")
         ),
-        open ? createElement(host.View, { style: styles.selectMenu }, ...cells) : null
+        open
+          ? createElement(
+              // The menu scrolls past ten rows when the host ships a
+              // ScrollView; hosts without one fall back to a capped View.
+              host.ScrollView ?? host.View,
+              {
+                ref: menuRef,
+                role: "listbox",
+                nativeID: menuId,
+                "aria-multiselectable": multiple ? true : undefined,
+                // Real RN ScrollView lays its children out in an inner content
+                // container: box styles (maxHeight/background/border/radius)
+                // stay on style while the child-layout styles
+                // (padding/gap/flexDirection) must ride contentContainerStyle.
+                // The View fallback has no content container, so both merge
+                // onto style.
+                ...(host.ScrollView
+                  ? {
+                      style: { ...styles.selectMenu, maxHeight: SELECT_MENU_MAX_HEIGHT },
+                      contentContainerStyle: styles.selectMenuContent,
+                    }
+                  : {
+                      style: {
+                        ...styles.selectMenu,
+                        ...styles.selectMenuContent,
+                        maxHeight: SELECT_MENU_MAX_HEIGHT,
+                      },
+                    }),
+              },
+              ...cells
+            )
+          : null
       );
     },
     Input: (props) => {
@@ -770,14 +1189,23 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           ...props.accessibilityState,
           disabled: behavior.disabled,
           invalid: behavior.invalid || Boolean(props.accessibilityState?.invalid),
+          required: behavior.required || Boolean(props.accessibilityState?.required),
         },
         editable: !behavior.disabled && !props.readOnly,
+        // Disabled controls also leave the focus order — RN Web honors
+        // focusable:false, real RN accepts it on TextInput next to editable.
+        ...(behavior.disabled ? { focusable: false } : {}),
         defaultValue: props.defaultValue,
         value: props.value,
         placeholder: props.placeholder,
         maxLength: props.maxLength,
         onChangeText: props.onValueChange,
-        style: styles.inputControl,
+        style: {
+          ...styles.inputControl,
+          // Disabled text drops to the muted gray
+          // (.podo-input[data-state="disabled"] .podo-input__control).
+          ...(behavior.disabled ? styles.inputControlDisabled : {}),
+        },
         testID: props.testID,
       });
       return createElement(
@@ -786,6 +1214,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           style: {
             ...styles.input,
             ...(props.size === "lg" ? styles.inputLg : {}),
+            // Invalid keeps the danger border (styles.css .podo-input invalid);
+            // read-only still removes the box, like the Select trigger.
+            ...(behavior.invalid ? styles.inputInvalid : {}),
+            // Disabled gray box (.podo-input[data-state="disabled"]) wins over
+            // invalid, matching the Select trigger's border ladder.
+            ...(behavior.disabled ? styles.inputDisabled : {}),
             // Figma read-only: value only, no box.
             ...(props.readOnly
               ? {
@@ -826,8 +1260,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           ...props.accessibilityState,
           disabled: behavior.disabled,
           invalid: behavior.invalid || Boolean(props.accessibilityState?.invalid),
+          required: behavior.required || Boolean(props.accessibilityState?.required),
         },
         editable: !behavior.disabled && !props.readOnly,
+        // Disabled controls also leave the focus order — RN Web honors
+        // focusable:false, real RN accepts it on TextInput next to editable.
+        ...(behavior.disabled ? { focusable: false } : {}),
         defaultValue: props.defaultValue,
         value: props.value,
         placeholder: props.placeholder,
@@ -837,6 +1275,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         onChangeText: props.onValueChange,
         style: {
           ...styles.textarea,
+          // Invalid keeps the danger border (styles.css .podo-textarea invalid);
+          // read-only still removes the box, like the Select trigger.
+          ...(behavior.invalid ? styles.inputInvalid : {}),
+          // Disabled gray box + muted text
+          // (.podo-textarea[data-state="disabled"]), winning over invalid.
+          ...(behavior.disabled ? { ...styles.inputDisabled, ...styles.inputControlDisabled } : {}),
           // Figma read-only: value only, no box (vertical padding kept).
           ...(props.readOnly
             ? {
@@ -858,12 +1302,21 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const showError = Boolean(props.error);
       const showHelper = Boolean(props.helperText) && !showError;
       // Without an explicit count prop the field tracks the wired control's
-      // text length itself (mirrors the react/web renderers).
+      // text length itself (mirrors the react/web renderers). Controlled
+      // children can be updated externally without firing onValueChange, so
+      // the count derives from the child's current value prop when present;
+      // uncontrolled children fall back to the onValueChange-tracked state.
       const [autoCount, setAutoCount] = useState(() => initialNativeControlLength(props.children));
       const trackCount = props.countMax != null && props.count == null;
-      const shownCount = props.count ?? autoCount;
+      const controlledCount = controlledNativeControlLength(props.children);
+      const shownCount = props.count ?? controlledCount ?? autoCount;
+      // Per-instance default id — core's fixed "podo-field-control" seed would
+      // make every unlabeled Field share label/description/error ids. useId's
+      // delimiters (":" / "«»") are stripped so the joined a11y id strings stay
+      // plain; an explicit id prop always wins.
+      const reactId = useId();
       const a11y = createFieldA11y({
-        id: props.id,
+        id: props.id ?? `podo-field-${reactId.replace(/[^a-zA-Z0-9_-]/g, "")}`,
         invalid: props.invalid,
         required: props.required,
         hasDescription: showHelper,
@@ -901,6 +1354,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         wireNativeControl(
           props.children,
           a11y,
+          { disabled: props.disabled, invalid: props.invalid },
           trackCount ? (value) => setAutoCount(value.length) : undefined,
           // countMax also caps the control via the platform-native maxLength.
           props.countMax
@@ -937,13 +1391,40 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     Icon: (props) => {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
+      // Meaningful icon: decorative={false} plus an accessibilityLabel drops
+      // the hidden trio and announces a named image. Without a label the icon
+      // stays decorative — an unnamed image role would only announce noise.
+      const labeled = props.decorative === false && props.accessibilityLabel != null;
       return createElement(
         host.Text,
-        { accessibilityElementsHidden: true, style: styles.icon, testID: props.testID },
-        props.glyph ?? props.name
+        {
+          ...(labeled
+            ? {
+                // Named image: accessibilityRole for real RN, the web-ish
+                // role prop for RN Web (which renders role="img").
+                accessibilityRole: "image",
+                role: "img",
+                accessibilityLabel: props.accessibilityLabel,
+              }
+            : {
+                // Decorative glyph — hidden from every platform's a11y tree:
+                // iOS (accessibilityElementsHidden), Android
+                // (importantForAccessibility), and RN Web (aria-hidden).
+                accessibilityElementsHidden: true,
+                importantForAccessibility: "no-hide-descendants",
+                "aria-hidden": true,
+              }),
+          // Glyph scale (ICON_SIZES): sm 16 / md 24 / lg 32, default md.
+          style: { ...styles.icon, fontSize: ICON_SIZES[props.size ?? "md"] },
+          testID: props.testID,
+        },
+        // Resolution order (see NativeIconProps): explicit glyph → the
+        // provider's iconGlyphs entry for the name → the raw name as
+        // readable fallback text when no glyph map is wired.
+        props.glyph ?? theme.iconGlyphs?.[props.name] ?? props.name
       );
     },
-    Switch: (props) => {
+    Switch: function NativeSwitch(props) {
       const behavior = createSwitchBehavior({ checked: props.checked, disabled: props.disabled });
       // Figma 566:12693 geometry per size: track w/h, handle diameter, edge pad.
       const metrics =
@@ -954,6 +1435,27 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             : { w: 30, h: 18, handle: 14, pad: 2 };
       const track = behavior.disabled ? "#E4E4E7" : behavior.checked ? "#426CED" : "#D1D2D6";
       const handle = behavior.disabled ? "#D1D2D6" : "#FFFFFF";
+      const toggle = () => props.onCheckedChange?.(!behavior.checked);
+      // Keyboard contract (switch.component.json: "Enter/Space toggles the
+      // switch"). RN Web delivers onKeyDown on Pressable; real RN ignores the
+      // prop. The switch role renders a <div> under RNW (not a real <button>),
+      // so Space never synthesizes a press there — but RNW's PressResponder
+      // does synthesize onPress from Enter on any focused pressable, so the
+      // handled Enter swallows exactly that one synthesized press (mirroring
+      // Select's suppressSynthPress; real RN never sets the flag).
+      const suppressSynthPress = useRef(false);
+      const onKeyDown = (event?: { key?: string; preventDefault?: () => void }) => {
+        const key = event?.key;
+        if (!key || !behavior.pressable) {
+          return;
+        }
+        suppressSynthPress.current = false;
+        if (key === "Enter" || key === " ") {
+          event?.preventDefault?.();
+          suppressSynthPress.current = key === "Enter";
+          toggle();
+        }
+      };
       // The pressable row includes the optional label (track + 6px gap + 14px text).
       return createElement(
         host.Pressable,
@@ -963,8 +1465,16 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           accessibilityLabel: props.accessibilityLabel,
           disabled: !behavior.pressable,
           onPress: behavior.pressable
-            ? () => props.onCheckedChange?.(!behavior.checked)
+            ? () => {
+                // 처리된 Enter 키가 합성한 press는 한 번만 삼켜요.
+                if (suppressSynthPress.current) {
+                  suppressSynthPress.current = false;
+                  return;
+                }
+                toggle();
+              }
             : undefined,
+          onKeyDown: behavior.pressable ? onKeyDown : undefined,
           style: { alignItems: "center", flexDirection: "row", gap: 6 },
           testID: props.testID,
           "data-state": behavior.checked ? "on" : "off",
@@ -1021,6 +1531,19 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           ? { fill: "#426CED", border: undefined, mark: "#F9F9F9" }
           : { fill: "#FFFFFF", border: "#9FA2AD", mark: "#27272A" };
       const mark = behavior.indeterminate ? "–" : behavior.checked ? "✓" : null;
+      // Keyboard contract (checkbox.component.json: "Space toggles the
+      // checkbox"). RN Web delivers onKeyDown; real RN ignores the prop. The
+      // checkbox role renders a <div> under RNW (not a real <button>), so
+      // Space never synthesizes a press — no suppressSynthPress needed for
+      // the handled key. (RNW still synthesizes onPress from Enter, but Enter
+      // is unhandled here, so that lone press toggles once — no double.)
+      const onKeyDown = (event?: { key?: string; preventDefault?: () => void }) => {
+        if (event?.key !== " " || !behavior.pressable) {
+          return;
+        }
+        event.preventDefault?.();
+        props.onCheckedChange?.(!behavior.checked);
+      };
       // The pressable row includes the optional label (box + 6px gap + text).
       return createElement(
         host.Pressable,
@@ -1035,6 +1558,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           onPress: behavior.pressable
             ? () => props.onCheckedChange?.(!behavior.checked)
             : undefined,
+          onKeyDown: behavior.pressable ? onKeyDown : undefined,
           style: { alignItems: "center", flexDirection: "row", gap: 6 },
           testID: props.testID,
           "data-state": behavior.dataState["data-state"],
@@ -1081,17 +1605,30 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     Toast: (props) => {
       // Figma 459:1298 per-state tinted fill + border; the toaster stack is a
       // web affordance — apps place the card in their own overlay.
+      const state = props.state ?? "normal";
       const palette = {
         success: { fill: "#ECF8EF", border: "#3EA856" },
         danger: { fill: "#FEF1F1", border: "#F23B3B" },
         info: { fill: "#EBF5FF", border: "#0095FF" },
         warning: { fill: "#FFF7E6", border: "#FFAA00" },
         normal: { fill: "#F4F4F5", border: "#D1D2D6" },
-      }[props.state ?? "normal"];
+      }[state];
+      // Announcement contract (toast.component.json aria): role=status for
+      // normal/success/info/warning, role=alert only for danger.
+      // - danger: accessibilityRole "alert" (RN + RNW both know it) with the
+      //   assertive Android live region so it interrupts.
+      // - others: the web-ish role prop "status" (RNW renders role="status";
+      //   real RN maps role→accessibilityRole where possible and ignores
+      //   values like "status" it has no counterpart for) with the polite
+      //   Android live region, so the card announces without interrupting.
+      const announcement =
+        state === "danger"
+          ? { accessibilityRole: "alert", accessibilityLiveRegion: "assertive" }
+          : { role: "status", accessibilityLiveRegion: "polite" };
       return createElement(
         host.View,
         {
-          accessibilityRole: "alert",
+          ...announcement,
           style: {
             alignItems: "flex-start",
             backgroundColor: palette.fill,
@@ -1106,7 +1643,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             paddingTop: 12,
           },
           testID: props.testID,
-          "data-state": props.state ?? "normal",
+          "data-state": state,
         },
         props.prefix ?? null,
         createElement(
@@ -1151,10 +1688,15 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         )
       );
     },
-    Tooltip: (props) => {
+    Tooltip: function NativeTooltip(props) {
       const theme = props.theme ?? "default";
       const position = props.position ?? "right";
       const ordinal = props.ordinal ?? "first";
+      // Stable per-instance bubble id (useId delimiters stripped, like
+      // Field/Select ids) — a future trigger primitive can point at it via
+      // accessibilityDescribedBy/aria-describedby.
+      const reactId = useId();
+      const bubbleId = `podo-tooltip-${reactId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
       // default is the dark pair (base); reverse flips to white.
       const fill = theme === "reverse" ? "#FFFFFF" : "#3E424B";
       // Arrowhead via the RN border-triangle trick (a zero-size box whose one
@@ -1205,6 +1747,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         createElement(
           host.View,
           {
+            // tooltip role (tooltip.component.json aria: "role=tooltip") on
+            // the bubble itself — RNW renders role="tooltip"; real RN ignores
+            // the value (no counterpart) and the nativeID gives a future
+            // trigger primitive an id to reference (see bubbleId above).
+            role: "tooltip",
+            nativeID: bubbleId,
             style: {
               backgroundColor: fill,
               borderRadius: 8,
@@ -1231,6 +1779,20 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         : behavior.checked
           ? { fill: "#426CED", border: undefined }
           : { fill: "transparent", border: "#9FA2AD" };
+      // Keyboard contract (radio.component.json: "Space selects"). RN Web
+      // delivers onKeyDown; real RN ignores the prop. The radio role renders
+      // a <div> under RNW (not a real <button>), so Space never synthesizes a
+      // press — no suppressSynthPress needed. The spec's Arrow-key group
+      // navigation is NOT implemented: native radios are standalone (no group
+      // container), so roving focus needs a future RadioGroup primitive that
+      // owns the sibling list (see NativeRadioProps).
+      const onKeyDown = (event?: { key?: string; preventDefault?: () => void }) => {
+        if (event?.key !== " " || !behavior.pressable) {
+          return;
+        }
+        event.preventDefault?.();
+        props.onCheckedChange?.(true);
+      };
       return createElement(
         host.Pressable,
         {
@@ -1240,6 +1802,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           disabled: !behavior.pressable,
           // Radios select — they never untoggle themselves.
           onPress: behavior.pressable ? () => props.onCheckedChange?.(true) : undefined,
+          onKeyDown: behavior.pressable ? onKeyDown : undefined,
           style: { alignItems: "center", flexDirection: "row", gap: 6 },
           testID: props.testID,
           "data-state": behavior.dataState["data-state"],
@@ -1309,6 +1872,7 @@ export const {
 function wireNativeControl(
   children: ReactNode,
   a11y: ReturnType<typeof createFieldA11y>,
+  field: { disabled?: boolean | undefined; invalid?: boolean | undefined },
   onControlText?: (value: string) => void,
   maxLength?: number
 ): ReactNode {
@@ -1318,8 +1882,20 @@ function wireNativeControl(
     }
 
     return cloneElement(child, {
+      // Field disabled/invalid는 감싼 컨트롤에도 실제로 반영돼요 — OR 의미론:
+      // 필드가 잠그거나 invalid로 만들면 자식은 opt out 할 수 없어요
+      // (react/hono 렌더러와 같은 크로스 렌더러 결정).
+      ...(field.disabled ? { disabled: true } : {}),
+      ...(field.invalid ? { invalid: true } : {}),
       accessibilityLabelledBy: a11y.ids.labelId,
-      accessibilityDescribedBy: a11y.control["aria-describedby"] as string | undefined,
+      // A child's own descriptor ids stay first; the Field ids join after
+      // (react/hono aria-describedby join parity — never clobbered).
+      accessibilityDescribedBy: joinIds(
+        typeof child.props.accessibilityDescribedBy === "string"
+          ? child.props.accessibilityDescribedBy
+          : undefined,
+        a11y.control["aria-describedby"] as string | undefined
+      ),
       accessibilityState: {
         ...(child.props.accessibilityState as Record<string, unknown> | undefined),
         invalid: a11y.control["aria-invalid"] === "true",
@@ -1336,6 +1912,23 @@ function wireNativeControl(
         : {}),
     });
   });
+}
+
+/**
+ * Character count from a controlled child's current `value` prop, if any —
+ * re-read every render so external controlled updates stay in sync.
+ */
+function controlledNativeControlLength(children: ReactNode): number | undefined {
+  let length: number | undefined;
+  React.Children.forEach(children, (child) => {
+    if (isValidElement<Record<string, unknown>>(child)) {
+      const value = child.props.value;
+      if (typeof value === "string") {
+        length = value.length;
+      }
+    }
+  });
+  return length;
 }
 
 /** Initial character count read from the control's value/defaultValue. */
@@ -1362,7 +1955,9 @@ function createNativeThemeStyles(
   | "chip"
   | "chipLabel"
   | "selectCell"
+  | "selectCellActive"
   | "selectMenu"
+  | "selectMenuContent"
   | "selectTrigger"
   | "error"
   | "field"
@@ -1377,6 +1972,9 @@ function createNativeThemeStyles(
   | "input"
   | "inputAffix"
   | "inputControl"
+  | "inputControlDisabled"
+  | "inputDisabled"
+  | "inputInvalid"
   | "inputLg"
   | "inputSuffixText"
   | "label"
@@ -1392,7 +1990,6 @@ function createNativeThemeStyles(
   const gap = numberToken(tokens, ["spacing", "controlGap"]) ?? 6;
   // Figma border/gary #E4E4E7 (gray.20) for light; dark keeps a visible gray.
   const borderColor = theme.colorScheme === "dark" ? "#3E424B" : "#E4E4E7";
-  const accentColor = theme.colorScheme === "dark" ? "#9DB7FF" : "#305CDE";
 
   return {
     field: { gap, padding: gap },
@@ -1419,6 +2016,14 @@ function createNativeThemeStyles(
       paddingRight: 10,
     },
     inputLg: { borderRadius: 12, minHeight: 52 },
+    // styles.css keeps the danger border under focus too — the invalid box
+    // always reads danger, matching the Select trigger's invalid branch.
+    inputInvalid: { borderColor: dangerColor },
+    // .podo-input/.podo-textarea [data-state="disabled"]: foreground-disabled
+    // fill + border-disabled hairline; the text drops to text-disabled
+    // (styles.css fallback values — the Chip disabled grays).
+    inputDisabled: { backgroundColor: "#E4E4E7", borderColor: "#D1D2D6" },
+    inputControlDisabled: { color: "#9FA2AD" },
     inputControl: { color: textColor, flex: 1, fontSize: 16, padding: 0 },
     // Figma 380:3867: multi-line box, 16/12 padding, radius 10.
     textarea: {
@@ -1435,17 +2040,16 @@ function createNativeThemeStyles(
     },
     inputAffix: { alignItems: "center", height: 24, justifyContent: "center", width: 24 },
     inputSuffixText: { color: "#50555E", fontSize: 16 },
+    // Layout base only — colors and metrics come from BUTTON_COLORS and
+    // BUTTON_SIZES per theme/size (mirroring podo-ui/styles.css .podo-button).
     button: {
       alignItems: "center",
-      backgroundColor: accentColor,
-      borderRadius: 8,
+      borderWidth: 1,
       flexDirection: "row",
       gap: 6,
-      minHeight: 40,
-      paddingHorizontal: 14,
-      paddingVertical: 8,
+      justifyContent: "center",
     },
-    buttonLabel: { color: theme.colorScheme === "dark" ? "#101828" : "#FFFFFF", fontWeight: "600" },
+    buttonLabel: { fontWeight: "600" },
     // Badge (Figma 474:3218): count pill, min-width 22, 0/6 padding.
     badge: {
       alignItems: "center",
@@ -1467,11 +2071,15 @@ function createNativeThemeStyles(
       paddingLeft: 16,
       paddingRight: 10,
     },
+    // Menu box shell (scroll container) — child layout lives in
+    // selectMenuContent so ScrollView hosts can put it on contentContainerStyle.
     selectMenu: {
       backgroundColor: "#FFFFFF",
       borderColor: "#E4E4E7",
       borderRadius: 10,
       borderWidth: 1,
+    },
+    selectMenuContent: {
       flexDirection: "column",
       gap: 4,
       padding: 8,
@@ -1484,6 +2092,9 @@ function createNativeThemeStyles(
       minHeight: 42,
       paddingHorizontal: 8,
     },
+    // .podo-select__cell:hover / [data-active]: foreground-gray-light fill —
+    // the keyboard-active cell reuses the pointer hover treatment.
+    selectCellActive: { backgroundColor: "#F4F4F5" },
     // Chip (Figma 538:6615): pill, content-sized; md gap 2/pad 6 (base).
     chip: {
       alignItems: "center",

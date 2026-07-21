@@ -359,6 +359,16 @@ export const useImageEditor = ({
    */
   const handleImageClick = useCallback(
     (img: HTMLImageElement) => {
+      // 이미 선택되어 wrapper로 감싸진 이미지를 다시 클릭한 경우: 기존 wrapper와
+      // 핸들을 그대로 유지한 채 편집 팝업만 유지/재오픈한다 — 다시 감싸면
+      // .image-wrapper가 중첩되고 리사이즈 핸들이 중복 생성된다.
+      if (selectedImage === img && img.parentElement?.classList.contains("image-wrapper")) {
+        setTimeout(() => {
+          setIsImageEditPopupOpen(true);
+        }, 50);
+        return;
+      }
+
       // 기존 선택 해제
       if (selectedImage && selectedImage !== img) {
         unselectImage();
@@ -578,16 +588,34 @@ export const useImageEditor = ({
 
     // wrapper가 있으면 wrapper까지 삭제
     const wrapper = imageToDelete.parentElement;
+    let cleanupFrom: HTMLElement | null;
     if (wrapper && wrapper.classList.contains("image-wrapper")) {
+      cleanupFrom = wrapper.parentElement;
       wrapper.remove();
     } else {
+      cleanupFrom = wrapper;
       imageToDelete.remove();
+    }
+
+    // 정렬용으로 감쌌던 컨테이너 div가 비었으면 함께 제거한다 —
+    // 삭제 후 빈 <div style="text-align:..."></div>를 남기지 않는다.
+    while (
+      cleanupFrom &&
+      cleanupFrom !== editorRef.current &&
+      cleanupFrom.tagName === "DIV" &&
+      cleanupFrom.style.textAlign &&
+      !(cleanupFrom.textContent || "").trim() &&
+      !cleanupFrom.querySelector("img, iframe, table, video")
+    ) {
+      const parent = cleanupFrom.parentElement;
+      cleanupFrom.remove();
+      cleanupFrom = parent;
     }
 
     if (onInput) {
       onInput();
     }
-  }, [selectedImage, unselectImage, onInput]);
+  }, [selectedImage, editorRef, unselectImage, onInput]);
 
   // 리사이즈 이벤트 핸들러 (document 레벨)
   useEffect(() => {

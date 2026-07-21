@@ -102,4 +102,32 @@ await chmod(join(outRoot, "cli/index.js"), 0o755);
 await chmod(join(outRoot, "cli/menu.js"), 0o755);
 await chmod(join(outRoot, "mcp/index.js"), 0o755);
 
+// Default icon glyph assets (podo-ui/icons.css): a plain `npm i podo-ui` +
+// `import "podo-ui/styles.css"` consumer gets working glyphs without running
+// `podo build`. Projects that do run `podo build` generate their own
+// PodoIcons.css from `.podo` overrides and simply import that instead.
+// Must run after rewriteDirectory so dist/cli and dist/icons resolve.
+const { pathToFileURL } = await import("node:url");
+const { defaultIconManifest, defaultIconSvgs } = await import(
+  pathToFileURL(join(outRoot, "cli/index.js")).href
+);
+const { buildIconAssets, emitIconCss } = await import(
+  pathToFileURL(join(outRoot, "icons/index.js")).href
+);
+const iconAssetsDir = join(outRoot, "icons-assets");
+const iconSvgTmp = join(iconAssetsDir, ".svg-src");
+for (const [file, contents] of Object.entries(defaultIconSvgs)) {
+  const filePath = join(iconSvgTmp, file);
+  await mkdir(dirname(filePath), { recursive: true });
+  await writeFile(filePath, contents);
+}
+await buildIconAssets({
+  manifest: defaultIconManifest,
+  svgRoot: iconSvgTmp,
+  outDir: iconAssetsDir,
+  fontTypes: ["woff", "woff2"],
+});
+await writeFile(join(iconAssetsDir, "PodoIcons.css"), emitIconCss(defaultIconManifest));
+await rm(iconSvgTmp, { recursive: true, force: true });
+
 process.stdout.write(`Assembled podo-ui dist from ${MODULES.length} internal packages.\n`);

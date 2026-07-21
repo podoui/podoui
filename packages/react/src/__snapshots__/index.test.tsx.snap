@@ -17,6 +17,7 @@ exports[`@podoui/react > snapshots themed variant markup for visual regression 1
       <i
         aria-hidden="true"
         class="podo-icon podo-icon-menu"
+        data-size="md"
       />
     </span>
     <span
@@ -50,6 +51,7 @@ exports[`@podoui/react > snapshots themed variant markup for visual regression 1
         <i
           aria-hidden="true"
           class="podo-icon podo-icon-menu"
+          data-size="md"
         />
       </span>
     </div>
@@ -67,6 +69,7 @@ exports[`@podoui/react > snapshots themed variant markup for visual regression 1
           <i
             aria-hidden="true"
             class="podo-icon podo-icon-menu"
+            data-size="md"
           />
         </span>
         <input

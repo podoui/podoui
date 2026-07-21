@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import React from "react";
+import { renderToString } from "react-dom/server";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -164,6 +165,54 @@ describe("@podoui/react", () => {
     expect(removed).toBe(1);
   });
 
+  it("forwards the ref to the span root in removable mode and the button otherwise", () => {
+    // ref 타입은 두 루트의 합집합이에요 — 제거형은 span, 토글형은 button을
+    // 받아요 (createRef<union>이 그대로 통과하는 게 타입 검증).
+    const removableRef = React.createRef<HTMLButtonElement | HTMLSpanElement>();
+    const toggleRef = React.createRef<HTMLButtonElement | HTMLSpanElement>();
+    render(
+      <>
+        <Chip ref={removableRef} onRemove={() => {}}>
+          딸기
+        </Chip>
+        <Chip ref={toggleRef}>토글</Chip>
+      </>
+    );
+
+    // 제거형 칩의 ref는 X 버튼이 아니라 span 루트를 받아요.
+    expect(removableRef.current).toBeInstanceOf(HTMLSpanElement);
+    expect(removableRef.current?.className).toBe("podo-chip");
+    expect(removableRef.current?.getAttribute("data-removable")).toBe("true");
+    // 토글형 칩은 그대로 button 루트를 받아요.
+    expect(toggleRef.current).toBeInstanceOf(HTMLButtonElement);
+    expect(toggleRef.current?.className).toBe("podo-chip");
+  });
+
+  it("disables the removable chip and turns its X into a no-op", async () => {
+    const user = userEvent.setup();
+    let removed = 0;
+    const { container } = render(
+      <Chip disabled onRemove={() => (removed += 1)} removeLabel="잠긴 딸기 제거">
+        잠긴 딸기
+      </Chip>
+    );
+
+    // 루트는 span이라 [disabled] 속성 대신 data-disabled로 비활성을 표시해요.
+    const chip = container.querySelector(".podo-chip");
+    expect(chip?.tagName).toBe("SPAN");
+    expect(chip?.getAttribute("data-disabled")).toBe("true");
+    expect(chip?.getAttribute("data-state")).toBe("selected");
+
+    const remove = within(container).getByRole("button", {
+      name: "잠긴 딸기 제거",
+    }) as HTMLButtonElement;
+    expect(remove.disabled).toBe(true);
+    // 실제 클릭도, 강제로 흘려보낸 click 이벤트도 onRemove를 부르지 않아요.
+    await user.click(remove);
+    fireEvent.click(remove);
+    expect(removed).toBe(0);
+  });
+
   it("opens the select, picks a single value, and closes", async () => {
     const user = userEvent.setup();
     const changes: string[] = [];
@@ -227,6 +276,42 @@ describe("@podoui/react", () => {
     await user.click(q.getByRole("button", { name: "딸기 제거" }));
     expect(latest).toEqual(["banana"]);
     expect(q.getByRole("listbox")).toBeDefined();
+  });
+
+  it("activates chip-remove and clear-all with the keyboard instead of toggling the menu", async () => {
+    const user = userEvent.setup();
+    let latest: string[] | null = null;
+    const { container } = render(
+      <Select
+        multiple
+        clearable
+        portal={false}
+        placeholder="키보드 과일"
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+        defaultValues={["strawberry", "banana"]}
+        onValuesChange={(next) => {
+          latest = next;
+        }}
+      />
+    );
+    const q = within(container);
+
+    // 칩 제거 버튼에 포커스를 두고 Enter — 버튼의 네이티브 키보드 클릭이
+    // 동작해야 해요 (트리거 onKeyDown이 preventDefault로 삼키면 안 돼요).
+    q.getByRole("button", { name: "딸기 제거" }).focus();
+    await user.keyboard("{Enter}");
+    expect(latest).toEqual(["banana"]);
+    // 트리거 토글로 번져 메뉴가 열리면 안 돼요.
+    expect(q.queryByRole("listbox")).toBeNull();
+
+    // 모두 해제 버튼은 Space로도 동작해야 해요 (Space 클릭은 keyup에서 합성).
+    q.getByRole("button", { name: "모두 해제" }).focus();
+    await user.keyboard(" ");
+    expect(latest).toEqual([]);
+    expect(q.queryByRole("listbox")).toBeNull();
   });
 
   it("collapses chips past maxChips into a +N summary", () => {
@@ -308,6 +393,82 @@ describe("@podoui/react", () => {
     expect(content?.getAttribute("data-hidden")).toBeNull();
   });
 
+  it("hands the combobox wiring to the focused search input while searching", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select
+        searchable
+        portal={false}
+        placeholder="검색 배선"
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+      />
+    );
+    const q = within(container);
+
+    await user.click(q.getByRole("combobox"));
+
+    // 포커스가 옮겨간 검색 입력이 콤보박스 역할과 배선을 넘겨받고,
+    // 트리거는 역할을 이중으로 갖지 않아요 (ARIA combobox 패턴).
+    const search = container.querySelector(".podo-select__search") as HTMLInputElement;
+    expect(document.activeElement).toBe(search);
+    expect(container.querySelectorAll('[role="combobox"]')).toHaveLength(1);
+    expect(q.getByRole("combobox")).toBe(search);
+    expect(search.getAttribute("aria-expanded")).toBe("true");
+    expect(search.getAttribute("aria-autocomplete")).toBe("list");
+    expect(search.getAttribute("aria-controls")).toBe(q.getByRole("listbox").id);
+    expect(search.getAttribute("aria-activedescendant")).toBeNull();
+
+    // 키보드 활성 옵션을 aria-activedescendant가 따라가요.
+    await user.keyboard("{ArrowDown}");
+    const active = q.getByRole("option", { name: "딸기" });
+    expect(active.getAttribute("data-active")).toBe("true");
+    expect(search.getAttribute("aria-activedescendant")).toBe(active.id);
+
+    // 입력에서의 Enter 선택 경로도 그대로 동작해요.
+    await user.keyboard("{Enter}");
+    expect(q.queryByRole("listbox")).toBeNull();
+    expect(q.getByText("딸기")).toBeDefined();
+    // 닫히면 트리거가 콤보박스 배선을 되찾아요.
+    const trigger = q.getByRole("combobox");
+    expect(trigger.className).toBe("podo-select__trigger");
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("returns focus to the trigger when a searchable select closes", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select
+        searchable
+        portal={false}
+        placeholder="검색 포커스"
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+      />
+    );
+    const q = within(container);
+    const trigger = container.querySelector(".podo-select__trigger") as HTMLElement;
+
+    // 키보드 선택으로 닫힐 때: 검색 입력이 언마운트돼도 포커스가 body로
+    // 떨어지지 않고 트리거로 돌아온다 (spec focusManagement).
+    await user.click(trigger);
+    expect((document.activeElement as HTMLElement).className).toContain("podo-select__search");
+    await user.keyboard("{ArrowDown}{Enter}");
+    expect(q.queryByRole("listbox")).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+
+    // Escape로 닫힐 때도 같다.
+    await user.click(trigger);
+    expect((document.activeElement as HTMLElement).className).toContain("podo-select__search");
+    await user.keyboard("{Escape}");
+    expect(q.queryByRole("listbox")).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+  });
+
   it("keeps chips visible with an inline caret when searching a multi select", async () => {
     const user = userEvent.setup();
     const { container } = render(
@@ -372,6 +533,47 @@ describe("@podoui/react", () => {
     expect(q.getByRole("option", { name: "멜론" }).getAttribute("data-active")).toBe("true");
   });
 
+  it("keeps the addable row outside the listbox element", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select
+        multiple
+        addable
+        portal={false}
+        placeholder="추가형 구조"
+        addPlaceholder="과일 이름 입력"
+        options={[{ value: "strawberry", label: "딸기" }]}
+      />
+    );
+    const q = within(container);
+
+    await user.click(q.getByRole("combobox"));
+    const listbox = q.getByRole("listbox");
+    const addRow = container.querySelector(".podo-select__add") as HTMLElement;
+
+    // role="listbox"의 자식은 option/group만 허용돼요 — 추가 입력줄은
+    // 리스트박스 자손이 아니라 같은 메뉴 박스 안 위쪽에 렌더돼요.
+    expect(listbox.className).toBe("podo-select__listbox");
+    expect(listbox.contains(addRow)).toBe(false);
+    expect(addRow.parentElement?.className).toBe("podo-select__menu");
+    expect(addRow.parentElement).toBe(listbox.parentElement);
+    expect([...listbox.children].every((cell) => cell.getAttribute("role") === "option")).toBe(
+      true
+    );
+    // 콤보박스 배선은 리스트박스 id를 가리켜요.
+    expect(q.getByRole("combobox").getAttribute("aria-controls")).toBe(listbox.id);
+
+    // 추가 동작은 그대로예요 — 새 옵션이 리스트박스 안에 생기고 활성화돼요.
+    await user.type(q.getByPlaceholderText("과일 이름 입력"), "멜론");
+    await user.click(q.getByRole("button", { name: "추가" }));
+    const added = q.getByRole("option", { name: "멜론" });
+    expect(listbox.contains(added)).toBe(true);
+    expect(q.getByRole("combobox").getAttribute("aria-activedescendant")).toBe(added.id);
+    expect([...listbox.children].every((cell) => cell.getAttribute("role") === "option")).toBe(
+      true
+    );
+  });
+
   it("clears every multi-select value through the clearable X", async () => {
     const user = userEvent.setup();
     let latest: string[] | null = null;
@@ -430,6 +632,23 @@ describe("@podoui/react", () => {
     expect(q.queryByRole("button", { name: "딸기 제거" })).toBeNull();
   });
 
+  it("locks a disabled multi-select's chips against removal", () => {
+    const { container } = render(
+      <Select
+        disabled
+        multiple
+        defaultValues={["strawberry"]}
+        options={[{ value: "strawberry", label: "딸기" }]}
+      />
+    );
+    const q = within(container);
+    // disabled 값 칩은 read-only처럼 X 없는 정적 칩이에요.
+    const chip = q.getByText("딸기", { selector: ".podo-chip__label" }).closest(".podo-chip");
+    expect(chip?.getAttribute("data-disabled")).toBe("true");
+    expect(q.queryByRole("button", { name: "딸기 제거" })).toBeNull();
+    expect(container.querySelector(".podo-chip__remove")).toBeNull();
+  });
+
   it("portals the menu to document.body by default", async () => {
     const user = userEvent.setup();
     const { container } = render(
@@ -447,6 +666,211 @@ describe("@podoui/react", () => {
     await user.click(within(menuList as HTMLElement).getByRole("option", { name: "청포도" }));
     expect(q.getByText("청포도")).toBeDefined();
     expect(document.body.querySelector(".podo-select__menu-list[data-portal]")).toBeNull();
+  });
+
+  it("survives SSR with defaultOpen and portals the menu after mount", () => {
+    const options = [{ value: "grape", label: "포도" }];
+
+    // renderToString은 포탈을 지원하지 않아요 — 마운트 전엔 메뉴를 그리지
+    // 않아야 서버 렌더(Next.js 프리렌더)가 죽지 않아요.
+    const markup = renderToString(<Select defaultOpen placeholder="SSR 과일" options={options} />);
+    expect(markup).toContain("podo-select");
+    expect(markup).not.toContain("podo-select__menu");
+
+    // 클라이언트에선 마운트 직후 렌더에서 포탈 메뉴가 나타나요.
+    const { container } = render(<Select defaultOpen placeholder="CSR 과일" options={options} />);
+    expect(container.querySelector('[role="listbox"]')).toBeNull();
+    const menuList = document.body.querySelector(".podo-select__menu-list[data-portal]");
+    expect(menuList).not.toBeNull();
+    expect(within(menuList as HTMLElement).getByRole("option", { name: "포도" })).toBeDefined();
+  });
+
+  it("keeps SSR aria-expanded closed until the portal menu actually mounts", () => {
+    const options = [{ value: "grape", label: "포도" }];
+
+    // SSR(portal 기본값): 메뉴는 마운트 전엔 존재하지 않아요 — aria가 없는
+    // listbox를 가리키면 안 돼요 (aria-expanded=false, aria-controls 생략).
+    const markup = renderToString(<Select defaultOpen placeholder="SSR 과일" options={options} />);
+    expect(markup).toContain('aria-expanded="false"');
+    expect(markup).not.toContain("aria-controls");
+
+    // portal={false}는 SSR에서도 메뉴가 인라인으로 함께 렌더되므로 기존대로
+    // 열린 ARIA 상태를 유지해요.
+    const inlineMarkup = renderToString(
+      <Select defaultOpen portal={false} placeholder="SSR 인라인" options={options} />
+    );
+    expect(inlineMarkup).toContain('aria-expanded="true"');
+    expect(inlineMarkup).toContain("aria-controls");
+    expect(inlineMarkup).toContain('role="listbox"');
+
+    // 클라이언트: 마운트 직후 메뉴가 나타나면서 ARIA도 함께 열려요 —
+    // aria-controls는 실제로 존재하는 listbox 요소를 가리켜야 해요.
+    const { container } = render(<Select defaultOpen placeholder="CSR 과일" options={options} />);
+    const combo = within(container).getByRole("combobox");
+    expect(combo.getAttribute("aria-expanded")).toBe("true");
+    const controls = combo.getAttribute("aria-controls");
+    expect(controls).toBeTruthy();
+    const listbox = document.getElementById(controls!);
+    expect(listbox).not.toBeNull();
+    expect(listbox!.getAttribute("role")).toBe("listbox");
+  });
+
+  // jsdom은 레이아웃이 없어 포탈 배치 검증은 트리거 rect·뷰포트 높이·메뉴
+  // 콘텐츠 높이(scrollHeight)를 직접 지정해요. restore로 반드시 원복합니다.
+  const mockSelectGeometry = (
+    root: Element,
+    geometry: {
+      trigger: { top: number; bottom: number; left: number; width: number };
+      innerHeight: number;
+      menuHeight: number;
+    }
+  ) => {
+    const { trigger, innerHeight, menuHeight } = geometry;
+    const rectSpy = vi.spyOn(root, "getBoundingClientRect").mockReturnValue({
+      ...trigger,
+      height: trigger.bottom - trigger.top,
+      right: trigger.left + trigger.width,
+      x: trigger.left,
+      y: trigger.top,
+      toJSON: () => ({}),
+    } as DOMRect);
+    const innerHeightDesc = Object.getOwnPropertyDescriptor(window, "innerHeight");
+    Object.defineProperty(window, "innerHeight", {
+      configurable: true,
+      value: innerHeight,
+      writable: true,
+    });
+    const scrollHeightDesc = Object.getOwnPropertyDescriptor(Element.prototype, "scrollHeight")!;
+    Object.defineProperty(Element.prototype, "scrollHeight", {
+      configurable: true,
+      get(this: Element) {
+        return this.classList.contains("podo-select__menu") ? menuHeight : 0;
+      },
+    });
+    return {
+      rectSpy,
+      restore: () => {
+        rectSpy.mockRestore();
+        if (innerHeightDesc) {
+          Object.defineProperty(window, "innerHeight", innerHeightDesc);
+        } else {
+          Reflect.deleteProperty(window, "innerHeight");
+        }
+        Object.defineProperty(Element.prototype, "scrollHeight", scrollHeightDesc);
+      },
+    };
+  };
+
+  it("flips the portal menu above the trigger when the space below runs out", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select
+        placeholder="아래 공간 부족"
+        options={[
+          { value: "a", label: "사과" },
+          { value: "b", label: "바나나" },
+        ]}
+      />
+    );
+    const root = container.querySelector(".podo-select") as HTMLElement;
+    // 트리거가 화면 하단(top 500 / viewport 600)이라 아래엔 38px뿐이지만
+    // 위엔 486px — 메뉴(300px)가 위로 뒤집혀 전부 보여야 해요.
+    const { restore } = mockSelectGeometry(root, {
+      trigger: { top: 500, bottom: 548, left: 20, width: 200 },
+      innerHeight: 600,
+      menuHeight: 300,
+    });
+    try {
+      await user.click(within(container).getByRole("combobox"));
+      const menuList = document.body.querySelector(
+        ".podo-select__menu-list[data-portal]"
+      ) as HTMLElement;
+      // top 고정 대신 트리거 위 6px에 bottom 고정 (600 - 500 + 6).
+      expect(menuList.style.top).toBe("auto");
+      expect(menuList.style.bottom).toBe("106px");
+      // 위 공간엔 다 들어가니 max-height 캡은 없어요.
+      const menu = menuList.querySelector(".podo-select__menu") as HTMLElement;
+      expect(menu.style.maxHeight).toBe("");
+    } finally {
+      restore();
+    }
+  });
+
+  it("caps the portal menu height to the remaining space when neither side fits", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select
+        placeholder="좁은 화면"
+        options={Array.from({ length: 12 }, (_, i) => ({ value: `v${i}`, label: `옵션 ${i}` }))}
+      />
+    );
+    const root = container.querySelector(".podo-select") as HTMLElement;
+    // 낮은 뷰포트(400px): 아래 238px, 위 86px — 꽉 찬 메뉴(474px)는 어느
+    // 쪽도 다 못 들어가니 아래에 남기되 줄여서 내부 스크롤로 닿게 해요.
+    const { rectSpy, restore } = mockSelectGeometry(root, {
+      trigger: { top: 100, bottom: 148, left: 20, width: 200 },
+      innerHeight: 400,
+      menuHeight: 474,
+    });
+    try {
+      await user.click(within(container).getByRole("combobox"));
+      const menuList = document.body.querySelector(
+        ".podo-select__menu-list[data-portal]"
+      ) as HTMLElement;
+      expect(menuList.style.top).toBe("148px");
+      expect(menuList.style.bottom).toBe("");
+      const menu = menuList.querySelector(".podo-select__menu") as HTMLElement;
+      // 400 - 148(트리거 bottom) - 6(간격) - 8(가장자리 여백) = 238.
+      expect(menu.style.maxHeight).toBe("238px");
+
+      // 리사이즈로 트리거가 내려가면 닫히지 않고 위로 뒤집혀 다시 배치돼요
+      // — 위 공간 286px(300 - 6 - 8)로 캡.
+      rectSpy.mockReturnValue({
+        top: 300,
+        bottom: 348,
+        left: 20,
+        width: 200,
+        height: 48,
+        right: 220,
+        x: 20,
+        y: 300,
+        toJSON: () => ({}),
+      } as DOMRect);
+      fireEvent(window, new Event("resize"));
+      expect(within(menuList).getByRole("listbox")).toBeDefined();
+      expect(menuList.style.top).toBe("auto");
+      expect(menuList.style.bottom).toBe("106px");
+      expect(menu.style.maxHeight).toBe("286px");
+    } finally {
+      restore();
+    }
+  });
+
+  it("keeps the default downward placement when the space below suffices", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select placeholder="아래 배치" options={[{ value: "a", label: "사과" }]} />
+    );
+    const root = container.querySelector(".podo-select") as HTMLElement;
+    const { restore } = mockSelectGeometry(root, {
+      trigger: { top: 100, bottom: 148, left: 20, width: 200 },
+      innerHeight: 800,
+      menuHeight: 300,
+    });
+    try {
+      await user.click(within(container).getByRole("combobox"));
+      const menuList = document.body.querySelector(
+        ".podo-select__menu-list[data-portal]"
+      ) as HTMLElement;
+      expect(menuList.style.top).toBe("148px");
+      expect(menuList.style.bottom).toBe("");
+      expect(menuList.style.left).toBe("20px");
+      expect(menuList.style.width).toBe("200px");
+      const menu = menuList.querySelector(".podo-select__menu") as HTMLElement;
+      expect(menu.style.maxHeight).toBe("");
+    } finally {
+      restore();
+    }
   });
 
   it("closes the select on outside click and blocks it while disabled", async () => {
@@ -469,6 +893,105 @@ describe("@podoui/react", () => {
     expect(q.queryByRole("listbox")).toBeNull();
   });
 
+  it("never renders the menu for defaultOpen while disabled or read-only", async () => {
+    const user = userEvent.setup();
+    const changes: string[] = [];
+    const { container } = render(
+      <>
+        <Select
+          defaultOpen
+          disabled
+          portal={false}
+          placeholder="잠긴 기본 열림"
+          options={[{ value: "strawberry", label: "딸기" }]}
+          onValueChange={(next) => changes.push(next)}
+        />
+        <Select
+          defaultOpen
+          readOnly
+          portal={false}
+          placeholder="읽기전용 기본 열림"
+          options={[{ value: "banana", label: "바나나" }]}
+          onValueChange={(next) => changes.push(next)}
+        />
+      </>
+    );
+    const q = within(container);
+
+    // 메뉴도 옵션도 렌더되지 않아요.
+    expect(container.querySelector('[role="listbox"]')).toBeNull();
+    expect(container.querySelector(".podo-select__menu")).toBeNull();
+    const [locked, frozen] = q.getAllByRole("combobox");
+    expect(locked!.getAttribute("aria-expanded")).toBe("false");
+    expect(frozen!.getAttribute("aria-expanded")).toBe("false");
+    expect(locked!.closest(".podo-select")?.getAttribute("data-open")).toBeNull();
+
+    // 옵션이 있었을 자리를 클릭해도 열리지도, 콜백이 불리지도 않아요.
+    await user.click(locked!);
+    await user.click(frozen!);
+    expect(container.querySelector('[role="listbox"]')).toBeNull();
+    expect(changes).toEqual([]);
+
+    // 서버 렌더(포탈 없이 인라인)에서도 메뉴 마크업이 새어 나가지 않아요.
+    const markup = renderToString(
+      <Select
+        defaultOpen
+        disabled
+        portal={false}
+        placeholder="SSR 잠금"
+        options={[{ value: "strawberry", label: "딸기" }]}
+      />
+    );
+    expect(markup).not.toContain("podo-select__menu");
+  });
+
+  it("closes the menu when disabled flips true while open", async () => {
+    const user = userEvent.setup();
+    const options = [{ value: "strawberry", label: "딸기" }];
+    const { container, rerender } = render(
+      <Select portal={false} placeholder="전환 과일" options={options} />
+    );
+    const q = within(container);
+
+    await user.click(q.getByRole("combobox"));
+    expect(q.getByRole("listbox")).toBeDefined();
+
+    // 열린 채 disabled가 되면 메뉴가 즉시 사라져요.
+    rerender(<Select portal={false} placeholder="전환 과일" options={options} disabled />);
+    expect(q.queryByRole("listbox")).toBeNull();
+    expect(q.getByRole("combobox").getAttribute("aria-expanded")).toBe("false");
+
+    // 다시 활성화해도 닫힌 채예요 — 열림 상태가 몰래 살아남지 않아요.
+    rerender(<Select portal={false} placeholder="전환 과일" options={options} />);
+    expect(q.queryByRole("listbox")).toBeNull();
+  });
+
+  it("routes id and aria-label to the combobox element, not the wrapper", () => {
+    render(
+      <>
+        <Field label="과일 필드">
+          <Select id="fruit" placeholder="과일" options={[{ value: "a", label: "사과" }]} />
+        </Field>
+        <Select id="standalone" aria-label="독립 과일" options={[]} />
+      </>
+    );
+
+    // Field label[for]는 레이아웃 래퍼가 아니라 combobox 요소를 가리켜요.
+    const label = screen.getByText("과일 필드").closest("label") as HTMLLabelElement;
+    const wired = document.getElementById("fruit") as HTMLElement;
+    expect(label.htmlFor).toBe("fruit");
+    expect(wired.getAttribute("role")).toBe("combobox");
+    expect(wired.className).toBe("podo-select__trigger");
+    expect(wired.getAttribute("aria-labelledby")).toBe(label.id);
+    // 래퍼는 id 없이 레이아웃 전용으로 남아요.
+    expect((wired.closest(".podo-select") as HTMLElement).id).toBe("");
+
+    // aria-label도 combobox에 실려 접근 가능한 이름이 돼요.
+    const standalone = screen.getByRole("combobox", { name: "독립 과일" });
+    expect(standalone.id).toBe("standalone");
+    expect(standalone.className).toBe("podo-select__trigger");
+  });
+
   it("tracks the character count automatically and caps input at countMax", async () => {
     const user = userEvent.setup();
     render(
@@ -486,6 +1009,111 @@ describe("@podoui/react", () => {
     await user.type(screen.getByLabelText("본문"), "xyz");
     expect((screen.getByLabelText("본문") as HTMLInputElement).value).toBe("abcde");
     expect(screen.getByText("5/5")).toBeDefined();
+  });
+
+  it("keeps the counter in sync with external controlled value updates", () => {
+    const { rerender } = render(
+      <Field label="제목" countMax={10}>
+        <Input aria-label="본문" value="ab" onChange={() => {}} />
+      </Field>
+    );
+    expect(screen.getByText("2/10")).toBeDefined();
+
+    // controlled 자식의 value가 외부에서 갱신돼 리렌더되면 (change 이벤트 없이)
+    // 카운터도 현재 value를 따라간다 — 초기값에 머무르지 않아요.
+    rerender(
+      <Field label="제목" countMax={10}>
+        <Input aria-label="본문" value="abcd" onChange={() => {}} />
+      </Field>
+    );
+    expect(screen.getByText("4/10")).toBeDefined();
+  });
+
+  it("disables the wrapped control through the field's disabled prop", () => {
+    render(
+      <>
+        <Field label="비활성 필드" disabled>
+          <Input aria-label="잠긴 입력" />
+        </Field>
+        <Field label="예외 시도 필드" disabled>
+          <Input aria-label="예외 시도 입력" disabled={false} />
+        </Field>
+        <Field label="자체 비활성 필드">
+          <Input aria-label="자체 잠긴 입력" disabled />
+        </Field>
+      </>
+    );
+
+    // Field disabled는 래퍼 스타일링만이 아니라 컨트롤도 실제로 잠가요.
+    const locked = screen.getByLabelText("잠긴 입력") as HTMLInputElement;
+    expect(locked.disabled).toBe(true);
+    expect(locked.closest(".podo-input")?.getAttribute("data-state")).toBe("disabled");
+    expect(locked.closest(".podo-field")?.getAttribute("data-disabled")).toBe("true");
+
+    // 결정: disabled Field는 컨트롤을 강제로 잠가요 — OR 의미 (childDisabled
+    // || fieldDisabled, native fieldset 규약). 자식이 disabled={false}를
+    // 명시해도 비활성 그룹에서 빠져나갈 수 없어요 (react/hono/native 공통).
+    expect((screen.getByLabelText("예외 시도 입력") as HTMLInputElement).disabled).toBe(true);
+
+    // Field가 disabled가 아니면 자식의 자체 disabled가 그대로예요.
+    expect((screen.getByLabelText("자체 잠긴 입력") as HTMLInputElement).disabled).toBe(true);
+  });
+
+  it("propagates the field's invalid state into the wrapped control", () => {
+    render(
+      <>
+        <Field label="오류 필드" invalid error="필수 값이에요">
+          <Input aria-label="오류 입력" />
+        </Field>
+        <Field label="오류 텍스트영역" invalid>
+          <Textarea aria-label="오류 메모" />
+        </Field>
+        <Field label="정상 필드">
+          <Input aria-label="자체 오류 입력" invalid />
+        </Field>
+      </>
+    );
+
+    // Field invalid는 aria-invalid만이 아니라 컨트롤의 시각적 invalid 상태
+    // (data-state)까지 강제해요 — 소비자가 Input에 invalid를 또 줄 필요가
+    // 없어요 (childInvalid || fieldInvalid).
+    const control = screen.getByLabelText("오류 입력") as HTMLInputElement;
+    expect(control.closest(".podo-input")?.getAttribute("data-state")).toBe("invalid");
+    expect(control.getAttribute("aria-invalid")).toBe("true");
+    // a11y 주입분과 자식 behavior 산출분이 겹쳐도 컨트롤 하나에 하나의
+    // aria-invalid="true"로 합의돼요 — 값이 충돌하는 중복 속성이 없어요.
+    const errorField = control.closest(".podo-field") as HTMLElement;
+    expect(errorField.querySelectorAll("[aria-invalid]")).toHaveLength(1);
+    expect(errorField.querySelector("[aria-invalid]")).toBe(control);
+    // 에러 문구가 aria-describedby로 연결돼요.
+    expect(control.getAttribute("aria-describedby")).toBe(screen.getByText("필수 값이에요").id);
+
+    // Textarea도 같은 배선을 타요 — data-state는 textarea 자신에 실려요.
+    const memo = screen.getByLabelText("오류 메모") as HTMLTextAreaElement;
+    expect(memo.getAttribute("data-state")).toBe("invalid");
+    expect(memo.getAttribute("aria-invalid")).toBe("true");
+
+    // Field가 invalid가 아니면 자식의 자체 invalid가 그대로예요.
+    const own = screen.getByLabelText("자체 오류 입력") as HTMLInputElement;
+    expect(own.closest(".podo-input")?.getAttribute("data-state")).toBe("invalid");
+    expect(own.getAttribute("aria-invalid")).toBe("true");
+  });
+
+  it("targets the child's explicit id from the field label", () => {
+    render(
+      <Field label="메일 주소" helperText="회사 메일을 입력해요">
+        <Input id="work-email" aria-describedby="external-hint" />
+      </Field>
+    );
+
+    // clone에선 자식의 명시적 id가 이기므로 label[for]도 그 id를 따라가요.
+    const label = screen.getByText("메일 주소").closest("label") as HTMLLabelElement;
+    expect(label.htmlFor).toBe("work-email");
+    const input = screen.getByLabelText("메일 주소") as HTMLInputElement;
+    expect(input.id).toBe("work-email");
+    // aria-describedby 병합은 그대로예요 — 자식의 것 뒤에 헬퍼 텍스트 id.
+    const helperId = screen.getByText("회사 메일을 입력해요").id;
+    expect(input.getAttribute("aria-describedby")).toBe(`external-hint ${helperId}`);
   });
 
   it("toggles the switch uncontrolled and respects disabled", async () => {
@@ -715,6 +1343,39 @@ describe("@podoui/react", () => {
     expect(selections.at(-1)).toEqual([1]);
   });
 
+  it("drops disabled rows from defaultSelected at initialization", () => {
+    render(
+      <Table checkbox defaultSelected={[0, 2]} aria-label="기본 선택 표">
+        <thead>
+          <tr>
+            <th>주문</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#1</td>
+          </tr>
+          <tr>
+            <td>#2</td>
+          </tr>
+          <tr data-disabled="true">
+            <td>#3</td>
+          </tr>
+        </tbody>
+      </Table>
+    );
+
+    const stage = within(screen.getByRole("table", { name: "기본 선택 표" }));
+    // 활성 행 0은 초기 선택을 유지하고,
+    expect(stage.getByText("#1").closest("tr")?.getAttribute("data-selected")).toBe("true");
+    // 비활성 행 2는 defaultSelected에 있어도 선택 없이 렌더된다 — 선택 토글·
+    // 드래그·전체 선택과 같은 규칙이다.
+    expect(stage.getByText("#3").closest("tr")?.getAttribute("data-selected")).toBeNull();
+    const disabledBox = stage.getByRole("checkbox", { name: "행 3 선택" }) as HTMLInputElement;
+    expect(disabledBox.checked).toBe(false);
+    expect(disabledBox.disabled).toBe(true);
+  });
+
   it("toggles rows on click and range-selects by dragging the checkbox column", async () => {
     const user = userEvent.setup();
     const selections: number[][] = [];
@@ -776,6 +1437,46 @@ describe("@podoui/react", () => {
     expect(selections.length).toBe(before + 1);
   });
 
+  it("ends a checkbox drag released outside the table without eating the next click", async () => {
+    const user = userEvent.setup();
+    const selections: number[][] = [];
+    render(
+      <Table checkbox onSelectionChange={(next) => selections.push(next)} aria-label="이탈 드래그">
+        <thead>
+          <tr>
+            <th>주문</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>r0</td>
+          </tr>
+          <tr>
+            <td>r1</td>
+          </tr>
+        </tbody>
+      </Table>
+    );
+
+    const stage = within(screen.getByRole("table", { name: "이탈 드래그" }));
+    const cell = (name: string) => stage.getByRole("checkbox", { name }).closest("td")!;
+
+    // Drag down the checkbox column, then release OUTSIDE the table — only
+    // the document sees the pointerup.
+    fireEvent.pointerDown(cell("행 1 선택"), { button: 0 });
+    fireEvent.pointerOver(cell("행 2 선택"), { buttons: 1 });
+    expect(selections.at(-1)).toEqual([0, 1]);
+    fireEvent.pointerUp(document);
+    // The user's next click comes later than the drag-end click, so let the
+    // deferred dragMovedRef reset flush before clicking.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // 수정 전에는 밖에서 놓은 드래그가 dragMovedRef를 남겨서 이 클릭이
+    // 통째로 삼켜졌어요 — 이제 행 0이 정상적으로 토글돼요.
+    await user.click(stage.getByText("r0"));
+    expect(selections.at(-1)).toEqual([1]);
+  });
+
   it("shows the tooltip on hover/focus through a body portal", () => {
     render(
       <Tooltip label="임시 저장돼요" position="top" ordinal="second" theme="reverse">
@@ -815,6 +1516,66 @@ describe("@podoui/react", () => {
     const bubble = within(container).getByRole("tooltip");
     expect(bubble.getAttribute("data-position")).toBe("right");
     expect(bubble.getAttribute("style")).toBeNull();
+  });
+
+  it("survives SSR with a forced-open tooltip and portals it after mount", () => {
+    // 서버 렌더엔 document가 없어 포탈이 불가능해요 — 말풍선은 인라인으로
+    // 그대로 담겨요 (클라이언트 첫 렌더와 동일해 hydration이 어긋나지 않아요).
+    const markup = renderToString(
+      <Tooltip label="SSR 말풍선" open>
+        <button type="button">저장</button>
+      </Tooltip>
+    );
+    expect(markup).toContain('role="tooltip"');
+    expect(markup).toContain("SSR 말풍선");
+
+    // 클라이언트에선 마운트 후 같은 말풍선이 document.body 포탈로 옮겨가요.
+    const { container } = render(
+      <Tooltip label="CSR 말풍선" open>
+        <button type="button">저장</button>
+      </Tooltip>
+    );
+    const bubble = screen.getByText("CSR 말풍선").closest(".podo-tooltip") as HTMLElement;
+    expect(bubble.getAttribute("role")).toBe("tooltip");
+    expect(bubble.parentElement).toBe(document.body);
+    expect(container.querySelector(".podo-tooltip")).toBeNull();
+  });
+
+  it("re-measures a controlled tooltip on scroll and resize instead of freezing", () => {
+    render(
+      <Tooltip label="고정 열림" open position="right" ordinal="second">
+        <button type="button">기준</button>
+      </Tooltip>
+    );
+
+    const trigger = screen.getByRole("button", { name: "기준" });
+    const bubble = screen.getByText("고정 열림").closest(".podo-tooltip") as HTMLElement;
+    const rect = (top: number, left: number) =>
+      ({
+        top,
+        bottom: top + 40,
+        left,
+        right: left + 100,
+        width: 100,
+        height: 40,
+        x: left,
+        y: top,
+        toJSON: () => ({}),
+      }) as DOMRect;
+
+    // controlled(open prop)는 스크롤로 닫을 수 없어요 — 트리거가 움직이면
+    // 고정 좌표를 다시 재야 해요 (말풍선 rect는 jsdom 기본 0 크기).
+    const spy = vi.spyOn(trigger, "getBoundingClientRect").mockReturnValue(rect(100, 20));
+    fireEvent.scroll(window);
+    // ordinal=second/right: top = t.top + t.height/2 - 0/2, left = t.right.
+    expect(bubble.style.top).toBe("120px");
+    expect(bubble.style.left).toBe("120px");
+
+    spy.mockReturnValue(rect(300, 40));
+    fireEvent(window, new Event("resize"));
+    expect(bubble.style.top).toBe("320px");
+    expect(bubble.style.left).toBe("140px");
+    spy.mockRestore();
   });
 
   it("renders toast states and composition slots", () => {
@@ -983,6 +1744,25 @@ describe("@podoui/react", () => {
     expect(control.value).toBe("고정 값");
   });
 
+  it("renders the icon spec contract: size variant and decorative accessibility", () => {
+    const { container, rerender } = render(<Icon name="menu" />);
+    const icon = container.querySelector("i")!;
+    // Decorative by default (spec): hidden from AT, base size vocabulary.
+    expect(icon.className).toBe("podo-icon podo-icon-menu");
+    expect(icon.getAttribute("data-size")).toBe("md");
+    expect(icon.getAttribute("aria-hidden")).toBe("true");
+    expect(icon.getAttribute("role")).toBeNull();
+
+    rerender(<Icon name="menu" size="lg" />);
+    expect(icon.getAttribute("data-size")).toBe("lg");
+
+    // Non-decorative icons are exposed as role="img" named by the consumer's
+    // aria-label, and must NOT carry aria-hidden.
+    rerender(<Icon name="menu" decorative={false} aria-label="메뉴 열기" />);
+    expect(screen.getByRole("img", { name: "메뉴 열기" })).toBe(icon);
+    expect(icon.getAttribute("aria-hidden")).toBeNull();
+  });
+
   it("provides theme context and field markup", () => {
     function Probe(): React.ReactElement {
       const theme = usePodoTheme();
@@ -1072,9 +1852,7 @@ describe("ported v1 components", () => {
   });
 
   it("renders EditorView content with shared content classes", () => {
-    const { container } = render(
-      <EditorView value={'<p class="podo-ed-p1">본문</p>'} />
-    );
+    const { container } = render(<EditorView value={'<p class="podo-ed-p1">본문</p>'} />);
     expect(container.querySelector(".podo-ed-editorView")).not.toBeNull();
     expect(container.querySelector("p.podo-ed-p1")).not.toBeNull();
   });

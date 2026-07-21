@@ -157,6 +157,41 @@ describe("@podoui/web", () => {
     html = badge.shadowRoot?.innerHTML ?? "";
     expect(html).toContain("data-dot");
     expect(html).not.toContain("<slot>");
+
+    // The badge CSS consumes the codegen token bindings (badge.component.json →
+    // components.css) so per-theme project overrides restyle it; the rules
+    // never *set* the vars, which would clobber the generated layer.
+    expect(podoWebComponentCss).toContain("var(--podo-badge-root-background,");
+    expect(podoWebComponentCss).toContain("var(--podo-badge-label-color,");
+    expect(podoWebComponentCss).toContain("var(--podo-badge-dot-color,");
+    expect(podoWebComponentCss).not.toContain("--podo-badge-root-background:");
+  });
+
+  it("sizes the icon via data-size and supports non-decorative labelling", () => {
+    registerPodoElements();
+    const icon = document.createElement("podo-icon");
+    icon.setAttribute("name", "menu");
+    document.body.append(icon);
+
+    // Default: md scale, decorative (hidden from AT) — same vocabulary as hono/react.
+    let html = icon.shadowRoot?.innerHTML ?? "";
+    expect(html).toContain('data-size="md"');
+    expect(html).toContain('aria-hidden="true"');
+
+    icon.setAttribute("size", "lg");
+    icon.setAttribute("decorative", "false");
+    icon.setAttribute("aria-label", "메뉴 열기");
+    html = icon.shadowRoot?.innerHTML ?? "";
+    expect(html).toContain('data-size="lg"');
+    expect(html).toContain('role="img"');
+    expect(html).toContain('aria-label="메뉴 열기"');
+    expect(html).not.toContain("aria-hidden");
+
+    // The size variant has real CSS: md is the 24×24 glyph grid at 1:1.
+    expect(podoWebComponentCss).toContain('.podo-icon[data-size="sm"]');
+    expect(podoWebComponentCss).toContain('.podo-icon[data-size="md"]');
+    expect(podoWebComponentCss).toContain('.podo-icon[data-size="lg"]');
+    icon.remove();
   });
 
   it("renders input, field, icon, and typography components", async () => {

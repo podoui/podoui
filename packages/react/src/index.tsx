@@ -6,6 +6,7 @@ import React, {
   cloneElement,
   forwardRef,
   isValidElement,
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -379,6 +380,14 @@ export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface IconProps extends HTMLAttributes<HTMLElement> {
   name: string;
+  /** Glyph scale (icon.component.json size variant: sm, md — base, lg). */
+  size?: "sm" | "md" | "lg";
+  /**
+   * Decorative icons are hidden from assistive technology (spec default).
+   * decorative={false}는 role="img"로 렌더되고 소비자의 aria-label이
+   * 접근성 이름이 돼요.
+   */
+  decorative?: boolean;
 }
 
 export interface TypographyProps extends HTMLAttributes<HTMLElement> {
@@ -465,7 +474,13 @@ const CHIP_CLOSE = (
   </svg>
 );
 
-export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
+/**
+ * The forwarded ref receives the chip's root element, which depends on the
+ * mode: removable chips (`onRemove`) expose the static `<span>` root (the X
+ * is the only button there), toggle chips the `<button>` root — hence the
+ * `HTMLButtonElement | HTMLSpanElement` ref type.
+ */
+export const Chip = forwardRef<HTMLButtonElement | HTMLSpanElement, ChipProps>(function Chip(
   {
     theme = "solid",
     size = "md",
@@ -490,14 +505,29 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
   // Uncontrolled fallback: without a selected prop the chip toggles itself.
   const [internalSelected, setInternalSelected] = useState(defaultSelected);
   const isSelected = selected ?? internalSelected;
+  // 하나의 forwarded ref가 두 루트(제거형 span/토글형 button)를 받아요 —
+  // JSX ref 타입에 맞게 캐스트 대신 콜백으로 직접 연결해요.
+  const setRootRef = useCallback(
+    (node: HTMLButtonElement | HTMLSpanElement | null) => {
+      if (typeof ref === "function") {
+        ref(node);
+      } else if (ref) {
+        ref.current = node;
+      }
+    },
+    [ref]
+  );
 
   if (onRemove) {
     // Removable chip: born in the selected look, no toggle — the X is the only
-    // control, so the root is a static span (buttons can't nest).
+    // control, so the root is a static span (buttons can't nest). disabled는
+    // 루트가 span이라 [disabled] 속성 대신 data-disabled로 표시하고, X 버튼을
+    // 비활성화해 onRemove가 절대 불리지 않게 해요.
     return (
       <span
         {...(props as HTMLAttributes<HTMLElement>)}
-        ref={ref as React.Ref<HTMLSpanElement>}
+        {...behavior.dataState}
+        ref={setRootRef}
         className={joinClass("podo-chip", className)}
         data-size={size}
         data-theme={theme}
@@ -510,7 +540,15 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
           type="button"
           className="podo-chip__remove"
           aria-label={removeLabel}
-          onClick={onRemove}
+          disabled={behavior.root.disabled}
+          aria-disabled={behavior.root.ariaDisabled}
+          tabIndex={behavior.root.tabIndex}
+          onClick={(event) => {
+            if (!behavior.pressable || event.defaultPrevented) {
+              return;
+            }
+            onRemove(event);
+          }}
         >
           {CHIP_CLOSE}
         </button>
@@ -522,7 +560,7 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
     <button
       {...props}
       {...behavior.dataState}
-      ref={ref}
+      ref={setRootRef}
       type={behavior.root.type}
       disabled={behavior.root.disabled}
       aria-disabled={behavior.root.ariaDisabled}
@@ -888,6 +926,15 @@ const SELECT_BOX_CHECK = (
   </svg>
 );
 
+// Portal menu placement constants — 6px matches the menu-list's padding-top
+// gap in CSS, 474px mirrors the menu's CSS max-height (ten 42px cells + nine
+// 4px gaps + 16px padding + 2px border), 8px keeps it off the viewport edge.
+const SELECT_MENU_GAP = 6;
+const SELECT_MENU_MAX_HEIGHT = 474;
+const SELECT_MENU_MARGIN = 8;
+// 남은 공간이 아무리 좁아도 최소 한 줄(42px 셀 + 16px 패딩)은 보여요.
+const SELECT_MENU_MIN_HEIGHT = 58;
+
 export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
   {
     options,
@@ -915,11 +962,21 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     className,
     onClick,
     onKeyDown,
+    id,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    "aria-describedby": ariaDescribedBy,
+    "aria-invalid": ariaInvalid,
+    "aria-required": ariaRequired,
     ...props
   },
   ref
 ) {
   const [open, setOpen] = useState(defaultOpen);
+  // Portal은 document.body가 필요한데 서버 렌더 중엔 DOM이 없어요. 마운트
+  // 후에만 포탈을 붙여 SSR(renderToString)과 클라이언트 첫 렌더 마크업을
+  // 동일하게 유지해요 — defaultOpen 메뉴는 마운트 직후 렌더에서 나타나요.
+  const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState("");
   const [addText, setAddText] = useState("");
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -929,14 +986,33 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
   // addable로 만들어진 옵션은 내부에 쌓아 options와 합쳐요 (value 기준 중복 제거).
   const [added, setAdded] = useState<SelectOption[]>([]);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLDivElement | null>(null);
   const menuListRef = useRef<HTMLDivElement | null>(null);
-  // Portal 모드에서 트리거 아래 고정 배치할 좌표 (getBoundingClientRect 기준).
+  // Portal 모드에서 트리거 아래(공간이 없으면 위) 고정 배치할 좌표
+  // (getBoundingClientRect 기준). bottom이 있으면 위로 뒤집힌 상태고,
+  // maxHeight는 남은 공간이 메뉴보다 작을 때만 내부 스크롤용으로 줄여요.
   const [menuPosition, setMenuPosition] = useState<{
-    top: number;
+    top?: number;
+    bottom?: number;
     left: number;
     width: number;
+    maxHeight?: number;
   } | null>(null);
   const menuId = useId();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // 열린 채 disabled/readOnly로 바뀌면 열림 상태도 함께 접어요 — 나중에 다시
+  // 활성화될 때 메뉴가 저절로 되살아나지 않게요.
+  useEffect(() => {
+    if ((disabled || readOnly) && open) {
+      setOpen(false);
+      setQuery("");
+      setActiveIndex(-1);
+    }
+  }, [disabled, readOnly, open]);
 
   const selectedValue = value !== undefined ? value : internalValue;
   const selectedValues = values ?? internalValues;
@@ -950,14 +1026,37 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     ? selectedValues.length > 0
     : selectedValue != null && selectedValue !== "";
   const selectedOption = allOptions.find((o) => o.value === selectedValue);
+  // disabled/read-only는 열림을 항상 거부해요 — defaultOpen으로 시작했든 열린
+  // 채 상태가 바뀌었든, 메뉴(와 옵션 콜백)는 렌더되지 않아야 해요.
+  const isOpen = open && !disabled && !readOnly;
+  // ARIA 열림 상태는 메뉴의 실제 존재를 따라가요 — portal 메뉴는 마운트 전
+  // (SSR·클라이언트 첫 렌더)엔 렌더되지 않으므로, 그동안 aria-expanded=false,
+  // aria-controls 생략으로 존재하지 않는 listbox를 가리키지 않아요. 마운트 후
+  // 메뉴와 함께 같이 뒤집혀요 (hydration 안전: 첫 클라이언트 렌더가 SSR과
+  // 일치하고, 마운트 effect가 이후에 갱신). portal={false}는 메뉴가 SSR에도
+  // 인라인으로 함께 렌더되므로 기존 동작 그대로예요.
+  const menuRendered = isOpen && (!portal || mounted);
 
   const closeMenu = () => {
+    // 검색 중엔 포커스가 곧 언마운트될 검색 입력에 있다 — 그대로 닫으면
+    // 포커스가 body로 떨어지므로 트리거로 되돌린다 (spec focusManagement:
+    // 포커스는 트리거 또는 검색 입력에 머문다). 바깥 클릭/스크롤 닫힘은 이
+    // 함수를 타지 않아 사용자가 옮긴 포커스를 뺏지 않는다.
+    const refocusTrigger = Boolean(isOpen && searchable);
     setOpen(false);
     setQuery("");
     setActiveIndex(-1);
+    if (refocusTrigger) {
+      triggerRef.current?.focus();
+    }
   };
 
   const pick = (optionValue: string) => {
+    // disabled/read-only 상태에선 어떤 경로(옵션 클릭, 칩 제거 등)로도 값이
+    // 바뀌면 안 돼요.
+    if (disabled || readOnly) {
+      return;
+    }
     if (multiple) {
       const next = selectedValues.includes(optionValue)
         ? selectedValues.filter((v) => v !== optionValue)
@@ -1014,7 +1113,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
   // Outside click closes — the menu is anchored inside the root, so a simple
   // containment check covers the trigger, chips, add row, and cells.
   useEffect(() => {
-    if (!open) {
+    if (!isOpen) {
       return undefined;
     }
     const onPointerDown = (event: PointerEvent) => {
@@ -1033,24 +1132,54 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
-  }, [open]);
+  }, [isOpen]);
 
   // Portal 모드: 트리거 위치를 재서 메뉴를 그 아래 고정 배치해요. 값·검색어가
-  // 바뀌어 트리거가 변해도 다시 잽니다.
+  // 바뀌어 트리거가 변해도 다시 잽니다. 아래 공간이 모자라고 위가 더 넓으면
+  // 위로 뒤집고, 뒤집어도 다 안 들어가면 남은 공간만큼 max-height를 줄여
+  // 내부 스크롤로 모든 옵션에 닿게 해요 (화면 밖 옵션은 클릭할 수 없고,
+  // 바깥 스크롤은 메뉴를 닫으니까요). 리사이즈에도 같은 규칙으로 다시 잽니다.
   useLayoutEffect(() => {
-    if (!open || !portal) {
-      return;
+    if (!isOpen || !portal) {
+      return undefined;
     }
-    const rect = rootRef.current?.getBoundingClientRect();
-    if (rect) {
-      setMenuPosition({ left: rect.left, top: rect.bottom, width: rect.width });
-    }
-  }, [open, portal, selectedValues.length, query, size]);
+    const place = () => {
+      const rect = rootRef.current?.getBoundingClientRect();
+      if (!rect) {
+        return;
+      }
+      const menu = menuListRef.current?.firstElementChild as HTMLElement | null;
+      // scrollHeight는 max-height 캡과 무관한 콘텐츠 높이 — CSS 캡이 상한.
+      const menuHeight = Math.min(menu?.scrollHeight ?? 0, SELECT_MENU_MAX_HEIGHT);
+      const spaceBelow = window.innerHeight - rect.bottom - SELECT_MENU_GAP - SELECT_MENU_MARGIN;
+      const spaceAbove = rect.top - SELECT_MENU_GAP - SELECT_MENU_MARGIN;
+      const flip = menuHeight > spaceBelow && spaceAbove > spaceBelow;
+      const space = flip ? spaceAbove : spaceBelow;
+      // 메뉴는 min-width: min-content로 트리거보다 넓어질 수 있어요.
+      const menuWidth = Math.max(rect.width, menu?.offsetWidth ?? 0);
+      setMenuPosition({
+        // 뒤집힌 메뉴는 아래쪽을 트리거 위 6px에 고정해요 (아래 배치의
+        // menu-list padding-top 간격과 동일).
+        bottom: flip ? window.innerHeight - rect.top + SELECT_MENU_GAP : undefined,
+        // 트리거 왼쪽 정렬 유지 — 오른쪽 화면 밖으로 넘치는 만큼만 당겨요.
+        left: Math.min(
+          rect.left,
+          Math.max(SELECT_MENU_MARGIN, window.innerWidth - menuWidth - SELECT_MENU_MARGIN)
+        ),
+        maxHeight: menuHeight > space ? Math.max(space, SELECT_MENU_MIN_HEIGHT) : undefined,
+        top: flip ? undefined : rect.bottom,
+        width: rect.width,
+      });
+    };
+    place();
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [isOpen, portal, selectedValues.length, query, size]);
 
-  // Portal 메뉴는 스크롤/리사이즈를 따라가지 않고 닫아요 (Tooltip과 동일).
-  // 메뉴 내부 옵션 리스트 스크롤은 예외.
+  // Portal 메뉴는 바깥 스크롤을 따라가지 않고 닫아요 (Tooltip과 동일).
+  // 메뉴 내부 옵션 리스트 스크롤은 예외. 리사이즈는 위에서 다시 배치해요.
   useEffect(() => {
-    if (!open || !portal) {
+    if (!isOpen || !portal) {
       return undefined;
     }
     const close = (event: Event) => {
@@ -1066,23 +1195,27 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
       setActiveIndex(-1);
     };
     window.addEventListener("scroll", close, true);
-    window.addEventListener("resize", close);
-    return () => {
-      window.removeEventListener("scroll", close, true);
-      window.removeEventListener("resize", close);
-    };
-  }, [open, portal]);
+    return () => window.removeEventListener("scroll", close, true);
+  }, [isOpen, portal]);
 
   // 메뉴가 10줄에서 스크롤되므로, 키보드 활성 셀이 밖으로 나가면 따라가요.
   useEffect(() => {
-    if (open && activeIndex >= 0) {
+    if (isOpen && activeIndex >= 0) {
       document.getElementById(`${menuId}-${activeIndex}`)?.scrollIntoView?.({ block: "nearest" });
     }
-  }, [open, activeIndex, menuId]);
+  }, [isOpen, activeIndex, menuId]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     onKeyDown?.(event);
     if (disabled || readOnly || event.defaultPrevented) {
+      return;
+    }
+    // 칩 제거·모두 해제 같은 내부 버튼에서 버블링된 Enter/Space는 그 버튼의
+    // 네이티브 키보드 활성화(클릭 합성)가 처리해요 — 트리거가 preventDefault로
+    // 삼켜 메뉴를 토글하면 안 돼요. 합성된 click은 버튼의 click 핸들러가
+    // 포인터 경로와 동일하게 stopPropagation으로 토글 번짐을 막아요.
+    const nestedButton = (event.target as HTMLElement).closest("button");
+    if (nestedButton && event.currentTarget.contains(nestedButton)) {
       return;
     }
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
@@ -1131,7 +1264,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
   const hiddenChipCount = Math.max(0, selectedValues.length - maxChips);
   const chips = selectedValues.slice(0, maxChips).map((v) => {
     const label = allOptions.find((o) => o.value === v)?.label ?? v;
-    if (readOnly) {
+    // read-only/disabled Select의 값은 지울 수 없으니 X 없는 정적 칩으로 렌더해요.
+    if (readOnly || disabled) {
       return (
         <span
           key={v}
@@ -1140,6 +1274,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
           data-size="md"
           data-state="selected"
           data-removable="true"
+          data-disabled={disabled ? "true" : undefined}
         >
           <span className="podo-chip__label">{label}</span>
         </span>
@@ -1171,6 +1306,31 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     );
   }
 
+  // 검색 중엔 포커스가 내부 입력으로 옮겨가므로 ARIA combobox 패턴대로
+  // 콤보박스 배선(role/aria-expanded/-controls/-activedescendant)도 입력이
+  // 넘겨받아요 — 트리거가 역할을 이중으로 갖지 않게 그동안 내려놓아요.
+  const searching = Boolean(isOpen && searchable);
+  const searchComboProps = {
+    role: "combobox",
+    "aria-expanded": menuRendered,
+    "aria-haspopup": "listbox",
+    "aria-autocomplete": "list",
+    "aria-controls": menuRendered ? menuId : undefined,
+    "aria-activedescendant":
+      menuRendered && activeIndex >= 0 ? `${menuId}-${activeIndex}` : undefined,
+  } as const;
+  // id와 이름·설명·상태 ARIA는 레이아웃 래퍼가 아니라 combobox 요소가 실어야
+  // 해요 — Field가 주입한 label[for]/aria-* 배선이 여기로 들어와요. 검색 중엔
+  // combobox 역할이 입력으로 넘어가니 이 묶음도 역할과 함께 따라가요.
+  const comboAria = {
+    id,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    "aria-describedby": ariaDescribedBy,
+    "aria-invalid": ariaInvalid ?? (invalid || undefined),
+    "aria-required": ariaRequired,
+  };
+
   return (
     <div
       {...props}
@@ -1185,18 +1345,21 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
       className={joinClass("podo-select", className)}
       data-size={size}
       data-state={invalid ? "invalid" : disabled ? "disabled" : readOnly ? "read-only" : undefined}
-      data-open={open ? "true" : undefined}
+      data-open={isOpen ? "true" : undefined}
     >
       <div
-        role="combobox"
-        aria-expanded={open}
-        aria-haspopup="listbox"
-        aria-controls={open ? menuId : undefined}
-        aria-activedescendant={open && activeIndex >= 0 ? `${menuId}-${activeIndex}` : undefined}
+        {...(searching ? undefined : comboAria)}
+        ref={triggerRef}
+        role={searching ? undefined : "combobox"}
+        aria-expanded={searching ? undefined : menuRendered}
+        aria-haspopup={searching ? undefined : "listbox"}
+        aria-controls={menuRendered && !searching ? menuId : undefined}
+        aria-activedescendant={
+          menuRendered && !searching && activeIndex >= 0 ? `${menuId}-${activeIndex}` : undefined
+        }
         aria-disabled={disabled || undefined}
         aria-readonly={readOnly || undefined}
-        aria-invalid={invalid || undefined}
-        tabIndex={disabled ? -1 : 0}
+        tabIndex={disabled || searching ? -1 : 0}
         className="podo-select__trigger"
         onKeyDown={handleKeyDown}
         onClick={(event) => {
@@ -1220,10 +1383,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
             입력 폭은 타이핑한 만큼만), 없으면 값 콘텐츠를 레이아웃에 남겨
             너비를 고정한 채 입력을 그 위에 겹쳐요 (열림/닫힘 너비 점프 방지). */}
         <span className="podo-select__value" data-placeholder={hasValue ? undefined : "true"}>
-          {open && searchable && multiple && hasValue ? (
+          {searching && multiple && hasValue ? (
             <span className="podo-select__value-content">
               {chips}
               <input
+                {...searchComboProps}
+                {...comboAria}
                 autoFocus
                 className="podo-select__search podo-select__search--inline"
                 style={{ width: `calc(${query.length * 2}ch + 2px)` }}
@@ -1238,7 +1403,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
             <>
               <span
                 className="podo-select__value-content"
-                data-hidden={open && searchable ? "true" : undefined}
+                data-hidden={searching ? "true" : undefined}
               >
                 {multiple
                   ? hasValue
@@ -1246,8 +1411,10 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
                     : placeholder
                   : (selectedOption?.label ?? placeholder)}
               </span>
-              {open && searchable ? (
+              {searching ? (
                 <input
+                  {...searchComboProps}
+                  {...comboAria}
                   autoFocus
                   className="podo-select__search"
                   value={query}
@@ -1281,7 +1448,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
         {/* read-only는 열 수 없으니 체브론도 없어요 (Figma read-only). */}
         {readOnly ? null : <span className="podo-select__chevron">{SELECT_CHEVRON}</span>}
       </div>
-      {open
+      {menuRendered
         ? renderSelectMenu(
             portal,
             <div
@@ -1291,20 +1458,28 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
               style={
                 portal
                   ? {
+                      bottom: menuPosition?.bottom,
                       left: menuPosition?.left ?? 0,
                       position: "fixed",
                       right: "auto",
-                      top: menuPosition?.top ?? 0,
+                      top: menuPosition?.bottom != null ? "auto" : (menuPosition?.top ?? 0),
                       width: menuPosition?.width,
                     }
                   : undefined
               }
             >
+              {/* 박스(.podo-select__menu)와 리스트박스를 분리해요 —
+                  role="listbox"의 자식은 option/group만 허용되므로 추가
+                  입력줄은 리스트박스 밖, 같은 박스 안 위쪽에 렌더해요
+                  (hono와 동일 구조). aria-controls/-activedescendant는
+                  리스트박스 id를 가리켜요. */}
               <div
                 className="podo-select__menu"
-                role="listbox"
-                id={menuId}
-                aria-multiselectable={multiple || undefined}
+                style={
+                  portal && menuPosition?.maxHeight != null
+                    ? { maxHeight: menuPosition.maxHeight }
+                    : undefined
+                }
               >
                 {addable ? (
                   <div className="podo-select__add">
@@ -1326,36 +1501,43 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
                     </button>
                   </div>
                 ) : null}
-                {visible.map((option, index) => {
-                  const selected = multiple
-                    ? selectedValues.includes(option.value)
-                    : option.value === selectedValue;
-                  return (
-                    <div
-                      key={option.value}
-                      id={`${menuId}-${index}`}
-                      role="option"
-                      aria-selected={selected}
-                      className="podo-select__cell"
-                      data-state={selected ? "selected" : undefined}
-                      data-active={index === activeIndex ? "true" : undefined}
-                      onClick={() => pick(option.value)}
-                    >
-                      {multiple ? (
-                        <span
-                          className="podo-select__checkbox"
-                          data-checked={selected ? "true" : undefined}
-                        >
-                          {selected ? SELECT_BOX_CHECK : null}
-                        </span>
-                      ) : null}
-                      <span className="podo-select__cell-label">{option.label}</span>
-                      {!multiple && selected ? (
-                        <span className="podo-select__cell-check">{SELECT_CHECK}</span>
-                      ) : null}
-                    </div>
-                  );
-                })}
+                <div
+                  className="podo-select__listbox"
+                  role="listbox"
+                  id={menuId}
+                  aria-multiselectable={multiple || undefined}
+                >
+                  {visible.map((option, index) => {
+                    const selected = multiple
+                      ? selectedValues.includes(option.value)
+                      : option.value === selectedValue;
+                    return (
+                      <div
+                        key={option.value}
+                        id={`${menuId}-${index}`}
+                        role="option"
+                        aria-selected={selected}
+                        className="podo-select__cell"
+                        data-state={selected ? "selected" : undefined}
+                        data-active={index === activeIndex ? "true" : undefined}
+                        onClick={() => pick(option.value)}
+                      >
+                        {multiple ? (
+                          <span
+                            className="podo-select__checkbox"
+                            data-checked={selected ? "true" : undefined}
+                          >
+                            {selected ? SELECT_BOX_CHECK : null}
+                          </span>
+                        ) : null}
+                        <span className="podo-select__cell-label">{option.label}</span>
+                        {!multiple && selected ? (
+                          <span className="podo-select__cell-check">{SELECT_CHECK}</span>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           )
@@ -1413,6 +1595,15 @@ export function Tooltip({
   const triggerRef = useRef<HTMLElement | null>(null);
   const bubbleRef = useRef<HTMLDivElement | null>(null);
   const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
+  // Portal은 document.body가 필요한데 서버 렌더 중엔 DOM이 없어요. 서버와
+  // 클라이언트 첫 렌더는 말풍선을 인라인으로 두고(hydration 마크업 일치),
+  // 마운트 후에만 포탈로 옮겨요 — <Tooltip open>이 SSR에서도 죽지 않고
+  // 말풍선이 내내 렌더된 채 유지돼요 (Select의 mounted 패턴과 동일).
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Portal placement: measure the trigger and the bubble, then pin the bubble
   // so its arrowhead points at the trigger's center.
@@ -1421,29 +1612,46 @@ export function Tooltip({
       setCoords(null);
       return;
     }
-    const trigger = triggerRef.current;
-    const bubble = bubbleRef.current;
-    if (!trigger || !bubble) {
+    const place = () => {
+      const trigger = triggerRef.current;
+      const bubble = bubbleRef.current;
+      if (!trigger || !bubble) {
+        return;
+      }
+      const t = trigger.getBoundingClientRect();
+      const b = bubble.getBoundingClientRect();
+      const align = (size: number, start: number, length: number) =>
+        ordinal === "second"
+          ? start + length / 2 - size / 2
+          : ordinal === "third"
+            ? start + length / 2 - (size - TOOLTIP_ARROW_CENTER)
+            : start + length / 2 - TOOLTIP_ARROW_CENTER;
+      setCoords(
+        position === "top"
+          ? { top: t.top - b.height, left: align(b.width, t.left, t.width) }
+          : position === "bottom"
+            ? { top: t.bottom, left: align(b.width, t.left, t.width) }
+            : position === "left"
+              ? { top: align(b.height, t.top, t.height), left: t.left - b.width }
+              : { top: align(b.height, t.top, t.height), left: t.right }
+      );
+    };
+    place();
+    if (open == null) {
+      // uncontrolled hover 툴팁은 스크롤/리사이즈에 닫혀요 (아래 effect) —
+      // 좌표를 따라갈 필요가 없어요.
       return;
     }
-    const t = trigger.getBoundingClientRect();
-    const b = bubble.getBoundingClientRect();
-    const align = (size: number, start: number, length: number) =>
-      ordinal === "second"
-        ? start + length / 2 - size / 2
-        : ordinal === "third"
-          ? start + length / 2 - (size - TOOLTIP_ARROW_CENTER)
-          : start + length / 2 - TOOLTIP_ARROW_CENTER;
-    setCoords(
-      position === "top"
-        ? { top: t.top - b.height, left: align(b.width, t.left, t.width) }
-        : position === "bottom"
-          ? { top: t.bottom, left: align(b.width, t.left, t.width) }
-          : position === "left"
-            ? { top: align(b.height, t.top, t.height), left: t.left - b.width }
-            : { top: align(b.height, t.top, t.height), left: t.right }
-    );
-  }, [isOpen, portal, position, ordinal]);
+    // Controlled(강제 열림) 툴팁은 부모가 open을 소유해 닫을 수 없어요 —
+    // 트리거가 움직이면 고정 좌표가 낡으므로 스크롤/리사이즈마다 다시 재요.
+    window.addEventListener("scroll", place, true);
+    window.addEventListener("resize", place);
+    return () => {
+      window.removeEventListener("scroll", place, true);
+      window.removeEventListener("resize", place);
+    };
+    // mounted가 바뀌면 말풍선이 인라인에서 포탈로 옮겨가므로 다시 재요.
+  }, [isOpen, portal, position, ordinal, mounted, open]);
 
   // Anything that moves the trigger invalidates the pinned coords — close.
   useEffect(() => {
@@ -1517,9 +1725,7 @@ export function Tooltip({
   return (
     <>
       {trigger}
-      {bubble && portal && typeof document !== "undefined"
-        ? createPortal(bubble, document.body)
-        : bubble}
+      {bubble && portal && mounted ? createPortal(bubble, document.body) : bubble}
     </>
   );
 }
@@ -1772,12 +1978,41 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
   { type = "horizon", checkbox = false, defaultSelected, onSelectionChange, className, ...props },
   ref
 ) {
-  const [selected, setSelected] = useState<Set<number>>(() => new Set(defaultSelected ?? []));
+  // data-disabled 행은 어떤 경로로도 선택될 수 없다 — defaultSelected의 초기값도
+  // 예외가 아니라서 비활성 행 인덱스는 걸러낸다.
+  const [selected, setSelected] = useState<Set<number>>(() =>
+    initialTableSelection(defaultSelected, props.children)
+  );
   // Drag bookkeeping: anchor row, its toggle direction, and the pre-drag
   // selection the range is applied over (so shrinking the range reverts rows).
   const dragRef = useRef<{ anchor: number; mode: boolean; snapshot: Set<number> } | null>(null);
   // A finished drag ends with a browser click on the anchor row — swallow it.
   const dragMovedRef = useRef(false);
+  // 포인터는 테이블 밖에서도 놓일 수 있으니, 드래그 중에만 document 레벨
+  // pointerup/pointercancel로 정리해요 (Select의 outside-pointerdown 패턴과
+  // 동일 — 이펙트라 SSR 안전, 언마운트 시 해제). 남은 dragMovedRef가 다음
+  // 행 클릭을 삼키지 않게 두 ref를 모두 초기화해요.
+  const [dragging, setDragging] = useState(false);
+  useEffect(() => {
+    if (!dragging) {
+      return undefined;
+    }
+    const endDrag = () => {
+      setDragging(false);
+      dragRef.current = null;
+      // The click the drag ends with fires before this timeout runs, so a
+      // moved drag still swallows it; later ordinary clicks pass through.
+      setTimeout(() => {
+        dragMovedRef.current = false;
+      }, 0);
+    };
+    document.addEventListener("pointerup", endDrag);
+    document.addEventListener("pointercancel", endDrag);
+    return () => {
+      document.removeEventListener("pointerup", endDrag);
+      document.removeEventListener("pointercancel", endDrag);
+    };
+  }, [dragging]);
 
   if (!checkbox) {
     return (
@@ -1918,14 +2153,19 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
                   mode: !selected.has(index),
                   snapshot: new Set(selected),
                 };
+                setDragging(true);
               }}
               onPointerEnter={(event) => {
                 if (!dragRef.current) {
                   return;
                 }
-                // The primary button was released outside the table — bail out.
+                // The primary button is no longer down (a release the document
+                // listener somehow missed) — end the drag fully so the stale
+                // dragMovedRef can't swallow the next row click.
                 if (!(event.buttons & 1)) {
                   dragRef.current = null;
+                  dragMovedRef.current = false;
+                  setDragging(false);
                   return;
                 }
                 dragMovedRef.current = true;
@@ -1963,14 +2203,6 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
       className={joinClass("podo-table", className)}
       data-type={type}
       data-checkbox="true"
-      onPointerUp={(event) => {
-        rest.onPointerUp?.(event);
-        dragRef.current = null;
-        // The click the drag ends with fires before this timeout runs.
-        setTimeout(() => {
-          dragMovedRef.current = false;
-        }, 0);
-      }}
     >
       {wired}
     </table>
@@ -2007,7 +2239,10 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
   // <Field countMax={500}><Input /></Field> counts with no extra wiring.
   const [autoCount, setAutoCount] = useState(() => initialControlLength(children));
   const trackCount = countMax != null && count == null;
-  const shownCount = count ?? autoCount;
+  // controlled 자식(value prop)은 렌더마다 현재 value에서 길이를 다시 계산한다 —
+  // 외부에서 값이 갱신돼 리렌더돼도 카운터가 낡지 않는다. uncontrolled 자식은
+  // change 이벤트로 추적한 상태 값을 그대로 쓴다.
+  const shownCount = count ?? controlledControlLength(children) ?? autoCount;
   const a11y = createFieldA11y({
     id: fieldId,
     invalid,
@@ -2015,6 +2250,10 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
     hasDescription: showHelper,
     hasError: showError,
   });
+  // 자식 컨트롤이 명시적 id를 가지면 clone에서 그 id가 이기므로
+  // (wireReactControl의 existing.id 우선), label[for]도 생성 id 대신 그 id를
+  // 가리켜야 연결이 끊기지 않아요.
+  const controlId = firstExplicitControlId(children) ?? a11y.ids.controlId;
   // countMax also caps the control via the platform-native maxLength, so
   // typing/pasting past the limit is blocked without any custom handling.
   const wiredChildren = wireReactControl(
@@ -2027,7 +2266,8 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
             setAutoCount(value.length);
           }
         }
-      : undefined
+      : undefined,
+    { disabled, invalid }
   );
 
   return (
@@ -2040,7 +2280,7 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
       data-required={required ? "true" : undefined}
     >
       <div className="podo-field__heading">
-        <label className="podo-field__label" id={a11y.ids.labelId} htmlFor={a11y.ids.controlId}>
+        <label className="podo-field__label" id={a11y.ids.labelId} htmlFor={controlId}>
           {label}
           {required ? (
             <span className="podo-field__requirement" aria-hidden="true">
@@ -2075,11 +2315,20 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
   );
 });
 
-export function Icon({ name, className, ...props }: IconProps): React.ReactElement {
+export function Icon({
+  name,
+  size = "md",
+  decorative = true,
+  className,
+  ...props
+}: IconProps): React.ReactElement {
   return (
     <i
       {...props}
-      aria-hidden="true"
+      // hono 렌더러와 동일한 어휘: 장식 아이콘은 aria-hidden으로 AT에서
+      // 숨기고, 비장식 아이콘은 role="img" + 소비자의 aria-label로 노출돼요.
+      {...(decorative ? { "aria-hidden": "true" as const } : { role: "img" })}
+      data-size={size}
       className={joinClass("podo-icon", `podo-icon-${name}`, className)}
     />
   );
@@ -2104,7 +2353,8 @@ function joinClass(...classes: Array<string | false | null | undefined>): string
 function wireReactControl(
   children: ReactNode,
   controlProps: Record<string, string | boolean | number>,
-  onControlChange?: (event: ChangeEvent<HTMLInputElement>) => void
+  onControlChange?: (event: ChangeEvent<HTMLInputElement>) => void,
+  fieldState?: { disabled?: boolean | undefined; invalid?: boolean | undefined }
 ): ReactNode {
   return React.Children.map(children, (child) => {
     if (!isValidElement<Record<string, unknown>>(child)) {
@@ -2114,6 +2364,13 @@ function wireReactControl(
     const existing = child.props;
     return cloneElement(child, {
       ...controlProps,
+      // Field의 disabled/invalid는 감싼 컨트롤에 OR로 강제돼요 (childState ||
+      // fieldState) — native fieldset처럼 자식이 disabled={false}로 비활성
+      // 그룹에서 빠져나갈 수 없어요. Field가 그 상태가 아니면 자식의 자체
+      // 값이 그대로 유지돼요. invalid는 aria-invalid만이 아니라 컨트롤의
+      // 시각적 invalid 상태(data-state)까지 함께 켜요.
+      ...(fieldState?.disabled ? { disabled: true } : {}),
+      ...(fieldState?.invalid ? { invalid: true } : {}),
       id: existing.id ?? controlProps.id,
       "aria-describedby": joinClass(
         existing["aria-describedby"] as string | undefined,
@@ -2133,6 +2390,25 @@ function wireReactControl(
   });
 }
 
+/**
+ * The first control child's explicit id, if any — the clone keeps it
+ * (existing.id wins in wireReactControl), so the field label must target it.
+ */
+function firstExplicitControlId(children: ReactNode): string | undefined {
+  let id: string | undefined;
+  let seenControl = false;
+  React.Children.forEach(children, (child) => {
+    if (!seenControl && isValidElement<Record<string, unknown>>(child)) {
+      seenControl = true;
+      const childId = child.props.id;
+      if (typeof childId === "string" && childId) {
+        id = childId;
+      }
+    }
+  });
+  return id;
+}
+
 /** Initial character count read from the control's value/defaultValue. */
 function initialControlLength(children: ReactNode): number {
   let length = 0;
@@ -2145,6 +2421,54 @@ function initialControlLength(children: ReactNode): number {
     }
   });
   return length;
+}
+
+/**
+ * Controlled 자식의 현재 value prop에서 읽은 글자 수. value prop이 없으면
+ * (uncontrolled) null — 그때만 change 이벤트로 추적한 상태 카운트를 쓴다.
+ */
+function controlledControlLength(children: ReactNode): number | null {
+  let length: number | null = null;
+  React.Children.forEach(children, (child) => {
+    if (isValidElement<Record<string, unknown>>(child)) {
+      const value = child.props.value;
+      if (typeof value === "string") {
+        length = value.length;
+      }
+    }
+  });
+  return length;
+}
+
+/**
+ * defaultSelected에서 data-disabled 행 인덱스를 걸러낸 초기 선택 집합.
+ * 선택 토글·드래그·전체 선택이 모두 비활성 행을 제외하므로 초기값도 같은
+ * 규칙을 따라야 비활성 행이 선택된 채 렌더되지 않는다.
+ */
+function initialTableSelection(
+  defaultSelected: number[] | undefined,
+  children: ReactNode
+): Set<number> {
+  if (!defaultSelected || defaultSelected.length === 0) {
+    return new Set();
+  }
+  const disabled = new Set<number>();
+  let scanIndex = 0;
+  React.Children.forEach(children, (section) => {
+    if (!isValidElement<Record<string, unknown>>(section) || section.type !== "tbody") {
+      return;
+    }
+    React.Children.forEach(section.props.children as ReactNode, (row) => {
+      if (!isValidElement<Record<string, unknown>>(row)) {
+        return;
+      }
+      const index = scanIndex++;
+      if (row.props["data-disabled"]) {
+        disabled.add(index);
+      }
+    });
+  });
+  return new Set(defaultSelected.filter((index) => !disabled.has(index)));
 }
 
 // ---- v1 포팅 컴포넌트 (SRP 구조 유지: datepicker.tsx, editor/) ----

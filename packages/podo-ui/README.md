@@ -36,6 +36,28 @@ import { Button, Field, Input, PodoThemeProvider } from "podo-ui/react";
 | `podo-ui/cli`       | CLI 진입점 (`runCli`)                      |
 | `podo-ui/mcp`       | MCP 서버 (`createPodoMcpServer`)           |
 
+React Native 앱에서는 `createNativeComponents({ Pressable, ScrollView, Text, TextInput, View })`에
+`react-native`의 실제 컴포넌트를 주입해 사용하세요. `podo-ui/native`의
+top-level 컴포넌트 export는 문자열 호스트(`defaultNativeHost`) 기반의
+테스트 렌더러 전용 편의 export입니다 (자세한 예시: docs/installation-guide.md).
+
+## 스타일
+
+```ts
+import "podo-ui/styles.css"; // 컴포넌트 CSS (라이트 폴백 내장)
+import "podo-ui/icons.css"; // 기본 아이콘 글리프 폰트 (PodoIcons)
+```
+
+`podo init && podo build`를 쓰는 프로젝트는 빌드가 생성한
+`tokens.css`/`components.css`/`icons/PodoIcons.css`를 함께 import 하세요 —
+`.podo` 오버라이드(테마, 아이콘 그룹 포함)가 그 산출물에 반영됩니다.
+`podo-ui/icons.css`는 빌드 없이 쓰는 소비자를 위한 기본 아이콘 세트입니다.
+
+다크 모드(`data-color-scheme="dark"`): 기본 토큰 문서에는 다크 오버라이드가
+없으므로 프로젝트 `.podo` 토큰으로 정의합니다. v1 이식 컴포넌트
+(DatePicker/Editor)는 자체 다크 스타일을 포함하며, Figma 미러 컴포넌트
+크롬의 다크 팔레트는 디자인 확정 대기입니다(라이트 폴백 유지).
+
 ## CLI
 
 ```bash

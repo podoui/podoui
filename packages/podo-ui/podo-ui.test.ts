@@ -112,6 +112,36 @@ describe("podo-ui assembled package", () => {
     );
   });
 
+  it("ships default icon glyphs for every podo-icon-* class the react renderers reference", () => {
+    const css = readFileSync(join(dist, "icons-assets/PodoIcons.css"), "utf8");
+    expect(css).toContain("@font-face");
+    expect(existsSync(join(dist, "icons-assets/PodoIcons.woff2"))).toBe(true);
+    expect(existsSync(join(dist, "icons-assets/PodoIcons.woff"))).toBe(true);
+
+    // className 사용처(podo-icon-<name>)를 react 소스에서 수집한다. CSS 변수
+    // (--podo-icon-*)는 [a-z] 시작 캡처에 걸리지 않는 web 패키지에만 있다.
+    const referenced = new Set<string>();
+    const scan = (directory: string): void => {
+      for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        const entryPath = join(directory, entry.name);
+        if (entry.isDirectory()) {
+          scan(entryPath);
+        } else if (/\.tsx?$/.test(entry.name)) {
+          for (const match of readFileSync(entryPath, "utf8").matchAll(
+            /podo-icon-([a-z][a-z-]*)/g
+          )) {
+            referenced.add(match[1] as string);
+          }
+        }
+      }
+    };
+    scan(join(packageRoot, "../react/src"));
+    expect(referenced.size).toBeGreaterThan(0);
+    for (const name of referenced) {
+      expect(css, `glyph "${name}"`).toContain(`.podo-icon-${name}::before`);
+    }
+  });
+
   it("leaks no workspace-internal @podoui import specifiers", () => {
     // Import contexts only: `packageName = "@podoui/cli"`-style data
     // constants are expected to survive as-is.

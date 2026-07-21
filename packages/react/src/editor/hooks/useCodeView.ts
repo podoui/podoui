@@ -1,4 +1,4 @@
-import { useState, RefObject } from "react";
+import { useState, useRef, useEffect, RefObject } from "react";
 
 export interface UseCodeViewProps {
   editorRef: RefObject<HTMLDivElement | null>;
@@ -9,6 +9,7 @@ export interface UseCodeViewProps {
   getCleanHTML: (html: string) => string;
   height?: string | "contents";
   onInput?: () => void; // handleInput 콜백
+  onValidate?: (content: string) => void; // 검증 콜백 (리치 텍스트 편집과 동일한 흐름)
   onBeforeToggle?: (toCodeView: boolean) => void; // 토글 전 콜백 (예: clearCellSelection)
 }
 
@@ -58,12 +59,35 @@ export const useCodeView = ({
   getCleanHTML,
   height,
   onInput,
+  onValidate,
   onBeforeToggle,
 }: UseCodeViewProps): UseCodeViewReturn => {
   const [isCodeView, setIsCodeView] = useState(false);
   const [codeContent, setCodeContent] = useState("");
   const [originalHtml, setOriginalHtml] = useState("");
   const [savedEditorHeight, setSavedEditorHeight] = useState<number | null>(null);
+
+  // 마지막으로 onChange로 방출한 값 — 외부 값 동기화에서 자기 에코를 구분한다
+  const lastEmittedRef = useRef<string | null>(null);
+  const prevValueRef = useRef(value);
+
+  // 코드 보기가 열린 동안 value prop이 외부(controlled)에서 바뀌면 코드 내용도
+  // 갱신한다. 이때 에디터 div는 언마운트 상태라 index.tsx의 innerHTML 동기화가
+  // 닿지 않는다. 코드 보기 진입 자체(값 변화 없음)나 방금 방출한 값의 에코에는
+  // 반응하지 않아 사용자가 편집 중인 텍스트를 덮어쓰지 않는다.
+  useEffect(() => {
+    const prevValue = prevValueRef.current;
+    prevValueRef.current = value;
+    if (!isCodeView) return;
+    if (value === prevValue) return;
+    if (value === lastEmittedRef.current) return;
+    setOriginalHtml(value);
+    setCodeContent(formatHtml(value));
+    // 외부 값을 실제로 반영했으면 에코 기억은 무효화한다 — 이 ref는 방금 방출한
+    // 값의 즉각적인 에코 하나만 삼키면 되고, 과거 방출값과 우연히 같은 이후의
+    // 외부 업데이트(A 방출 → B 반영 → A 반영)까지 무시하면 안 된다.
+    lastEmittedRef.current = null;
+  }, [value, isCodeView, formatHtml]);
 
   /**
    * 코드 보기 모드 전환
@@ -121,6 +145,13 @@ export const useCodeView = ({
     setCodeContent(newContent);
     // 사용자가 코드를 수정하면 원본 HTML도 업데이트
     setOriginalHtml(newContent);
+    // 리치 텍스트 편집(handleInput)과 동일하게 정리된 HTML을 즉시 onChange로 전파한다.
+    // 코드 보기 종료 전까지 controlled 소비자가 stale 상태로 남지 않도록 한다.
+    const cleanContent = getCleanHTML(newContent);
+    lastEmittedRef.current = cleanContent;
+    onChange(cleanContent);
+    // 코드 편집도 리치 텍스트 편집과 동일한 검증 흐름을 거친다
+    onValidate?.(cleanContent);
   };
 
   return {

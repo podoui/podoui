@@ -4,6 +4,8 @@ This repository is the Podo UI v2 orphan branch.
 
 Read `AGENTS.md`, `plan.md`, and `todo.md` before reviewing or implementing work.
 
+Browser testing: use `npx agent-browser` (open/click/type/snapshot CLI) for all browser-based verification. Do not use other browser automation tools for this project.
+
 When asked for review, use a strict code-review stance:
 
 1. List blocking findings first, with file and line references.

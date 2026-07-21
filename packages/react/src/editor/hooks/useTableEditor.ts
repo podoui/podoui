@@ -520,11 +520,14 @@ export const useTableEditor = ({
 
       setIsTableContextMenuOpen(false);
 
+      // 컨텍스트 메뉴로 포커스가 나간 상태 — 캐럿을 잃지 않도록 에디터로 되돌린다
+      editorRef.current?.focus();
+
       if (onInput) {
         onInput();
       }
     },
-    [selectedTableCell, onInput]
+    [selectedTableCell, editorRef, onInput]
   );
 
   /**
@@ -549,10 +552,13 @@ export const useTableEditor = ({
     setIsTableContextMenuOpen(false);
     setSelectedTableCell(null);
 
+    // 캐럿을 잃지 않도록 에디터로 포커스를 되돌린다
+    editorRef.current?.focus();
+
     if (onInput) {
       onInput();
     }
-  }, [selectedTableCell, onInput]);
+  }, [selectedTableCell, editorRef, onInput]);
 
   /**
    * 열 추가 (좌/우)
@@ -591,11 +597,14 @@ export const useTableEditor = ({
 
       setIsTableContextMenuOpen(false);
 
+      // 캐럿을 잃지 않도록 에디터로 포커스를 되돌린다
+      editorRef.current?.focus();
+
       if (onInput) {
         onInput();
       }
     },
-    [selectedTableCell, onInput]
+    [selectedTableCell, editorRef, onInput]
   );
 
   /**
@@ -629,10 +638,13 @@ export const useTableEditor = ({
     setIsTableContextMenuOpen(false);
     setSelectedTableCell(null);
 
+    // 캐럿을 잃지 않도록 에디터로 포커스를 되돌린다
+    editorRef.current?.focus();
+
     if (onInput) {
       onInput();
     }
-  }, [selectedTableCell, onInput]);
+  }, [selectedTableCell, editorRef, onInput]);
 
   /**
    * 표 삭제

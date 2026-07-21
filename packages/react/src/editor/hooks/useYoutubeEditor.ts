@@ -121,7 +121,8 @@ export const useYoutubeEditor = ({
     setIsYoutubeDropdownOpen(false);
     setYoutubeUrl("");
     setYoutubeWidth("100%");
-    setYoutubeAlign("left");
+    // 삽입 완료 시(insertYoutubeEmbed)와 동일하게 최초 기본값(가운데)으로 되돌린다
+    setYoutubeAlign("center");
   }, []);
 
   /**

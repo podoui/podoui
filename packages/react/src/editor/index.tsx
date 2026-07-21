@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useLayoutEffect, useState, useCallback, useId } from "react";
 import { z } from "zod";
 import { styles } from "./styles-map.js";
 
@@ -55,6 +55,7 @@ const Editor = ({
   validator,
   placeholder = "내용을 입력하세요...",
   toolbar,
+  ariaLabel = "리치 텍스트 편집기",
 }: EditorProps) => {
   // ========== State ==========
   const [message, setMessage] = useState("");
@@ -64,7 +65,6 @@ const Editor = ({
   const editorRef = useRef<HTMLDivElement>(null);
   const codeEditorRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const paragraphButtonRef = useRef<HTMLDivElement>(null);
   const textColorButtonRef = useRef<HTMLDivElement>(null);
   const bgColorButtonRef = useRef<HTMLDivElement>(null);
@@ -83,8 +83,64 @@ const Editor = ({
   // handleInput ref (순환 의존성 해결용)
   const handleInputRef = useRef<() => void>(() => {});
 
-  // 클라이언트에서만 ID 생성
-  const [editorID, setEditorID] = useState<string>("podo-editor");
+  // 검증 성공 메시지 자동 해제 타이머 — 새 검증 결과가 나올 때마다 취소해야
+  // 낡은 타이머가 뒤이어 표시된 오류 메시지를 지우지 않는다.
+  const statusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 인스턴스별 에디터 ID — React.useId 기반이라 SSR 마크업과 하이드레이션 이후가
+  // 동일하고(id 교체 없음), 여러 인스턴스가 있어도 중복되지 않는다.
+  // useId 토큰의 콜론/길러멧(«») 등은 DOM id/CSS 선택자 안전을 위해 제거한다.
+  const reactId = useId();
+  const editorID = `podo-editor-${reactId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+
+  // ========== Validation ==========
+  // useCodeView보다 먼저 정의한다 — 코드 보기 편집도 동일한 검증 흐름을 거친다.
+  const validateHandler = useCallback(
+    (content: string) => {
+      // 직전 성공이 걸어 둔 자동 해제 타이머는 이 결과와 무관하다 — 취소하지
+      // 않으면 성공 후 2초 안에 표시된 오류가 낡은 타이머에 지워진다.
+      if (statusTimerRef.current !== null) {
+        clearTimeout(statusTimerRef.current);
+        statusTimerRef.current = null;
+      }
+
+      if (!validator) {
+        setMessage("");
+        setStatusClass("");
+        return;
+      }
+
+      try {
+        validator.parse(content);
+        setMessage("검증 성공");
+        setStatusClass(styles.success);
+
+        statusTimerRef.current = setTimeout(() => {
+          statusTimerRef.current = null;
+          setMessage("");
+          setStatusClass("");
+        }, 2000);
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          const firstError = error.issues[0];
+          setMessage(firstError.message);
+          // CSS의 실패 테두리 클래스는 .podo-ed-danger (error 키는 없음).
+          setStatusClass(styles.danger);
+        }
+      }
+    },
+    [validator]
+  );
+
+  // 언마운트 후 setState가 불리지 않도록 남은 상태 해제 타이머를 정리한다.
+  useEffect(
+    () => () => {
+      if (statusTimerRef.current !== null) {
+        clearTimeout(statusTimerRef.current);
+      }
+    },
+    []
+  );
 
   // ========== Hooks 초기화 ==========
   // Phase 2: 독립 모듈
@@ -106,6 +162,7 @@ const Editor = ({
     getCleanHTML,
     height,
     onInput: () => handleInputRef.current(),
+    onValidate: validateHandler,
   });
 
   // Phase 3: 텍스트 스타일
@@ -145,38 +202,26 @@ const Editor = ({
     tableContextMenuRef,
   });
 
+  // 고정 위치(fixed) 컨텍스트 메뉴가 뷰포트 아래·오른쪽 밖으로 나가면
+  // 항목이 눌리지 않으므로 열릴 때 안쪽으로 클램프한다.
+  useLayoutEffect(() => {
+    const node = tableContextMenuRef.current;
+    if (!tableEditor.isTableContextMenuOpen || !node) {
+      return;
+    }
+    const rect = node.getBoundingClientRect();
+    const margin = 8;
+    if (rect.bottom > window.innerHeight - margin) {
+      node.style.top = `${Math.max(margin, window.innerHeight - rect.height - margin)}px`;
+    }
+    if (rect.right > window.innerWidth - margin) {
+      node.style.left = `${Math.max(margin, window.innerWidth - rect.width - margin)}px`;
+    }
+  });
+
   // ========== Toolbar 설정 ==========
   const activeToolbar = toolbar || defaultToolbar;
   const isToolbarItemEnabled = (item: string) => activeToolbar.includes(item as any);
-
-  // ========== Validation ==========
-  const validateHandler = useCallback(
-    (content: string) => {
-      if (!validator) {
-        setMessage("");
-        setStatusClass("");
-        return;
-      }
-
-      try {
-        validator.parse(content);
-        setMessage("검증 성공");
-        setStatusClass(styles.success);
-
-        setTimeout(() => {
-          setMessage("");
-          setStatusClass("");
-        }, 2000);
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          const firstError = error.issues[0];
-          setMessage(firstError.message);
-          setStatusClass(styles.error);
-        }
-      }
-    },
-    [validator]
-  );
 
   // ========== handleInput 함수 정의 (모든 Hook 초기화 후) ==========
   const handleInput = useCallback(() => {
@@ -286,6 +331,18 @@ const Editor = ({
         if (img) {
           imageEditor.handleImageClick(img);
         }
+        return;
+      }
+
+      // 아직 선택(wrapper 생성) 전의 이미지를 직접 클릭한 경우 — wrapper가 없어
+      // 위 분기에 걸리지 않으므로 여기서 편집 모드로 진입시킨다.
+      if (
+        target instanceof HTMLImageElement &&
+        editorRef.current?.contains(target) &&
+        !target.closest(".youtube-container")
+      ) {
+        e.preventDefault();
+        imageEditor.handleImageClick(target);
         return;
       }
 
@@ -438,11 +495,7 @@ const Editor = ({
     handleInput();
   };
 
-  // ========== 초기화 및 에디터 ID ==========
-  useEffect(() => {
-    setEditorID(`podo-editor-${crypto.randomUUID()}`);
-  }, []);
-
+  // ========== 외부 값 동기화 ==========
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value) {
       editorRef.current.innerHTML = value;
@@ -450,21 +503,42 @@ const Editor = ({
   }, [value]);
 
   // ========== 키보드 단축키 ==========
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Undo/Redo
+  // document 전역 리스너 대신 에디터 루트에 스코프된 핸들러를 사용한다.
+  // 이 에디터 인스턴스 외부(다른 입력/버튼 등)에서 발생한 키 입력은 가로채지 않는다.
+  const handleEditorKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      const editorEl = editorRef.current;
+      const target = e.target instanceof Node ? e.target : null;
+      const isInsideEditable = !!editorEl && !!target && editorEl.contains(target);
+
+      // 루트 내부라도 편집 영역이 아닌 텍스트 입력 요소(링크 URL 입력,
+      // 코드 보기 textarea 등)의 키 입력은 절대 가로채지 않는다.
+      const isOtherTextEntry =
+        !isInsideEditable &&
+        target instanceof HTMLElement &&
+        (target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement ||
+          target instanceof HTMLSelectElement ||
+          target.isContentEditable);
+
+      // Undo/Redo (편집 영역 또는 툴바 버튼 등 루트 내부의 비입력 요소에서만)
       if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
+        if (isOtherTextEntry) return;
         e.preventDefault();
         history.undo();
       } else if ((e.ctrlKey || e.metaKey) && e.key === "z" && e.shiftKey) {
+        if (isOtherTextEntry) return;
         e.preventDefault();
         history.redo();
       } else if ((e.ctrlKey || e.metaKey) && e.key === "y") {
+        if (isOtherTextEntry) return;
         e.preventDefault();
         history.redo();
       }
-      // Enter 키 처리
+      // Enter 키 처리 (contentEditable 편집 영역 내부에서만)
       else if (e.key === "Enter") {
+        if (!isInsideEditable) return;
+
         const selection = window.getSelection();
         if (!selection || !editorRef.current) return;
 
@@ -501,13 +575,9 @@ const Editor = ({
 
         handleInput();
       }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [history, handleInput]);
+    },
+    [history, handleInput]
+  );
 
   // ========== 리사이즈 핸들러 ==========
   const handleResize = useCallback(() => {
@@ -544,7 +614,11 @@ const Editor = ({
 
   // ========== JSX 반환 ==========
   return (
-    <div className={`${styles.editor} ${statusClass}`} style={{ width, position: "relative" }}>
+    <div
+      className={`${styles.editor} ${statusClass}`}
+      style={{ width, position: "relative" }}
+      onKeyDown={handleEditorKeyDown}
+    >
       {/* 툴바 */}
       <div className={styles.toolbar}>
         {/* Undo/Redo */}
@@ -694,6 +768,8 @@ const Editor = ({
                           type="button"
                           className={styles.colorButton}
                           style={{ backgroundColor: color }}
+                          aria-label={`글자색 ${color}`}
+                          title={`글자색 ${color}`}
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => {
                             textStyle.applyTextColor(color);
@@ -733,6 +809,8 @@ const Editor = ({
                           type="button"
                           className={styles.colorButton}
                           style={{ backgroundColor: color }}
+                          aria-label={`배경색 ${color}`}
+                          title={`배경색 ${color}`}
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => {
                             textStyle.applyBgColor(color);
@@ -862,6 +940,9 @@ const Editor = ({
                           {Array.from({ length: 10 }, (_, j) => j + 1).map((col) => (
                             <div
                               key={`${row}-${col}`}
+                              role="button"
+                              tabIndex={0}
+                              aria-label={`${row}×${col} 표 삽입`}
                               className={`${styles.tableGridCell} ${
                                 row <= tableEditor.tableRows && col <= tableEditor.tableCols
                                   ? styles.active
@@ -871,8 +952,19 @@ const Editor = ({
                                 tableEditor.setTableRows(row);
                                 tableEditor.setTableCols(col);
                               }}
+                              onFocus={() => {
+                                // 키보드 탐색도 마우스 호버처럼 크기 미리보기를 갱신한다
+                                tableEditor.setTableRows(row);
+                                tableEditor.setTableCols(col);
+                              }}
                               onClick={() => {
                                 tableEditor.insertTable(row, col);
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  tableEditor.insertTable(row, col);
+                                }
                               }}
                             />
                           ))}
@@ -1290,7 +1382,10 @@ const Editor = ({
         className={`${styles.editorContainer} ${resizable ? styles.resizable : ""}`}
         style={{
           height: height === "contents" ? "auto" : height || "300px",
-          minHeight: minHeight || (height === "contents" ? "100px" : "200px"),
+          // 명시된 height가 있으면 기본 min-height를 강제하지 않는다 —
+          // CSS에서 min-height가 height보다 우선하므로 height="150px" 같은
+          // 작은 값이 기본 200px에 무력화되는 것을 막는다.
+          minHeight: minHeight || (height === "contents" ? "100px" : undefined),
           maxHeight: maxHeight || undefined,
           display: "flex",
           flexDirection: "column",
@@ -1306,6 +1401,7 @@ const Editor = ({
             value={codeView.codeContent}
             onChange={codeView.handleCodeChange}
             spellCheck={false}
+            aria-label={ariaLabel}
             style={{
               flex: height === "contents" ? "0 0 auto" : 1,
               minHeight: height === "contents" ? "auto" : 0,
@@ -1325,6 +1421,9 @@ const Editor = ({
             className={styles.editorContent}
             contentEditable
             suppressContentEditableWarning
+            role="textbox"
+            aria-multiline="true"
+            aria-label={ariaLabel}
             onInput={handleInput}
             onCompositionStart={handleCompositionStart}
             onCompositionEnd={handleCompositionEnd}
@@ -1816,7 +1915,6 @@ const Editor = ({
       )}
 
       {/* Hidden file inputs */}
-      <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} />
       <input
         ref={imageFileInputRef}
         type="file"

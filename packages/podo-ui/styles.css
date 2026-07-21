@@ -180,12 +180,16 @@
 
 /* Badge (Figma 474:3218) — mirrors the canonical @podoui/web badge CSS.
    natural~info are strong system fills (natural — base); gray~orange are
-   soft color labels; data-dot collapses to a 6px presence dot. */
+   soft color labels; data-dot collapses to a 6px presence dot. Every themed
+   rule consumes the spec binding vars (--podo-badge-root-background /
+   --podo-badge-label-color / --podo-badge-dot-color, emitted per-theme by
+   `podo build`'s components.css) with the current Figma value as fallback,
+   so project token overrides restyle the badge. */
 .podo-badge {
   align-items: center;
-  background: var(--podo-foreground-basic-reverse, #3e424b);
+  background: var(--podo-badge-root-background, #3e424b);
   border-radius: 9999px;
-  color: var(--podo-text-basic-reverse, #f9f9f9);
+  color: var(--podo-badge-label-color, #f9f9f9);
   display: inline-flex;
   font: inherit;
   font-size: 14px;
@@ -196,54 +200,54 @@
 }
 
 .podo-badge[data-theme="danger"] {
-  background: var(--podo-foreground-danger, #f23b3b);
+  background: var(--podo-badge-root-background, #f23b3b);
 }
 
 .podo-badge[data-theme="success"] {
-  background: var(--podo-foreground-success, #3ea856);
+  background: var(--podo-badge-root-background, #3ea856);
 }
 
 .podo-badge[data-theme="warning"] {
-  background: var(--podo-foreground-warning, #ffaa00);
+  background: var(--podo-badge-root-background, #ffaa00);
 }
 
 .podo-badge[data-theme="info"] {
-  background: var(--podo-foreground-info, #0095ff);
+  background: var(--podo-badge-root-background, #0095ff);
 }
 
 .podo-badge[data-theme="gray"] {
-  background: var(--podo-foreground-gray-light, #f4f4f5);
-  color: var(--podo-text-basic, #18181b);
+  background: var(--podo-badge-root-background, #f4f4f5);
+  color: var(--podo-badge-label-color, #18181b);
 }
 
 .podo-badge[data-theme="red"] {
-  background: var(--podo-foreground-danger-light, #fef1f1);
-  color: var(--podo-text-danger, #f23b3b);
+  background: var(--podo-badge-root-background, #fef1f1);
+  color: var(--podo-badge-label-color, #f23b3b);
 }
 
 .podo-badge[data-theme="green"] {
-  background: var(--podo-foreground-success-light, #ecf8ef);
-  color: var(--podo-text-success, #3ea856);
+  background: var(--podo-badge-root-background, #ecf8ef);
+  color: var(--podo-badge-label-color, #3ea856);
 }
 
 .podo-badge[data-theme="yellow"] {
-  background: var(--podo-foreground-warning-light, #fff7e6);
-  color: var(--podo-text-warning, #ffaa00);
+  background: var(--podo-badge-root-background, #fff7e6);
+  color: var(--podo-badge-label-color, #ffaa00);
 }
 
 .podo-badge[data-theme="blue"] {
-  background: var(--podo-foreground-info-light, #ebf5ff);
-  color: var(--podo-text-info, #0095ff);
+  background: var(--podo-badge-root-background, #ebf5ff);
+  color: var(--podo-badge-label-color, #0095ff);
 }
 
 .podo-badge[data-theme="purple"] {
-  background: var(--podo-color-vlolet-5, #f8f5ff);
-  color: var(--podo-color-vlolet-50, #8e51ff);
+  background: var(--podo-badge-root-background, #f8f5ff);
+  color: var(--podo-badge-label-color, #8e51ff);
 }
 
 .podo-badge[data-theme="orange"] {
-  background: var(--podo-color-orange-5, #fff4f0);
-  color: var(--podo-color-orange-50, #ff6a33);
+  background: var(--podo-badge-root-background, #fff4f0);
+  color: var(--podo-badge-label-color, #ff6a33);
 }
 
 .podo-badge[data-dot] {
@@ -254,33 +258,33 @@
 }
 
 .podo-badge[data-theme="gray"][data-dot] {
-  background: var(--podo-foreground-basic-reverse, #3e424b);
+  background: var(--podo-badge-dot-color, #3e424b);
 }
 
 /* Figma red dot is accent.50 (#f15764), not the label's error.50 —
    mirrored as-is pending a design check. */
 .podo-badge[data-theme="red"][data-dot] {
-  background: var(--podo-foreground-point, #f15764);
+  background: var(--podo-badge-dot-color, #f15764);
 }
 
 .podo-badge[data-theme="green"][data-dot] {
-  background: var(--podo-foreground-success, #3ea856);
+  background: var(--podo-badge-dot-color, #3ea856);
 }
 
 .podo-badge[data-theme="yellow"][data-dot] {
-  background: var(--podo-foreground-warning, #ffaa00);
+  background: var(--podo-badge-dot-color, #ffaa00);
 }
 
 .podo-badge[data-theme="blue"][data-dot] {
-  background: var(--podo-foreground-info, #0095ff);
+  background: var(--podo-badge-dot-color, #0095ff);
 }
 
 .podo-badge[data-theme="purple"][data-dot] {
-  background: var(--podo-color-vlolet-50, #8e51ff);
+  background: var(--podo-badge-dot-color, #8e51ff);
 }
 
 .podo-badge[data-theme="orange"][data-dot] {
-  background: var(--podo-color-orange-50, #ff6a33);
+  background: var(--podo-badge-dot-color, #ff6a33);
 }
 
 /* Chip (Figma 538:6615) — mirrors the canonical @podoui/web chip CSS.
@@ -355,7 +359,10 @@
   background: var(--podo-foreground-gray-light, #f4f4f5);
 }
 
-.podo-chip[disabled] {
+/* Removable chips render as a span, so disabled arrives as data-disabled —
+   the extra [data-removable] keeps this rule ahead of the selected fills. */
+.podo-chip[disabled],
+.podo-chip[data-removable][data-disabled="true"] {
   background: var(--podo-foreground-disabled, #e4e4e7);
   border-color: transparent;
   color: var(--podo-text-disabled, #9fa2ad);
@@ -401,6 +408,10 @@
   justify-content: center;
   padding: 0;
   width: 16px;
+}
+
+.podo-chip__remove:disabled {
+  cursor: not-allowed;
 }
 
 /* Table (Figma 474:1795) — mirrors the canonical @podoui/web table CSS. */
@@ -677,6 +688,14 @@
   padding: 8px;
 }
 
+/* hono/react: role="listbox"는 option만 자식으로 허용되므로 추가 입력줄과
+   분리된 내부 래퍼가 옵션들을 감싼다. */
+.podo-select__listbox {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .podo-select__cell {
   align-items: center;
   border-radius: 8px;
@@ -715,6 +734,14 @@
   .podo-select__cell[data-state="selected"]
   .podo-select__cell-label {
   color: var(--podo-text-primary, #426ced);
+}
+
+/* hono/react는 listbox role을 내부 .podo-select__listbox로 옮겨 메뉴 박스에
+   aria-multiselectable이 없다 — 멀티 선택 라벨은 기본색을 유지한다. */
+.podo-select__listbox[aria-multiselectable]
+  .podo-select__cell[data-state="selected"]
+  .podo-select__cell-label {
+  color: var(--podo-text-basic, #18181b);
 }
 
 .podo-select__checkbox {
@@ -985,7 +1012,9 @@
   width: 18px;
 }
 
-.podo-checkbox[data-state="checked"] {
+/* Checked paint keys off the live :checked pseudo-class (like .podo-radio) so
+   JS-less SSR consumers (hono) repaint on toggle; data-state stays for markup. */
+.podo-checkbox:checked {
   background-color: var(--podo-foreground-primary, #426ced);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%23F9F9F9' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   border-color: transparent;
@@ -1006,7 +1035,7 @@
   cursor: not-allowed;
 }
 
-.podo-checkbox[disabled][data-state="checked"] {
+.podo-checkbox[disabled]:checked {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3 5 8.8l4.5-5.6' fill='none' stroke='%239FA2AD' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   border-color: transparent;
 }
@@ -1625,6 +1654,20 @@
   display: inline-flex;
   font-style: normal;
   line-height: 1;
+}
+
+/* Sizes (icon.component.json size variant, default md): md renders the glyph
+   1:1 with its 24×24 SVG source grid at 24px; sm/lg step to 16px/32px. */
+.podo-icon[data-size="sm"] {
+  font-size: 16px;
+}
+
+.podo-icon[data-size="md"] {
+  font-size: 24px;
+}
+
+.podo-icon[data-size="lg"] {
+  font-size: 32px;
 }
 
 /* ===== Ported v1 components: DatePicker (.podo-dp-*), Editor (.podo-ed-*) ===== */
@@ -3931,6 +3974,58 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   z-index: 1001;
   min-width: 300px;
+}
+
+/* 이미지 클릭 편집 팝업 — editLinkPopup과 같은 떠 있는 패널 크롬. */
+.podo-ed-imageEditPopup {
+  position: absolute;
+  padding: 12px;
+  background: var(--color-bg-modal);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  min-width: 260px;
+}
+.podo-ed-imageEditPopup .podo-ed-imageEditRow {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.podo-ed-imageEditPopup .podo-ed-imageEditRow label {
+  flex-shrink: 0;
+  font-size: 12px;
+  min-width: 52px;
+}
+.podo-ed-imageEditPopup .podo-ed-imageEditRow input[type="text"] {
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  flex: 1;
+  font-size: 12px;
+  padding: 6px 8px;
+}
+.podo-ed-imageEditPopup .podo-ed-imageEditActions {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+.podo-ed-imageEditPopup .podo-ed-imageEditActions button {
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 6px 12px;
+  transition: all 0.15s;
+}
+.podo-ed-imageEditPopup .podo-ed-imageEditActions button.podo-ed-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+.podo-ed-imageEditPopup .podo-ed-imageEditActions button.podo-ed-danger {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 .podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkInput {
   margin-bottom: 12px;

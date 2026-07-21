@@ -1051,6 +1051,44 @@ const defaultTokenDocument: TokenDocument = {
       text: { $type: "color", $value: "#18181B" },
       inverse: { $type: "color", $value: "#FFFFFF" },
       danger: { $type: "color", $value: "#F23B3B" },
+      // Badge 기본 컴포넌트 문서의 토큰 바인딩이 참조하는 팔레트 —
+      // 값은 Figma 팔레트(packages/spec/samples/tokens/color.tokens.json)와
+      // podo-ui styles.css의 폴백 hex를 그대로 미러한다.
+      palette: {
+        gray: {
+          "5": { $type: "color", $value: "#F9F9F9" },
+          "10": { $type: "color", $value: "#F4F4F5" },
+          "70": { $type: "color", $value: "#3E424B" },
+          "90": { $type: "color", $value: "#18181B" },
+        },
+        error: {
+          "5": { $type: "color", $value: "#FEF1F1" },
+          "50": { $type: "color", $value: "#F23B3B" },
+        },
+        success: {
+          "5": { $type: "color", $value: "#ECF8EF" },
+          "50": { $type: "color", $value: "#3EA856" },
+        },
+        warning: {
+          "5": { $type: "color", $value: "#FFF7E6" },
+          "50": { $type: "color", $value: "#FFAA00" },
+        },
+        info: {
+          "5": { $type: "color", $value: "#EBF5FF" },
+          "50": { $type: "color", $value: "#0095FF" },
+        },
+        purple: {
+          "5": { $type: "color", $value: "#F8F5FF" },
+          "50": { $type: "color", $value: "#8E51FF" },
+        },
+        orange: {
+          "5": { $type: "color", $value: "#FFF4F0" },
+          "50": { $type: "color", $value: "#FF6A33" },
+        },
+        accent: {
+          "50": { $type: "color", $value: "#F15764" },
+        },
+      },
     },
     semantic: {
       color: {
@@ -1108,11 +1146,198 @@ const defaultTokenDocument: TokenDocument = {
           },
         },
       },
+      // podo-ui styles.css의 .podo-text--h1/.podo-text--body가 소비하는 변수
+      // (--podo-typography-heading-xlarge-* / --podo-typography-body-medium-*).
+      // 값은 Figma 타입 스케일(538:6695)을 미러하는
+      // packages/spec/samples/tokens/typography.tokens.json과 동일해야 한다.
+      heading: {
+        xlarge: {
+          $type: "typography",
+          $value: {
+            fontFamily: "Pretendard",
+            fontSize: { pc: "32px", tablet: "28px", mobile: "24px" },
+            lineHeight: "120%",
+            fontWeight: 700,
+            letterSpacing: "0px",
+          },
+        },
+      },
+      body: {
+        medium: {
+          $type: "typography",
+          $value: {
+            fontFamily: "Pretendard",
+            fontSize: { pc: "16px", tablet: "16px", mobile: "14px" },
+            lineHeight: "160%",
+            fontWeight: 400,
+            letterSpacing: "0px",
+          },
+        },
+      },
     },
   },
 };
 
 const defaultComponentDocuments: unknown[] = [
+  // Badge — styles.css가 소비하는 --podo-badge-* 바인딩 변수를 기본 빌드가
+  // 발행하도록 스펙 샘플 badge.component.json을 그대로 내장한다.
+  {
+    schemaVersion: "2.0.0",
+    kind: "component",
+    id: "badge",
+    name: "Badge",
+    category: "atom",
+    status: "experimental",
+    description:
+      "Count/status pill attached next to icons, menus, and list items (Figma 474:3218). System-state themes (natural — base, danger, success, warning, info) use a strong fill with light text for alerts the user must notice; color-label themes (gray, red, green, yellow, blue, purple, orange) use a soft fill with matching text to tag categories without competing with content. dot collapses the badge to a 6px presence dot (color themes only in the spec). Layout: min-width 22, 0/6 padding, 14px/1.6 text, fully rounded.",
+    anatomy: [
+      {
+        name: "root",
+      },
+      {
+        name: "label",
+        parent: "root",
+      },
+      {
+        name: "dot",
+        parent: "root",
+      },
+    ],
+    slots: [
+      {
+        name: "children",
+        fallback: "99",
+        description: "Count or short status text. Ignored when dot is set.",
+      },
+    ],
+    props: [
+      {
+        name: "dot",
+        type: {
+          kind: "boolean",
+        },
+        default: false,
+        description:
+          "숫자·텍스트 없이 6px 점만 표시 (Figma dot). 정확한 값이 필요 없는 알림 유무·상태 표시용.",
+      },
+    ],
+    variants: [
+      {
+        name: "theme",
+        values: [
+          "natural",
+          "danger",
+          "success",
+          "warning",
+          "info",
+          "gray",
+          "red",
+          "green",
+          "yellow",
+          "blue",
+          "purple",
+          "orange",
+        ],
+        default: "natural",
+        valueTokens: {
+          natural: {
+            "root.background": "{color.palette.gray.70}",
+            "label.color": "{color.palette.gray.5}",
+          },
+          danger: {
+            "root.background": "{color.palette.error.50}",
+            "label.color": "{color.palette.gray.5}",
+          },
+          success: {
+            "root.background": "{color.palette.success.50}",
+            "label.color": "{color.palette.gray.5}",
+          },
+          warning: {
+            "root.background": "{color.palette.warning.50}",
+            "label.color": "{color.palette.gray.5}",
+          },
+          info: {
+            "root.background": "{color.palette.info.50}",
+            "label.color": "{color.palette.gray.5}",
+          },
+          gray: {
+            "root.background": "{color.palette.gray.10}",
+            "label.color": "{color.palette.gray.90}",
+            "dot.color": "{color.palette.gray.70}",
+          },
+          red: {
+            "root.background": "{color.palette.error.5}",
+            "label.color": "{color.palette.error.50}",
+            "dot.color": "{color.palette.accent.50}",
+          },
+          green: {
+            "root.background": "{color.palette.success.5}",
+            "label.color": "{color.palette.success.50}",
+            "dot.color": "{color.palette.success.50}",
+          },
+          yellow: {
+            "root.background": "{color.palette.warning.5}",
+            "label.color": "{color.palette.warning.50}",
+            "dot.color": "{color.palette.warning.50}",
+          },
+          blue: {
+            "root.background": "{color.palette.info.5}",
+            "label.color": "{color.palette.info.50}",
+            "dot.color": "{color.palette.info.50}",
+          },
+          purple: {
+            "root.background": "{color.palette.purple.5}",
+            "label.color": "{color.palette.purple.50}",
+            "dot.color": "{color.palette.purple.50}",
+          },
+          orange: {
+            "root.background": "{color.palette.orange.5}",
+            "label.color": "{color.palette.orange.50}",
+            "dot.color": "{color.palette.orange.50}",
+          },
+        },
+      },
+    ],
+    tokens: {
+      "root.background": "{color.palette.gray.70}",
+      "label.color": "{color.palette.gray.5}",
+    },
+    targets: {
+      web: {
+        supported: true,
+        limitations: [],
+      },
+      react: {
+        supported: true,
+        limitations: [],
+      },
+      hono: {
+        supported: true,
+        limitations: [],
+      },
+      native: {
+        supported: true,
+        limitations: [],
+      },
+    },
+    accessibility: {
+      aria: ["aria-label (dot처럼 텍스트가 없을 때 의미를 이름으로 제공)"],
+      keyboard: [],
+      focusManagement: "Badge is a static display element and never receives focus.",
+    },
+    examples: [
+      {
+        target: "react",
+        title: "Unread count on a menu item",
+        code: '<Badge theme="danger">99</Badge>',
+      },
+      {
+        target: "react",
+        title: "Presence dot",
+        code: '<Badge theme="green" dot aria-label="온라인" />',
+      },
+    ],
+  },
   {
     schemaVersion: PODO_SCHEMA_VERSION,
     kind: "component",
@@ -1178,7 +1403,9 @@ const defaultComponentDocuments: unknown[] = [
   },
 ];
 
-const defaultIconManifest: IconManifest = {
+// chevron-right/calendar/time/refresh는 podo-ui/react DatePicker가 참조하는
+// 글리프(podo-icon-*)라 기본 빌드에서 빠지면 소비 프로젝트에서 빈 아이콘이 된다.
+export const defaultIconManifest: IconManifest = {
   schemaVersion: PODO_SCHEMA_VERSION,
   kind: "icons",
   fontFamily: "PodoIcons",
@@ -1193,16 +1420,79 @@ const defaultIconManifest: IconManifest = {
       source: "navigation/chevron-left.svg",
       tags: ["navigation"],
     },
+    "chevron-right": {
+      codepoint: "E003",
+      source: "navigation/chevron-right.svg",
+      tags: ["navigation"],
+    },
+    calendar: {
+      codepoint: "E004",
+      source: "datetime/calendar.svg",
+      tags: ["datetime"],
+    },
+    time: {
+      codepoint: "E005",
+      source: "datetime/time.svg",
+      tags: ["datetime"],
+    },
+    refresh: {
+      codepoint: "E006",
+      source: "action/refresh.svg",
+      tags: ["action"],
+    },
+    check: {
+      codepoint: "E007",
+      source: "action/check.svg",
+      tags: ["action"],
+    },
+    close: {
+      codepoint: "E008",
+      source: "action/close.svg",
+      tags: ["action"],
+    },
+    search: {
+      codepoint: "E009",
+      source: "action/search.svg",
+      tags: ["action"],
+    },
   },
-  groups: { navigation: ["menu", "chevron-left"] },
-  codepointLock: { menu: "E001", "chevron-left": "E002" },
+  groups: {
+    navigation: ["menu", "chevron-left", "chevron-right"],
+    datetime: ["calendar", "time"],
+    action: ["refresh", "check", "close", "search"],
+  },
+  codepointLock: {
+    menu: "E001",
+    "chevron-left": "E002",
+    "chevron-right": "E003",
+    calendar: "E004",
+    time: "E005",
+    refresh: "E006",
+    check: "E007",
+    close: "E008",
+    search: "E009",
+  },
 };
 
-const defaultIconSvgs = {
+export const defaultIconSvgs = {
   "navigation/menu.svg":
     '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>',
   "navigation/chevron-left.svg":
     '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 5 8.5 12l7 7-1.5 1.5L5.5 12 14 3.5 15.5 5z"/></svg>',
+  "navigation/chevron-right.svg":
+    '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M8.5 5 15.5 12l-7 7 1.5 1.5L18.5 12 10 3.5 8.5 5z"/></svg>',
+  "datetime/calendar.svg":
+    '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 8v10H5V10h14z"/></svg>',
+  "datetime/time.svg":
+    '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm-1 3h2v5.6l3.8 2.2-1 1.7L11 13V7z"/></svg>',
+  "action/refresh.svg":
+    '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>',
+  "action/check.svg":
+    '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M9.55 17.6 4.2 12.25l1.6-1.6 3.75 3.75 8.65-8.65 1.6 1.6z"/></svg>',
+  "action/close.svg":
+    '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>',
+  "action/search.svg":
+    '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.7.7l.3.3v.8l5 5 1.5-1.5-5-5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></svg>',
 };
 
 function supportedTargets(): ComponentDocument["targets"] {
