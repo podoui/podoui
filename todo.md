@@ -561,7 +561,7 @@
 
 - [ ] Code Connect publish
   - `.figma.tsx` 12개(button/chip/input/field/switch/textarea/table/checkbox/radio/toast/tooltip/badge) 작성·parse 검증 완료. 남은 것: 팀 Figma 플랜(Org/Enterprise) 확인 → 토큰 발급 → `npx figma connect publish`.
-  - (2026-07-21 진행: import 해석 경고 해결 — figma.config.json include를 소스 전체로 확장, `figma connect parse` 클린. 플랜 확인 완료 — 조직 "주식회사 우리편"이 org 티어. 남은 블로커는 토큰뿐: 기존 FIGMA_YENNY_PAT 계정은 PODO-Design-System(Rznr8B3vMPyh3uKLoTbsz4)에 접근 불가(404)이고 scope에 code_connect:write가 없음. 파일 접근 가능 + org Full/Dev 시트 계정에서 Code Connect write + File content read 스코프의 PAT 발급 후 `FIGMA_ACCESS_TOKEN=... npx figma connect publish` 한 번이면 완료.)
+  - (2026-07-21 진행: import 해석 경고 해결 — figma.config.json include를 소스 전체로 확장, `figma connect parse` 클린. PODO-Design-System(Rznr8B3vMPyh3uKLoTbsz4)은 우리편이 아닌 **별도 디자인 조직** 소속. 남은 블로커: ① 그 조직의 플랜이 Org/Enterprise인지 확인(Starter/Pro는 Code Connect 불가), ② 그 조직에서 파일 접근 가능한 계정(Full/Dev 시트)으로 **Code Connect: write + File content: read** 스코프 PAT 발급 — 기존 FIGMA_YENNY_PAT 계정은 파일 접근 불가(404, 조직 멤버 신원이 아닌 계정에서 발급된 것으로 추정)이고 code_connect:write 스코프도 없음. 토큰 확보 후 `FIGMA_ACCESS_TOKEN=... npx figma connect publish` 한 번이면 완료.)
 - [ ] AGENTS.md에 어휘 규칙 명문화 + 컴포넌트 작업 체크리스트에 figma.tsx 갱신 단계 추가
 - [ ] 디자이너에게 시안 수정 요청 (코드는 시안 픽셀 그대로 반영해 둔 상태)
   - Chip `outline-strong`의 selected가 solid와 동일 렌더 (외곽선 없음) — 수정되면 web CSS/theme.css/native의 "pending a design fix" 주석 지점 갱신
