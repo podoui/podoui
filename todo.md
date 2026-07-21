@@ -552,9 +552,10 @@
 - [ ] 배포 후 docs를 "진짜 소비자"로 전환
   - 현재 `packages/docs`의 `theme.css`는 컴포넌트 CSS 수동 미러, `data/colors.ts`·`typography.ts`는 토큰 값 복제.
   - 완료 기준: docs가 `podo build` 산출물(tokens.css, components.css)을 소비하고 수동 미러·값 복제가 제거된다.
-- [ ] `examples/react`를 실행 가능한 소비자 앱으로 복구
+- [x] `examples/react`를 실행 가능한 소비자 앱으로 복구
   - 현재 옛 Button API를 쓰는 타입체크용 스텁 (dev 서버 없음, 실행 불가).
   - 완료 기준: `podo init && podo build` 실사용 후 dev 서버에서 새 API 컴포넌트가 렌더된다.
+  - (2026-07-21 완료: Vite 앱으로 복구 — `podo init/build` 실사용, 생성물 커밋(--force 재생성 바이트 동일 확인), dev 서버를 agent-browser로 구동 검증 — 다크모드 토큰 반영·아이콘 폰트 로드·전 컴포넌트 렌더 확인.)
 
 ### B. Figma 정합 (상세: figma-props-alignment.md)
 
@@ -586,9 +587,10 @@
 - [ ] Pretendard 폰트 자산 확정
   - 토큰의 `fontAsset.dataUrl`이 `"AAAA"` 플레이스홀더. docs는 임시로 jsDelivr CDN 로드 중.
   - 완료 기준: 실제 woff2 임베드 또는 CDN 전략 확정이 토큰/빌드에 반영된다.
-- [ ] 옛 primary(#5B5BD6) 잔재 정리 여부 결정
+- [x] 옛 primary(#5B5BD6) 잔재 정리 여부 결정
   - 남은 위치: `plan.md`(설계 기록), `packages/mcp/src/defaults.ts`, `packages/cli/src/index.ts` (bootstrap 기본 brand 색).
   - 완료 기준: 새 프로젝트 bootstrap 기본색을 #426CED로 바꿀지 결정하고 반영한다.
+  - (2026-07-21 확인: packages/ 소스에 #5B5BD6 없음 — mcp/cli 기본 brand 모두 #426CED. plan.md의 설계 기록만 남으며 이는 의도된 이력.)
 - [ ] 스펙 데이터화 (렌더러 하드코딩 제거)
   - size 수치(xs 32/sm 36/md 42/lg 52 등)가 스펙에 설명 문자열로만 있고 실값은 각 렌더러 CSS에 중복.
   - 완료 기준: 스펙 JSON이 수치를 데이터로 갖고 codegen이 렌더러 타입/CSS를 생성해 enum·수치 중복이 사라진다.

@@ -930,7 +930,9 @@ describe("@podoui/native", () => {
     const preReadOnlyPress = cellPress.get(bananaId);
     view.rerender(select({ readOnly: true }));
     expect(root.getAttribute("data-open")).toBeNull();
-    expect(within(root).queryByText("바나나")).toBeNull();
+    // 메뉴 셀은 사라져요 — 트리거는 이제 비제어 값 "바나나"를 정당하게
+    // 보여주므로 텍스트 대신 option role로 확인해요.
+    expect(within(root).queryByRole("option")).toBeNull();
     act(() => preReadOnlyPress?.());
     expect(picked).toEqual(["banana"]);
 
@@ -1126,7 +1128,15 @@ describe("@podoui/native", () => {
 
   it("toggles the Switch from the keyboard and swallows Enter's synthesized press", () => {
     const changes: boolean[] = [];
-    render(<domNative.Switch testID="kbd-switch" onCheckedChange={(next) => changes.push(next)} />);
+    // checked={false}로 controlled 고정 — 이 테스트는 키/스왈로우 계약만 봐요
+    // (비제어 상태 추적은 전용 defaultChecked 테스트가 커버).
+    render(
+      <domNative.Switch
+        checked={false}
+        testID="kbd-switch"
+        onCheckedChange={(next) => changes.push(next)}
+      />
+    );
     const toggle = screen.getByTestId("kbd-switch");
 
     // Enter toggles once: the keydown handles it and the press RNW's
@@ -1424,6 +1434,395 @@ describe("@podoui/native", () => {
       errorSpy.mockRestore();
     }
   });
+
+  it("toggles an uncontrolled Chip from defaultSelected while a controlled selected wins", () => {
+    const changes: boolean[] = [];
+    render(
+      <>
+        <domNative.Chip
+          defaultSelected
+          testID="chip-uncontrolled"
+          onSelectedChange={(next) => changes.push(next)}
+        >
+          필터
+        </domNative.Chip>
+        <domNative.Chip
+          selected={false}
+          defaultSelected
+          testID="chip-controlled"
+          onSelectedChange={(next) => changes.push(next)}
+        >
+          고정
+        </domNative.Chip>
+      </>
+    );
+
+    // defaultSelected seeds the internal state; each press flips it. Presses
+    // are also the keyboard path: the chip is a real <button> under RNW, so
+    // Enter/Space synthesize this same press.
+    const chip = screen.getByTestId("chip-uncontrolled");
+    expect(chip.getAttribute("data-state")).toBe("selected");
+    expect(chip.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(chip);
+    expect(chip.getAttribute("data-state")).toBeNull();
+    expect(chip.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(chip);
+    expect(chip.getAttribute("data-state")).toBe("selected");
+    expect(changes).toEqual([false, true]);
+
+    // A controlled selected prop wins over defaultSelected and stays put; the
+    // change callback still reports the requested next value.
+    const controlled = screen.getByTestId("chip-controlled");
+    expect(controlled.getAttribute("data-state")).toBeNull();
+    fireEvent.click(controlled);
+    expect(controlled.getAttribute("data-state")).toBeNull();
+    expect(controlled.getAttribute("aria-pressed")).toBe("false");
+    expect(changes).toEqual([false, true, true]);
+  });
+
+  it("tracks an uncontrolled Switch through press and keyboard while a controlled checked wins", () => {
+    const changes: boolean[] = [];
+    render(
+      <>
+        <domNative.Switch
+          defaultChecked
+          testID="switch-uncontrolled"
+          onCheckedChange={(next) => changes.push(next)}
+        />
+        <domNative.Switch
+          checked={false}
+          defaultChecked
+          testID="switch-controlled"
+          onCheckedChange={(next) => changes.push(next)}
+        />
+      </>
+    );
+
+    // defaultChecked seeds the internal state; press and keyboard drive it
+    // identically (Enter's synthesized press stays swallowed — one toggle).
+    const toggle = screen.getByTestId("switch-uncontrolled");
+    expect(toggle.getAttribute("data-state")).toBe("on");
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute("data-state")).toBe("off");
+    fireEvent.keyDown(toggle, { key: " " });
+    expect(toggle.getAttribute("data-state")).toBe("on");
+    fireEvent.keyDown(toggle, { key: "Enter" });
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute("data-state")).toBe("off");
+    expect(changes).toEqual([false, true, false]);
+
+    // Controlled checked wins over defaultChecked and ignores internal
+    // updates; the change callback still fires with the requested value.
+    const controlled = screen.getByTestId("switch-controlled");
+    expect(controlled.getAttribute("data-state")).toBe("off");
+    fireEvent.click(controlled);
+    expect(controlled.getAttribute("data-state")).toBe("off");
+    fireEvent.keyDown(controlled, { key: " " });
+    expect(controlled.getAttribute("data-state")).toBe("off");
+    expect(changes).toEqual([false, true, false, true, true]);
+  });
+
+  it("tracks an uncontrolled Checkbox through press and Space while a controlled checked wins", () => {
+    const changes: boolean[] = [];
+    render(
+      <>
+        <domNative.Checkbox
+          defaultChecked
+          testID="check-uncontrolled"
+          onCheckedChange={(next) => changes.push(next)}
+        />
+        <domNative.Checkbox
+          checked
+          defaultChecked={false}
+          testID="check-controlled"
+          onCheckedChange={(next) => changes.push(next)}
+        />
+        <domNative.Checkbox
+          indeterminate
+          defaultChecked
+          testID="check-mixed"
+          onCheckedChange={(next) => changes.push(next)}
+        />
+      </>
+    );
+
+    // defaultChecked seeds the internal state; press and Space drive it
+    // identically (checkbox.component.json keyboard: "Space toggles").
+    const box = screen.getByTestId("check-uncontrolled");
+    expect(box.getAttribute("data-state")).toBe("checked");
+    fireEvent.click(box);
+    expect(box.getAttribute("data-state")).toBe("unchecked");
+    fireEvent.keyDown(box, { key: " " });
+    expect(box.getAttribute("data-state")).toBe("checked");
+    expect(changes).toEqual([false, true]);
+
+    // Controlled checked wins and ignores internal updates.
+    const controlled = screen.getByTestId("check-controlled");
+    expect(controlled.getAttribute("data-state")).toBe("checked");
+    fireEvent.click(controlled);
+    expect(controlled.getAttribute("data-state")).toBe("checked");
+    expect(changes).toEqual([false, true, false]);
+
+    // The indeterminate interaction is unchanged: the mixed look rides the
+    // indeterminate prop (not the toggled value), and toggling still reports
+    // the next checked value from the seeded true.
+    const mixed = screen.getByTestId("check-mixed");
+    expect(mixed.getAttribute("data-state")).toBe("indeterminate");
+    fireEvent.click(mixed);
+    expect(mixed.getAttribute("data-state")).toBe("indeterminate");
+    expect(changes).toEqual([false, true, false, false]);
+  });
+
+  it("selects an uncontrolled Radio through press and Space while a controlled checked wins", () => {
+    const picks: boolean[] = [];
+    render(
+      <>
+        <domNative.Radio testID="radio-press" onCheckedChange={(next) => picks.push(next)} />
+        <domNative.Radio testID="radio-space" onCheckedChange={(next) => picks.push(next)} />
+        <domNative.Radio defaultChecked testID="radio-preset" />
+        <domNative.Radio
+          checked={false}
+          defaultChecked
+          testID="radio-controlled"
+          onCheckedChange={(next) => picks.push(next)}
+        />
+      </>
+    );
+
+    // Press selects and keeps the internal state true — radios never untoggle
+    // themselves; group exclusivity stays the consumer's concern (react
+    // renderer parity: standalone semantics).
+    const pressed = screen.getByTestId("radio-press");
+    expect(pressed.getAttribute("data-state")).toBe("unchecked");
+    fireEvent.click(pressed);
+    expect(pressed.getAttribute("data-state")).toBe("checked");
+    fireEvent.click(pressed);
+    expect(pressed.getAttribute("data-state")).toBe("checked");
+    expect(picks).toEqual([true, true]);
+
+    // Space drives the same uncontrolled selection (radio.component.json
+    // keyboard: "Space selects").
+    const spaced = screen.getByTestId("radio-space");
+    fireEvent.keyDown(spaced, { key: " " });
+    expect(spaced.getAttribute("data-state")).toBe("checked");
+    expect(picks).toEqual([true, true, true]);
+
+    // defaultChecked seeds the initial selection.
+    expect(screen.getByTestId("radio-preset").getAttribute("data-state")).toBe("checked");
+
+    // Controlled checked wins over defaultChecked and ignores internal
+    // updates; the callback still reports true.
+    const controlled = screen.getByTestId("radio-controlled");
+    expect(controlled.getAttribute("data-state")).toBe("unchecked");
+    fireEvent.click(controlled);
+    expect(controlled.getAttribute("data-state")).toBe("unchecked");
+    expect(picks).toEqual([true, true, true, true]);
+  });
+
+  it("keeps the uncontrolled single Select value internally from defaultValue", () => {
+    const picked: string[] = [];
+    render(
+      <domNative.Select
+        testID="uncontrolled-select"
+        placeholder="과일 선택"
+        defaultValue="strawberry"
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+          { value: "grape", label: "포도" },
+        ]}
+        onValueChange={(next) => picked.push(next)}
+      />
+    );
+
+    const root = screen.getByTestId("uncontrolled-select");
+    const trigger = within(root).getByRole("combobox");
+    // defaultValue seeds the trigger text and the menu's selected cell.
+    expect(trigger.textContent).toContain("딸기");
+    fireEvent.click(trigger);
+    expect(within(root).getAllByRole("option")[0]?.getAttribute("aria-selected")).toBe("true");
+
+    // A cell press moves the internal value (and closes the single menu).
+    fireEvent.click(within(root).getAllByRole("option")[1] as HTMLElement);
+    expect(picked).toEqual(["banana"]);
+    expect(root.getAttribute("data-open")).toBeNull();
+    expect(trigger.textContent).toContain("바나나");
+
+    // The keyboard path drives the same internal state: ArrowDown reopens on
+    // the banana selection, ArrowDown moves to grape, Enter picks it (the
+    // synthesized press is swallowed).
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    expect(trigger.getAttribute("aria-activedescendant")).toBe(
+      within(root).getAllByRole("option")[1]?.id
+    );
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    fireEvent.keyDown(trigger, { key: "Enter" });
+    fireEvent.click(trigger);
+    expect(picked).toEqual(["banana", "grape"]);
+    expect(trigger.textContent).toContain("포도");
+
+    // Reopening announces the uncontrolled selection as selected and active.
+    fireEvent.click(trigger);
+    const options = within(root).getAllByRole("option");
+    expect(options[2]?.getAttribute("aria-selected")).toBe("true");
+    expect(options[1]?.getAttribute("aria-selected")).toBe("false");
+    expect(trigger.getAttribute("aria-activedescendant")).toBe(options[2]?.id);
+  });
+
+  it("tracks uncontrolled multi Select values through pick, chip removal, and clear-all", () => {
+    const changes: string[][] = [];
+    render(
+      <domNative.Select
+        testID="uncontrolled-multi"
+        multiple
+        clearable
+        placeholder="과일 선택"
+        defaultValues={["strawberry"]}
+        options={[
+          { value: "strawberry", label: "딸기" },
+          { value: "banana", label: "바나나" },
+        ]}
+        onValuesChange={(next) => changes.push(next)}
+      />
+    );
+
+    // defaultValues seeds the trigger chips.
+    const root = screen.getByTestId("uncontrolled-multi");
+    expect(within(root).getByLabelText("딸기 제거")).toBeDefined();
+    fireEvent.click(within(root).getByRole("combobox"));
+
+    // A cell press toggles into the internal values (multi menu stays open).
+    fireEvent.click(within(root).getAllByRole("option")[1] as HTMLElement);
+    expect(changes).toEqual([["strawberry", "banana"]]);
+    expect(within(root).getByLabelText("바나나 제거")).toBeDefined();
+    expect(within(root).getAllByRole("option")[1]?.getAttribute("aria-selected")).toBe("true");
+
+    // Chip removal rides the same internal toggle…
+    fireEvent.click(within(root).getByLabelText("딸기 제거"));
+    expect(changes).toEqual([["strawberry", "banana"], ["banana"]]);
+    expect(within(root).queryByLabelText("딸기 제거")).toBeNull();
+
+    // …and clear-all wipes the internal values entirely.
+    fireEvent.click(within(root).getByLabelText("모두 해제"));
+    expect(changes).toEqual([["strawberry", "banana"], ["banana"], []]);
+    expect(within(root).queryByLabelText("바나나 제거")).toBeNull();
+    expect(within(root).queryByLabelText("모두 해제")).toBeNull();
+    for (const option of within(root).getAllByRole("option")) {
+      expect(option.getAttribute("aria-selected")).toBe("false");
+    }
+  });
+
+  it("keeps controlled Select values authoritative over defaults and internal picks", () => {
+    const picked: string[] = [];
+    const changes: string[][] = [];
+    render(
+      <>
+        <domNative.Select
+          testID="controlled-single"
+          value="strawberry"
+          defaultValue="banana"
+          options={[
+            { value: "strawberry", label: "딸기" },
+            { value: "banana", label: "바나나" },
+          ]}
+          onValueChange={(next) => picked.push(next)}
+        />
+        <domNative.Select
+          testID="controlled-multi"
+          multiple
+          values={["strawberry"]}
+          defaultValues={["banana"]}
+          options={[
+            { value: "strawberry", label: "딸기" },
+            { value: "banana", label: "바나나" },
+          ]}
+          onValuesChange={(next) => changes.push(next)}
+        />
+      </>
+    );
+
+    // The controlled value wins over defaultValue; a pick still fires the
+    // callback but the shown value never moves without the prop changing.
+    const single = screen.getByTestId("controlled-single");
+    const singleTrigger = within(single).getByRole("combobox");
+    expect(singleTrigger.textContent).toContain("딸기");
+    fireEvent.click(singleTrigger);
+    fireEvent.click(within(single).getAllByRole("option")[1] as HTMLElement);
+    expect(picked).toEqual(["banana"]);
+    expect(singleTrigger.textContent).toContain("딸기");
+    fireEvent.click(singleTrigger);
+    expect(within(single).getAllByRole("option")[0]?.getAttribute("aria-selected")).toBe("true");
+    expect(within(single).getAllByRole("option")[1]?.getAttribute("aria-selected")).toBe("false");
+
+    // Controlled values win over defaultValues the same way: the callback
+    // reports the requested next array, the chips stay on the prop.
+    const multi = screen.getByTestId("controlled-multi");
+    expect(within(multi).getByLabelText("딸기 제거")).toBeDefined();
+    expect(within(multi).queryByLabelText("바나나 제거")).toBeNull();
+    fireEvent.click(within(multi).getByRole("combobox"));
+    fireEvent.click(within(multi).getAllByRole("option")[1] as HTMLElement);
+    expect(changes).toEqual([["strawberry", "banana"]]);
+    expect(within(multi).queryByLabelText("바나나 제거")).toBeNull();
+    expect(within(multi).getAllByRole("option")[1]?.getAttribute("aria-selected")).toBe("false");
+  });
+
+  it("focuses the wired control from a Field label press", () => {
+    const inputRef = React.createRef<HTMLInputElement>();
+    render(
+      <domNative.Field label="회신 이메일" id="focus-field">
+        <domNative.Input
+          accessibilityLabel="회신 이메일"
+          inputRef={inputRef}
+          testID="label-focus-input"
+        />
+      </domNative.Field>
+    );
+
+    const input = screen.getByTestId("label-focus-input");
+    const label = screen.getByText("회신 이메일");
+    // The label keeps its plain Text semantics — no button role for AT, and
+    // the nativeID the control's accessibilityLabelledBy points at is intact.
+    expect(label.getAttribute("role")).toBeNull();
+    expect(label.id).toBe("focus-field-label");
+    expect(input.getAttribute("data-labelledby")).toBe("focus-field-label");
+
+    // Pressing the label forwards focus to the underlying TextInput host
+    // (field.component.json focusManagement).
+    const focusSpy = vi.spyOn(input, "focus");
+    expect(document.activeElement).not.toBe(input);
+    fireEvent.click(label);
+    expect(focusSpy).toHaveBeenCalledTimes(1);
+    expect(document.activeElement).toBe(input);
+    // The child's own inputRef stays wired alongside the Field's capture.
+    expect(inputRef.current).toBe(input);
+  });
+
+  it("keeps the Field label press a no-op for non-focusable controls and disabled fields", () => {
+    function InertControl(): React.ReactElement {
+      return <span data-testid="inert-control" />;
+    }
+    render(
+      <>
+        <domNative.Field label="결제 상태">
+          <InertControl />
+        </domNative.Field>
+        <domNative.Field label="잠긴 회신 이메일" disabled>
+          <domNative.Input accessibilityLabel="잠긴 회신 이메일" testID="locked-focus-input" />
+        </domNative.Field>
+      </>
+    );
+
+    // A control that never wires inputRef leaves the Field's ref empty — the
+    // label press is a guarded no-op (no throw, focus unchanged).
+    const before = document.activeElement;
+    fireEvent.click(screen.getByText("결제 상태"));
+    expect(document.activeElement).toBe(before);
+
+    // Disabled fields ignore the label press, like a web label pointing at a
+    // disabled input.
+    fireEvent.click(screen.getByText("잠긴 회신 이메일"));
+    expect(document.activeElement).not.toBe(screen.getByTestId("locked-focus-input"));
+  });
 });
 
 function TestPressable({
@@ -1518,6 +1917,10 @@ function TestText({
   const styleRecord = style as Record<string, unknown> | undefined;
   return (
     <span
+      // RNW maps nativeID → id; RN Text supports onPress (the Field label
+      // uses it), which the DOM host mirrors as a plain click handler.
+      id={props.nativeID as string | undefined}
+      onClick={props.onPress as React.MouseEventHandler<HTMLElement> | undefined}
       // The web-ish role prop (RN ≥0.71) wins over accessibilityRole, like RNW.
       role={(props.role ?? props.accessibilityRole) as string | undefined}
       aria-label={props.accessibilityLabel as string | undefined}

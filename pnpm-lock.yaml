@@ -86,9 +86,22 @@ importers:
       '@podoui/react':
         specifier: workspace:*
         version: link:../../packages/react
+      podo-ui:
+        specifier: workspace:*
+        version: link:../../packages/podo-ui
       react:
         specifier: ^19.2.7
         version: 19.2.7
+      react-dom:
+        specifier: ^19.2.7
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@6.4.3(@types/node@25.9.3)(lightningcss@1.32.0)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
+      vite:
+        specifier: ^6.0.7
+        version: 6.4.3(@types/node@25.9.3)(lightningcss@1.32.0)(sass@1.101.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
 
   examples/web:
     dependencies:

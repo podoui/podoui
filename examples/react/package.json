@@ -4,11 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "predev": "tsc -b ../../packages/core ../../packages/react",
+    "dev": "vite",
+    "build": "tsc -b tsconfig.json && vite build",
+    "preview": "vite preview",
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
     "@podoui/react": "workspace:*",
-    "react": "^19.2.7"
+    "podo-ui": "workspace:*",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.7"
   }
 }

@@ -8,3 +8,9 @@ pnpm-lock.yaml
 figma-plugin
 # Committed reduced export fixture (minified on purpose).
 packages/spec/samples/podo-clone.sample.json
+
+# 검증 캠페인 증거 보관물 — 원문 그대로 보존 (재포맷 금지)
+docs/verification/
+# examples/react의 podo CLI 생성물 — podo build 출력과 바이트 동일 유지
+examples/react/.podo/
+examples/react/src/podo/

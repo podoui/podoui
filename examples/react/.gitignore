@@ -1,0 +1,4 @@
+# Mirrors the root .gitignore's .podo convention (those patterns are anchored
+# to the repo root): commit .podo config/lock/bootstrap, ignore build caches.
+.podo/cache/
+.podo/generated/

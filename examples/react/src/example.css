@@ -1,0 +1,74 @@
+/* Example-app chrome only — component visuals come from podo-ui/styles.css
+   and the generated src/podo CSS. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Pretendard Variable",
+    Pretendard,
+    -apple-system,
+    system-ui,
+    sans-serif;
+}
+
+.example {
+  display: grid;
+  gap: 28px;
+  margin: 0 auto;
+  max-width: 960px;
+  min-height: 100vh;
+  padding: 40px 24px 80px;
+  background: #ffffff;
+  color: #17181a;
+}
+
+.example[data-scheme="dark"] {
+  background: #17181a;
+  color: #f4f4f5;
+}
+
+.example-header {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.example-header__controls {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.example-section {
+  display: grid;
+  gap: 10px;
+}
+
+.example-section__title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+.example-section__stage {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Block-level members take the full row inside the flex stage.
+   (The Editor already defaults to width: 100%.) */
+.example-section__stage .podo-field,
+.example-section__stage .podo-table {
+  flex: 1 1 100%;
+}

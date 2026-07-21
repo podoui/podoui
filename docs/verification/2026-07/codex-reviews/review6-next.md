@@ -1,0 +1,19 @@
+## Blocking findings
+
+1. The current Next harness does not contain the claimed final artifact. The final tarball is `b691f35c…`, but the harness still has the frozen `634f24ad…` Editor and CLI builds: installed Editor SHA-1 `f5d2c9d…` versus final `8f5d8c1…`, and installed CLI `7ae492c…` versus final `28bb255…`. Its lockfile integrity also differs from the final tarball. Consequently the Next build, SSR snapshot, hydration sweep, screenshots, and browser interactions never exercised the final artifact. The claimed `microv` commands in [next.md](</private/tmp/claude-501/-Users-tarucy-project-podoui/885735ab-d9d3-4bc8-9008-5a94bf821edb/scratchpad/reports/next.md:833>) are absent from the supplied command logs; instead, `react-commands.log:12076` still records `fileInputCount:2`. This is not a bit-for-bit final-artifact verification.
+
+2. The Badge codegen fix is not integrated into the Next consumer. [layout.jsx](</private/tmp/claude-501/-Users-tarucy-project-podoui/885735ab-d9d3-4bc8-9008-5a94bf821edb/scratchpad/harness/next/app/layout.jsx:3>) imports `tokens.css` but not generated `components.css`, contrary to the documented build-consumer flow in [README.md](/Users/tarucy/project/podoui/packages/podo-ui/README.md:51). The harness’s current `app/podo/components.css` also still contains zero `--podo-badge-*` declarations. Thus the final generated Badge bindings cannot affect this Next app; the reported browser color comes from `styles.css` fallback or a manually injected override, not the fixed default build output.
+
+3. Select chip removal and clear-all are broken for keyboard activation. The remove and clear buttons are nested under the trigger’s bubbling `onKeyDown` handler ([index.tsx](/Users/tarucy/project/podoui/packages/react/src/index.tsx:1201), [index.tsx](/Users/tarucy/project/podoui/packages/react/src/index.tsx:1268), [index.tsx](/Users/tarucy/project/podoui/packages/react/src/index.tsx:1415)). Enter and Space reach the parent handler, which calls `preventDefault()` and toggles/closes the Select; neither nested button stops propagation. This suppresses the button’s keyboard-generated click, so keyboard users cannot reliably remove a chip or clear the selection. The A10 evidence only invokes `.click()` programmatically and never exercises these buttons with Enter or Space.
+
+4. The raw SSR combobox state is internally invalid. Select reports `aria-expanded="true"` and `aria-controls="_R_7peavb_"`, but the controlled listbox is absent: `next-ssr-next8.html` contains one expanded combobox and zero `podo-select__menu` elements. Source sets the expanded state immediately ([index.tsx](/Users/tarucy/project/podoui/packages/react/src/index.tsx:1338)) while suppressing the portal menu until mount ([index.tsx](/Users/tarucy/project/podoui/packages/react/src/index.tsx:1435)). The report explicitly treats this contradiction as PASS at `next.md:71`; it does not prove correct SSR accessibility.
+
+5. Several substantive public behaviors remain uncovered despite the universal claim: DatePicker’s `enable` conditions, range/function `disable`, right alignment, and keyword `initialCalendar`; Editor toolbar filtering and resizable/min/max sizing; and Tooltip left positioning/ordinal variants. These are public branches in [datepicker.tsx](/Users/tarucy/project/podoui/packages/react/src/datepicker.tsx:63) and [types.ts](/Users/tarucy/project/podoui/packages/react/src/editor/types.ts:18), but no corresponding harness fixtures or quoted browser evidence exist. Coverage of all exported component names is present, but coverage of their hard behavioral APIs is not.
+
+## Non-blocking suggestions
+
+- Reinstall `b691f35c…` into the Next harness, import generated `components.css`, rebuild, recapture SSR, and rerun the complete browser checklist.
+- Add explicit keyboard tests for every interactive control nested within Select.
+- Make SSR `aria-expanded` reflect whether the listbox is actually rendered.
+
+VERDICT: FAIL

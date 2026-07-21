@@ -9,11 +9,21 @@
   "anatomy": [
     {
       "name": "root",
-      "targets": { "web": "podo-text", "react": "p", "hono": "p", "native": "Text" }
+      "targets": {
+        "web": "podo-text",
+        "react": "p",
+        "hono": "p",
+        "native": "Text"
+      }
     },
     {
       "name": "content",
-      "targets": { "web": "slot", "react": "children", "hono": "children", "native": "children" }
+      "targets": {
+        "web": "slot",
+        "react": "children",
+        "hono": "children",
+        "native": "children"
+      }
     }
   ],
   "slots": [
@@ -21,28 +31,48 @@
       "name": "children",
       "required": true,
       "targets": {
-        "web": { "name": "default" },
-        "react": { "name": "children" },
-        "hono": { "name": "children" },
-        "native": { "name": "children" }
+        "web": {
+          "name": "default"
+        },
+        "react": {
+          "name": "children"
+        },
+        "hono": {
+          "name": "children"
+        },
+        "native": {
+          "name": "children"
+        }
       }
     }
   ],
   "props": [
     {
       "name": "as",
-      "type": { "kind": "enum", "values": ["span", "p", "h1"] },
+      "type": {
+        "kind": "enum",
+        "values": ["span", "p", "h1"]
+      },
       "default": "p",
       "description": "Semantic element to render when the target supports it."
     },
     {
       "name": "variant",
-      "type": { "kind": "enum", "values": ["body", "h1"] },
+      "type": {
+        "kind": "enum",
+        "values": ["body", "h1"]
+      },
       "default": "body",
-      "description": "Typography token set to apply."
+      "description": "Typography token set to apply. 기본값은 body이며, variant를 지정하지 않고 as=\"h1\"을 쓰면 렌더러가 h1로 유도한다 (react/hono 공통 동작)."
     }
   ],
-  "variants": [{ "name": "variant", "values": ["body", "h1"], "default": "body" }],
+  "variants": [
+    {
+      "name": "variant",
+      "values": ["body", "h1"],
+      "default": "body"
+    }
+  ],
   "states": [],
   "tokens": {
     "root.color": "{semantic.color.text.default}",
@@ -50,10 +80,22 @@
     "heading.typography": "{typography.heading.xlarge}"
   },
   "targets": {
-    "web": { "supported": true, "limitations": [] },
-    "react": { "supported": true, "limitations": [] },
-    "hono": { "supported": true, "limitations": [] },
-    "native": { "supported": true, "limitations": ["Semantic element maps to Text."] }
+    "web": {
+      "supported": true,
+      "limitations": []
+    },
+    "react": {
+      "supported": true,
+      "limitations": []
+    },
+    "hono": {
+      "supported": true,
+      "limitations": []
+    },
+    "native": {
+      "supported": true,
+      "limitations": ["Semantic element maps to Text."]
+    }
   },
   "accessibility": {
     "aria": [],

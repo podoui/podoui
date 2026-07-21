@@ -74,6 +74,8 @@ export interface NativeChipProps {
   children: ReactNode;
   /** Controlled 선택 값 (Figma state) — 비선택이 기본 모습이에요. */
   selected?: boolean;
+  /** Initial uncontrolled selection. */
+  defaultSelected?: boolean;
   disabled?: boolean;
   /** Background contrast (Figma: solid, outline-strong, outline-weak). */
   theme?: "solid" | "outline-strong" | "outline-weak";
@@ -130,6 +132,8 @@ export interface NativeBadgeProps {
 export interface NativeSwitchProps {
   /** Controlled on/off value (Figma state=on/off). */
   checked?: boolean;
+  /** Initial uncontrolled value. */
+  defaultChecked?: boolean;
   /** Track size (Figma: sm 30x18 — base, md 40x24, lg 56x32). */
   size?: "sm" | "md" | "lg";
   /** SemiBold label for emphasized items (Figma bold). */
@@ -146,6 +150,8 @@ export interface NativeSwitchProps {
 export interface NativeCheckboxProps {
   /** Controlled value (Figma state=checked/unchecked). */
   checked?: boolean;
+  /** Initial uncontrolled value. */
+  defaultChecked?: boolean;
   /** Partial-selection look for parent checkboxes (Figma state=indeterminate); announced as mixed. */
   indeterminate?: boolean;
   /** Label size only — the 18px box is fixed (Figma: md 14 — base, lg 16). */
@@ -172,6 +178,11 @@ export interface NativeCheckboxProps {
 export interface NativeRadioProps {
   /** Controlled value (Figma checked). Group exclusivity is the consumer's. */
   checked?: boolean;
+  /**
+   * Initial uncontrolled value. 비제어 라디오는 선택되면 true로만 바뀌어요
+   * (스스로 untoggle하지 않음) — 형제 해제는 react 렌더러처럼 그룹/consumer 몫.
+   */
+  defaultChecked?: boolean;
   /** Label size only — the 18px circle is fixed (Figma: md 14 — base, lg 16). */
   size?: "md" | "lg";
   /** SemiBold label for emphasized items (Figma bold). */
@@ -251,10 +262,14 @@ export interface NativeSelectProps {
   size?: "md" | "lg";
   /** 다중 선택 (Figma theme=slot) — 칩 나열 + 체크박스 셀. */
   multiple?: boolean;
-  /** Controlled 단일 값. */
+  /** Controlled 단일 값 (null = 선택 없음). 생략하면 비제어. */
   value?: string | null;
-  /** Controlled 다중 값. */
+  /** 비제어 단일 초기값. */
+  defaultValue?: string;
+  /** Controlled 다중 값. 생략하면 비제어. */
   values?: string[];
+  /** 비제어 다중 초기값. */
+  defaultValues?: string[];
   /** 단일 값이 선택될 때. */
   onValueChange?: (value: string) => void;
   /** 다중 값이 토글될 때 다음 배열과 함께. */
@@ -275,6 +290,12 @@ export interface NativeSelectProps {
 
 export interface NativeFieldProps {
   children: ReactNode;
+  /**
+   * Heading text. 라벨을 누르면 연결된 컨트롤로 포커스를 넘겨요
+   * (field.component.json focusManagement) — 컨트롤이 focus()를 노출하는
+   * TextInput 기반(Input/Textarea)일 때만이고, 그 외 컨트롤·disabled 필드는
+   * no-op이에요. 라벨 자체는 버튼이 되지 않아요 (Text onPress만 사용).
+   */
   label: ReactNode;
   /** Supplementary text next to the label (Figma sub-label). */
   subLabel?: ReactNode;
@@ -595,13 +616,17 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         props.suffix
       );
     },
-    Chip: (props) => {
+    Chip: function NativeChip(props) {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
       const behavior = createButtonBehavior({ disabled: props.disabled });
       const themeName = props.theme ?? "solid";
       const size = props.size ?? "md";
-      const selected = props.selected === true;
+      // Uncontrolled fallback: without a selected prop the chip toggles itself
+      // (react 렌더러 규칙 그대로 — controlled selected가 항상 이겨요). 제거형
+      // 칩은 선택 모습이 고정이라 이 상태를 쓰지 않아요.
+      const [internalSelected, setInternalSelected] = useState(props.defaultSelected ?? false);
+      const selected = props.selected ?? internalSelected;
       if (props.onRemove) {
         // Removable chip: born in the selected look, no toggle — the X is the
         // only control, so the root is a plain View. Disabled keeps the same
@@ -702,9 +727,14 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           // through; real RN keeps announcing via accessibilityState.selected.
           "aria-pressed": selected,
           disabled: !behavior.pressable,
-          // Chips toggle: pressing reports the next selected value.
+          // Chips toggle: pressing reports the next selected value. RNW의
+          // button role은 진짜 <button>이라 Enter/Space가 press를 합성해요 —
+          // 키보드도 같은 경로로 비제어 상태를 움직여요 (별도 onKeyDown 불필요).
           onPress: behavior.pressable
             ? () => {
+                if (props.selected == null) {
+                  setInternalSelected(!selected);
+                }
                 props.onSelectedChange?.(!selected);
                 props.onPress?.();
               }
@@ -783,8 +813,14 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         setOpen(false);
       }
       const open = openState && !disabled && !readOnly;
-      const selectedValues = props.values ?? [];
-      const selected = props.options.find((o) => o.value === props.value);
+      // Uncontrolled fallbacks — value/values props switch each mode to
+      // controlled (react 렌더러 규칙 그대로: controlled 값이 항상 이겨요).
+      const [internalValue, setInternalValue] = useState<string | null>(props.defaultValue ?? null);
+      const [internalValues, setInternalValues] = useState<string[]>(props.defaultValues ?? []);
+      // value는 null(선택 없음)도 controlled — undefined만 비제어예요.
+      const selectedValue = props.value !== undefined ? props.value : internalValue;
+      const selectedValues = props.values ?? internalValues;
+      const selected = props.options.find((o) => o.value === selectedValue);
       const hasValue = multiple ? selectedValues.length > 0 : Boolean(selected);
       const border = readOnly
         ? { color: "transparent", width: 1 }
@@ -812,8 +848,15 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           const next = selectedValues.includes(optionValue)
             ? selectedValues.filter((v) => v !== optionValue)
             : [...selectedValues, optionValue];
+          // 비제어일 때만 내부 상태를 갱신해요 — change 콜백은 항상 불려요.
+          if (props.values === undefined) {
+            setInternalValues(next);
+          }
           props.onValuesChange?.(next);
         } else {
+          if (props.value === undefined) {
+            setInternalValue(optionValue);
+          }
           props.onValueChange?.(optionValue);
           setOpen(false);
         }
@@ -824,6 +867,9 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         // disabled/readOnly flip must not mutate values after the lock.
         if (lockRef.current) {
           return;
+        }
+        if (props.values === undefined) {
+          setInternalValues([]);
         }
         props.onValuesChange?.([]);
       };
@@ -869,7 +915,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         // first option (multiple always starts at the top).
         const selectedIndex = multiple
           ? -1
-          : props.options.findIndex((o) => o.value === props.value);
+          : props.options.findIndex((o) => o.value === selectedValue);
         setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0);
         setOpen(true);
       };
@@ -990,7 +1036,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const cells = props.options.map((option, index) => {
         const isSelected = multiple
           ? selectedValues.includes(option.value)
-          : option.value === props.value;
+          : option.value === selectedValue;
         const isActive = index === active;
         return createElement(
           host.Pressable,
@@ -1294,9 +1340,25 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         testID: props.testID,
       });
     },
-    Field: (props) => {
+    Field: function NativeField(props) {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
+      // 라벨 프레스 → 컨트롤 포커스 (field.component.json focusManagement:
+      // "Forward label press to the control when target supports it").
+      // wireNativeControl이 자식의 inputRef에 끼워 넣은 콜백이 밑단 TextInput
+      // 노드를 붙잡고, 라벨은 focus()를 노출하는 노드일 때만 넘겨요 —
+      // Select처럼 focus 없는 컨트롤·컨트롤이 없는 필드는 no-op이에요.
+      const controlRef = useRef<unknown>(null);
+      const focusControl = () => {
+        // disabled 필드는 웹 label[for]→disabled input처럼 무시해요.
+        if (props.disabled) {
+          return;
+        }
+        const node = controlRef.current as { focus?: unknown } | null;
+        if (node && typeof node.focus === "function") {
+          (node as { focus: () => void }).focus();
+        }
+      };
       // The footer shows a single guidance line (Figma 538:6691): the error
       // wins over the helper text, matching the web/react/hono renderers.
       const showError = Boolean(props.error);
@@ -1334,7 +1396,14 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           { style: styles.fieldHeading },
           createElement(
             host.Text,
-            { nativeID: a11y.ids.labelId, style: styles.label },
+            {
+              nativeID: a11y.ids.labelId,
+              // Text 자체의 onPress만 써요 (RN Text 지원) — Pressable로 감싸지
+              // 않으니 라벨이 AT에 버튼으로 둔갑하지 않고 nativeID/라벨 의미가
+              // 그대로예요. 프레스는 연결된 컨트롤로 포커스만 넘겨요.
+              onPress: focusControl,
+              style: styles.label,
+            },
             props.label
           ),
           props.required
@@ -1357,7 +1426,9 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           { disabled: props.disabled, invalid: props.invalid },
           trackCount ? (value) => setAutoCount(value.length) : undefined,
           // countMax also caps the control via the platform-native maxLength.
-          props.countMax
+          props.countMax,
+          // 라벨 프레스 포커스용 — 자식 inputRef에 합류해 TextInput 노드를 잡아요.
+          controlRef
         ),
         showError || showHelper || props.countMax != null
           ? createElement(
@@ -1425,7 +1496,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       );
     },
     Switch: function NativeSwitch(props) {
-      const behavior = createSwitchBehavior({ checked: props.checked, disabled: props.disabled });
+      // Uncontrolled fallback: without a checked prop the switch tracks itself.
+      const [internalChecked, setInternalChecked] = useState(props.defaultChecked ?? false);
+      const behavior = createSwitchBehavior({
+        checked: props.checked ?? internalChecked,
+        disabled: props.disabled,
+      });
       // Figma 566:12693 geometry per size: track w/h, handle diameter, edge pad.
       const metrics =
         props.size === "md"
@@ -1435,7 +1511,14 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             : { w: 30, h: 18, handle: 14, pad: 2 };
       const track = behavior.disabled ? "#E4E4E7" : behavior.checked ? "#426CED" : "#D1D2D6";
       const handle = behavior.disabled ? "#D1D2D6" : "#FFFFFF";
-      const toggle = () => props.onCheckedChange?.(!behavior.checked);
+      // Press와 키보드가 같은 toggle을 타요 — 비제어 상태도 두 경로에서
+      // 동일하게 움직이고, controlled checked면 내부 상태는 건드리지 않아요.
+      const toggle = () => {
+        if (props.checked == null) {
+          setInternalChecked(!behavior.checked);
+        }
+        props.onCheckedChange?.(!behavior.checked);
+      };
       // Keyboard contract (switch.component.json: "Enter/Space toggles the
       // switch"). RN Web delivers onKeyDown on Pressable; real RN ignores the
       // prop. The switch role renders a <div> under RNW (not a real <button>),
@@ -1517,9 +1600,13 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           : null
       );
     },
-    Checkbox: (props) => {
+    Checkbox: function NativeCheckbox(props) {
+      // Uncontrolled fallback: without a checked prop the checkbox tracks
+      // itself. indeterminate 상호작용은 그대로예요 — 토글은 checked만 뒤집고,
+      // mixed 표시는 계속 indeterminate prop이 결정해요.
+      const [internalChecked, setInternalChecked] = useState(props.defaultChecked ?? false);
       const behavior = createCheckboxBehavior({
-        checked: props.checked,
+        checked: props.checked ?? internalChecked,
         indeterminate: props.indeterminate,
         disabled: props.disabled,
       });
@@ -1531,6 +1618,14 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           ? { fill: "#426CED", border: undefined, mark: "#F9F9F9" }
           : { fill: "#FFFFFF", border: "#9FA2AD", mark: "#27272A" };
       const mark = behavior.indeterminate ? "–" : behavior.checked ? "✓" : null;
+      // Press와 키보드가 같은 toggle을 타요 — 비제어 상태도 두 경로에서
+      // 동일하게 움직이고, controlled checked면 내부 상태는 건드리지 않아요.
+      const toggle = () => {
+        if (props.checked == null) {
+          setInternalChecked(!behavior.checked);
+        }
+        props.onCheckedChange?.(!behavior.checked);
+      };
       // Keyboard contract (checkbox.component.json: "Space toggles the
       // checkbox"). RN Web delivers onKeyDown; real RN ignores the prop. The
       // checkbox role renders a <div> under RNW (not a real <button>), so
@@ -1542,7 +1637,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           return;
         }
         event.preventDefault?.();
-        props.onCheckedChange?.(!behavior.checked);
+        toggle();
       };
       // The pressable row includes the optional label (box + 6px gap + text).
       return createElement(
@@ -1555,9 +1650,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           },
           accessibilityLabel: props.accessibilityLabel,
           disabled: !behavior.pressable,
-          onPress: behavior.pressable
-            ? () => props.onCheckedChange?.(!behavior.checked)
-            : undefined,
+          onPress: behavior.pressable ? toggle : undefined,
           onKeyDown: behavior.pressable ? onKeyDown : undefined,
           style: { alignItems: "center", flexDirection: "row", gap: 6 },
           testID: props.testID,
@@ -1770,8 +1863,15 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         )
       );
     },
-    Radio: (props) => {
-      const behavior = createRadioBehavior({ checked: props.checked, disabled: props.disabled });
+    Radio: function NativeRadio(props) {
+      // Uncontrolled fallback: without a checked prop the radio tracks itself.
+      // 선택은 true로만 바뀌고(라디오는 스스로 untoggle하지 않아요), 형제 해제
+      // 같은 그룹 배타는 react 렌더러처럼 consumer/name-group 몫이에요.
+      const [internalChecked, setInternalChecked] = useState(props.defaultChecked ?? false);
+      const behavior = createRadioBehavior({
+        checked: props.checked ?? internalChecked,
+        disabled: props.disabled,
+      });
       // Figma 379:3350 colors; the circle stays 18x18 for every size and the
       // white 8px dot survives disabled.
       const circle = behavior.disabled
@@ -1786,12 +1886,20 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       // navigation is NOT implemented: native radios are standalone (no group
       // container), so roving focus needs a future RadioGroup primitive that
       // owns the sibling list (see NativeRadioProps).
+      // Press와 키보드가 같은 select를 타요 — 비제어 상태도 두 경로에서
+      // 동일하게 true로 고정되고, controlled checked면 내부 상태는 그대로예요.
+      const select = () => {
+        if (props.checked == null) {
+          setInternalChecked(true);
+        }
+        props.onCheckedChange?.(true);
+      };
       const onKeyDown = (event?: { key?: string; preventDefault?: () => void }) => {
         if (event?.key !== " " || !behavior.pressable) {
           return;
         }
         event.preventDefault?.();
-        props.onCheckedChange?.(true);
+        select();
       };
       return createElement(
         host.Pressable,
@@ -1801,7 +1909,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           accessibilityLabel: props.accessibilityLabel,
           disabled: !behavior.pressable,
           // Radios select — they never untoggle themselves.
-          onPress: behavior.pressable ? () => props.onCheckedChange?.(true) : undefined,
+          onPress: behavior.pressable ? select : undefined,
           onKeyDown: behavior.pressable ? onKeyDown : undefined,
           style: { alignItems: "center", flexDirection: "row", gap: 6 },
           testID: props.testID,
@@ -1874,7 +1982,8 @@ function wireNativeControl(
   a11y: ReturnType<typeof createFieldA11y>,
   field: { disabled?: boolean | undefined; invalid?: boolean | undefined },
   onControlText?: (value: string) => void,
-  maxLength?: number
+  maxLength?: number,
+  controlRef?: React.MutableRefObject<unknown>
 ): ReactNode {
   return React.Children.map(children, (child) => {
     if (!isValidElement<Record<string, unknown>>(child)) {
@@ -1907,6 +2016,23 @@ function wireNativeControl(
             onValueChange: (value: string) => {
               (child.props.onValueChange as ((v: string) => void) | undefined)?.(value);
               onControlText(value);
+            },
+          }
+        : {}),
+      // 라벨 프레스 포커스용 ref 합류 — Input/Textarea는 inputRef를 밑단
+      // TextInput에 그대로 넘기므로 여기서 노드를 붙잡아요. 자식이 단 자신의
+      // inputRef도 그대로 살려요 (describedBy join과 같은 비클로버 원칙).
+      // inputRef를 모르는 컨트롤(Select 등)은 prop을 무시해 no-op이에요.
+      ...(controlRef
+        ? {
+            inputRef: (node: unknown) => {
+              const childRef = child.props.inputRef as React.Ref<unknown> | undefined;
+              if (typeof childRef === "function") {
+                childRef(node);
+              } else if (childRef && typeof childRef === "object") {
+                (childRef as React.MutableRefObject<unknown>).current = node;
+              }
+              controlRef.current = node;
             },
           }
         : {}),

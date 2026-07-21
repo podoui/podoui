@@ -1,0 +1,28 @@
+ROUND 6 CONTEXT: Your round-5 review returned FAIL. Everything you flagged was addressed and the FULL verification was re-run on the reviewed artifact lineage (repo gate green: 23 files / 327 passed | 2 skipped = 329; final tarball sha1 b691f35c3c93dcf2542bb4051117828c4faf9cca):
+- Round-6 fixes (unit-tested): react Icon implements the spec (size sm/md/lg -> data-size + 16/24/32px CSS in web/styles.css, decorative={false} -> role img + aria-label, no forced aria-hidden); web Icon component ditto; native Icon ditto (fontSize map + named-image mode); react Table drag releases outside the table now clean up via document-level pointerup/pointercancel (next click no longer swallowed, red->green proven); Badge CSS in web+styles.css now CONSUMES the codegen binding vars (--podo-badge-root-background/label-color/dot-color) with the Figma hexes as fallbacks (the web file previously SET the vars, the mirror referenced nonexistent vlolet/orange names - both fixed); native Toast announces role status (polite) for non-danger states and alert (assertive) for danger; native Chip emits aria-pressed + pressed style feedback; native Switch/Checkbox/Radio gained keyboard activation (Enter/Space per contract, with the RNW Enter press-synthesis guard; Radio Arrow-group-nav documented as needing a future RadioGroup primitive); native Select trigger wires aria-haspopup/aria-controls/aria-expanded and its options are removed from the Tab order (focusable false + tabIndex -1); native Tooltip bubble carries role tooltip + a referenceable id.
+- A FROZEN-ARTIFACT verification round then re-ran the complete checklists in all four harnesses (sessions react8 28/28, next8 31/32, hono8 20/20, native8 24/24 - banners + full eval JS in the *-commands.log files, bit-for-bit freshness proofs). It surfaced the last two defects, both since fixed and re-verified: (1) the default `podo build` emitted no --podo-badge-* vars because the CLI defaults lacked a badge component document - the CLI now embeds the spec badge document plus the color.palette tokens it references, regression-locked by CLI build-test assertions, and a logged micro-verification (session microv) shows the generated components.css with 33 --podo-badge-* declarations and the danger Badge's binding var computing to #F23B3B in-browser (previously empty); (2) the Editor rendered a second, unwired hidden file input that silently swallowed uploads - removed, with a regression test and the same micro-verification showing exactly one input[type=file] per mounted Editor. Each report carries a "Final artifact delta (tarball b691f35c...)" section documenting this; only dist/cli and dist/react/editor differ from the frozen-round tarball 634f24ad, so the *8-session evidence stands for the final artifact everywhere else.
+Review the CURRENT state from scratch. Verify, don't assume - in either direction.
+
+You are an adversarial reviewer for the Podo UI v2 design system (repo: /Users/tarucy/project/podoui — read-only; you cannot run servers or browsers, review statically).
+
+CLAIM UNDER REVIEW: "Every component of the react runtime renders correctly and functions correctly", evidenced by:
+- Harness app (real consumer, installs the packed podo-ui tarball): /private/tmp/claude-501/-Users-tarucy-project-podoui/885735ab-d9d3-4bc8-9008-5a94bf821edb/scratchpad/harness/react
+- Verification report (includes the original findings AND a post-fix re-verification section): /private/tmp/claude-501/-Users-tarucy-project-podoui/885735ab-d9d3-4bc8-9008-5a94bf821edb/scratchpad/reports/react.md
+- Raw log of every browser command executed (npx agent-browser): /private/tmp/claude-501/-Users-tarucy-project-podoui/885735ab-d9d3-4bc8-9008-5a94bf821edb/scratchpad/reports/react-commands.log
+- Screenshots: /private/tmp/claude-501/-Users-tarucy-project-podoui/885735ab-d9d3-4bc8-9008-5a94bf821edb/scratchpad/reports/react-shots/
+- Repo quality gate log (pnpm check: typecheck+lint+test+format+figma, 21 files / 184 tests passed): /private/tmp/claude-501/-Users-tarucy-project-podoui/885735ab-d9d3-4bc8-9008-5a94bf821edb/scratchpad/check-final.log
+- Known documented contracts (not defects): dark color-scheme palette for Figma-mirrored component chrome is pending design (documented in packages/podo-ui/README.md 스타일 section); default tokens carry no dark overrides.
+
+Your job is to REFUTE the claim if at all possible. Be strict and hostile to weak evidence:
+1. Enumerate the public component exports of the react package yourself from packages/react/src/index.tsx (plus datepicker.tsx and editor/). Any export missing from harness/report coverage is a BLOCKING finding.
+2. For each covered component, check the report's evidence: does a quoted command output actually prove the claimed render/interaction? Tautological, fabricated-looking, or unverifiable claims are BLOCKING.
+3. Hunt for skipped functional checks: interaction props (onClick/onPress/onChange/onValueChange), keyboard, open/close, disabled no-op, a11y wiring that was never exercised.
+4. Inspect the harness source: does it use the component APIs correctly per the repo prop types? A harness that avoids hard features is BLOCKING.
+5. Any recorded console/page error waved through without convincing justification is BLOCKING.
+6. If you can identify actual component bugs by reading the repo component source, report them with file:line.
+
+Output format (mandatory):
+## Blocking findings
+(numbered, each with file/line or evidence reference; write "None." if none survive your scrutiny)
+## Non-blocking suggestions
+Final line exactly: VERDICT: PASS (only if zero blocking findings) or VERDICT: FAIL

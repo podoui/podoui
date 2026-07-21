@@ -1,0 +1,21 @@
+## Blocking findings
+
+1. DatePicker can commit a value earlier than `minDate`. [`datepicker.tsx:268`](/Users/tarucy/project/podoui/packages/react/src/datepicker.tsx:268) clamps `23:59` with `minuteStep={30}` to `23:30`; the change handlers then commit it at [`datepicker.tsx:1242`](/Users/tarucy/project/podoui/packages/react/src/datepicker.tsx:1242). That violates a `minDate` of 23:59. The unit test at [`datepicker.test.tsx:189`](/Users/tarucy/project/podoui/packages/react/src/datepicker.test.tsx:189) explicitly accepts this invalid result, while the browser report exercises only the non-terminal 10:59→11:00 case. The defined `isBeforeMinDateTime`/`isAfterMaxDateTime` guards are never used.
+
+2. DatePicker’s roving-tabindex implementation fails with disabled-date constraints. [`datepicker.tsx:407`](/Users/tarucy/project/podoui/packages/react/src/datepicker.tsx:407) chooses the selected date, today, or day 1 without checking whether it is disabled, then [`datepicker.tsx:622`](/Users/tarucy/project/podoui/packages/react/src/datepicker.tsx:622) assigns `tabIndex=0` to that disabled button. Arrow navigation similarly targets the immediately adjacent date and attempts to focus it without skipping disabled cells at [`datepicker.tsx:419`](/Users/tarucy/project/podoui/packages/react/src/datepicker.tsx:419). With `enable`, `disable`, `minDate`, or `maxDate`, the grid can therefore have no keyboard-focusable entry or navigation can stall. Report item 22 tests keyboard behavior only on an unconstrained calendar.
+
+3. Controlled DatePicker updates do not synchronize the displayed calendar month. `viewDate` and `endViewDate` are initialized from `value` only once at [`datepicker.tsx:862`](/Users/tarucy/project/podoui/packages/react/src/datepicker.tsx:862). The subsequent value-sync effect at [`datepicker.tsx:930`](/Users/tarucy/project/podoui/packages/react/src/datepicker.tsx:930) updates only `tempValue`. If a parent changes the controlled value to another month, the trigger shows the new value but opening it can display the stale month. The harness never exercises an external cross-month controlled update.
+
+4. `Chip`’s public ref type is false in removable mode. It is declared as `forwardRef<HTMLButtonElement>` at [`index.tsx:468`](/Users/tarucy/project/podoui/packages/react/src/index.tsx:468), but `onRemove` changes the root to a `<span>` and sends that span through the same ref at [`index.tsx:494`](/Users/tarucy/project/podoui/packages/react/src/index.tsx:494). Consumers receive an `HTMLSpanElement` through a ref typed as `HTMLButtonElement`. The harness never checks refs.
+
+5. Editor code-view edits bypass the public `validator` path. Rich-text input calls both `onChange` and `validateHandler` at [`editor/index.tsx:193`](/Users/tarucy/project/podoui/packages/react/src/editor/index.tsx:193), while code-view input calls `onChange` directly at [`useCodeView.ts:119`](/Users/tarucy/project/podoui/packages/react/src/editor/hooks/useCodeView.ts:119). Consequently, invalid code-view edits emit live but produce no validation result. The report tests live `onChange` without supplying a validator.
+
+6. Multiple Editors produce duplicate IDs in Next SSR. Every instance initially renders `id="podo-editor"` at [`editor/index.tsx:87`](/Users/tarucy/project/podoui/packages/react/src/editor/index.tsx:87), then replaces it with a random UUID only after mounting at [`editor/index.tsx:442`](/Users/tarucy/project/podoui/packages/react/src/editor/index.tsx:442). Two Editors therefore emit invalid duplicate IDs in server HTML and churn their IDs after hydration. The harness contains only one Editor.
+
+## Non-blocking suggestions
+
+- The export inventory itself is complete: all 20 renderable exports are represented, and the theme hook/context and imperative toast API are exercised indirectly.
+- Re-run the direct Server Component import probe against the final `af9c435…` artifact; the current definitive section relies on banners plus a superseded-round probe.
+- Correct the report’s finalization statement: a further harness rebuild occurred during item 17 to add `toast-fire-plain`, so items 3–16 were not run against the literal final harness source, although the installed package was unchanged.
+
+VERDICT: FAIL

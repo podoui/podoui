@@ -1,0 +1,26 @@
+@font-face {
+  font-family: "PodoIcons";
+  src: url("./PodoIcons.woff") format("woff"),
+       url("./PodoIcons.woff2") format("woff2");
+  font-display: block;
+}
+
+.podo-icon {
+  font-family: "PodoIcons";
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+}
+
+.podo-icon-calendar::before { content: "\E004"; }
+.podo-icon-check::before { content: "\E007"; }
+.podo-icon-chevron-left::before { content: "\E002"; }
+.podo-icon-chevron-right::before { content: "\E003"; }
+.podo-icon-close::before { content: "\E008"; }
+.podo-icon-menu::before { content: "\E001"; }
+.podo-icon-refresh::before { content: "\E006"; }
+.podo-icon-search::before { content: "\E009"; }
+.podo-icon-time::before { content: "\E005"; }

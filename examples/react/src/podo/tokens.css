@@ -1,0 +1,373 @@
+[data-podo-theme="landing"][data-color-scheme="light"] {
+  --podo-color-brand: #426CED;
+  --podo-color-danger: #F23B3B;
+  --podo-color-inverse: #FFFFFF;
+  --podo-color-palette-accent-50: #F15764;
+  --podo-color-palette-error-5: #FEF1F1;
+  --podo-color-palette-error-50: #F23B3B;
+  --podo-color-palette-gray-10: #F4F4F5;
+  --podo-color-palette-gray-5: #F9F9F9;
+  --podo-color-palette-gray-70: #3E424B;
+  --podo-color-palette-gray-90: #18181B;
+  --podo-color-palette-info-5: #EBF5FF;
+  --podo-color-palette-info-50: #0095FF;
+  --podo-color-palette-orange-5: #FFF4F0;
+  --podo-color-palette-orange-50: #FF6A33;
+  --podo-color-palette-purple-5: #F8F5FF;
+  --podo-color-palette-purple-50: #8E51FF;
+  --podo-color-palette-success-5: #ECF8EF;
+  --podo-color-palette-success-50: #3EA856;
+  --podo-color-palette-warning-5: #FFF7E6;
+  --podo-color-palette-warning-50: #FFAA00;
+  --podo-color-text: #18181B;
+  --podo-component-button-background: #426CED;
+  --podo-component-button-text: #FFFFFF;
+  --podo-component-input-background: #FFFFFF;
+  --podo-component-input-border: #18181B;
+  --podo-radius-control-md: 8px;
+  --podo-semantic-color-text-danger: #F23B3B;
+  --podo-semantic-color-text-default: #18181B;
+  --podo-semantic-color-text-inverse: #FFFFFF;
+  --podo-spacing-component-field-gap: 8px;
+  --podo-spacing-scale-1: 4px;
+  --podo-spacing-scale-2: 8px;
+  --podo-typography-body-medium-fontFamily: Pretendard;
+  --podo-typography-body-medium-fontSize: 16px;
+  --podo-typography-body-medium-fontWeight: 400;
+  --podo-typography-body-medium-letterSpacing: 0px;
+  --podo-typography-body-medium-lineHeight: 160%;
+  --podo-typography-h1-fontFamily: Pretendard;
+  --podo-typography-h1-fontSize: 64px;
+  --podo-typography-h1-fontWeight: 700;
+  --podo-typography-h1-letterSpacing: 0px;
+  --podo-typography-h1-lineHeight: 72px;
+  --podo-typography-heading-xlarge-fontFamily: Pretendard;
+  --podo-typography-heading-xlarge-fontSize: 32px;
+  --podo-typography-heading-xlarge-fontWeight: 700;
+  --podo-typography-heading-xlarge-letterSpacing: 0px;
+  --podo-typography-heading-xlarge-lineHeight: 120%;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  [data-podo-theme="landing"][data-color-scheme="light"] {
+    --podo-typography-body-medium-fontSize: 16px;
+    --podo-typography-heading-xlarge-fontSize: 28px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  [data-podo-theme="landing"][data-color-scheme="light"] {
+    --podo-typography-body-medium-fontSize: 14px;
+    --podo-typography-heading-xlarge-fontSize: 24px;
+  }
+}
+
+[data-podo-theme="landing"][data-color-scheme="dark"] {
+  --podo-color-brand: #426CED;
+  --podo-color-danger: #F23B3B;
+  --podo-color-inverse: #FFFFFF;
+  --podo-color-palette-accent-50: #F15764;
+  --podo-color-palette-error-5: #FEF1F1;
+  --podo-color-palette-error-50: #F23B3B;
+  --podo-color-palette-gray-10: #F4F4F5;
+  --podo-color-palette-gray-5: #F9F9F9;
+  --podo-color-palette-gray-70: #3E424B;
+  --podo-color-palette-gray-90: #18181B;
+  --podo-color-palette-info-5: #EBF5FF;
+  --podo-color-palette-info-50: #0095FF;
+  --podo-color-palette-orange-5: #FFF4F0;
+  --podo-color-palette-orange-50: #FF6A33;
+  --podo-color-palette-purple-5: #F8F5FF;
+  --podo-color-palette-purple-50: #8E51FF;
+  --podo-color-palette-success-5: #ECF8EF;
+  --podo-color-palette-success-50: #3EA856;
+  --podo-color-palette-warning-5: #FFF7E6;
+  --podo-color-palette-warning-50: #FFAA00;
+  --podo-color-text: #18181B;
+  --podo-component-button-background: #426CED;
+  --podo-component-button-text: #FFFFFF;
+  --podo-component-input-background: #FFFFFF;
+  --podo-component-input-border: #18181B;
+  --podo-radius-control-md: 8px;
+  --podo-semantic-color-text-danger: #F23B3B;
+  --podo-semantic-color-text-default: #18181B;
+  --podo-semantic-color-text-inverse: #FFFFFF;
+  --podo-spacing-component-field-gap: 8px;
+  --podo-spacing-scale-1: 4px;
+  --podo-spacing-scale-2: 8px;
+  --podo-typography-body-medium-fontFamily: Pretendard;
+  --podo-typography-body-medium-fontSize: 16px;
+  --podo-typography-body-medium-fontWeight: 400;
+  --podo-typography-body-medium-letterSpacing: 0px;
+  --podo-typography-body-medium-lineHeight: 160%;
+  --podo-typography-h1-fontFamily: Pretendard;
+  --podo-typography-h1-fontSize: 64px;
+  --podo-typography-h1-fontWeight: 700;
+  --podo-typography-h1-letterSpacing: 0px;
+  --podo-typography-h1-lineHeight: 72px;
+  --podo-typography-heading-xlarge-fontFamily: Pretendard;
+  --podo-typography-heading-xlarge-fontSize: 32px;
+  --podo-typography-heading-xlarge-fontWeight: 700;
+  --podo-typography-heading-xlarge-letterSpacing: 0px;
+  --podo-typography-heading-xlarge-lineHeight: 120%;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  [data-podo-theme="landing"][data-color-scheme="dark"] {
+    --podo-typography-body-medium-fontSize: 16px;
+    --podo-typography-heading-xlarge-fontSize: 28px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  [data-podo-theme="landing"][data-color-scheme="dark"] {
+    --podo-typography-body-medium-fontSize: 14px;
+    --podo-typography-heading-xlarge-fontSize: 24px;
+  }
+}
+
+[data-podo-theme="dashboard"][data-color-scheme="light"] {
+  --podo-color-brand: #426CED;
+  --podo-color-danger: #F23B3B;
+  --podo-color-inverse: #FFFFFF;
+  --podo-color-palette-accent-50: #F15764;
+  --podo-color-palette-error-5: #FEF1F1;
+  --podo-color-palette-error-50: #F23B3B;
+  --podo-color-palette-gray-10: #F4F4F5;
+  --podo-color-palette-gray-5: #F9F9F9;
+  --podo-color-palette-gray-70: #3E424B;
+  --podo-color-palette-gray-90: #18181B;
+  --podo-color-palette-info-5: #EBF5FF;
+  --podo-color-palette-info-50: #0095FF;
+  --podo-color-palette-orange-5: #FFF4F0;
+  --podo-color-palette-orange-50: #FF6A33;
+  --podo-color-palette-purple-5: #F8F5FF;
+  --podo-color-palette-purple-50: #8E51FF;
+  --podo-color-palette-success-5: #ECF8EF;
+  --podo-color-palette-success-50: #3EA856;
+  --podo-color-palette-warning-5: #FFF7E6;
+  --podo-color-palette-warning-50: #FFAA00;
+  --podo-color-text: #18181B;
+  --podo-component-button-background: #426CED;
+  --podo-component-button-text: #FFFFFF;
+  --podo-component-input-background: #FFFFFF;
+  --podo-component-input-border: #18181B;
+  --podo-radius-control-md: 8px;
+  --podo-semantic-color-text-danger: #F23B3B;
+  --podo-semantic-color-text-default: #18181B;
+  --podo-semantic-color-text-inverse: #FFFFFF;
+  --podo-spacing-component-field-gap: 8px;
+  --podo-spacing-scale-1: 4px;
+  --podo-spacing-scale-2: 8px;
+  --podo-typography-body-medium-fontFamily: Pretendard;
+  --podo-typography-body-medium-fontSize: 16px;
+  --podo-typography-body-medium-fontWeight: 400;
+  --podo-typography-body-medium-letterSpacing: 0px;
+  --podo-typography-body-medium-lineHeight: 160%;
+  --podo-typography-h1-fontFamily: Pretendard;
+  --podo-typography-h1-fontSize: 28px;
+  --podo-typography-h1-fontWeight: 600;
+  --podo-typography-h1-letterSpacing: 0px;
+  --podo-typography-h1-lineHeight: 36px;
+  --podo-typography-heading-xlarge-fontFamily: Pretendard;
+  --podo-typography-heading-xlarge-fontSize: 32px;
+  --podo-typography-heading-xlarge-fontWeight: 700;
+  --podo-typography-heading-xlarge-letterSpacing: 0px;
+  --podo-typography-heading-xlarge-lineHeight: 120%;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  [data-podo-theme="dashboard"][data-color-scheme="light"] {
+    --podo-typography-body-medium-fontSize: 16px;
+    --podo-typography-heading-xlarge-fontSize: 28px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  [data-podo-theme="dashboard"][data-color-scheme="light"] {
+    --podo-typography-body-medium-fontSize: 14px;
+    --podo-typography-heading-xlarge-fontSize: 24px;
+  }
+}
+
+[data-podo-theme="dashboard"][data-color-scheme="dark"] {
+  --podo-color-brand: #426CED;
+  --podo-color-danger: #F23B3B;
+  --podo-color-inverse: #FFFFFF;
+  --podo-color-palette-accent-50: #F15764;
+  --podo-color-palette-error-5: #FEF1F1;
+  --podo-color-palette-error-50: #F23B3B;
+  --podo-color-palette-gray-10: #F4F4F5;
+  --podo-color-palette-gray-5: #F9F9F9;
+  --podo-color-palette-gray-70: #3E424B;
+  --podo-color-palette-gray-90: #18181B;
+  --podo-color-palette-info-5: #EBF5FF;
+  --podo-color-palette-info-50: #0095FF;
+  --podo-color-palette-orange-5: #FFF4F0;
+  --podo-color-palette-orange-50: #FF6A33;
+  --podo-color-palette-purple-5: #F8F5FF;
+  --podo-color-palette-purple-50: #8E51FF;
+  --podo-color-palette-success-5: #ECF8EF;
+  --podo-color-palette-success-50: #3EA856;
+  --podo-color-palette-warning-5: #FFF7E6;
+  --podo-color-palette-warning-50: #FFAA00;
+  --podo-color-text: #18181B;
+  --podo-component-button-background: #426CED;
+  --podo-component-button-text: #FFFFFF;
+  --podo-component-input-background: #FFFFFF;
+  --podo-component-input-border: #18181B;
+  --podo-radius-control-md: 8px;
+  --podo-semantic-color-text-danger: #F23B3B;
+  --podo-semantic-color-text-default: #18181B;
+  --podo-semantic-color-text-inverse: #FFFFFF;
+  --podo-spacing-component-field-gap: 8px;
+  --podo-spacing-scale-1: 4px;
+  --podo-spacing-scale-2: 8px;
+  --podo-typography-body-medium-fontFamily: Pretendard;
+  --podo-typography-body-medium-fontSize: 16px;
+  --podo-typography-body-medium-fontWeight: 400;
+  --podo-typography-body-medium-letterSpacing: 0px;
+  --podo-typography-body-medium-lineHeight: 160%;
+  --podo-typography-h1-fontFamily: Pretendard;
+  --podo-typography-h1-fontSize: 28px;
+  --podo-typography-h1-fontWeight: 600;
+  --podo-typography-h1-letterSpacing: 0px;
+  --podo-typography-h1-lineHeight: 36px;
+  --podo-typography-heading-xlarge-fontFamily: Pretendard;
+  --podo-typography-heading-xlarge-fontSize: 32px;
+  --podo-typography-heading-xlarge-fontWeight: 700;
+  --podo-typography-heading-xlarge-letterSpacing: 0px;
+  --podo-typography-heading-xlarge-lineHeight: 120%;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  [data-podo-theme="dashboard"][data-color-scheme="dark"] {
+    --podo-typography-body-medium-fontSize: 16px;
+    --podo-typography-heading-xlarge-fontSize: 28px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  [data-podo-theme="dashboard"][data-color-scheme="dark"] {
+    --podo-typography-body-medium-fontSize: 14px;
+    --podo-typography-heading-xlarge-fontSize: 24px;
+  }
+}
+
+[data-podo-theme="custom"][data-color-scheme="light"] {
+  --podo-color-brand: #426CED;
+  --podo-color-danger: #F23B3B;
+  --podo-color-inverse: #FFFFFF;
+  --podo-color-palette-accent-50: #F15764;
+  --podo-color-palette-error-5: #FEF1F1;
+  --podo-color-palette-error-50: #F23B3B;
+  --podo-color-palette-gray-10: #F4F4F5;
+  --podo-color-palette-gray-5: #F9F9F9;
+  --podo-color-palette-gray-70: #3E424B;
+  --podo-color-palette-gray-90: #18181B;
+  --podo-color-palette-info-5: #EBF5FF;
+  --podo-color-palette-info-50: #0095FF;
+  --podo-color-palette-orange-5: #FFF4F0;
+  --podo-color-palette-orange-50: #FF6A33;
+  --podo-color-palette-purple-5: #F8F5FF;
+  --podo-color-palette-purple-50: #8E51FF;
+  --podo-color-palette-success-5: #ECF8EF;
+  --podo-color-palette-success-50: #3EA856;
+  --podo-color-palette-warning-5: #FFF7E6;
+  --podo-color-palette-warning-50: #FFAA00;
+  --podo-color-text: #18181B;
+  --podo-component-button-background: #426CED;
+  --podo-component-button-text: #FFFFFF;
+  --podo-component-input-background: #FFFFFF;
+  --podo-component-input-border: #18181B;
+  --podo-radius-control-md: 8px;
+  --podo-semantic-color-text-danger: #F23B3B;
+  --podo-semantic-color-text-default: #18181B;
+  --podo-semantic-color-text-inverse: #FFFFFF;
+  --podo-spacing-component-field-gap: 8px;
+  --podo-spacing-scale-1: 4px;
+  --podo-spacing-scale-2: 8px;
+  --podo-typography-body-medium-fontFamily: Pretendard;
+  --podo-typography-body-medium-fontSize: 16px;
+  --podo-typography-body-medium-fontWeight: 400;
+  --podo-typography-body-medium-letterSpacing: 0px;
+  --podo-typography-body-medium-lineHeight: 160%;
+  --podo-typography-heading-xlarge-fontFamily: Pretendard;
+  --podo-typography-heading-xlarge-fontSize: 32px;
+  --podo-typography-heading-xlarge-fontWeight: 700;
+  --podo-typography-heading-xlarge-letterSpacing: 0px;
+  --podo-typography-heading-xlarge-lineHeight: 120%;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  [data-podo-theme="custom"][data-color-scheme="light"] {
+    --podo-typography-body-medium-fontSize: 16px;
+    --podo-typography-heading-xlarge-fontSize: 28px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  [data-podo-theme="custom"][data-color-scheme="light"] {
+    --podo-typography-body-medium-fontSize: 14px;
+    --podo-typography-heading-xlarge-fontSize: 24px;
+  }
+}
+
+[data-podo-theme="custom"][data-color-scheme="dark"] {
+  --podo-color-brand: #426CED;
+  --podo-color-danger: #F23B3B;
+  --podo-color-inverse: #FFFFFF;
+  --podo-color-palette-accent-50: #F15764;
+  --podo-color-palette-error-5: #FEF1F1;
+  --podo-color-palette-error-50: #F23B3B;
+  --podo-color-palette-gray-10: #F4F4F5;
+  --podo-color-palette-gray-5: #F9F9F9;
+  --podo-color-palette-gray-70: #3E424B;
+  --podo-color-palette-gray-90: #18181B;
+  --podo-color-palette-info-5: #EBF5FF;
+  --podo-color-palette-info-50: #0095FF;
+  --podo-color-palette-orange-5: #FFF4F0;
+  --podo-color-palette-orange-50: #FF6A33;
+  --podo-color-palette-purple-5: #F8F5FF;
+  --podo-color-palette-purple-50: #8E51FF;
+  --podo-color-palette-success-5: #ECF8EF;
+  --podo-color-palette-success-50: #3EA856;
+  --podo-color-palette-warning-5: #FFF7E6;
+  --podo-color-palette-warning-50: #FFAA00;
+  --podo-color-text: #18181B;
+  --podo-component-button-background: #426CED;
+  --podo-component-button-text: #FFFFFF;
+  --podo-component-input-background: #FFFFFF;
+  --podo-component-input-border: #18181B;
+  --podo-radius-control-md: 8px;
+  --podo-semantic-color-text-danger: #F23B3B;
+  --podo-semantic-color-text-default: #18181B;
+  --podo-semantic-color-text-inverse: #FFFFFF;
+  --podo-spacing-component-field-gap: 8px;
+  --podo-spacing-scale-1: 4px;
+  --podo-spacing-scale-2: 8px;
+  --podo-typography-body-medium-fontFamily: Pretendard;
+  --podo-typography-body-medium-fontSize: 16px;
+  --podo-typography-body-medium-fontWeight: 400;
+  --podo-typography-body-medium-letterSpacing: 0px;
+  --podo-typography-body-medium-lineHeight: 160%;
+  --podo-typography-heading-xlarge-fontFamily: Pretendard;
+  --podo-typography-heading-xlarge-fontSize: 32px;
+  --podo-typography-heading-xlarge-fontWeight: 700;
+  --podo-typography-heading-xlarge-letterSpacing: 0px;
+  --podo-typography-heading-xlarge-lineHeight: 120%;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  [data-podo-theme="custom"][data-color-scheme="dark"] {
+    --podo-typography-body-medium-fontSize: 16px;
+    --podo-typography-heading-xlarge-fontSize: 28px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  [data-podo-theme="custom"][data-color-scheme="dark"] {
+    --podo-typography-body-medium-fontSize: 14px;
+    --podo-typography-heading-xlarge-fontSize: 24px;
+  }
+}
