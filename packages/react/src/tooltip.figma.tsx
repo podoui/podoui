@@ -10,7 +10,7 @@ import { Button, Tooltip } from "./index.js";
 
 figma.connect(
   Tooltip,
-  "https://www.figma.com/design/Rznr8B3vMPyh3uKLoTbsz4/PODO-Design-System?node-id=388-2125",
+  "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=388-2125",
   {
     props: {
       label: figma.string("label"),

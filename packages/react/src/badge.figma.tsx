@@ -7,7 +7,7 @@ import { Badge } from "./index.js";
 
 figma.connect(
   Badge,
-  "https://www.figma.com/design/Rznr8B3vMPyh3uKLoTbsz4/PODO-Design-System?node-id=474-3218",
+  "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=474-3218",
   {
     props: {
       theme: figma.enum("theme", {

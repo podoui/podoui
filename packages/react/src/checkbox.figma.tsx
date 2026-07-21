@@ -10,7 +10,7 @@ import { Checkbox } from "./index.js";
 
 figma.connect(
   Checkbox,
-  "https://www.figma.com/design/Rznr8B3vMPyh3uKLoTbsz4/PODO-Design-System?node-id=328-18039",
+  "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=328-18039",
   {
     props: {
       checked: figma.enum("state", { checked: true, unchecked: false }),

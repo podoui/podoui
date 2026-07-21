@@ -9,7 +9,7 @@ import { Textarea } from "./index.js";
 
 figma.connect(
   Textarea,
-  "https://www.figma.com/design/Rznr8B3vMPyh3uKLoTbsz4/PODO-Design-System?node-id=380-3867",
+  "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=380-3867",
   {
     props: {
       placeholder: figma.string("label"),

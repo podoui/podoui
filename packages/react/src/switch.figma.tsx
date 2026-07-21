@@ -9,7 +9,7 @@ import { Switch } from "./index.js";
 
 figma.connect(
   Switch,
-  "https://www.figma.com/design/Rznr8B3vMPyh3uKLoTbsz4/PODO-Design-System?node-id=566-12693",
+  "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=566-12693",
   {
     props: {
       checked: figma.enum("state", { on: true, off: false }),

@@ -1,6 +1,7 @@
 // Code Connect: Figma Field component (334:1049) → @podoui/react Field.
-// - boolean toggles (sub-label, helper-text, character-count, suffix-icon)
-//   become the corresponding camelCase props/slots
+// - boolean toggles (sub-label, footer, suffix-icon)가 대응 camelCase
+//   프롭/슬롯이 된다 — 원본 파일은 helper-text/character-count 대신 footer
+//   불리언 하나로 하단 행(도움말+글자수)을 켠다
 // - the Slot swap is the control slot: any input/button/combobox goes inside
 import React from "react";
 import figma from "@figma/code-connect";
@@ -8,7 +9,7 @@ import { Field, Icon, Input } from "./index.js";
 
 figma.connect(
   Field,
-  "https://www.figma.com/design/Rznr8B3vMPyh3uKLoTbsz4/PODO-Design-System?node-id=334-1049",
+  "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=334-1049",
   {
     props: {
       label: figma.string("label"),
@@ -21,11 +22,11 @@ figma.connect(
         true: <Icon name="menu" />,
         false: undefined,
       }),
-      helperText: figma.boolean("helper-text", {
+      helperText: figma.boolean("footer", {
         true: "도움말 텍스트",
         false: undefined,
       }),
-      countMax: figma.boolean("character-count", {
+      countMax: figma.boolean("footer", {
         true: 500,
         false: undefined,
       }),

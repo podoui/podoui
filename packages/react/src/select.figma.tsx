@@ -9,7 +9,7 @@ import { Icon, Select } from "./index.js";
 
 figma.connect(
   Select,
-  "https://www.figma.com/design/Rznr8B3vMPyh3uKLoTbsz4/PODO-Design-System?node-id=318-2237",
+  "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=318-2237",
   {
     props: {
       size: figma.enum("size", { md: "md", lg: "lg" }),

@@ -7,7 +7,7 @@ import { Table } from "./index.js";
 
 figma.connect(
   Table,
-  "https://www.figma.com/design/Rznr8B3vMPyh3uKLoTbsz4/PODO-Design-System?node-id=474-1795",
+  "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=474-1795",
   {
     props: {
       type: figma.enum("type", { grid: "grid", horizon: "horizon" }),

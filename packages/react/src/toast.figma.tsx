@@ -11,7 +11,7 @@ import { Icon, Toast } from "./index.js";
 
 figma.connect(
   Toast,
-  "https://www.figma.com/design/Rznr8B3vMPyh3uKLoTbsz4/PODO-Design-System?node-id=459-1298",
+  "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=459-1298",
   {
     props: {
       title: figma.string("Title"),

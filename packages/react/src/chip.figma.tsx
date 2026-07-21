@@ -8,7 +8,7 @@ import { Chip, Icon } from "./index.js";
 
 figma.connect(
   Chip,
-  "https://www.figma.com/design/Rznr8B3vMPyh3uKLoTbsz4/PODO-Design-System?node-id=328-14276",
+  "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=328-14276",
   {
     props: {
       theme: figma.enum("theme", {
