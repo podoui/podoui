@@ -561,7 +561,7 @@
 
 - [ ] Code Connect publish
   - `.figma.tsx` 12개(button/chip/input/field/switch/textarea/table/checkbox/radio/toast/tooltip/badge) 작성·parse 검증 완료. 남은 것: 팀 Figma 플랜(Org/Enterprise) 확인 → 토큰 발급 → `npx figma connect publish`.
-  - (2026-07-21 진행: publish 직전까지 완료 — ① import 해석 경고 해결(figma.config.json include 확장), ② `.figma.tsx` 12개의 파일 키를 사본(Rznr8B3v…)에서 **원본 uaLVvCUnvoWj4oz6ZMXxwP**로 교체(노드 ID는 사본과 동일 확인), ③ 원본과 갈라진 Field 속성(helper-text/character-count → `footer` 불리언) 매핑 수정 → `figma connect publish` 검증 단계 "All Code Connect files are valid". 남은 것 단 하나: FIGMA_YENNY_PAT에 **Code Connect: write** 스코프가 없어 업로드가 403 — 같은 계정에서 File content: read + Code Connect: write 스코프로 토큰 재발급 후 `FIGMA_ACCESS_TOKEN=… npx figma connect publish` 한 번이면 완료.)
+  - (2026-07-22 상태: publish 직전까지 완료 — import 해석·원본 파일 키 교체(uaLVvCUnvoWj4oz6ZMXxwP)·Field footer 매핑까지 끝나 `figma connect publish` 검증 "All Code Connect files are valid". 업로드만 403: PODO 계정에서 전 스코프 체크로 재발급해도 **PAT 화면에 Code Connect 스코프 항목 자체가 미노출** — Code Connect는 Organization/Enterprise 플랜 + Full/Dev 시트 전용이라, 디자인 파일이 속한 조직의 플랜 또는 PODO 계정 시트가 미달인 상태로 확인됨. 남은 것: 플랜/시트 확인 후 ① Org 플랜+Full/Dev 시트 확보 → 재발급 토큰으로 publish 1회, 또는 ② 플랜 업그레이드 전까지 보류(parse 정합성은 `pnpm figma:check`로 CI 검증 지속).)
 - [ ] AGENTS.md에 어휘 규칙 명문화 + 컴포넌트 작업 체크리스트에 figma.tsx 갱신 단계 추가
 - [ ] 디자이너에게 시안 수정 요청 (코드는 시안 픽셀 그대로 반영해 둔 상태)
   - Chip `outline-strong`의 selected가 solid와 동일 렌더 (외곽선 없음) — 수정되면 web CSS/theme.css/native의 "pending a design fix" 주석 지점 갱신
