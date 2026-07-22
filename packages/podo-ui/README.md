@@ -53,10 +53,13 @@ import "podo-ui/icons.css"; // 기본 아이콘 글리프 폰트 (PodoIcons)
 `.podo` 오버라이드(테마, 아이콘 그룹 포함)가 그 산출물에 반영됩니다.
 `podo-ui/icons.css`는 빌드 없이 쓰는 소비자를 위한 기본 아이콘 세트입니다.
 
-다크 모드(`data-color-scheme="dark"`): 기본 토큰 문서에는 다크 오버라이드가
-없으므로 프로젝트 `.podo` 토큰으로 정의합니다. v1 이식 컴포넌트
-(DatePicker/Editor)는 자체 다크 스타일을 포함하며, Figma 미러 컴포넌트
-크롬의 다크 팔레트는 디자인 확정 대기입니다(라이트 폴백 유지).
+다크 모드(`data-color-scheme="dark"`): 기본 토큰 문서가 Figma theme
+컬렉션의 light/dark 값(112개 변수 — text/border/foreground/elevation/
+icon/table/button)을 그대로 내장하므로, `podo build`가 생성한 tokens.css를
+import하면 `data-podo-theme`+`data-color-scheme` 속성 전환만으로 전체
+컴포넌트가 다크로 재스타일됩니다. 프로젝트 `.podo` 토큰으로 값을
+오버라이드할 수 있고, v1 이식 컴포넌트(DatePicker/Editor)는 자체 다크
+스타일을 포함합니다.
 
 ## CLI
 

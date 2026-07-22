@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.0 (2026-07-22)
+
+- 다크 모드 지원: 원본 Figma 파일의 theme 컬렉션(112개 변수, light/dark
+  모드)을 기본 토큰 문서에 이식 — `podo build`의 tokens.css가 스킴별 값을
+  발행해 `data-color-scheme="dark"` 전환만으로 전 컴포넌트가 재스타일된다
+  (알파 값은 #RRGGBBAA). styles.css의 라이트 폴백은 그대로 유지되어
+  빌드 없이 쓰는 소비자의 라이트 렌더는 변하지 않는다.
+
 ## 2.2.0 (2026-07-21)
 
 - native: Chip `defaultSelected`, Switch/Checkbox/Radio `defaultChecked`,

@@ -1090,6 +1090,472 @@ const defaultTokenDocument: TokenDocument = {
         },
       },
     },
+    // ===== Figma theme 컬렉션 (Variables Documentation - theme, 16244:181609) =====
+    // podo-ui styles.css가 소비하는 --podo-<group>-<name> 변수의 원천.
+    // light/dark 두 모드 값을 원본 문서 표에서 그대로 이식 (2026-07-22,
+    // 알파 값은 #RRGGBBAA로 표기). 이름의 'gary' 오타는 Figma 원본 그대로다.
+    border: {
+      danger: {
+        light: { $type: "color", $value: "#F23B3B" },
+        dark: { $type: "color", $value: "#F56666" },
+      },
+      disabled: {
+        light: { $type: "color", $value: "#D1D2D6" },
+        dark: { $type: "color", $value: "#FFFFFF0D" },
+      },
+      gary: {
+        light: { $type: "color", $value: "#E4E4E7" },
+        dark: { $type: "color", $value: "#FFFFFF1A" },
+      },
+      "gray-darker": {
+        light: { $type: "color", $value: "#9FA2AD" },
+        dark: { $type: "color", $value: "#FFFFFF4C" },
+      },
+      "gray-deep": {
+        light: { $type: "color", $value: "#D1D2D6" },
+        dark: { $type: "color", $value: "#FFFFFF33" },
+      },
+      info: {
+        light: { $type: "color", $value: "#0095FF" },
+        dark: { $type: "color", $value: "#56ACFF" },
+      },
+      natural: {
+        light: { $type: "color", $value: "#9FA2AD" },
+        dark: { $type: "color", $value: "#50555E" },
+      },
+      "natural-darker": {
+        light: { $type: "color", $value: "#27272A" },
+        dark: { $type: "color", $value: "#F9F9F9" },
+      },
+      "natural-deep": {
+        light: { $type: "color", $value: "#767985" },
+        dark: { $type: "color", $value: "#767985" },
+      },
+      primary: {
+        light: { $type: "color", $value: "#426CED" },
+        dark: { $type: "color", $value: "#577DEF" },
+      },
+      success: {
+        light: { $type: "color", $value: "#3EA856" },
+        dark: { $type: "color", $value: "#57C16F" },
+      },
+      warning: {
+        light: { $type: "color", $value: "#FFAA00" },
+        dark: { $type: "color", $value: "#FFBB33" },
+      },
+    },
+    button: {
+      "background-disabled": {
+        light: { $type: "color", $value: "#E4E4E7" },
+        dark: { $type: "color", $value: "#FFFFFF1A" },
+      },
+      "background-outline-assistive": {
+        light: { $type: "color", $value: "#F9F9F9" },
+        dark: { $type: "color", $value: "#FFFFFF0D" },
+      },
+      "background-outline-assistive-hover": {
+        light: { $type: "color", $value: "#F4F4F5" },
+        dark: { $type: "color", $value: "#FFFFFF1A" },
+      },
+      "background-outline-assistive-pressed": {
+        light: { $type: "color", $value: "#E4E4E7" },
+        dark: { $type: "color", $value: "#FFFFFF33" },
+      },
+      "background-outline-danger": {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#27272A" },
+      },
+      "background-outline-danger-hover": {
+        light: { $type: "color", $value: "#FEF1F1" },
+        dark: { $type: "color", $value: "#FFFFFF0D" },
+      },
+      "background-outline-danger-pressed": {
+        light: { $type: "color", $value: "#FFE0DF" },
+        dark: { $type: "color", $value: "#FFFFFF1A" },
+      },
+      "background-outline-primary": {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#27272A" },
+      },
+      "background-outline-primary-hover": {
+        light: { $type: "color", $value: "#F1F4FD" },
+        dark: { $type: "color", $value: "#FFFFFF0D" },
+      },
+      "background-outline-primary-pressed": {
+        light: { $type: "color", $value: "#D0DBFB" },
+        dark: { $type: "color", $value: "#FFFFFF1A" },
+      },
+      "background-outline-white": {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#3E424B" },
+      },
+      "background-outline-white-hover": {
+        light: { $type: "color", $value: "#0000000D" },
+        dark: { $type: "color", $value: "#50555E" },
+      },
+      "background-outline-white-pressed": {
+        light: { $type: "color", $value: "#0000001A" },
+        dark: { $type: "color", $value: "#767985" },
+      },
+      "background-solid-assistive": {
+        light: { $type: "color", $value: "#F4F4F5" },
+        dark: { $type: "color", $value: "#FFFFFF1A" },
+      },
+      "background-solid-assistive-hover": {
+        light: { $type: "color", $value: "#E4E4E7" },
+        dark: { $type: "color", $value: "#FFFFFF33" },
+      },
+      "background-solid-assistive-pressed": {
+        light: { $type: "color", $value: "#D1D2D6" },
+        dark: { $type: "color", $value: "#FFFFFF4C" },
+      },
+      "background-solid-danger": {
+        light: { $type: "color", $value: "#F23B3B" },
+        dark: { $type: "color", $value: "#F23B3B" },
+      },
+      "background-solid-danger-hover": {
+        light: { $type: "color", $value: "#EE1818" },
+        dark: { $type: "color", $value: "#F56666" },
+      },
+      "background-solid-danger-pressed": {
+        light: { $type: "color", $value: "#CD0404" },
+        dark: { $type: "color", $value: "#FF8985" },
+      },
+      "background-solid-primary": {
+        light: { $type: "color", $value: "#426CED" },
+        dark: { $type: "color", $value: "#426CED" },
+      },
+      "background-solid-primary-hover": {
+        light: { $type: "color", $value: "#1245E2" },
+        dark: { $type: "color", $value: "#577DEF" },
+      },
+      "background-solid-primary-pressed": {
+        light: { $type: "color", $value: "#123BBA" },
+        dark: { $type: "color", $value: "#819EF3" },
+      },
+      "background-solid-white": {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#3E424B" },
+      },
+      "background-solid-white-hover": {
+        light: { $type: "color", $value: "#F4F4F5" },
+        dark: { $type: "color", $value: "#50555E" },
+      },
+      "background-solid-white-pressed": {
+        light: { $type: "color", $value: "#E4E4E7" },
+        dark: { $type: "color", $value: "#767985" },
+      },
+      "border-assistive": {
+        light: { $type: "color", $value: "#D1D2D6" },
+        dark: { $type: "color", $value: "#FFFFFF33" },
+      },
+      "border-danger": {
+        light: { $type: "color", $value: "#F23B3B" },
+        dark: { $type: "color", $value: "#F56666" },
+      },
+      "border-disabled": {
+        light: { $type: "color", $value: "#D1D2D6" },
+        dark: { $type: "color", $value: "#FFFFFF1A" },
+      },
+      "border-primary": {
+        light: { $type: "color", $value: "#426CED" },
+        dark: { $type: "color", $value: "#577DEF" },
+      },
+      "border-white": {
+        light: { $type: "color", $value: "#D1D2D6" },
+        dark: { $type: "color", $value: "#FFFFFF33" },
+      },
+    },
+    elevation: {
+      basic: {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#18181B" },
+      },
+      "basic-reverse": {
+        light: { $type: "color", $value: "#18181B" },
+        dark: { $type: "color", $value: "#FFFFFF" },
+      },
+      dim: {
+        light: { $type: "color", $value: "#00000080" },
+        dark: { $type: "color", $value: "#00000080" },
+      },
+      gray: {
+        light: { $type: "color", $value: "#F9F9F9" },
+        dark: { $type: "color", $value: "#27272A" },
+      },
+      nesting: {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#FFFFFF0D" },
+      },
+      outline: {
+        light: { $type: "color", $value: "#E4E4E7" },
+        dark: { $type: "color", $value: "#FFFFFF0D" },
+      },
+      static: {
+        light: { $type: "color", $value: "#27272A" },
+        dark: { $type: "color", $value: "#27272A" },
+      },
+      "static-invert": {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#FFFFFF" },
+      },
+    },
+    foreground: {
+      basic: {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#FFFFFF0D" },
+      },
+      "basic-reverse": {
+        light: { $type: "color", $value: "#3E424B" },
+        dark: { $type: "color", $value: "#E4E4E7" },
+      },
+      danger: {
+        light: { $type: "color", $value: "#F23B3B" },
+        dark: { $type: "color", $value: "#F56666" },
+      },
+      "danger-light": {
+        light: { $type: "color", $value: "#FEF1F1" },
+        dark: { $type: "color", $value: "#FFADAD" },
+      },
+      disabled: {
+        light: { $type: "color", $value: "#E4E4E7" },
+        dark: { $type: "color", $value: "#FFFFFF1A" },
+      },
+      "disabled-dark": {
+        light: { $type: "color", $value: "#D1D2D6" },
+        dark: { $type: "color", $value: "#00000033" },
+      },
+      gray: {
+        light: { $type: "color", $value: "#F9F9F9" },
+        dark: { $type: "color", $value: "#FFFFFF0D" },
+      },
+      "gray-dark": {
+        light: { $type: "color", $value: "#D1D2D6" },
+        dark: { $type: "color", $value: "#50555E" },
+      },
+      "gray-light": {
+        light: { $type: "color", $value: "#F4F4F5" },
+        dark: { $type: "color", $value: "#FFFFFF1A" },
+      },
+      "gray-lightdeep": {
+        light: { $type: "color", $value: "#E4E4E7" },
+        dark: { $type: "color", $value: "#FFFFFF33" },
+      },
+      info: {
+        light: { $type: "color", $value: "#0095FF" },
+        dark: { $type: "color", $value: "#56ACFF" },
+      },
+      "info-light": {
+        light: { $type: "color", $value: "#EBF5FF" },
+        dark: { $type: "color", $value: "#8FC8FF" },
+      },
+      mono: {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#000000" },
+      },
+      "mono-reverse": {
+        light: { $type: "color", $value: "#000000" },
+        dark: { $type: "color", $value: "#FFFFFF" },
+      },
+      natural: {
+        light: { $type: "color", $value: "#3E424B" },
+        dark: { $type: "color", $value: "#767985" },
+      },
+      "natural-light": {
+        light: { $type: "color", $value: "#F4F4F5" },
+        dark: { $type: "color", $value: "#50555E" },
+      },
+      "natural-lightdeep": {
+        light: { $type: "color", $value: "#767985" },
+        dark: { $type: "color", $value: "#9FA2AD" },
+      },
+      point: {
+        light: { $type: "color", $value: "#F15764" },
+        dark: { $type: "color", $value: "#F66F7A" },
+      },
+      primary: {
+        light: { $type: "color", $value: "#426CED" },
+        dark: { $type: "color", $value: "#577DEF" },
+      },
+      "primary-light": {
+        light: { $type: "color", $value: "#F1F4FD" },
+        dark: { $type: "color", $value: "#ABBEF7" },
+      },
+      static: {
+        light: { $type: "color", $value: "#18181B" },
+        dark: { $type: "color", $value: "#18181B" },
+      },
+      "static-invert": {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#FFFFFF" },
+      },
+      success: {
+        light: { $type: "color", $value: "#3EA856" },
+        dark: { $type: "color", $value: "#57C16F" },
+      },
+      "success-light": {
+        light: { $type: "color", $value: "#ECF8EF" },
+        dark: { $type: "color", $value: "#A9DEB4" },
+      },
+      warning: {
+        light: { $type: "color", $value: "#FFAA00" },
+        dark: { $type: "color", $value: "#FFBB33" },
+      },
+      "warning-light": {
+        light: { $type: "color", $value: "#FFF7E6" },
+        dark: { $type: "color", $value: "#FFD88A" },
+      },
+    },
+    icon: {
+      basic: {
+        light: { $type: "color", $value: "#27272A" },
+        dark: { $type: "color", $value: "#F9F9F9" },
+      },
+      "basic-reverse": {
+        light: { $type: "color", $value: "#F9F9F9" },
+        dark: { $type: "color", $value: "#27272A" },
+      },
+      danger: {
+        light: { $type: "color", $value: "#F23B3B" },
+        dark: { $type: "color", $value: "#F56666" },
+      },
+      disabled: {
+        light: { $type: "color", $value: "#9FA2AD" },
+        dark: { $type: "color", $value: "#FFFFFF4C" },
+      },
+      "icon-hover": {
+        light: { $type: "color", $value: "#4A78B5" },
+        dark: { $type: "color", $value: "#76A0D8" },
+      },
+      "icon-pressed": {
+        light: { $type: "color", $value: "#34547E" },
+        dark: { $type: "color", $value: "#A0C2EE" },
+      },
+      info: {
+        light: { $type: "color", $value: "#0095FF" },
+        dark: { $type: "color", $value: "#56ACFF" },
+      },
+      point: {
+        light: { $type: "color", $value: "#F15764" },
+        dark: { $type: "color", $value: "#F66F7A" },
+      },
+      primary: {
+        light: { $type: "color", $value: "#426CED" },
+        dark: { $type: "color", $value: "#577DEF" },
+      },
+      static: {
+        light: { $type: "color", $value: "#27272A" },
+        dark: { $type: "color", $value: "#27272A" },
+      },
+      "static-invert": {
+        light: { $type: "color", $value: "#F9F9F9" },
+        dark: { $type: "color", $value: "#F9F9F9" },
+      },
+      subtil: {
+        light: { $type: "color", $value: "#767985" },
+        dark: { $type: "color", $value: "#9FA2AD" },
+      },
+      success: {
+        light: { $type: "color", $value: "#3EA856" },
+        dark: { $type: "color", $value: "#57C16F" },
+      },
+      warning: {
+        light: { $type: "color", $value: "#FFAA00" },
+        dark: { $type: "color", $value: "#FFBB33" },
+      },
+    },
+    table: {
+      "table-bg": {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#27272A" },
+      },
+      "table-outline": {
+        light: { $type: "color", $value: "#E4E4E7" },
+        dark: { $type: "color", $value: "#3E424B" },
+      },
+      "table-th": {
+        light: { $type: "color", $value: "#F4F4F5" },
+        dark: { $type: "color", $value: "#18181B" },
+      },
+      "table-tr-disabled": {
+        light: { $type: "color", $value: "#F4F4F5" },
+        dark: { $type: "color", $value: "#FFFFFF0D" },
+      },
+      "table-tr-focused": {
+        light: { $type: "color", $value: "#F4F4F5" },
+        dark: { $type: "color", $value: "#FFFFFF1A" },
+      },
+      "table-tr-hover": {
+        light: { $type: "color", $value: "#F9F9F9" },
+        dark: { $type: "color", $value: "#FFFFFF0D" },
+      },
+    },
+    text: {
+      basic: {
+        light: { $type: "color", $value: "#18181B" },
+        dark: { $type: "color", $value: "#F9F9F9" },
+      },
+      "basic-reverse": {
+        light: { $type: "color", $value: "#F9F9F9" },
+        dark: { $type: "color", $value: "#18181B" },
+      },
+      danger: {
+        light: { $type: "color", $value: "#F23B3B" },
+        dark: { $type: "color", $value: "#F56666" },
+      },
+      disabled: {
+        light: { $type: "color", $value: "#9FA2AD" },
+        dark: { $type: "color", $value: "#FFFFFF33" },
+      },
+      info: {
+        light: { $type: "color", $value: "#0095FF" },
+        dark: { $type: "color", $value: "#56ACFF" },
+      },
+      placeholder: {
+        light: { $type: "color", $value: "#9FA2AD" },
+        dark: { $type: "color", $value: "#FFFFFF66" },
+      },
+      point: {
+        light: { $type: "color", $value: "#F15764" },
+        dark: { $type: "color", $value: "#F66F7A" },
+      },
+      primary: {
+        light: { $type: "color", $value: "#426CED" },
+        dark: { $type: "color", $value: "#577DEF" },
+      },
+      static: {
+        light: { $type: "color", $value: "#18181B" },
+        dark: { $type: "color", $value: "#18181B" },
+      },
+      "static-invert": {
+        light: { $type: "color", $value: "#FFFFFF" },
+        dark: { $type: "color", $value: "#FFFFFF" },
+      },
+      subtil: {
+        light: { $type: "color", $value: "#50555E" },
+        dark: { $type: "color", $value: "#9FA2AD" },
+      },
+      "subtil-reverse": {
+        light: { $type: "color", $value: "#9FA2AD" },
+        dark: { $type: "color", $value: "#50555E" },
+      },
+      success: {
+        light: { $type: "color", $value: "#3EA856" },
+        dark: { $type: "color", $value: "#57C16F" },
+      },
+      "text-hover": {
+        light: { $type: "color", $value: "#4A78B5" },
+        dark: { $type: "color", $value: "#76A0D8" },
+      },
+      "text-pressed": {
+        light: { $type: "color", $value: "#34547E" },
+        dark: { $type: "color", $value: "#A0C2EE" },
+      },
+      warning: {
+        light: { $type: "color", $value: "#FFAA00" },
+        dark: { $type: "color", $value: "#FFBB33" },
+      },
+    },
     semantic: {
       color: {
         text: {

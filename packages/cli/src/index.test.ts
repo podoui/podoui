@@ -42,102 +42,119 @@ describe("@podoui/cli", () => {
     expect(report.ok).toBe(true);
   });
 
-  it("builds tokens, icons, components, dry-runs, and uses cache", async () => {
-    const root = await createProject({ dependencies: { hono: "^4.0.0" } });
-    const io = createIo(root);
-    await runCli(
-      [
-        "init",
-        "--target",
-        "hono",
-        "--theme",
-        "landing",
-        "--out-dir",
-        "src/generated/podo",
-        "--yes",
-      ],
-      io
-    );
-    await writeFile(
-      join(root, ".podo/themes/button.tokens.json"),
-      `${JSON.stringify(
-        {
-          schemaVersion: "2.0.0",
-          kind: "tokens",
-          category: "theme",
-          tokens: {
-            component: {
-              button: {
-                background: { $type: "color", $value: "{color.text}" },
+  // 기본 토큰 문서가 커지면서(테마 112변수 x light/dark) 전체 스위트 부하에선
+  // 5초 기본 타임아웃을 넘길 수 있다 — 빌드 2회+아이콘 폰트 생성을 포함한 테스트.
+  it(
+    "builds tokens, icons, components, dry-runs, and uses cache",
+    { timeout: 30_000 },
+    async () => {
+      const root = await createProject({ dependencies: { hono: "^4.0.0" } });
+      const io = createIo(root);
+      await runCli(
+        [
+          "init",
+          "--target",
+          "hono",
+          "--theme",
+          "landing",
+          "--out-dir",
+          "src/generated/podo",
+          "--yes",
+        ],
+        io
+      );
+      await writeFile(
+        join(root, ".podo/themes/button.tokens.json"),
+        `${JSON.stringify(
+          {
+            schemaVersion: "2.0.0",
+            kind: "tokens",
+            category: "theme",
+            tokens: {
+              component: {
+                button: {
+                  background: { $type: "color", $value: "{color.text}" },
+                },
               },
             },
           },
-        },
-        null,
-        2
-      )}\n`
-    );
-    expect((await validateProject(parseArgs(["validate"]), io)).ok).toBe(true);
+          null,
+          2
+        )}\n`
+      );
+      expect((await validateProject(parseArgs(["validate"]), io)).ok).toBe(true);
 
-    await expect(runCli(["build", "--dry-run"], io)).resolves.toBe(0);
-    expect(
-      io.out.some((line) => line.includes("[podo:plan] create src/generated/podo/tokens.css"))
-    ).toBe(true);
+      await expect(runCli(["build", "--dry-run"], io)).resolves.toBe(0);
+      expect(
+        io.out.some((line) => line.includes("[podo:plan] create src/generated/podo/tokens.css"))
+      ).toBe(true);
 
-    const dryRun = await buildProject(parseArgs(["build", "--dry-run"]), io);
-    expect(dryRun.dryRun).toBe(true);
-    expect(dryRun.files.some((file) => file.path.endsWith("tokens.css"))).toBe(true);
-    expect(dryRun.files.some((file) => file.path.endsWith("PodoIcons.woff2"))).toBe(true);
-    await expect(stat(join(root, "src/generated/podo/tokens.css"))).rejects.toThrow();
-    await expect(stat(join(root, ".podo/cache/default-icons"))).rejects.toThrow();
+      const dryRun = await buildProject(parseArgs(["build", "--dry-run"]), io);
+      expect(dryRun.dryRun).toBe(true);
+      expect(dryRun.files.some((file) => file.path.endsWith("tokens.css"))).toBe(true);
+      expect(dryRun.files.some((file) => file.path.endsWith("PodoIcons.woff2"))).toBe(true);
+      await expect(stat(join(root, "src/generated/podo/tokens.css"))).rejects.toThrow();
+      await expect(stat(join(root, ".podo/cache/default-icons"))).rejects.toThrow();
 
-    const built = await buildProject(parseArgs(["build"]), io);
-    expect(built.skipped).toBe(false);
-    await expect(stat(join(root, "src/generated/podo/tokens.css"))).resolves.toBeDefined();
-    const tokensCss = await readFile(join(root, "src/generated/podo/tokens.css"), "utf8");
-    expect(tokensCss).toContain("--podo-component-button-background: #18181B;");
-    // styles.css의 .podo-text--h1/.podo-text--body가 소비하는 변수는 기본 빌드가
-    // 반드시 발행해야 한다 (pc 기본값 + tablet/mobile 반응형 오버라이드).
-    expect(tokensCss).toContain("--podo-typography-heading-xlarge-fontSize: 32px;");
-    expect(tokensCss).toContain("--podo-typography-heading-xlarge-fontSize: 28px;");
-    expect(tokensCss).toContain("--podo-typography-heading-xlarge-fontSize: 24px;");
-    expect(tokensCss).toContain("--podo-typography-body-medium-fontSize: 16px;");
-    expect(tokensCss).toContain("--podo-typography-body-medium-lineHeight: 160%;");
-    // styles.css의 Badge가 소비하는 바인딩 변수를 기본 빌드가 발행한다
-    // (기본 badge 컴포넌트 문서 + color.palette 토큰).
-    const componentsCss = await readFile(join(root, "src/generated/podo/components.css"), "utf8");
-    expect(componentsCss).toContain("--podo-badge-root-background:");
-    expect(componentsCss).toContain("--podo-badge-label-color:");
-    expect(componentsCss).toContain("--podo-badge-dot-color:");
-    expect(componentsCss).toContain('.podo-badge[data-theme="red"]');
-    expect(componentsCss).toContain("var(--podo-color-palette-error-5)");
-    expect(tokensCss).toContain("--podo-color-palette-error-5: #FEF1F1;");
-    expect(tokensCss).toContain("--podo-color-palette-accent-50: #F15764;");
-    // DatePicker가 참조하는 글리프가 기본 아이콘 빌드에 모두 포함된다.
-    const iconCss = await readFile(join(root, "src/generated/podo/icons/PodoIcons.css"), "utf8");
-    for (const glyph of [
-      "menu",
-      "chevron-left",
-      "chevron-right",
-      "calendar",
-      "time",
-      "refresh",
-      "check",
-      "close",
-      "search",
-    ]) {
-      expect(iconCss).toContain(`.podo-icon-${glyph}::before`);
+      const built = await buildProject(parseArgs(["build"]), io);
+      expect(built.skipped).toBe(false);
+      await expect(stat(join(root, "src/generated/podo/tokens.css"))).resolves.toBeDefined();
+      const tokensCss = await readFile(join(root, "src/generated/podo/tokens.css"), "utf8");
+      expect(tokensCss).toContain("--podo-component-button-background: #18181B;");
+      // styles.css의 .podo-text--h1/.podo-text--body가 소비하는 변수는 기본 빌드가
+      // 반드시 발행해야 한다 (pc 기본값 + tablet/mobile 반응형 오버라이드).
+      expect(tokensCss).toContain("--podo-typography-heading-xlarge-fontSize: 32px;");
+      expect(tokensCss).toContain("--podo-typography-heading-xlarge-fontSize: 28px;");
+      expect(tokensCss).toContain("--podo-typography-heading-xlarge-fontSize: 24px;");
+      expect(tokensCss).toContain("--podo-typography-body-medium-fontSize: 16px;");
+      expect(tokensCss).toContain("--podo-typography-body-medium-lineHeight: 160%;");
+      // styles.css의 Badge가 소비하는 바인딩 변수를 기본 빌드가 발행한다
+      // (기본 badge 컴포넌트 문서 + color.palette 토큰).
+      const componentsCss = await readFile(join(root, "src/generated/podo/components.css"), "utf8");
+      expect(componentsCss).toContain("--podo-badge-root-background:");
+      expect(componentsCss).toContain("--podo-badge-label-color:");
+      expect(componentsCss).toContain("--podo-badge-dot-color:");
+      expect(componentsCss).toContain('.podo-badge[data-theme="red"]');
+      expect(componentsCss).toContain("var(--podo-color-palette-error-5)");
+      expect(tokensCss).toContain("--podo-color-palette-error-5: #FEF1F1;");
+      expect(tokensCss).toContain("--podo-color-palette-accent-50: #F15764;");
+      // Figma theme 컬렉션의 light/dark 값이 색상 스킴별로 발행된다
+      // (styles.css의 --podo-text-basic 등 소비 변수의 원천).
+      expect(tokensCss).toContain('[data-podo-theme="landing"][data-color-scheme="light"]');
+      expect(tokensCss).toContain('[data-podo-theme="landing"][data-color-scheme="dark"]');
+      const lightBlock = tokensCss.split('[data-color-scheme="light"]')[1] ?? "";
+      const darkBlock = tokensCss.split('[data-color-scheme="dark"]')[1] ?? "";
+      expect(lightBlock).toContain("--podo-text-basic: #18181B;");
+      expect(darkBlock).toContain("--podo-text-basic: #F9F9F9;");
+      // 알파 값은 8자리 hex로 발행된다 (border/gary dark = white 10%).
+      expect(lightBlock).toContain("--podo-border-gary: #E4E4E7;");
+      expect(darkBlock).toContain("--podo-border-gary: #FFFFFF1A;");
+      // DatePicker가 참조하는 글리프가 기본 아이콘 빌드에 모두 포함된다.
+      const iconCss = await readFile(join(root, "src/generated/podo/icons/PodoIcons.css"), "utf8");
+      for (const glyph of [
+        "menu",
+        "chevron-left",
+        "chevron-right",
+        "calendar",
+        "time",
+        "refresh",
+        "check",
+        "close",
+        "search",
+      ]) {
+        expect(iconCss).toContain(`.podo-icon-${glyph}::before`);
+      }
+      await expect(
+        stat(join(root, "src/generated/podo/components/hono/button.hono.ts"))
+      ).resolves.toBeDefined();
+      await expect(
+        stat(join(root, "src/generated/podo/icons/PodoIcons.woff2"))
+      ).resolves.toBeDefined();
+
+      const cached = await buildProject(parseArgs(["build"]), io);
+      expect(cached.skipped).toBe(true);
     }
-    await expect(
-      stat(join(root, "src/generated/podo/components/hono/button.hono.ts"))
-    ).resolves.toBeDefined();
-    await expect(
-      stat(join(root, "src/generated/podo/icons/PodoIcons.woff2"))
-    ).resolves.toBeDefined();
-
-    const cached = await buildProject(parseArgs(["build"]), io);
-    expect(cached.skipped).toBe(true);
-  });
+  );
 
   it("builds the react-native target and reflects token overrides", async () => {
     const root = await createProject({ dependencies: { "react-native": "^0.76.0" } });
