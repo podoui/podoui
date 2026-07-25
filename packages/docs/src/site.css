@@ -694,9 +694,20 @@ a {
   }
 
   .spec-table {
-    display: block;
+    display: table;
     width: 100%;
     max-width: 100%;
-    overflow-x: auto;
+    table-layout: fixed;
+    overflow: visible;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    padding-inline: 8px;
+    overflow-wrap: anywhere;
+  }
+
+  .spec-table--props code {
+    overflow-wrap: anywhere;
   }
 }
