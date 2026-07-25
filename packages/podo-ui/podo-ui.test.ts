@@ -117,6 +117,7 @@ describe("podo-ui assembled package", () => {
     expect(css).toContain("@font-face");
     expect(existsSync(join(dist, "icons-assets/PodoIcons.woff2"))).toBe(true);
     expect(existsSync(join(dist, "icons-assets/PodoIcons.woff"))).toBe(true);
+    expect(existsSync(join(dist, "icons-assets/PodoIcons.ttf"))).toBe(true);
 
     // className 사용처(podo-icon-<name>)를 react 소스에서 수집한다. CSS 변수
     // (--podo-icon-*)는 [a-z] 시작 캡처에 걸리지 않는 web 패키지에만 있다.

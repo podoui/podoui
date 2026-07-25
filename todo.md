@@ -436,15 +436,15 @@
 
 기준: shadcn/ui 스타일 문서 사이트. `@podoui/react`를 그대로 렌더링하는 라이브 프리뷰. 정적(Vite) 빌드.
 
-- [ ] `@podoui/docs` 패키지 뼈대
+- [x] `@podoui/docs` 패키지 뼈대
   - 완료 기준: `packages/docs`가 pnpm workspace로 인식되고 `@podoui/react`를 workspace 의존성으로 import한다.
   - 완료 기준: Vite + React로 dev 서버 실행과 정적 `dist` 빌드가 된다.
   - 완료 기준: 헤더, 사이드바 내비게이션, 콘텐츠 레이아웃, 컴포넌트별 라우팅 틀이 있어 컴포넌트 추가가 라우트/사이드바 항목 추가만으로 가능하다.
-- [ ] Button 문서 페이지
+- [x] Button 문서 페이지
   - 완료 기준: 현재 `@podoui/react`의 Button을 실제로 렌더링하는 라이브 프리뷰가 있다(hover/disabled 동작).
   - 완료 기준: react/web/hono/native 4타깃 코드 스니펫을 탭으로 보여준다. react/web은 `button.component.json`의 examples와, hono/native는 각 렌더러 사용법과 일치한다.
-  - 완료 기준: variant(solid/soft/outline/ghost) × size(sm/md/lg)와 disabled/loading을 보여주는 variants 쇼케이스가 있다.
-  - 완료 기준: variant/size/disabled/loading/onPress를 담은 props 테이블이 있고, 값이 `button.component.json`과 일치한다.
+  - 완료 기준: 현재 Figma·JSON 스펙의 theme 8종(solid/outline × primary/assistive/white/danger) × size(xs/sm/md/lg)와 normal/hover/pressed/disabled 상태를 보여주는 쇼케이스가 있다.
+  - 완료 기준: theme/size/prefix/suffix/disabled/fill/onPress/onClick을 담은 props 테이블이 있고, 값이 `button.component.json`과 일치한다.
 
 ## Phase 12: Figma 가져오기 (plugin → CLI 원스텝)
 
@@ -549,9 +549,10 @@
   - 검증: 빈 외부 프로젝트에서 `npm install podo-ui` 후 subpath import,
     `npx podo init/validate`, `npx podo-ui` 동작 확인. 배포는 `pnpm release`
     (podo-ui만 publish; changeset publish는 workspace: 미치환이라 사용 안 함).
-- [ ] 배포 후 docs를 "진짜 소비자"로 전환
+- [x] 배포 후 docs를 "진짜 소비자"로 전환
   - 현재 `packages/docs`의 `theme.css`는 컴포넌트 CSS 수동 미러, `data/colors.ts`·`typography.ts`는 토큰 값 복제.
   - 완료 기준: docs가 `podo build` 산출물(tokens.css, components.css)을 소비하고 수동 미러·값 복제가 제거된다.
+  - (2026-07-25 완료: docs 자체 `.podo` 계약에서 생성한 tokens/components/icons 산출물을 직접 소비하고, 설치·Icon·DatePicker 문서 및 light/dark 실제 사용 예제를 추가.)
 - [x] `examples/react`를 실행 가능한 소비자 앱으로 복구
   - 현재 옛 Button API를 쓰는 타입체크용 스텁 (dev 서버 없음, 실행 불가).
   - 완료 기준: `podo init && podo build` 실사용 후 dev 서버에서 새 API 컴포넌트가 렌더된다.

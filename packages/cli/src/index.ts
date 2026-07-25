@@ -308,6 +308,11 @@ export async function buildProject(args: ParsedArgs, io: CliIO): Promise<BuildPl
     throw new Error(`Page build failed:\n${pageIssues.map((issue) => issue.message).join("\n")}`);
   }
   const iconManifest = await loadBuildIconManifest(root);
+  const inlineIconManifest = Object.values(iconManifest.icons).every((icon) => icon.svg != null);
+  const iconFontTypes: Array<"ttf" | "woff" | "woff2"> = inlineIconManifest
+    ? ["ttf", "woff2"]
+    : ["ttf", "woff", "woff2"];
+  const webIconFontTypes = iconFontTypes.filter((type): type is "woff" | "woff2" => type !== "ttf");
   const generated = [
     {
       path: join(absoluteOutDir, "tokens.css"),
@@ -317,11 +322,17 @@ export async function buildProject(args: ParsedArgs, io: CliIO): Promise<BuildPl
       }),
     },
     { path: join(absoluteOutDir, "tokens.ts"), contents: emitTypeScriptTokens(resolved) },
-    { path: join(absoluteOutDir, "tokens.native.ts"), contents: emitReactNativeTokens(resolved) },
+    {
+      path: join(absoluteOutDir, "tokens.native.ts"),
+      contents: emitReactNativeTokens(resolved, "tokens", {
+        themes: config.themes.available,
+        colorSchemes: config.darkMode.enabled ? ["light", "dark"] : ["light"],
+      }),
+    },
     { path: join(absoluteOutDir, "tokens.json"), contents: emitTokenJsonBundle(resolved) },
     {
       path: join(absoluteOutDir, "icons/PodoIcons.css"),
-      contents: emitIconCss(iconManifest),
+      contents: emitIconCss(iconManifest, { fontTypes: webIconFontTypes }),
     },
     {
       path: join(absoluteOutDir, "icons/PodoIcons.icons.ts"),
@@ -367,13 +378,14 @@ export async function buildProject(args: ParsedArgs, io: CliIO): Promise<BuildPl
     files: await Promise.all(
       [
         ...generated.map((file) => ({ path: file.path, preview: file.contents.slice(0, 4000) })),
-        { path: join(absoluteOutDir, "icons/PodoIcons.woff") },
-        { path: join(absoluteOutDir, "icons/PodoIcons.woff2") },
+        ...iconFontTypes.map((type) => ({
+          path: join(absoluteOutDir, `icons/PodoIcons.${type}`),
+        })),
         { path: join(absoluteOutDir, "icons/PodoIcons.metadata.json") },
       ].map(async (file) => ({
         path: relativePath(root, file.path),
         action: (await exists(file.path)) ? "update" : "create",
-        ...("preview" in file ? { preview: file.preview } : {}),
+        ...("preview" in file && typeof file.preview === "string" ? { preview: file.preview } : {}),
       }))
     ),
   };
@@ -410,7 +422,7 @@ export async function buildProject(args: ParsedArgs, io: CliIO): Promise<BuildPl
     manifest: iconManifest,
     svgRoot: iconSvgRoot,
     outDir: join(absoluteOutDir, "icons"),
-    fontTypes: ["woff", "woff2"],
+    fontTypes: iconFontTypes,
   });
   await writeJson(cachePath, { hash: buildHash, files: plan.files }, true);
   await writeJson(

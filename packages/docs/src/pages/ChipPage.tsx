@@ -6,6 +6,7 @@ import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
+import { nativeComponentUsage } from "../code-examples.js";
 
 const INTRO =
   "칩은 선택·필터·태그처럼 짧은 정보를 압축해 보여주고 조작하게 하는 작은 상호작용 요소예요. 레이블과 " +
@@ -24,12 +25,12 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Chip } from "@podoui/hono";\n\n<Chip>Label</Chip>`,
+    code: `import { Chip } from "podo-ui/hono";\n\n<Chip>Label</Chip>`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Chip } from "@podoui/native";\n\n<Chip onPress={toggle}>Label</Chip>`,
+    code: nativeComponentUsage(["Chip"], `<Chip onPress={toggle}>Label</Chip>`),
   },
 ];
 
@@ -155,7 +156,7 @@ export function ChipPage() {
       <DocSection
         index={6}
         title="속성 (props)"
-        description="@podoui/react의 Chip이 받는 속성이에요. pressed 계열은 누르는 동안(:active) 자동으로 표현되고, 선택 여부만 selected로 제어해요. 이 밖에 표준 button 속성(className, type, aria-* 등)도 그대로 전달돼요."
+        description="podo-ui/react의 Chip이 받는 속성이에요. pressed 계열은 누르는 동안(:active) 자동으로 표현되고, 선택 여부만 selected로 제어해요. 이 밖에 표준 button 속성(className, type, aria-* 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"

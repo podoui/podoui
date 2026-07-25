@@ -125,7 +125,7 @@ await buildIconAssets({
   manifest: defaultIconManifest,
   svgRoot: iconSvgTmp,
   outDir: iconAssetsDir,
-  fontTypes: ["woff", "woff2"],
+  fontTypes: ["ttf", "woff", "woff2"],
 });
 await writeFile(join(iconAssetsDir, "PodoIcons.css"), emitIconCss(defaultIconManifest));
 await rm(iconSvgTmp, { recursive: true, force: true });

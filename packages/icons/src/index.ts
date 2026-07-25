@@ -4,7 +4,12 @@ import { join } from "node:path";
 import { FontAssetType, generateFonts } from "fantasticon";
 import { optimize, type Config } from "svgo";
 import { compress } from "wawoff2";
-import { buildIconFontWoff2, parseSvgViewBox, svgToFillPathData } from "@podoui/icon-build";
+import {
+  buildIconFontTtf,
+  buildIconFontWoff2,
+  parseSvgViewBox,
+  svgToFillPathData,
+} from "@podoui/icon-build";
 import {
   parseIconManifest,
   validateIconManifest,
@@ -18,7 +23,7 @@ export interface IconBuildOptions {
   svgRoot: string;
   outDir: string;
   groups?: string[];
-  fontTypes?: Array<"woff" | "woff2">;
+  fontTypes?: Array<"ttf" | "woff" | "woff2">;
   prefix?: string;
 }
 
@@ -160,7 +165,7 @@ export async function buildIconAssets(options: IconBuildOptions): Promise<IconBu
 
   const fantasticonFontTypes = [
     ...(fontTypes.includes("woff") ? [FontAssetType.WOFF] : []),
-    ...(fontTypes.includes("woff2") ? [FontAssetType.TTF] : []),
+    ...(fontTypes.includes("ttf") || fontTypes.includes("woff2") ? [FontAssetType.TTF] : []),
   ];
 
   const result = await generateFonts({
@@ -181,13 +186,13 @@ export async function buildIconAssets(options: IconBuildOptions): Promise<IconBu
     const ttfPath = join(options.outDir, `${options.manifest.fontFamily}.ttf`);
     const woff2 = await compress(await readFile(ttfPath));
     await writeFile(join(options.outDir, `${options.manifest.fontFamily}.woff2`), woff2);
-    await unlink(ttfPath);
+    if (!fontTypes.includes("ttf")) await unlink(ttfPath);
   }
 
   const css = emitIconCss(options.manifest, {
     icons: iconNames,
     prefix,
-    fontTypes,
+    fontTypes: fontTypes.filter((type): type is "woff" | "woff2" => type !== "ttf"),
   });
   const types = emitIconTypes(iconNames);
   const native = emitNativeGlyphMap(options.manifest, iconNames);
@@ -234,13 +239,21 @@ async function buildInlineIconAssets(
     return { name, codepoint: icon.codepoint, svg: icon.svg };
   });
 
-  const { woff2 } = await buildIconFontWoff2({
+  const glyphInput = {
     fontFamily: options.manifest.fontFamily,
     glyphs,
-  });
+  };
+  const requestedFontTypes = options.fontTypes ?? ["woff2"];
+  const { woff2 } = await buildIconFontWoff2(glyphInput);
 
   await mkdir(options.outDir, { recursive: true });
   await writeFile(join(options.outDir, `${options.manifest.fontFamily}.woff2`), woff2);
+  if (requestedFontTypes.includes("ttf")) {
+    await writeFile(
+      join(options.outDir, `${options.manifest.fontFamily}.ttf`),
+      new Uint8Array(await buildIconFontTtf(glyphInput))
+    );
+  }
 
   const fontTypes: Array<"woff" | "woff2"> = ["woff2"];
   const css = emitIconCss(options.manifest, { icons: iconNames, prefix, fontTypes });
@@ -253,7 +266,11 @@ async function buildInlineIconAssets(
       codepoints[name] = Number.parseInt(icon.codepoint, 16);
     }
   }
-  const metadata = { fontFiles: ["woff2"], codepoints, woff2: true };
+  const metadata = {
+    fontFiles: requestedFontTypes.includes("ttf") ? ["ttf", "woff2"] : ["woff2"],
+    codepoints,
+    woff2: true,
+  };
 
   await writeFile(join(options.outDir, `${options.manifest.fontFamily}.css`), css);
   await writeFile(join(options.outDir, `${options.manifest.fontFamily}.icons.ts`), types);

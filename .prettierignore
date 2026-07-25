@@ -14,3 +14,6 @@ docs/verification/
 # examples/react의 podo CLI 생성물 — podo build 출력과 바이트 동일 유지
 examples/react/.podo/
 examples/react/src/podo/
+# docs is also a committed CLI consumer; preserve byte-for-byte reproducibility.
+packages/docs/.podo/
+packages/docs/src/podo/

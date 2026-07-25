@@ -18,6 +18,9 @@ import {
 //     TextInput,
 //     View,
 //   });
+//   const [fontsLoaded] = useFonts({
+//     PodoIcons: require("./podo/icons/PodoIcons.ttf"),
+//   });
 //
 // This example package carries no react-native dependency, so minimal typed
 // local stand-ins satisfy the NativeHost contract for typechecking only.
@@ -51,7 +54,8 @@ const { Button, Field, Icon, Input } = createNativeComponents(host);
 // icon name → codepoint). Convert it once and hand it to the provider so
 // <Icon name="…"> renders the font glyph instead of the raw name:
 //
-//   import { podoIconGlyphMap } from "./podo/PodoIcons.native";
+//   import { podoIconGlyphMap } from "./podo/icons/PodoIcons.native";
+//   import { getPodoNativeTokens } from "./podo/tokens.native";
 //   const iconGlyphs = Object.fromEntries(
 //     Object.entries(podoIconGlyphMap).map(([name, code]) => [
 //       name,
@@ -59,7 +63,9 @@ const { Button, Field, Icon, Input } = createNativeComponents(host);
 //     ])
 //   );
 //
-// This stub wires an inline sample map instead.
+// Pass the map, `iconFontFamily="PodoIcons"`, and
+// `tokens={getPodoNativeTokens(theme, colorScheme)}` to the provider. This
+// dependency-free stub wires an inline sample map instead.
 const iconGlyphs: Record<string, string> = {
   menu: "\uE900",
   search: "\uE901",

@@ -5,6 +5,7 @@ import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
+import { nativeComponentUsage } from "../code-examples.js";
 
 const INTRO =
   "텍스트 입력은 사용자가 직접 정보를 입력하고 수정하도록 돕는 기본 상호작용 요소로, 명확한 레이블과 " +
@@ -18,12 +19,12 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Input } from "@podoui/hono";\n\n<Input name="title" placeholder="플레이스홀더" />`,
+    code: `import { Input } from "podo-ui/hono";\n\n<Input name="title" placeholder="플레이스홀더" />`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Input } from "@podoui/native";\n\n<Input placeholder="플레이스홀더" />`,
+    code: nativeComponentUsage(["Input"], `<Input placeholder="플레이스홀더" />`),
   },
 ];
 
@@ -98,7 +99,7 @@ export function InputPage() {
       <DocSection
         index={4}
         title="속성 (props)"
-        description="@podoui/react의 Input이 받는 속성이에요. hover·focused는 브라우저 상호작용으로, completed는 값이 채워진 상태로 자연스럽게 표현되고, danger는 invalid 속성으로 켜요. 이 밖에 표준 input 속성(value, placeholder, name, aria-* 등)도 그대로 전달돼요."
+        description="podo-ui/react의 Input이 받는 속성이에요. hover·focused는 브라우저 상호작용으로, completed는 값이 채워진 상태로 자연스럽게 표현되고, danger는 invalid 속성으로 켜요. 이 밖에 표준 input 속성(value, placeholder, name, aria-* 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"

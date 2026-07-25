@@ -5,6 +5,7 @@ import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
+import { nativeComponentUsage } from "../code-examples.js";
 
 const INTRO =
   "툴팁은 요소에 마우스를 올리거나 포커스했을 때 짧은 보조 설명을 말풍선으로 보여주는 요소로, 아이콘" +
@@ -31,16 +32,17 @@ const USAGE_TABS: CodeTab[] = [
     target: "hono",
     label: "Hono",
     code:
-      `import { Tooltip } from "@podoui/hono";\n\n` +
+      `import { Tooltip } from "podo-ui/hono";\n\n` +
       `<Tooltip label="임시 저장돼요" position="top" ordinal="second" />`,
   },
   {
     target: "native",
     label: "React Native",
-    code:
-      `import { Tooltip } from "@podoui/native";\n\n` +
+    code: nativeComponentUsage(
+      ["Tooltip"],
       `{/* 앱이 직접 앵커에 배치하고 토글해요 */}\n` +
-      `<Tooltip label="임시 저장돼요" position="top" />`,
+        `<Tooltip label="임시 저장돼요" position="top" />`
+    ),
   },
 ];
 
@@ -119,7 +121,7 @@ export function TooltipPage() {
       <DocSection
         index={4}
         title="속성 (props)"
-        description="@podoui/react의 Tooltip이 받는 속성이에요. 트리거 요소 하나를 자식으로 감싸면 hover/focus 핸들러와 aria-describedby가 주입되고, 말풍선은 기본적으로 document.body 포탈에 fixed 좌표로 붙어 overflow·z-index에 잘리지 않아요. 열려 있는 동안 스크롤·리사이즈가 일어나면 좌표가 무효라 닫혀요."
+        description="podo-ui/react의 Tooltip이 받는 속성이에요. 트리거 요소 하나를 자식으로 감싸면 hover/focus 핸들러와 aria-describedby가 주입되고, 말풍선은 기본적으로 document.body 포탈에 fixed 좌표로 붙어 overflow·z-index에 잘리지 않아요. 열려 있는 동안 스크롤·리사이즈가 일어나면 좌표가 무효라 닫혀요."
       >
         <SpecTable
           variant="props"

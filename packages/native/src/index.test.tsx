@@ -243,6 +243,79 @@ describe("@podoui/native", () => {
     expect(screen.getByTestId("button").getAttribute("data-bg")).toBe("#426CED");
   });
 
+  it("uses generated dark semantic tokens across native controls", () => {
+    const tokens = {
+      elevation: { basic: "#18181B" },
+      text: {
+        basic: "#F9F9F9",
+        "basic-reverse": "#18181B",
+        disabled: "#FFFFFF33",
+        placeholder: "#FFFFFF66",
+        primary: "#577DEF",
+        subtil: "#9FA2AD",
+        "static-invert": "#FFFFFF",
+      },
+      border: {
+        danger: "#F56666",
+        disabled: "#FFFFFF0D",
+        gary: "#FFFFFF1A",
+        "gray-deep": "#FFFFFF33",
+        natural: "#50555E",
+        primary: "#577DEF",
+      },
+      foreground: {
+        "basic-reverse": "#E4E4E7",
+        disabled: "#FFFFFF1A",
+        "disabled-dark": "#00000033",
+        "gray-light": "#FFFFFF1A",
+        "gray-lightdeep": "#FFFFFF33",
+        natural: "#767985",
+        primary: "#577DEF",
+        "static-invert": "#FFFFFF",
+      },
+      button: {
+        "background-outline-primary": "#27272A",
+        "background-outline-primary-pressed": "#FFFFFF1A",
+        "border-primary": "#577DEF",
+      },
+      icon: { subtil: "#9FA2AD" },
+    };
+
+    render(
+      <PodoNativeThemeProvider theme="landing" colorScheme="dark" tokens={tokens}>
+        <domNative.Input
+          accessibilityLabel="메일"
+          placeholder="name@example.com"
+          testID="dark-input"
+        />
+        <domNative.Select
+          accessibilityLabel="다크 과일"
+          placeholder="다크 과일 선택"
+          options={[{ value: "grape", label: "포도" }]}
+          testID="dark-select"
+        />
+        <domNative.Button theme="outline-primary" testID="dark-button">
+          다크 저장
+        </domNative.Button>
+        <domNative.Switch label="다크 알림" />
+        <domNative.Checkbox label="다크 동의" />
+        <domNative.Toast state="success">다크 토스트</domNative.Toast>
+      </PodoNativeThemeProvider>
+    );
+
+    const input = screen.getByTestId("dark-input");
+    expect(input.parentElement?.getAttribute("data-bg")).toBe("#18181B");
+    expect(input.getAttribute("data-placeholder-color")).toBe("#FFFFFF66");
+    expect(
+      within(screen.getByTestId("dark-select")).getByRole("combobox").getAttribute("data-bg")
+    ).toBe("#18181B");
+    expect(screen.getByText("다크 과일 선택").getAttribute("data-color")).toBe("#FFFFFF66");
+    expect(screen.getByTestId("dark-button").getAttribute("data-bg")).toBe("#27272A");
+    expect(screen.getByText("다크 알림").getAttribute("data-color")).toBe("#9FA2AD");
+    expect(screen.getByText("다크 동의").getAttribute("data-color")).toBe("#9FA2AD");
+    expect(screen.getByText("다크 토스트").getAttribute("data-color")).toBe("#18181B");
+  });
+
   it("renders the multi-select trigger as a combobox with no button-nested chip controls", () => {
     const cleared: string[][] = [];
     render(
@@ -631,6 +704,7 @@ describe("@podoui/native", () => {
         theme="landing"
         colorScheme="light"
         iconGlyphs={{ search: "\uE900", menu: "\uE901" }}
+        iconFontFamily="PodoIcons"
       >
         <domNative.Icon name="search" testID="mapped-icon" />
         <domNative.Icon name="search" glyph="★" testID="explicit-icon" />
@@ -640,6 +714,7 @@ describe("@podoui/native", () => {
 
     // Resolution order: glyph ?? theme.iconGlyphs?.[name] ?? name.
     expect(screen.getByTestId("mapped-icon").textContent).toBe("\uE900");
+    expect(screen.getByTestId("mapped-icon").getAttribute("data-fontfamily")).toBe("PodoIcons");
     expect(screen.getByTestId("explicit-icon").textContent).toBe("★");
     expect(screen.getByTestId("fallback-icon").textContent).toBe("unknown");
 
@@ -1929,6 +2004,7 @@ function TestText({
       data-important={props.importantForAccessibility as string | undefined}
       data-color={styleRecord?.color as string | undefined}
       data-fontsize={styleRecord?.fontSize == null ? undefined : String(styleRecord.fontSize)}
+      data-fontfamily={styleRecord?.fontFamily as string | undefined}
       data-testid={testID as string | undefined}
     >
       {children}
@@ -1954,6 +2030,7 @@ function TestTextInput(
       data-bg={styleRecord?.backgroundColor as string | undefined}
       data-border={styleRecord?.borderColor as string | undefined}
       data-color={styleRecord?.color as string | undefined}
+      data-placeholder-color={props.placeholderTextColor as string | undefined}
       data-labelledby={props.accessibilityLabelledBy as string | undefined}
       data-describedby={props.accessibilityDescribedBy as string | undefined}
       data-testid={props.testID as string | undefined}

@@ -41,6 +41,8 @@ export interface NativeTheme {
    * `podoIconGlyphMap` maps name → codepoint) with `String.fromCodePoint`.
    */
   iconGlyphs?: Record<string, string>;
+  /** Font family loaded from the generated PodoIcons.ttf asset. */
+  iconFontFamily?: string;
 }
 
 export interface NativeThemeProviderProps extends NativeTheme {
@@ -411,6 +413,7 @@ export function PodoNativeThemeProvider({
   colorScheme,
   tokens,
   iconGlyphs,
+  iconFontFamily,
   children,
 }: NativeThemeProviderProps): React.ReactElement {
   const value = {
@@ -418,6 +421,7 @@ export function PodoNativeThemeProvider({
     colorScheme,
     ...(typeof tokens === "undefined" ? {} : { tokens }),
     ...(typeof iconGlyphs === "undefined" ? {} : { iconGlyphs }),
+    ...(typeof iconFontFamily === "undefined" ? {} : { iconFontFamily }),
   };
 
   return <NativeThemeContext.Provider value={value}>{children}</NativeThemeContext.Provider>;
@@ -512,8 +516,36 @@ const BUTTON_COLORS: Record<
 // .podo-button[disabled] (podo-ui/styles.css): the disabled state has its own
 // fill/label pair — no opacity in the spec. Outline themes keep a visible
 // disabled border (styles.css [data-theme^="outline"][disabled]).
-const BUTTON_DISABLED = { fill: "#E4E4E7", label: "#9FA2AD" };
-const BUTTON_DISABLED_OUTLINE_BORDER = "#D1D2D6";
+function nativeButtonColors(
+  theme: NativeTheme,
+  themeName: NativeButtonTheme
+): { fill: string; label: string; border: string; pressed: string } {
+  const tokens = adaptReactNativeTokens(theme.tokens);
+  const fallback = BUTTON_COLORS[themeName];
+  const semantic = nativeSemanticColors(theme);
+  const label =
+    themeName === "solid-primary" || themeName === "solid-danger"
+      ? semantic.textStaticInvert
+      : themeName === "outline-primary"
+        ? semantic.foregroundPrimary
+        : themeName === "outline-danger"
+          ? semantic.foregroundDanger
+          : semantic.text;
+  const border = themeName.startsWith("outline-")
+    ? (stringToken(tokens, ["button", `border-${themeName.slice("outline-".length)}`]) ??
+      fallback.border)
+    : "transparent";
+  return {
+    fill:
+      stringToken(tokens, ["button", `background-${themeName}`]) ??
+      (theme.colorScheme === "dark" && themeName.startsWith("outline-")
+        ? semantic.background
+        : fallback.fill),
+    label,
+    border,
+    pressed: stringToken(tokens, ["button", `background-${themeName}-pressed`]) ?? fallback.pressed,
+  };
+}
 
 // Button sizes (Figma: xs 32 / sm 36 / md 42 / lg 52) — height, padding,
 // radius, and font size mirror podo-ui/styles.css ("/* Sizes */").
@@ -555,10 +587,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     Button: (props) => {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
+      const semantic = nativeSemanticColors(theme);
       const behavior = createButtonBehavior({ disabled: props.disabled });
       const themeName = props.theme ?? "solid-primary";
       const size = props.size ?? "md";
-      const box = BUTTON_COLORS[themeName];
+      const box = nativeButtonColors(theme, themeName);
       const metrics = BUTTON_SIZES[size];
       // Disabled swaps in the design system's own treatment
       // (.podo-button[disabled]: gray fill + muted label, no opacity) instead
@@ -566,10 +599,15 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const colors = behavior.pressable
         ? box
         : {
-            fill: BUTTON_DISABLED.fill,
-            label: BUTTON_DISABLED.label,
+            fill:
+              stringToken(adaptReactNativeTokens(theme.tokens), [
+                "button",
+                "background-disabled",
+              ]) ?? semantic.disabled,
+            label: semantic.textDisabled,
             border: themeName.startsWith("outline-")
-              ? BUTTON_DISABLED_OUTLINE_BORDER
+              ? (stringToken(adaptReactNativeTokens(theme.tokens), ["button", "border-disabled"]) ??
+                semantic.borderDisabled)
               : "transparent",
           };
       const restingStyle = {
@@ -619,6 +657,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     Chip: function NativeChip(props) {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
+      const semantic = nativeSemanticColors(theme);
       const behavior = createButtonBehavior({ disabled: props.disabled });
       const themeName = props.theme ?? "solid";
       const size = props.size ?? "md";
@@ -633,10 +672,18 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         // treatment as the non-removable disabled chip and inerts the X
         // (react parity: data-disabled="true" + disabled remove button).
         const box = behavior.disabled
-          ? { fill: "#E4E4E7", border: "transparent", label: "#9FA2AD" }
+          ? { fill: semantic.disabled, border: "transparent", label: semantic.textDisabled }
           : themeName === "outline-weak"
-            ? { fill: "#F9F9F9", border: "#767985", label: "#18181B" }
-            : { fill: "#3E424B", border: "transparent", label: "#FFFFFF" };
+            ? {
+                fill: semantic.foregroundGray,
+                border: semantic.borderNatural,
+                label: semantic.text,
+              }
+            : {
+                fill: semantic.foregroundNatural,
+                border: "transparent",
+                label: semantic.textStaticInvert,
+              };
         return createElement(
           host.View,
           {
@@ -679,25 +726,33 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       // Figma 538:6615 selection colors — unselected is the base look.
       // outline-strong selected renders identically to solid (pending fix).
       const box = props.disabled
-        ? { fill: "#E4E4E7", border: "transparent", label: "#9FA2AD" }
+        ? { fill: semantic.disabled, border: "transparent", label: semantic.textDisabled }
         : selected
           ? themeName === "outline-weak"
-            ? { fill: "#F9F9F9", border: "#767985", label: "#18181B" }
-            : { fill: "#3E424B", border: "transparent", label: "#FFFFFF" }
+            ? {
+                fill: semantic.foregroundGray,
+                border: semantic.borderNatural,
+                label: semantic.text,
+              }
+            : {
+                fill: semantic.foregroundNatural,
+                border: "transparent",
+                label: semantic.textStaticInvert,
+              }
           : themeName === "solid"
-            ? { fill: "#F4F4F5", border: "transparent", label: "#18181B" }
-            : { fill: "transparent", border: "#E4E4E7", label: "#18181B" };
+            ? { fill: semantic.foregroundGrayLight, border: "transparent", label: semantic.text }
+            : { fill: "transparent", border: semantic.borderGray, label: semantic.text };
       // Pressed feedback (podo-ui/styles.css .podo-chip :active rules):
       // unselected solid darkens the fill to #E4E4E7, unselected outlines
       // darken the border to #D1D2D6, selected solid/outline-strong lighten
       // to #767985, selected outline-weak fills #F4F4F5.
       const pressedBox = selected
         ? themeName === "outline-weak"
-          ? { ...box, fill: "#F4F4F5" }
-          : { ...box, fill: "#767985" }
+          ? { ...box, fill: semantic.foregroundGrayLight }
+          : { ...box, fill: semantic.foregroundNaturalLightDeep }
         : themeName === "solid"
-          ? { ...box, fill: "#E4E4E7" }
-          : { ...box, border: "#D1D2D6" };
+          ? { ...box, fill: semantic.foregroundGrayLightDeep }
+          : { ...box, border: semantic.borderGrayDeep };
       const restingStyle = {
         ...styles.chip,
         backgroundColor: box.fill,
@@ -801,6 +856,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     Select: function NativeSelect(props) {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
+      const semantic = nativeSemanticColors(theme);
       const [openState, setOpen] = useState(false);
       const [activeIndex, setActiveIndex] = useState(0);
       const multiple = props.multiple === true;
@@ -825,12 +881,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const border = readOnly
         ? { color: "transparent", width: 1 }
         : disabled
-          ? { color: "#D1D2D6", width: 1 }
+          ? { color: semantic.borderDisabled, width: 1 }
           : open
-            ? { color: props.invalid ? "#F23B3B" : "#426CED", width: 2 }
+            ? { color: props.invalid ? semantic.borderDanger : semantic.borderPrimary, width: 2 }
             : props.invalid
-              ? { color: "#F23B3B", width: 1 }
-              : { color: "#E4E4E7", width: 1 };
+              ? { color: semantic.borderDanger, width: 1 }
+              : { color: semantic.borderGray, width: 1 };
 
       // The lock is read through a ref kept current on every render: a queued
       // press handler captured before a disabled/readOnly flip would otherwise
@@ -976,7 +1032,10 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             host.View,
             {
               key: v,
-              style: { ...styles.chip, backgroundColor: disabled ? "#E4E4E7" : "#3E424B" },
+              style: {
+                ...styles.chip,
+                backgroundColor: disabled ? semantic.disabled : semantic.foregroundNatural,
+              },
               "data-state": "selected",
               "data-disabled": disabled ? "true" : undefined,
             },
@@ -985,7 +1044,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               {
                 style: {
                   ...styles.chipLabel,
-                  color: disabled ? "#9FA2AD" : "#FFFFFF",
+                  color: disabled ? semantic.textDisabled : semantic.textStaticInvert,
                   fontSize: 14,
                 },
               },
@@ -1007,7 +1066,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             {
               key: "podo-select-more",
               accessibilityLabel: `외 ${hiddenChipCount}개 선택됨`,
-              style: { color: "#50555E", fontSize: 14, lineHeight: 22 },
+              style: { color: semantic.textSubtil, fontSize: 14, lineHeight: 22 },
             },
             `+${hiddenChipCount}`
           )
@@ -1023,7 +1082,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                 {
                   key: "value",
                   style: {
-                    color: disabled ? "#9FA2AD" : hasValue ? "#18181B" : "#9FA2AD",
+                    color: disabled
+                      ? semantic.textDisabled
+                      : hasValue
+                        ? semantic.text
+                        : semantic.placeholder,
                     flex: 1,
                     fontSize: 16,
                     lineHeight: 26,
@@ -1069,8 +1132,8 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                 {
                   style: {
                     alignItems: "center",
-                    backgroundColor: isSelected ? "#426CED" : "#FFFFFF",
-                    borderColor: isSelected ? "#426CED" : "#9FA2AD",
+                    backgroundColor: isSelected ? semantic.foregroundPrimary : semantic.background,
+                    borderColor: isSelected ? semantic.borderPrimary : semantic.borderNatural,
                     borderRadius: 4,
                     borderWidth: 1,
                     height: 18,
@@ -1079,7 +1142,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                   },
                 },
                 isSelected
-                  ? createElement(host.Text, { style: { color: "#F9F9F9", fontSize: 12 } }, "✓")
+                  ? createElement(
+                      host.Text,
+                      { style: { color: semantic.textStaticInvert, fontSize: 12 } },
+                      "✓"
+                    )
                   : null
               )
             : null,
@@ -1088,7 +1155,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             {
               style: {
                 // 단일 선택의 선택 셀은 라벨도 primary (Figma Menu-cell selected).
-                color: !multiple && isSelected ? "#426CED" : "#18181B",
+                color: !multiple && isSelected ? semantic.textPrimary : semantic.text,
                 flex: 1,
                 fontSize: 16,
                 lineHeight: 26,
@@ -1097,7 +1164,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             option.label
           ),
           !multiple && isSelected
-            ? createElement(host.Text, { style: { color: "#426CED", fontSize: 16 } }, "✓")
+            ? createElement(
+                host.Text,
+                { style: { color: semantic.textPrimary, fontSize: 16 } },
+                "✓"
+              )
             : null
         );
       });
@@ -1158,7 +1229,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               ...styles.selectTrigger,
               ...(props.size === "lg" ? { borderRadius: 12, minHeight: 52, minWidth: 120 } : {}),
               ...(readOnly ? { paddingLeft: 0 } : {}),
-              backgroundColor: disabled ? "#E4E4E7" : readOnly ? "transparent" : "#FFFFFF",
+              backgroundColor: disabled
+                ? semantic.disabled
+                : readOnly
+                  ? "transparent"
+                  : semantic.background,
               borderColor: border.color,
               borderWidth: border.width,
             },
@@ -1173,12 +1248,16 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                   accessibilityLabel: "모두 해제",
                   onPress: clearAll,
                 },
-                createElement(host.Text, { style: { color: "#767985", fontSize: 14 } }, "✕")
+                createElement(
+                  host.Text,
+                  { style: { color: semantic.iconSubtil, fontSize: 14 } },
+                  "✕"
+                )
               )
             : null,
           readOnly
             ? null
-            : createElement(host.Text, { style: { color: "#27272A", fontSize: 16 } }, "▾")
+            : createElement(host.Text, { style: { color: semantic.text, fontSize: 16 } }, "▾")
         ),
         open
           ? createElement(
@@ -1217,6 +1296,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     Input: (props) => {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
+      const semantic = nativeSemanticColors(theme);
       const behavior = createInputBehavior({
         value: props.value,
         defaultValue: props.defaultValue,
@@ -1244,6 +1324,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         defaultValue: props.defaultValue,
         value: props.value,
         placeholder: props.placeholder,
+        placeholderTextColor: semantic.placeholder,
         maxLength: props.maxLength,
         onChangeText: props.onValueChange,
         style: {
@@ -1290,6 +1371,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     Textarea: (props) => {
       const theme = usePodoNativeTheme();
       const styles = createNativeThemeStyles(theme);
+      const semantic = nativeSemanticColors(theme);
       const behavior = createInputBehavior({
         value: props.value,
         defaultValue: props.defaultValue,
@@ -1315,6 +1397,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         defaultValue: props.defaultValue,
         value: props.value,
         placeholder: props.placeholder,
+        placeholderTextColor: semantic.placeholder,
         maxLength: props.maxLength,
         multiline: true,
         numberOfLines: props.numberOfLines ?? 3,
@@ -1486,7 +1569,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                 "aria-hidden": true,
               }),
           // Glyph scale (ICON_SIZES): sm 16 / md 24 / lg 32, default md.
-          style: { ...styles.icon, fontSize: ICON_SIZES[props.size ?? "md"] },
+          style: {
+            ...styles.icon,
+            fontSize: ICON_SIZES[props.size ?? "md"],
+            ...(theme.iconFontFamily ? { fontFamily: theme.iconFontFamily } : {}),
+          },
           testID: props.testID,
         },
         // Resolution order (see NativeIconProps): explicit glyph → the
@@ -1496,6 +1583,8 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       );
     },
     Switch: function NativeSwitch(props) {
+      const theme = usePodoNativeTheme();
+      const semantic = nativeSemanticColors(theme);
       // Uncontrolled fallback: without a checked prop the switch tracks itself.
       const [internalChecked, setInternalChecked] = useState(props.defaultChecked ?? false);
       const behavior = createSwitchBehavior({
@@ -1509,8 +1598,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           : props.size === "lg"
             ? { w: 56, h: 32, handle: 25, pad: 4 }
             : { w: 30, h: 18, handle: 14, pad: 2 };
-      const track = behavior.disabled ? "#E4E4E7" : behavior.checked ? "#426CED" : "#D1D2D6";
-      const handle = behavior.disabled ? "#D1D2D6" : "#FFFFFF";
+      const track = behavior.disabled
+        ? semantic.disabled
+        : behavior.checked
+          ? semantic.foregroundPrimary
+          : semantic.foregroundGrayLightDeep;
+      const handle = behavior.disabled ? semantic.disabledDark : semantic.foregroundStaticInvert;
       // Press와 키보드가 같은 toggle을 타요 — 비제어 상태도 두 경로에서
       // 동일하게 움직이고, controlled checked면 내부 상태는 건드리지 않아요.
       const toggle = () => {
@@ -1589,7 +1682,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               host.Text,
               {
                 style: {
-                  color: behavior.disabled ? "#9FA2AD" : "#50555E",
+                  color: behavior.disabled ? semantic.textDisabled : semantic.textSubtil,
                   // Figma: label size follows the track size (sm 14/md 16/lg 18).
                   fontSize: props.size === "md" ? 16 : props.size === "lg" ? 18 : 14,
                   fontWeight: props.bold ? "600" : undefined,
@@ -1601,6 +1694,8 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       );
     },
     Checkbox: function NativeCheckbox(props) {
+      const theme = usePodoNativeTheme();
+      const semantic = nativeSemanticColors(theme);
       // Uncontrolled fallback: without a checked prop the checkbox tracks
       // itself. indeterminate 상호작용은 그대로예요 — 토글은 checked만 뒤집고,
       // mixed 표시는 계속 indeterminate prop이 결정해요.
@@ -1613,10 +1708,14 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       // Figma 328:18039 colors; the box stays 18x18 radius 4 for every size.
       const solid = behavior.checked && !behavior.indeterminate;
       const box = behavior.disabled
-        ? { fill: "#E4E4E7", border: solid ? undefined : "#D1D2D6", mark: "#9FA2AD" }
+        ? {
+            fill: semantic.disabled,
+            border: solid ? undefined : semantic.borderDisabled,
+            mark: semantic.textDisabled,
+          }
         : solid
-          ? { fill: "#426CED", border: undefined, mark: "#F9F9F9" }
-          : { fill: "#FFFFFF", border: "#9FA2AD", mark: "#27272A" };
+          ? { fill: semantic.foregroundPrimary, border: undefined, mark: semantic.textStaticInvert }
+          : { fill: semantic.background, border: semantic.borderNatural, mark: semantic.text };
       const mark = behavior.indeterminate ? "–" : behavior.checked ? "✓" : null;
       // Press와 키보드가 같은 toggle을 타요 — 비제어 상태도 두 경로에서
       // 동일하게 움직이고, controlled checked면 내부 상태는 건드리지 않아요.
@@ -1684,7 +1783,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               host.Text,
               {
                 style: {
-                  color: behavior.disabled ? "#9FA2AD" : "#50555E",
+                  color: behavior.disabled ? semantic.textDisabled : semantic.textSubtil,
                   // Figma: label size follows the size variant (md 14/lg 16).
                   fontSize: props.size === "lg" ? 16 : 14,
                   fontWeight: props.bold ? "600" : undefined,
@@ -1696,15 +1795,33 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       );
     },
     Toast: (props) => {
+      const theme = usePodoNativeTheme();
+      const semantic = nativeSemanticColors(theme);
       // Figma 459:1298 per-state tinted fill + border; the toaster stack is a
       // web affordance — apps place the card in their own overlay.
       const state = props.state ?? "normal";
+      const toastText =
+        theme.colorScheme === "dark" && state !== "normal"
+          ? semantic.textBasicReverse
+          : semantic.text;
       const palette = {
-        success: { fill: "#ECF8EF", border: "#3EA856" },
-        danger: { fill: "#FEF1F1", border: "#F23B3B" },
-        info: { fill: "#EBF5FF", border: "#0095FF" },
-        warning: { fill: "#FFF7E6", border: "#FFAA00" },
-        normal: { fill: "#F4F4F5", border: "#D1D2D6" },
+        success: {
+          fill: semantic.foregroundSuccessLight,
+          border:
+            stringToken(adaptReactNativeTokens(theme.tokens), ["border", "success"]) ?? "#3EA856",
+        },
+        danger: { fill: semantic.foregroundDangerLight, border: semantic.borderDanger },
+        info: {
+          fill: semantic.foregroundInfoLight,
+          border:
+            stringToken(adaptReactNativeTokens(theme.tokens), ["border", "info"]) ?? "#0095FF",
+        },
+        warning: {
+          fill: semantic.foregroundWarningLight,
+          border:
+            stringToken(adaptReactNativeTokens(theme.tokens), ["border", "warning"]) ?? "#FFAA00",
+        },
+        normal: { fill: semantic.foregroundGrayLight, border: semantic.borderGrayDeep },
       }[state];
       // Announcement contract (toast.component.json aria): role=status for
       // normal/success/info/warning, role=alert only for danger.
@@ -1747,13 +1864,13 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             { style: { alignItems: "center", flexDirection: "row", gap: 4 } },
             createElement(
               host.Text,
-              { style: { color: "#18181B", flex: 1, fontSize: 16, fontWeight: "600" } },
+              { style: { color: toastText, flex: 1, fontSize: 16, fontWeight: "600" } },
               props.children
             ),
             props.suffixText
               ? createElement(
                   host.Text,
-                  { style: { color: "#18181B", fontSize: 16 } },
+                  { style: { color: toastText, fontSize: 16 } },
                   props.suffixText
                 )
               : null,
@@ -1771,17 +1888,19 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                       width: 24,
                     },
                   },
-                  createElement(host.Text, { style: { color: "#18181B", fontSize: 16 } }, "✕")
+                  createElement(host.Text, { style: { color: toastText, fontSize: 16 } }, "✕")
                 )
               : null
           ),
           props.caption
-            ? createElement(host.Text, { style: { color: "#18181B", fontSize: 14 } }, props.caption)
+            ? createElement(host.Text, { style: { color: toastText, fontSize: 14 } }, props.caption)
             : null
         )
       );
     },
     Tooltip: function NativeTooltip(props) {
+      const providerTheme = usePodoNativeTheme();
+      const semantic = nativeSemanticColors(providerTheme);
       const theme = props.theme ?? "default";
       const position = props.position ?? "right";
       const ordinal = props.ordinal ?? "first";
@@ -1791,7 +1910,8 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const reactId = useId();
       const bubbleId = `podo-tooltip-${reactId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
       // default is the dark pair (base); reverse flips to white.
-      const fill = theme === "reverse" ? "#FFFFFF" : "#3E424B";
+      const fill = theme === "reverse" ? semantic.background : semantic.foregroundBasicReverse;
+      const labelColor = theme === "reverse" ? semantic.text : semantic.textBasicReverse;
       // Arrowhead via the RN border-triangle trick (a zero-size box whose one
       // colored border forms the 4x16 wedge pointing at the target).
       const wedge: Record<string, string | number> = { height: 0, width: 0 };
@@ -1855,15 +1975,13 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               paddingTop: 6,
             },
           },
-          createElement(
-            host.Text,
-            { style: { color: theme === "reverse" ? "#18181B" : "#F9F9F9", fontSize: 14 } },
-            props.label
-          )
+          createElement(host.Text, { style: { color: labelColor, fontSize: 14 } }, props.label)
         )
       );
     },
     Radio: function NativeRadio(props) {
+      const theme = usePodoNativeTheme();
+      const semantic = nativeSemanticColors(theme);
       // Uncontrolled fallback: without a checked prop the radio tracks itself.
       // 선택은 true로만 바뀌고(라디오는 스스로 untoggle하지 않아요), 형제 해제
       // 같은 그룹 배타는 react 렌더러처럼 consumer/name-group 몫이에요.
@@ -1875,10 +1993,13 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       // Figma 379:3350 colors; the circle stays 18x18 for every size and the
       // white 8px dot survives disabled.
       const circle = behavior.disabled
-        ? { fill: "#E4E4E7", border: behavior.checked ? undefined : "#D1D2D6" }
+        ? {
+            fill: semantic.disabled,
+            border: behavior.checked ? undefined : semantic.borderDisabled,
+          }
         : behavior.checked
-          ? { fill: "#426CED", border: undefined }
-          : { fill: "transparent", border: "#9FA2AD" };
+          ? { fill: semantic.foregroundPrimary, border: undefined }
+          : { fill: "transparent", border: semantic.borderNatural };
       // Keyboard contract (radio.component.json: "Space selects"). RN Web
       // delivers onKeyDown; real RN ignores the prop. The radio role renders
       // a <div> under RNW (not a real <button>), so Space never synthesizes a
@@ -1933,7 +2054,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           behavior.checked
             ? createElement(host.View, {
                 style: {
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: semantic.foregroundStaticInvert,
                   borderRadius: 9999,
                   height: 8,
                   width: 8,
@@ -1946,7 +2067,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               host.Text,
               {
                 style: {
-                  color: behavior.disabled ? "#9FA2AD" : "#50555E",
+                  color: behavior.disabled ? semantic.textDisabled : semantic.textSubtil,
                   // Figma: label size follows the size variant (md 14/lg 16).
                   fontSize: props.size === "lg" ? 16 : 14,
                   fontWeight: props.bold ? "600" : undefined,
@@ -2108,14 +2229,26 @@ function createNativeThemeStyles(
   NativeStyle
 > {
   const tokens = adaptReactNativeTokens(theme.tokens);
-  const textColor = stringToken(tokens, ["color", "text"]) ?? defaultNativeTextColor(theme);
+  const semantic = nativeSemanticColors(theme);
+  const textColor =
+    stringToken(tokens, ["text", "basic"]) ??
+    stringToken(tokens, ["color", "text"]) ??
+    defaultNativeTextColor(theme);
   const backgroundColor =
-    stringToken(tokens, ["color", "background"]) ?? defaultNativeBackgroundColor(theme);
-  const dangerColor = stringToken(tokens, ["color", "danger"]) ?? "#F23B3B";
-  const mutedColor = "#9FA2AD";
-  const gap = numberToken(tokens, ["spacing", "controlGap"]) ?? 6;
+    stringToken(tokens, ["elevation", "basic"]) ??
+    stringToken(tokens, ["color", "background"]) ??
+    defaultNativeBackgroundColor(theme);
+  const dangerColor =
+    stringToken(tokens, ["text", "danger"]) ??
+    stringToken(tokens, ["color", "danger"]) ??
+    "#F23B3B";
+  const mutedColor = semantic.placeholder;
+  const gap =
+    numberToken(tokens, ["spacing", "component", "field-gap"]) ??
+    numberToken(tokens, ["spacing", "controlGap"]) ??
+    6;
   // Figma border/gary #E4E4E7 (gray.20) for light; dark keeps a visible gray.
-  const borderColor = theme.colorScheme === "dark" ? "#3E424B" : "#E4E4E7";
+  const borderColor = semantic.borderGray;
 
   return {
     field: { gap, padding: gap },
@@ -2148,8 +2281,8 @@ function createNativeThemeStyles(
     // .podo-input/.podo-textarea [data-state="disabled"]: foreground-disabled
     // fill + border-disabled hairline; the text drops to text-disabled
     // (styles.css fallback values — the Chip disabled grays).
-    inputDisabled: { backgroundColor: "#E4E4E7", borderColor: "#D1D2D6" },
-    inputControlDisabled: { color: "#9FA2AD" },
+    inputDisabled: { backgroundColor: semantic.disabled, borderColor: semantic.borderDisabled },
+    inputControlDisabled: { color: semantic.textDisabled },
     inputControl: { color: textColor, flex: 1, fontSize: 16, padding: 0 },
     // Figma 380:3867: multi-line box, 16/12 padding, radius 10.
     textarea: {
@@ -2165,7 +2298,7 @@ function createNativeThemeStyles(
       textAlignVertical: "top",
     },
     inputAffix: { alignItems: "center", height: 24, justifyContent: "center", width: 24 },
-    inputSuffixText: { color: "#50555E", fontSize: 16 },
+    inputSuffixText: { color: semantic.textSubtil, fontSize: 16 },
     // Layout base only — colors and metrics come from BUTTON_COLORS and
     // BUTTON_SIZES per theme/size (mirroring podo-ui/styles.css .podo-button).
     button: {
@@ -2200,8 +2333,8 @@ function createNativeThemeStyles(
     // Menu box shell (scroll container) — child layout lives in
     // selectMenuContent so ScrollView hosts can put it on contentContainerStyle.
     selectMenu: {
-      backgroundColor: "#FFFFFF",
-      borderColor: "#E4E4E7",
+      backgroundColor: semantic.background,
+      borderColor: semantic.borderGray,
       borderRadius: 10,
       borderWidth: 1,
     },
@@ -2220,7 +2353,7 @@ function createNativeThemeStyles(
     },
     // .podo-select__cell:hover / [data-active]: foreground-gray-light fill —
     // the keyboard-active cell reuses the pointer hover treatment.
-    selectCellActive: { backgroundColor: "#F4F4F5" },
+    selectCellActive: { backgroundColor: semantic.foregroundGrayLight },
     // Chip (Figma 538:6615): pill, content-sized; md gap 2/pad 6 (base).
     chip: {
       alignItems: "center",
@@ -2234,6 +2367,79 @@ function createNativeThemeStyles(
     },
     chipLabel: { color: "#FFFFFF" },
     icon: { color: textColor },
+  };
+}
+
+interface NativeSemanticColors {
+  background: string;
+  borderDanger: string;
+  borderDisabled: string;
+  borderGray: string;
+  borderGrayDeep: string;
+  borderNatural: string;
+  borderPrimary: string;
+  disabled: string;
+  disabledDark: string;
+  foregroundBasicReverse: string;
+  foregroundDanger: string;
+  foregroundDangerLight: string;
+  foregroundGray: string;
+  foregroundGrayLight: string;
+  foregroundGrayLightDeep: string;
+  foregroundInfoLight: string;
+  foregroundNatural: string;
+  foregroundNaturalLightDeep: string;
+  foregroundPrimary: string;
+  foregroundStaticInvert: string;
+  foregroundSuccessLight: string;
+  foregroundWarningLight: string;
+  iconSubtil: string;
+  placeholder: string;
+  text: string;
+  textBasicReverse: string;
+  textDisabled: string;
+  textPrimary: string;
+  textStaticInvert: string;
+  textSubtil: string;
+}
+
+/** Resolve the same semantic variables consumed by the web CSS from a generated native token tree. */
+function nativeSemanticColors(theme: NativeTheme): NativeSemanticColors {
+  const tokens = adaptReactNativeTokens(theme.tokens);
+  const dark = theme.colorScheme === "dark";
+  const value = (path: string[], light: string, darkValue = light): string =>
+    stringToken(tokens, path) ?? (dark ? darkValue : light);
+  return {
+    background: value(["elevation", "basic"], "#FFFFFF", "#18181B"),
+    borderDanger: value(["border", "danger"], "#F23B3B", "#F56666"),
+    borderDisabled: value(["border", "disabled"], "#D1D2D6", "#FFFFFF0D"),
+    borderGray: value(["border", "gary"], "#E4E4E7", "#FFFFFF1A"),
+    borderGrayDeep: value(["border", "gray-deep"], "#D1D2D6", "#FFFFFF33"),
+    borderNatural: value(["border", "natural"], "#9FA2AD", "#50555E"),
+    borderPrimary: value(["border", "primary"], "#426CED", "#577DEF"),
+    disabled: value(["foreground", "disabled"], "#E4E4E7", "#FFFFFF1A"),
+    disabledDark: value(["foreground", "disabled-dark"], "#D1D2D6", "#00000033"),
+    foregroundBasicReverse: value(["foreground", "basic-reverse"], "#3E424B", "#E4E4E7"),
+    foregroundDanger: value(["foreground", "danger"], "#F23B3B", "#F56666"),
+    foregroundDangerLight: value(["foreground", "danger-light"], "#FEF1F1", "#FFADAD"),
+    foregroundGray: value(["foreground", "gray"], "#F9F9F9", "#FFFFFF0D"),
+    foregroundGrayLight: value(["foreground", "gray-light"], "#F4F4F5", "#FFFFFF1A"),
+    foregroundGrayLightDeep: value(["foreground", "gray-lightdeep"], "#E4E4E7", "#FFFFFF33"),
+    foregroundInfoLight: value(["foreground", "info-light"], "#EBF5FF", "#8FC8FF"),
+    foregroundNatural: value(["foreground", "natural"], "#3E424B", "#767985"),
+    foregroundNaturalLightDeep: value(["foreground", "natural-lightdeep"], "#767985", "#9FA2AD"),
+    foregroundPrimary: value(["foreground", "primary"], "#426CED", "#577DEF"),
+    foregroundStaticInvert: value(["foreground", "static-invert"], "#FFFFFF", "#FFFFFF"),
+    foregroundSuccessLight: value(["foreground", "success-light"], "#ECF8EF", "#A9DEB4"),
+    foregroundWarningLight: value(["foreground", "warning-light"], "#FFF7E6", "#FFD88A"),
+    iconSubtil: value(["icon", "subtil"], "#767985", "#9FA2AD"),
+    placeholder: value(["text", "placeholder"], "#9FA2AD", "#FFFFFF66"),
+    text: value(["text", "basic"], "#18181B", "#F9F9F9"),
+    textBasicReverse: value(["text", "basic-reverse"], "#F9F9F9", "#18181B"),
+    textDisabled: value(["text", "disabled"], "#9FA2AD", "#FFFFFF33"),
+    textPrimary: value(["text", "primary"], "#426CED", "#577DEF"),
+    textStaticInvert: value(["text", "static-invert"], "#FFFFFF", "#FFFFFF"),
+    textSubtil: value(["text", "subtil"], "#50555E", "#9FA2AD"),
   };
 }
 

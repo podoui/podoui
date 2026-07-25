@@ -1,31 +1,30 @@
 /*
  * Docs-site chrome styling (header / sidebar / content / typography).
  *
- * Neutral placeholder look. Every value lives in the custom properties below —
- * swap them for the real Podo design-system tokens later and the whole site
- * follows. This styles ONLY the docs chrome; the live @podoui/react components
- * inside previews keep their own Podo styling (theme.css).
+ * The docs chrome and live examples consume the same generated `.podo` output
+ * that an application receives from `podo build`.
  */
 
-:root {
-  /* Design-system palette (source of truth = Foundation → Color page,
-     packages/docs/src/data/colors.ts). All site colors reference these. */
-  --gray-0: #ffffff;
-  --gray-5: #f9f9f9;
-  --gray-10: #f4f4f5;
-  --gray-20: #e4e4e7;
-  --gray-30: #d1d2d6;
-  --gray-40: #9fa2ad;
-  --gray-50: #767985;
-  --gray-60: #50555e;
-  --gray-70: #3e424b;
-  --gray-80: #27272a;
-  --gray-90: #18181b;
-  --gray-100: #000000;
+:root,
+[data-podo-theme] {
+  /* Compatibility aliases used by the Figma-authored docs layout.  Their
+     values now resolve through generated design tokens, including dark mode. */
+  --gray-0: var(--podo-elevation-basic, #ffffff);
+  --gray-5: var(--podo-elevation-gray, #f9f9f9);
+  --gray-10: var(--podo-button-background-solid-assistive, #f4f4f5);
+  --gray-20: var(--podo-elevation-outline, #e4e4e7);
+  --gray-30: var(--podo-border-gray-deep, #d1d2d6);
+  --gray-40: var(--podo-border-gray-darker, #9fa2ad);
+  --gray-50: var(--podo-text-placeholder, #767985);
+  --gray-60: var(--podo-text-subtil, #50555e);
+  --gray-70: var(--podo-foreground-basic-reverse, #3e424b);
+  --gray-80: var(--podo-elevation-static, #27272a);
+  --gray-90: var(--podo-text-basic, #18181b);
+  --gray-100: var(--podo-elevation-basic-reverse, #000000);
 
-  --primary-50: #426ced;
-  --primary-60: #1245e2;
-  --primary-70: #123bba;
+  --primary-50: var(--podo-foreground-primary, #426ced);
+  --primary-60: var(--podo-button-background-solid-primary-hover, #1245e2);
+  --primary-70: var(--podo-button-background-solid-primary-pressed, #123bba);
 
   /* Semantic site roles, mapped onto the palette. */
   --site-bg: var(--gray-0);
@@ -61,6 +60,12 @@ body {
   font-family: var(--site-font-ui);
   font-size: 16px;
   line-height: 1.5;
+}
+
+body > #root > [data-podo-theme] {
+  min-height: 100vh;
+  color: var(--site-fg);
+  background: var(--site-bg);
 }
 
 a {
@@ -154,6 +159,20 @@ a {
 
 .gnb__icon-btn:hover {
   opacity: 0.7;
+}
+
+.icon-sample {
+  display: inline-flex;
+  min-width: 108px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--site-fg);
+}
+
+.icon-sample code {
+  font-size: 12px;
+  color: var(--site-muted);
 }
 
 /* Layout */
@@ -608,4 +627,76 @@ a {
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
+}
+
+@media screen and (max-width: 767px) {
+  .gnb {
+    padding-inline: 16px;
+  }
+
+  .gnb__right {
+    gap: 12px;
+  }
+
+  .gnb__nav {
+    display: none;
+  }
+
+  .site-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .site-sidebar {
+    position: sticky;
+    top: var(--site-header-height);
+    z-index: 9;
+    display: flex;
+    width: 100%;
+    height: auto;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 8px;
+    border-right: 0;
+    border-bottom: 1px solid var(--site-border);
+    background: var(--site-bg);
+    scrollbar-width: thin;
+  }
+
+  .site-sidebar > div {
+    display: contents;
+  }
+
+  .site-sidebar__group-title {
+    display: none;
+  }
+
+  .site-sidebar__list {
+    display: contents;
+  }
+
+  .site-sidebar__link {
+    white-space: nowrap;
+  }
+
+  .site-content {
+    width: 100%;
+    max-width: none;
+    padding: 32px 16px 120px;
+  }
+
+  .site-content h1 {
+    font-size: 28px;
+  }
+
+  .preview__stage,
+  .doc-card__stage {
+    padding-inline: 16px;
+  }
+
+  .spec-table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }

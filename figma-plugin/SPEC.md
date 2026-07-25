@@ -3,21 +3,31 @@
 A Figma plugin with two modes:
 
 - **Export** — run inside the *PODO Design System* source file. Serializes all
-  local variables, local styles, and every local component / component set
-  (from all pages) into one JSON document (`src/schema.ts`), downloaded via the
-  plugin UI.
+  local variables and styles plus every local component / component set on the
+  configured library pages (`Component` or `_podo`) into one JSON document
+  (`src/schema.ts`), downloaded via the plugin UI. Referenced local/remote
+  component dependencies outside those pages are embedded into a synthetic
+  `External` page.
 - **Import** — run inside an (empty) target file. Creates a page named
   `_podo` and recreates variables, styles, and components *identically*.
 
-No network access. The JSON file is the only transport.
+The downloaded JSON remains the portable transport. The optional project-send
+flow may POST the same document only to the loopback receiver ports declared in
+`manifest.json` (`localhost:4141-4145`, bound by the CLI to `127.0.0.1`); no
+external network origin is allowed.
 
-## Source-file inventory (measured 2026-07-15 via REST)
+## Source-file inventory (measured 2026-07-25 via the Plugin API)
 
 These numbers bound what the serializer MUST cover. Anything outside this list
 may be handled best-effort, but log a warning instead of silently dropping.
 
-- Pages: `🦄 Overview` (3 components), `Web` (21), `Component` (801),
-  `Documentation` (0). 121 component sets total, 825 components total.
+- Pages: `🦄 Overview`, separator, `Web`, `Component`, `Documentation` (5 total).
+  The live `Component` page contains 126 component sets, 891 component nodes,
+  4 standalone components, and 2,222 instances. These figures supersede the
+  2026-07-15 snapshot (121 sets / 825 components).
+- Variables: 4 collections and 311 variables — `primitive` 150,
+  `responsive` 15, `semantic` 34, and `theme` 112. Every variable has a value
+  for every declared mode; the 112 theme variables each have light/dark aliases.
 - Scene node types used: `COMPONENT`, `COMPONENT_SET`, `FRAME`, `INSTANCE`,
   `TEXT`, `RECTANGLE`, `ELLIPSE`, `LINE`, `VECTOR`, `BOOLEAN_OPERATION` (3),
   `SECTION` (organizing only, not inside components). **No** GROUP, POLYGON,
@@ -27,7 +37,7 @@ may be handled best-effort, but log a warning instead of silently dropping.
 - Effects: `DROP_SHADOW`, `BACKGROUND_BLUR` only.
 - Blend modes: all default. Rotation: used (~92 nodes). `strokeDashes`: used
   (765 nodes). Layout grids: none.
-- Local styles: 20 TEXT + 3 EFFECT. No paint/grid styles. No remote styles.
+- Local styles: 20 TEXT + 3 EFFECT (23 total). No paint/grid styles. No remote styles.
 - Node-level `boundVariables` keys seen: `color`, `fills`, `strokes`,
   `cornerRadius`, `rectangleCornerRadii`, `itemSpacing`, `counterAxisSpacing`,
   `paddingTop/Right/Bottom/Left`, `fontFamily`, `fontSize`, `textRangeFills`.

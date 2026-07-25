@@ -4,10 +4,13 @@ import { ButtonPage } from "./pages/ButtonPage.js";
 import { CheckboxPage } from "./pages/CheckboxPage.js";
 import { ChipPage } from "./pages/ChipPage.js";
 import { ColorPage } from "./pages/ColorPage.js";
+import { DatepickerPage } from "./pages/DatepickerPage.js";
 import { FieldPage } from "./pages/FieldPage.js";
+import { IconPage } from "./pages/IconPage.js";
 import { InputPage } from "./pages/InputPage.js";
 import { RadioPage } from "./pages/RadioPage.js";
 import { SelectPage } from "./pages/SelectPage.js";
+import { SetupPage } from "./pages/SetupPage.js";
 import { SwitchPage } from "./pages/SwitchPage.js";
 import { TablePage } from "./pages/TablePage.js";
 import { TextareaPage } from "./pages/TextareaPage.js";
@@ -28,12 +31,15 @@ export interface NavItem {
  * Add a component to the docs by adding one entry here.
  */
 export const NAV: NavItem[] = [
+  { slug: "setup", title: "설치와 토큰 적용", group: "Guide", page: SetupPage },
   { slug: "color", title: "Color", group: "Foundation", page: ColorPage },
   { slug: "typography", title: "Typography", group: "Foundation", page: TypographyPage },
+  { slug: "icon", title: "Icon", group: "Foundation", page: IconPage },
   { slug: "badge", title: "Badge", group: "Components", page: BadgePage },
   { slug: "button", title: "Button", group: "Components", page: ButtonPage },
   { slug: "checkbox", title: "Checkbox", group: "Components", page: CheckboxPage },
   { slug: "chip", title: "Chip", group: "Components", page: ChipPage },
+  { slug: "datepicker", title: "DatePicker", group: "Components", page: DatepickerPage },
   { slug: "field", title: "Field", group: "Components", page: FieldPage },
   { slug: "input", title: "Input", group: "Components", page: InputPage },
   { slug: "radio", title: "Radio", group: "Components", page: RadioPage },

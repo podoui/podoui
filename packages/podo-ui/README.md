@@ -29,7 +29,7 @@ import { Button, Field, Input, PodoThemeProvider } from "podo-ui/react";
 | `podo-ui/native`    | React Native 컴포넌트                      |
 | `podo-ui/spec`      | 토큰/컴포넌트 JSON schema와 파서           |
 | `podo-ui/tokens`    | 토큰 resolver와 CSS/TS/RN 출력기 (`/node`) |
-| `podo-ui/icons`     | 아이콘 manifest와 WOFF 빌드                |
+| `podo-ui/icons`     | 아이콘 manifest와 WOFF/WOFF2/TTF 빌드      |
 | `podo-ui/core`      | 공통 behavior/a11y 헬퍼                    |
 | `podo-ui/codegen`   | 컴포넌트 코드 생성기                       |
 | `podo-ui/migration` | `.podo` 마이그레이션 러너                  |
@@ -39,7 +39,10 @@ import { Button, Field, Input, PodoThemeProvider } from "podo-ui/react";
 React Native 앱에서는 `createNativeComponents({ Pressable, ScrollView, Text, TextInput, View })`에
 `react-native`의 실제 컴포넌트를 주입해 사용하세요. `podo-ui/native`의
 top-level 컴포넌트 export는 문자열 호스트(`defaultNativeHost`) 기반의
-테스트 렌더러 전용 편의 export입니다 (자세한 예시: docs/installation-guide.md).
+테스트 렌더러 전용 편의 export입니다. `podo build --target native`가 만든
+`tokens.native.ts`, `PodoIcons.native.ts`, `PodoIcons.ttf`를 provider의
+`tokens`, `iconGlyphs`, `iconFontFamily`에 연결해야 실제 기기에서도 테마와
+아이콘이 표시됩니다 (자세한 예시: docs/installation-guide.md).
 
 ## 스타일
 

@@ -88,25 +88,47 @@ React Native — 실제 RN 앱에서는 반드시 `createNativeComponents`에 RN
 컴포넌트를 주입해 사용합니다 (`plan.md`의 host adapter 계약):
 
 ```tsx
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, Text, TextInput, View, useColorScheme } from "react-native";
+import { useFonts } from "expo-font";
 import { createNativeComponents, PodoNativeThemeProvider } from "podo-ui/native";
+import { getPodoNativeTokens } from "./podo/tokens.native";
+import { podoIconGlyphMap } from "./podo/icons/PodoIcons.native";
 
-const { Button, Field, Input } = createNativeComponents({
+const { Button, Field, Icon, Input } = createNativeComponents({
   Pressable,
   ScrollView,
   Text,
   TextInput,
   View,
 });
+const iconGlyphs = Object.fromEntries(
+  Object.entries(podoIconGlyphMap).map(([name, code]) => [name, String.fromCodePoint(code)])
+);
 
 export function App() {
+  const colorScheme = useColorScheme() === "dark" ? "dark" : "light";
+  const [fontsLoaded] = useFonts({
+    PodoIcons: require("./podo/icons/PodoIcons.ttf"),
+  });
+  if (!fontsLoaded) return null;
+
   return (
-    <PodoNativeThemeProvider theme="dashboard" colorScheme="light">
-      <Button>Save</Button>
+    <PodoNativeThemeProvider
+      theme="dashboard"
+      colorScheme={colorScheme}
+      tokens={getPodoNativeTokens("dashboard", colorScheme)}
+      iconGlyphs={iconGlyphs}
+      iconFontFamily="PodoIcons"
+    >
+      <Button prefix={<Icon name="check" />}>Save</Button>
     </PodoNativeThemeProvider>
   );
 }
 ```
+
+`podo build`는 native 타깃에 `tokens.native.ts`, 코드포인트 맵, 실제 기기에서
+로드할 `PodoIcons.ttf`를 함께 생성합니다. Expo가 아닌 bare React Native라면 같은
+TTF를 앱 자산으로 링크한 뒤 등록한 family 이름을 `iconFontFamily`에 전달하세요.
 
 `podo-ui/native`의 top-level export(`import { Button } from "podo-ui/native"`)는
 문자열 호스트 태그(`defaultNativeHost`)에 바인딩된 테스트 렌더러 전용

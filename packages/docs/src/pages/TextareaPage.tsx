@@ -5,6 +5,7 @@ import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
+import { nativeComponentUsage } from "../code-examples.js";
 
 const INTRO =
   "사용자가 긴 문장이나 여러 줄에 걸친 내용을 자유롭게 작성하도록 돕는 상호작용 요소로, 한 줄 " +
@@ -20,12 +21,12 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Textarea } from "@podoui/hono";\n\n<Textarea name="memo" placeholder="플레이스홀더" />`,
+    code: `import { Textarea } from "podo-ui/hono";\n\n<Textarea name="memo" placeholder="플레이스홀더" />`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Textarea } from "@podoui/native";\n\n<Textarea placeholder="플레이스홀더" />`,
+    code: nativeComponentUsage(["Textarea"], `<Textarea placeholder="플레이스홀더" />`),
   },
 ];
 
@@ -90,7 +91,7 @@ export function TextareaPage() {
       <DocSection
         index={3}
         title="속성 (props)"
-        description="@podoui/react의 Textarea가 받는 속성이에요. hover·focused는 브라우저 상호작용으로, completed는 값이 채워진 상태로 자연스럽게 표현되고, read-only는 readOnly, danger는 invalid 속성으로 켜요. Field 안에 넣으면 레이블·글자 수 연결이 자동으로 처리돼요. 이 밖에 표준 textarea 속성(value, placeholder, rows, aria-* 등)도 그대로 전달돼요."
+        description="podo-ui/react의 Textarea가 받는 속성이에요. hover·focused는 브라우저 상호작용으로, completed는 값이 채워진 상태로 자연스럽게 표현되고, read-only는 readOnly, danger는 invalid 속성으로 켜요. Field 안에 넣으면 레이블·글자 수 연결이 자동으로 처리돼요. 이 밖에 표준 textarea 속성(value, placeholder, rows, aria-* 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"

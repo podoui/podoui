@@ -2,6 +2,7 @@ import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { computeIconsHash } from "@podoui/spec";
 import {
   buildProject,
   findProjectRoot,
@@ -93,6 +94,7 @@ describe("@podoui/cli", () => {
       expect(dryRun.dryRun).toBe(true);
       expect(dryRun.files.some((file) => file.path.endsWith("tokens.css"))).toBe(true);
       expect(dryRun.files.some((file) => file.path.endsWith("PodoIcons.woff2"))).toBe(true);
+      expect(dryRun.files.some((file) => file.path.endsWith("PodoIcons.ttf"))).toBe(true);
       await expect(stat(join(root, "src/generated/podo/tokens.css"))).rejects.toThrow();
       await expect(stat(join(root, ".podo/cache/default-icons"))).rejects.toThrow();
 
@@ -156,6 +158,67 @@ describe("@podoui/cli", () => {
     }
   );
 
+  it("plans and writes only the font files produced by inline icon manifests", async () => {
+    const root = await createProject({ dependencies: { react: "^19.0.0" } });
+    const io = createIo(root);
+    await runCli(
+      ["init", "--target", "react", "--theme", "dashboard", "--out-dir", "src/podo", "--yes"],
+      io
+    );
+    await mkdir(join(root, ".podo/icons"), { recursive: true });
+    const inlineManifest = {
+      schemaVersion: "2.0.0" as const,
+      kind: "icons" as const,
+      fontFamily: "PodoIcons",
+      icons: {
+        box: {
+          svg: '<svg viewBox="0 0 1000 1000"><path d="M100 100H900V900H100Z" fill="currentColor"/></svg>',
+          codepoint: "E900",
+          tags: [],
+        },
+      },
+      groups: { all: ["box"] },
+      codepointLock: { box: "E900" },
+    };
+    await writeFile(
+      join(root, ".podo/icons/manifest.json"),
+      `${JSON.stringify(
+        {
+          ...inlineManifest,
+          fontAsset: {
+            kind: "font",
+            source: "embedded",
+            family: "PodoIcons",
+            fileName: "PodoIcons.woff2",
+            format: "woff2",
+            mimeType: "font/woff2",
+            dataUrl: "data:font/woff2;base64,AA==",
+          },
+          fontBuild: {
+            iconsHash: computeIconsHash(inlineManifest),
+            unitsPerEm: 1000,
+            glyphCount: 1,
+          },
+        },
+        null,
+        2
+      )}\n`
+    );
+
+    const plan = await buildProject(parseArgs(["build", "--dry-run"]), io);
+    expect(plan.files.some((file) => file.path.endsWith("PodoIcons.ttf"))).toBe(true);
+    expect(plan.files.some((file) => file.path.endsWith("PodoIcons.woff2"))).toBe(true);
+    expect(plan.files.some((file) => file.path.endsWith("PodoIcons.woff"))).toBe(false);
+
+    await buildProject(parseArgs(["build"]), io);
+    await expect(stat(join(root, "src/podo/icons/PodoIcons.ttf"))).resolves.toBeDefined();
+    await expect(stat(join(root, "src/podo/icons/PodoIcons.woff2"))).resolves.toBeDefined();
+    await expect(stat(join(root, "src/podo/icons/PodoIcons.woff"))).rejects.toThrow();
+    expect(await readFile(join(root, "src/podo/icons/PodoIcons.css"), "utf8")).not.toContain(
+      'PodoIcons.woff"'
+    );
+  });
+
   it("builds the react-native target and reflects token overrides", async () => {
     const root = await createProject({ dependencies: { "react-native": "^0.76.0" } });
     const io = createIo(root);
@@ -187,6 +250,9 @@ describe("@podoui/cli", () => {
     expect(
       (await readFile(join(root, "src/podo/tokens.native.ts"), "utf8")).toLowerCase()
     ).toContain("#abcdef");
+    expect(await readFile(join(root, "src/podo/tokens.native.ts"), "utf8")).toContain(
+      "getPodoNativeTokens"
+    );
     // The native component renderer is generated for the native target.
     await expect(
       stat(join(root, "src/podo/components/native/button.native.ts"))

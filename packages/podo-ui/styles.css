@@ -1227,6 +1227,12 @@
   width: 480px;
 }
 
+/* Dark theme tinted toast fills resolve to light semantic colors; pair them
+   with the reverse text token so title/caption retain readable contrast. */
+[data-color-scheme="dark"] .podo-toast:not([data-state="normal"]) {
+  color: var(--podo-text-basic-reverse, #18181b);
+}
+
 .podo-toast[data-state="success"] {
   background: var(--podo-foreground-success-light, #ecf8ef);
   border-color: var(--podo-border-success, #3ea856);

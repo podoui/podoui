@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
+import { PodoThemeProvider } from "@podoui/react";
 import { NAV, findBySlug } from "./nav.js";
 import logoUrl from "./assets/logo.svg";
 
-// GNB top-level nav (Figma 516:3871). Doc has no content yet; Foundation and
-// Component link to their first pages.
+// GNB top-level nav (Figma 516:3871).
 const TOP_NAV: { label: string; href?: string }[] = [
-  { label: "Doc" },
+  { label: "Doc", href: "#/setup" },
   { label: "Foundation", href: "#/color" },
   { label: "Component", href: "#/button" },
   // v1(SCSS 기반) 문서 — 외부 링크는 새 탭으로 연다.
@@ -32,6 +32,7 @@ function groupedNav(): { name: string; items: typeof NAV }[] {
 
 export function App() {
   const [slug, setSlug] = useState(currentSlug);
+  const [colorScheme, setColorScheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     const onHash = () => setSlug(currentSlug());
@@ -43,7 +44,7 @@ export function App() {
   const Page = active.page;
 
   return (
-    <>
+    <PodoThemeProvider theme="landing" colorScheme={colorScheme}>
       <header className="gnb">
         <div className="gnb__inner">
           <a className="gnb__brand" href="#/">
@@ -74,7 +75,15 @@ export function App() {
               <button className="gnb__icon-btn" type="button" aria-label="Search">
                 <SearchIcon />
               </button>
-              <button className="gnb__icon-btn" type="button" aria-label="Toggle theme">
+              <button
+                className="gnb__icon-btn"
+                type="button"
+                aria-label={colorScheme === "light" ? "다크 모드로 전환" : "라이트 모드로 전환"}
+                aria-pressed={colorScheme === "dark"}
+                onClick={() =>
+                  setColorScheme((current) => (current === "light" ? "dark" : "light"))
+                }
+              >
                 <SunIcon />
               </button>
             </div>
@@ -108,7 +117,7 @@ export function App() {
           <Page />
         </main>
       </div>
-    </>
+    </PodoThemeProvider>
   );
 }
 

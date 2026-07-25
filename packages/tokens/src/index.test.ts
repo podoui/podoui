@@ -154,6 +154,22 @@ describe("@podoui/tokens", () => {
     expect(json).toContain('"origin"');
   });
 
+  it("emits directly selectable theme and color-scheme objects for native consumers", async () => {
+    const bundle = resolveTokenDocument(
+      mergeTokenDocuments(await loadTokenDocuments({ packageTokensDir: specSamples }))
+    );
+    const rn = emitReactNativeTokens(bundle, "tokens", {
+      themes: ["landing", "dashboard"],
+      colorSchemes: ["light", "dark"],
+    });
+
+    expect(rn).toContain("export const tokensByTheme");
+    expect(rn).toContain("export function getPodoNativeTokens");
+    expect(rn).toContain('"landing": {');
+    expect(rn).toContain('"dark": {');
+    expect(rn).not.toContain('"typography": {\n      "h1": {\n        "landing"');
+  });
+
   it("reports duplicate token names in the same source tier", async () => {
     const sources = await loadTokenDocuments({ packageTokensDir: specSamples });
     const duplicate = sources.find((source) => source.filePath.endsWith("color.tokens.json"));

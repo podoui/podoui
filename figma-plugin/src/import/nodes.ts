@@ -339,9 +339,23 @@ async function applyText(node: TextNode, data: NodeData, ctx: Ctx): Promise<void
   };
 
   // Keep the serialized node name: fresh TextNodes auto-rename on characters.
-  attempt('autoRename 해제', () => {
-    node.autoRename = false;
-  });
+  // Figma exposes instance sublayers while applying overrides, but rejects
+  // autoRename writes on those virtual descendants and emits a console warning.
+  // Their names already come from the main component, so no write is needed.
+  let parent: BaseNode | null = node.parent;
+  let insideInstance = false;
+  while (parent && parent.type !== 'PAGE' && parent.type !== 'DOCUMENT') {
+    if (parent.type === 'INSTANCE') {
+      insideInstance = true;
+      break;
+    }
+    parent = parent.parent;
+  }
+  if (!insideInstance) {
+    attempt('autoRename 해제', () => {
+      node.autoRename = false;
+    });
+  }
 
   // Empty text nodes have zero segments — fall back to the serialized
   // node-level font (TextData.fontName) before resorting to FALLBACK_FONT.
@@ -729,6 +743,19 @@ async function applyInstanceProps(
   for (const name of Object.keys(inst.componentProperties ?? {})) {
     const p = inst.componentProperties[name];
     if (p.type === 'SLOT') continue; // setProperties throws cannotSetSlotProperty
+    // Recent plugin typings model SLOT values as optional, which is also what
+    // the live Podo file returns.  A malformed/non-SLOT export can therefore
+    // reach us without a literal value.  Preserve a valid variable binding,
+    // but never pass `undefined` to InstanceNode.setProperties().
+    let boundValue: VariableAlias | null = null;
+    if (p.bound) {
+      const variable = await resolveVariable(ctx, p.bound);
+      if (variable) boundValue = figma.variables.createVariableAlias(variable);
+    }
+    if (p.value === undefined && boundValue === null) {
+      ctx.warnDedup(`인스턴스 프로퍼티 값 누락: ${name}`);
+      continue;
+    }
     let target = name;
     if (map) {
       const mapped = map.get(name);
@@ -739,7 +766,7 @@ async function applyInstanceProps(
         continue;
       }
     }
-    let value: string | boolean | VariableAlias = p.value;
+    let value: string | boolean | VariableAlias = boundValue ?? p.value!;
     if (p.type === 'INSTANCE_SWAP' && typeof p.value === 'string') {
       const local = ctx.componentIdMap.get(p.value);
       const swapped = local ?? (p.valueKey ? await importRemote(ctx, p.valueKey) : null);
@@ -749,10 +776,7 @@ async function applyInstanceProps(
       }
       value = swapped.id;
     }
-    if (p.bound) {
-      const variable = await resolveVariable(ctx, p.bound);
-      if (variable) value = figma.variables.createVariableAlias(variable);
-    }
+    if (boundValue) value = boundValue;
     props[target] = value;
   }
   if (!Object.keys(props).length) return;
@@ -812,8 +836,11 @@ function createVectorNode(data: NodeData, ctx: Ctx): SceneNode {
         frame.remove();
         return only;
       }
+      const hasStyleLink = Boolean(data.fillStyleId || data.strokeStyleId || data.effectStyleId);
       ctx.warnDedup(
-        `벡터 '${data.name}': SVG가 여러 지오메트리로 임포트되어 FRAME으로 유지합니다 (단색 페인트·변수 바인딩은 자식에 재적용되고, 스타일 연결은 재현되지 않습니다).`
+        hasStyleLink
+          ? `벡터 '${data.name}': SVG가 여러 지오메트리로 임포트되어 FRAME으로 유지합니다 (단색 페인트·변수 바인딩은 자식에 재적용되고, 스타일 연결은 재현되지 않습니다).`
+          : `벡터 '${data.name}': SVG가 여러 지오메트리로 임포트되어 FRAME으로 유지합니다 (시각 지오메트리와 단색 페인트·변수 바인딩은 보존됩니다).`
       );
       ctx.svgWrapperIds.add(frame.id);
       return frame;

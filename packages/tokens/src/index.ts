@@ -270,9 +270,40 @@ export function emitTypeScriptTokens(bundle: ResolvedTokenBundle, exportName = "
   return `export const ${exportName} = ${JSON.stringify(nested, null, 2)} as const;\n\nexport type TokenPath = ${paths || "never"};\n`;
 }
 
-export function emitReactNativeTokens(bundle: ResolvedTokenBundle, exportName = "tokens"): string {
+export function emitReactNativeTokens(
+  bundle: ResolvedTokenBundle,
+  exportName = "tokens",
+  options?: { themes: string[]; colorSchemes: Array<"light" | "dark"> }
+): string {
   const nested = nestResolvedTokens(bundle, toReactNativeValue);
-  return `export const ${exportName} = ${JSON.stringify(nested, null, 2)} as const;\n`;
+  const base = `export const ${exportName} = ${JSON.stringify(nested, null, 2)} as const;\n`;
+  if (!options) {
+    return base;
+  }
+
+  const tokensByTheme = Object.fromEntries(
+    options.themes.map((theme) => [
+      theme,
+      Object.fromEntries(
+        options.colorSchemes.map((colorScheme) => [
+          colorScheme,
+          nestResolvedTokens(selectThemeTokens(bundle, { theme, colorScheme }), toReactNativeValue),
+        ])
+      ),
+    ])
+  );
+
+  return (
+    `${base}\nexport const tokensByTheme = ${JSON.stringify(tokensByTheme, null, 2)} as const;\n\n` +
+    `export type PodoNativeThemeName = keyof typeof tokensByTheme;\n` +
+    `export type PodoNativeColorScheme = keyof (typeof tokensByTheme)[PodoNativeThemeName];\n\n` +
+    `export function getPodoNativeTokens(\n` +
+    `  theme: PodoNativeThemeName,\n` +
+    `  colorScheme: PodoNativeColorScheme\n` +
+    `) {\n` +
+    `  return tokensByTheme[theme][colorScheme];\n` +
+    `}\n`
+  );
 }
 
 export function emitTokenJsonBundle(bundle: ResolvedTokenBundle): string {

@@ -5,6 +5,7 @@ import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
+import { nativeComponentUsage } from "../code-examples.js";
 
 const INTRO =
   "체크박스는 사용자가 여러 항목 중 원하는 것을 독립적으로 켜고 끄며 선택하도록 돕는 요소로, 약관 동의나 " +
@@ -24,12 +25,15 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Checkbox } from "@podoui/hono";\n\n<Checkbox checked label="이용약관 동의" />`,
+    code: `import { Checkbox } from "podo-ui/hono";\n\n<Checkbox checked label="이용약관 동의" />`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Checkbox } from "@podoui/native";\n\n<Checkbox label="이용약관 동의" checked={agreed} onCheckedChange={setAgreed} />`,
+    code: nativeComponentUsage(
+      ["Checkbox"],
+      `<Checkbox label="이용약관 동의" checked={agreed} onCheckedChange={setAgreed} />`
+    ),
   },
 ];
 
@@ -88,7 +92,7 @@ export function CheckboxPage() {
       <DocSection
         index={4}
         title="속성 (props)"
-        description="@podoui/react의 Checkbox가 받는 속성이에요. 시안의 state(checked·unchecked)는 웹 표준 input[type=checkbox]에 맞춘 checked로, indeterminate는 별도 속성으로 표현돼요(스크린리더에는 mixed로 안내). checked를 생략하면 스스로 상태를 관리하는 비제어형으로 동작하고, 표준 input 속성(name, className, aria-* 등)도 그대로 전달돼요."
+        description="podo-ui/react의 Checkbox가 받는 속성이에요. 시안의 state(checked·unchecked)는 웹 표준 input[type=checkbox]에 맞춘 checked로, indeterminate는 별도 속성으로 표현돼요(스크린리더에는 mixed로 안내). checked를 생략하면 스스로 상태를 관리하는 비제어형으로 동작하고, 표준 input 속성(name, className, aria-* 등)도 그대로 전달돼요."
       >
         <SpecTable
           variant="props"

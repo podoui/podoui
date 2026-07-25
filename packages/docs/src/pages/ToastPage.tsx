@@ -6,6 +6,7 @@ import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
+import { nativeComponentUsage } from "../code-examples.js";
 
 const INTRO =
   "토스트는 사용자의 동작 결과나 시스템 상태를 화면 한쪽에 잠깐 띄웠다 사라지는 짧은 알림으로, 저장 완료나 " +
@@ -34,16 +35,17 @@ const USAGE_TABS: CodeTab[] = [
     target: "hono",
     label: "Hono",
     code:
-      `import { Toast } from "@podoui/hono";\n\n` +
+      `import { Toast } from "podo-ui/hono";\n\n` +
       `<Toast state="success" closable>저장됐어요</Toast>`,
   },
   {
     target: "native",
     label: "React Native",
-    code:
-      `import { Toast } from "@podoui/native";\n\n` +
+    code: nativeComponentUsage(
+      ["Toast"],
       `{/* 앱의 오버레이 안에 배치해요 */}\n` +
-      `<Toast state="success" onClose={hide}>저장됐어요</Toast>`,
+        `<Toast state="success" onClose={hide}>저장됐어요</Toast>`
+    ),
   },
 ];
 
@@ -165,7 +167,7 @@ export function ToastPage() {
       <DocSection
         index={4}
         title="Toast 속성 (props)"
-        description="@podoui/react의 Toast — 카드 하나의 생김새를 정하는 속성이에요. Toast를 직접 놓거나 web·hono·native에서 카드를 배치할 때 써요. danger일 때 role=alert, 나머지는 role=status로 안내되고 포커스를 뺏지 않아요. 시안의 suffix-icon 기본값은 닫기 X라 코드에서는 onClose로 표현돼요."
+        description="podo-ui/react의 Toast — 카드 하나의 생김새를 정하는 속성이에요. Toast를 직접 놓거나 web·hono·native에서 카드를 배치할 때 써요. danger일 때 role=alert, 나머지는 role=status로 안내되고 포커스를 뺏지 않아요. 시안의 suffix-icon 기본값은 닫기 X라 코드에서는 onClose로 표현돼요."
       >
         <SpecTable
           variant="props"

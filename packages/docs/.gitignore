@@ -1,0 +1,3 @@
+# Commit the project contract and generated consumer assets, not build caches.
+.podo/cache/
+.podo/generated/

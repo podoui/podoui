@@ -5,6 +5,7 @@ import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
+import { nativeComponentUsage } from "../code-examples.js";
 
 const INTRO =
   "배지는 아이콘이나 메뉴, 목록 항목 곁에 붙어 개수·상태·알림 여부를 작게 표시하는 요소로, 읽지 않은 " +
@@ -16,12 +17,12 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Badge } from "@podoui/hono";\n\n<Badge>99</Badge>`,
+    code: `import { Badge } from "podo-ui/hono";\n\n<Badge>99</Badge>`,
   },
   {
     target: "native",
     label: "React Native",
-    code: `import { Badge } from "@podoui/native";\n\n<Badge>99</Badge>`,
+    code: nativeComponentUsage(["Badge"], `<Badge>99</Badge>`),
   },
 ];
 
@@ -90,7 +91,7 @@ export function BadgePage() {
       <DocSection
         index={4}
         title="속성 (props)"
-        description="@podoui/react의 Badge가 받는 속성이에요. 표시할 숫자·텍스트는 children으로 전달하고, 이 밖에 표준 span 속성(className, aria-* 등)도 그대로 전달돼요. 도트처럼 보이는 텍스트가 없을 땐 aria-label로 의미를 제공하세요."
+        description="podo-ui/react의 Badge가 받는 속성이에요. 표시할 숫자·텍스트는 children으로 전달하고, 이 밖에 표준 span 속성(className, aria-* 등)도 그대로 전달돼요. 도트처럼 보이는 텍스트가 없을 땐 aria-label로 의미를 제공하세요."
       >
         <SpecTable
           variant="props"
