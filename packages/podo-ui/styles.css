@@ -1764,6 +1764,15 @@
   --color-text-primary: var(--podo-text-primary, #7c3aed);
   --color-text-sub: var(--podo-text-subtil, #a1a1aa);
 }
+.podo-dp-datepicker,
+.podo-dp-datepicker *,
+.podo-dp-dropdown,
+.podo-dp-dropdown *,
+.podo-ed-editor,
+.podo-ed-editor * {
+  box-sizing: border-box;
+}
+
 .podo-dp-datepicker {
   position: relative;
   display: inline-block;
@@ -1791,6 +1800,48 @@
   background: var(--color-bg-disabled);
   cursor: not-allowed;
   opacity: 0.6;
+}
+.podo-dp-input.podo-dp-withNav {
+  min-height: 42px;
+  padding: 0;
+}
+
+.podo-dp-navArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  flex-shrink: 0;
+  color: var(--color-text-action);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.podo-dp-navArrow:hover:not(:disabled) {
+  background: var(--color-default-hover);
+}
+.podo-dp-navArrow:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.podo-dp-navArrowLeft {
+  border-right: 1px solid var(--color-border);
+  border-radius: 6px 0 0 6px;
+}
+.podo-dp-navArrowRight {
+  border-left: 1px solid var(--color-border);
+  border-radius: 0 6px 6px 0;
+}
+.podo-dp-presetLabel {
+  padding-left: 8px;
+  flex-shrink: 0;
+  color: var(--color-text-body);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
 }
 
 .podo-dp-inputContent {
@@ -1844,6 +1895,10 @@
   justify-content: center;
   gap: 0;
 }
+.podo-dp-hourSection {
+  min-width: 0;
+  flex: 1;
+}
 
 .podo-dp-timeSelect {
   font-size: 14px;
@@ -1887,6 +1942,11 @@
 .podo-dp-timeSelect:disabled {
   cursor: not-allowed;
   opacity: 0.6;
+}
+.podo-dp-hourSelect {
+  min-width: 72px;
+  text-align: center;
+  text-align-last: center;
 }
 
 .podo-dp-timeSeparator {
@@ -1948,10 +2008,24 @@
   background: var(--color-bg-modal);
   border-radius: 8px;
   box-shadow: 0 6px 18px -3px rgba(50, 50, 50, 0.06);
+  overflow-x: auto;
 }
 .podo-dp-dropdown.podo-dp-right {
   left: auto;
   right: 0;
+}
+.podo-dp-dropdown.podo-dp-portalDropdown {
+  left: auto;
+  margin-top: 4px;
+}
+.podo-dp-dropdown.podo-dp-dropdownUp {
+  top: auto;
+  bottom: calc(100% + 4px);
+}
+.podo-dp-dropdown.podo-dp-dropdownUp.podo-dp-portalDropdown {
+  bottom: auto;
+  margin-top: 0;
+  margin-bottom: 4px;
 }
 
 .podo-dp-calendar {
@@ -2512,6 +2586,111 @@
   border-right: 1px solid var(--color-border);
   padding-right: 12px;
 }
+
+.podo-dp-dropdownBody {
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+}
+
+.podo-dp-quickSelectPanel {
+  display: flex;
+  min-width: 100px;
+  padding-right: 12px;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 2px;
+  border-right: 1px solid var(--color-border);
+}
+
+.podo-dp-quickSelectItem {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  color: var(--color-text-body);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: left;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.podo-dp-quickSelectItem:hover:not(:disabled):not(.podo-dp-active) {
+  background: var(--color-default-hover);
+}
+.podo-dp-quickSelectItem.podo-dp-active {
+  color: var(--color-primary);
+  font-weight: 600;
+  background: var(--color-primary-fill);
+}
+.podo-dp-quickSelectItem:disabled {
+  color: var(--color-text-action-disabled);
+  cursor: not-allowed;
+}
+
+@media screen and (max-width: 600px) {
+  .podo-dp-periodCalendarRight {
+    display: none;
+  }
+  .podo-dp-periodCalendar:not(:last-child) {
+    padding-right: 0;
+    border-right: 0;
+  }
+  .podo-dp-quickSelectPanel {
+    min-width: 80px;
+    padding-right: 8px;
+  }
+  .podo-dp-quickSelectItem {
+    padding: 6px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .podo-dp-dropdown {
+    max-width: calc(100vw - 16px) !important;
+    padding: 12px;
+  }
+  .podo-dp-calendar {
+    width: 100%;
+    min-width: 260px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .podo-dp-dropdown {
+    padding: 8px;
+  }
+  .podo-dp-calendar {
+    min-width: 0;
+  }
+  .podo-dp-calendarCell {
+    min-width: 32px;
+    height: 36px;
+  }
+  .podo-dp-presetLabel {
+    display: none;
+  }
+  .podo-dp-dropdownBody {
+    gap: 6px;
+  }
+  .podo-dp-quickSelectPanel {
+    display: flex;
+    min-width: 64px;
+    padding-right: 6px;
+  }
+  .podo-dp-quickSelectItem {
+    padding: 5px 3px;
+    font-size: 11px;
+  }
+  .podo-dp-navArrow {
+    width: 36px;
+  }
+}
+
 .podo-ed-editor {
   display: flex;
   flex-direction: column;
@@ -4144,6 +4323,93 @@
   tab-size: 2;
   width: 100%;
   box-sizing: border-box;
+}
+
+/*
+ * The Figma source defines the 920 x 52 desktop toolbar. On narrow screens the
+ * toolbar wraps, so its anchored panels must shrink toward the viewport instead
+ * of retaining their 280/360px desktop minimum widths. Keep the desktop geometry
+ * intact and only increase touch targets / constrain overlays on mobile.
+ */
+@media screen and (max-width: 600px) {
+  .podo-ed-editor {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .podo-ed-toolbar {
+    gap: 2px 0;
+    padding: 6px 4px;
+  }
+
+  .podo-ed-toolbarGroup {
+    padding: 0 4px;
+  }
+
+  .podo-ed-toolbarButton,
+  .podo-ed-alignOption {
+    height: 40px;
+    min-height: 40px;
+    min-width: 40px;
+    width: 40px;
+  }
+
+  .podo-ed-paragraphButton {
+    height: 40px;
+  }
+
+  .podo-ed-paragraphDropdown,
+  .podo-ed-linkDropdown,
+  .podo-ed-tableDropdown,
+  .podo-ed-imageDropdown {
+    max-width: calc(100vw - 24px);
+    min-width: 0;
+  }
+
+  .podo-ed-linkDropdown,
+  .podo-ed-imageDropdown {
+    left: auto;
+    right: 0;
+    width: min(360px, calc(100vw - 24px));
+  }
+
+  .podo-ed-tableDropdown {
+    left: auto;
+    right: 0;
+    width: min(240px, calc(100vw - 24px));
+  }
+
+  .podo-ed-editLinkPopup,
+  .podo-ed-imageEditPopup {
+    box-sizing: border-box;
+    max-height: calc(100vh - 16px);
+    max-width: calc(100vw - 16px);
+    min-width: 0;
+    overflow: auto;
+  }
+
+  .podo-ed-tableContextMenu {
+    box-sizing: border-box;
+    max-height: calc(100vh - 16px);
+    max-width: calc(100vw - 16px);
+    overflow-y: auto;
+  }
+
+  .podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .podo-ed-imageDropdown .podo-ed-imageOptions .podo-ed-imageOptionRow label {
+    flex-basis: auto;
+  }
+
+  .podo-ed-imageDropdown .podo-ed-imageActions,
+  .podo-ed-editLinkPopup .podo-ed-editLinkContent .podo-ed-editLinkActions,
+  .podo-ed-imageEditPopup .podo-ed-imageEditActions {
+    flex-wrap: wrap;
+  }
 }
 
 .podo-ed-editorContent .selected-cell {

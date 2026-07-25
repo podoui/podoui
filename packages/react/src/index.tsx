@@ -2478,11 +2478,17 @@ export type {
   DatePickerValue,
   DatePickerMode,
   DatePickerType,
+  HourFormat,
+  HourStep,
+  QuickSelectKey,
   TimeValue,
   DateRange,
   DateCondition,
   DateTimeLimit,
   MinuteStep,
+  YearRange,
+  CalendarInitial,
+  InitialCalendar,
 } from "./datepicker.js";
 export { default as Editor } from "./editor/index.js";
 export type { EditorProps, ToolbarItem } from "./editor/types.js";

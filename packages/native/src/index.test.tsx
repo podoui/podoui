@@ -892,7 +892,7 @@ describe("@podoui/native", () => {
     expect(fallbackMenu.getAttribute("data-gap")).toBe("4");
     expect(fallbackMenu.getAttribute("data-padding")).toBe("8");
 
-    // The default string-tag host ships a ScrollView entry for the menu.
+    // Vitest aliases react-native to string tags, including ScrollView.
     expect(defaultNativeHost.ScrollView).toBe("ScrollView");
   });
 
@@ -1336,13 +1336,10 @@ describe("@podoui/native", () => {
     expect(screen.getByTestId("role-tooltip").contains(bubble)).toBe(true);
   });
 
-  it("renders all 13 top-level exports against the defaultNativeHost string tags", () => {
-    // react-test-renderer is not a workspace dependency (and is deprecated for
-    // React 19), so the defaultNativeHost path is exercised with react-dom
-    // itself: the string tags ("Pressable"/"Text"/"TextInput"/"View") render as
-    // unknown elements whose lowercased tags and string/number props we can
-    // assert on. React logs unknown-tag/prop dev warnings for those elements —
-    // expected and documented — so they're silenced for this test only.
+  it("renders all 13 top-level exports against the Vitest native host stubs", () => {
+    // The test config replaces react-native's Flow runtime with string host
+    // stubs so jsdom can inspect the generated props. A real iOS simulator run
+    // separately verifies that defaultNativeHost resolves RN components.
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     try {
       const cases: Array<{

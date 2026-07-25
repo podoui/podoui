@@ -5,6 +5,7 @@ import { CheckboxPage } from "./pages/CheckboxPage.js";
 import { ChipPage } from "./pages/ChipPage.js";
 import { ColorPage } from "./pages/ColorPage.js";
 import { DatepickerPage } from "./pages/DatepickerPage.js";
+import { EditorPage } from "./pages/EditorPage.js";
 import { FieldPage } from "./pages/FieldPage.js";
 import { IconPage } from "./pages/IconPage.js";
 import { InputPage } from "./pages/InputPage.js";
@@ -40,6 +41,7 @@ export const NAV: NavItem[] = [
   { slug: "checkbox", title: "Checkbox", group: "Components", page: CheckboxPage },
   { slug: "chip", title: "Chip", group: "Components", page: ChipPage },
   { slug: "datepicker", title: "DatePicker", group: "Components", page: DatepickerPage },
+  { slug: "editor", title: "Editor", group: "Components", page: EditorPage },
   { slug: "field", title: "Field", group: "Components", page: FieldPage },
   { slug: "input", title: "Input", group: "Components", page: InputPage },
   { slug: "radio", title: "Radio", group: "Components", page: RadioPage },

@@ -12,6 +12,7 @@ describe("DatePicker", () => {
   // vitest globals가 꺼져 있어 RTL 자동 cleanup이 동작하지 않는다 — 명시적으로 정리
   afterEach(() => {
     cleanup();
+    vi.useRealTimers();
   });
 
   it("commits both times via Apply in period time mode", () => {
@@ -116,13 +117,16 @@ describe("DatePicker", () => {
     expect(screen.getByRole("button", { name: "YYYY - MM - DD" })).toBeTruthy();
   });
 
-  it("commits the cleared value through onChange on reset", () => {
+  it("commits reset, calls onReset, and keeps the v1.1.15 calendar popup open", () => {
     const onChange = vi.fn();
+    const onReset = vi.fn();
     const value: DatePickerValue = {
       date: new Date(2026, 6, 10),
       endDate: new Date(2026, 6, 20),
     };
-    render(<DatePicker mode="period" type="date" value={value} onChange={onChange} />);
+    render(
+      <DatePicker mode="period" type="date" value={value} onChange={onChange} onReset={onReset} />
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "2026 - 07 - 10" }));
     fireEvent.click(screen.getByRole("button", { name: "초기화" }));
@@ -130,7 +134,8 @@ describe("DatePicker", () => {
     // controlled 소비자가 실제로 비워지도록 빈 값이 커밋된다
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith({});
-    expect(screen.queryAllByRole("grid")).toHaveLength(0);
+    expect(onReset).toHaveBeenCalledTimes(1);
+    expect(screen.queryAllByRole("grid")).toHaveLength(2);
   });
 
   it("closes the dropdown on Escape and returns focus to the trigger", () => {
@@ -1136,5 +1141,172 @@ describe("DatePicker", () => {
     expect(
       screen.getByRole("gridcell", { name: "2026년 11월 5일" }).getAttribute("aria-selected")
     ).toBe("true");
+  });
+
+  it("restores the v1 hour-only 24h mode and commits minutes as zero", () => {
+    const onChange = vi.fn();
+    render(<DatePicker type="hour" value={{ time: { hour: 9, minute: 0 } }} onChange={onChange} />);
+
+    const select = screen.getByRole("combobox", { name: "시간 선택" });
+    expect(within(select).getByRole("option", { name: "9시" })).toBeTruthy();
+    fireEvent.change(select, { target: { value: "14" } });
+
+    expect(onChange).toHaveBeenLastCalledWith({ time: { hour: 14, minute: 0 } });
+  });
+
+  it("formats hour-only options in 12h mode", () => {
+    render(
+      <DatePicker
+        type="hour"
+        hourFormat="12"
+        value={{ time: { hour: 0, minute: 0 } }}
+        onChange={() => {}}
+      />
+    );
+
+    const select = screen.getByRole("combobox", { name: "시간 선택" });
+    expect(within(select).getByRole("option", { name: "오전 12시" })).toBeTruthy();
+    expect(within(select).getByRole("option", { name: "오후 12시" })).toBeTruthy();
+    expect(within(select).getByRole("option", { name: "오후 11시" })).toBeTruthy();
+  });
+
+  it("applies hourStep and disabledHours to hour-only options", () => {
+    render(
+      <DatePicker
+        type="hour"
+        hourStep={3}
+        disabledHours={[0, 6, 21]}
+        value={{ time: { hour: 3, minute: 0 } }}
+        onChange={() => {}}
+      />
+    );
+
+    const options = within(screen.getByRole("combobox", { name: "시간 선택" })).getAllByRole(
+      "option"
+    ) as HTMLOptionElement[];
+    expect(options.map((option) => option.value)).toEqual([
+      "0",
+      "3",
+      "6",
+      "9",
+      "12",
+      "15",
+      "18",
+      "21",
+    ]);
+    expect(options.filter((option) => option.disabled).map((option) => option.value)).toEqual([
+      "0",
+      "6",
+      "21",
+    ]);
+  });
+
+  it("commits both hour-only period endpoints immediately", () => {
+    const onChange = vi.fn();
+    render(<DatePicker mode="period" type="hour" value={emptyValue} onChange={onChange} />);
+
+    fireEvent.change(screen.getByRole("combobox", { name: "시간 선택" }), {
+      target: { value: "8" },
+    });
+    fireEvent.change(screen.getByRole("combobox", { name: "종료 시간 선택" }), {
+      target: { value: "18" },
+    });
+
+    expect(onChange).toHaveBeenLastCalledWith({
+      time: { hour: 8, minute: 0 },
+      endTime: { hour: 18, minute: 0 },
+    });
+    expect(screen.queryByRole("button", { name: "적용" })).toBeNull();
+  });
+
+  it("renders all eight quick-select presets and commits a preset through Apply", () => {
+    const onChange = vi.fn();
+    render(
+      <DatePicker mode="period" type="date" quickSelect value={emptyValue} onChange={onChange} />
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: "YYYY - MM - DD" })[0]!);
+    for (const label of [
+      "오늘",
+      "어제",
+      "이번 주",
+      "지난 주",
+      "최근 7일",
+      "최근 30일",
+      "이번 달",
+      "지난 달",
+    ]) {
+      expect(screen.getByRole("button", { name: label })).toBeTruthy();
+    }
+
+    fireEvent.click(screen.getByRole("button", { name: "최근 7일" }));
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "최근 7일" }).getAttribute("aria-pressed")).toBe(
+      "true"
+    );
+    fireEvent.click(screen.getByRole("button", { name: "적용" }));
+
+    const committed = onChange.mock.calls[0]![0] as DatePickerValue;
+    expect(committed.date).toBeInstanceOf(Date);
+    expect(committed.endDate).toBeInstanceOf(Date);
+    expect(
+      Math.round((committed.endDate!.getTime() - committed.date!.getTime()) / 86_400_000)
+    ).toBe(6);
+  });
+
+  it("navigates a committed quick-select range and exposes an offset label", () => {
+    const onChange = vi.fn();
+    render(<DatePicker mode="period" type="date" quickSelect onChange={onChange} />);
+
+    expect((screen.getByRole("button", { name: "이전 기간" }) as HTMLButtonElement).disabled).toBe(
+      true
+    );
+    expect((screen.getByRole("button", { name: "다음 기간" }) as HTMLButtonElement).disabled).toBe(
+      true
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: "YYYY - MM - DD" })[0]!);
+    fireEvent.click(screen.getByRole("button", { name: "이번 주" }));
+    fireEvent.click(screen.getByRole("button", { name: "적용" }));
+    fireEvent.click(screen.getByRole("button", { name: "다음 기간" }));
+
+    expect(onChange).toHaveBeenCalledTimes(2);
+    expect(screen.getByText("1주 후:")).toBeTruthy();
+  });
+
+  it("hides period navigation arrows when hideNavArrow is set", () => {
+    render(<DatePicker mode="period" type="date" quickSelect hideNavArrow value={emptyValue} />);
+    expect(screen.queryByRole("button", { name: "이전 기간" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "다음 기간" })).toBeNull();
+  });
+
+  it("renders the dropdown through a body portal and closes it on outside press", () => {
+    render(<DatePicker type="date" portal value={emptyValue} />);
+    fireEvent.click(screen.getByRole("button", { name: "YYYY - MM - DD" }));
+
+    const dialog = screen.getByRole("dialog", { name: "날짜 선택" });
+    expect(dialog.parentElement).toBe(document.body);
+    fireEvent.mouseDown(document.body);
+    expect(screen.queryByRole("dialog", { name: "날짜 선택" })).toBeNull();
+  });
+
+  it("adds the upward dropdown class for direction=up", () => {
+    render(<DatePicker type="date" direction="up" value={emptyValue} />);
+    fireEvent.click(screen.getByRole("button", { name: "YYYY - MM - DD" }));
+    expect(screen.getByRole("dialog", { name: "날짜 선택" }).className).toContain(
+      "podo-dp-dropdownUp"
+    );
+  });
+
+  it("lets initialCalendar override a controlled value month like v1.1.14", () => {
+    render(
+      <DatePicker
+        type="date"
+        value={{ date: new Date(2026, 0, 10) }}
+        initialCalendar={{ start: new Date(2030, 4, 1) }}
+      />
+    );
+    fireEvent.click(screen.getByRole("button", { name: "2026 - 01 - 10" }));
+    expect(screen.getByRole("grid").getAttribute("aria-label")).toBe("2030년 5월");
   });
 });

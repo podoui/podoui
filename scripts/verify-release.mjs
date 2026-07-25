@@ -27,6 +27,14 @@ async function readJson(path) {
   return JSON.parse(await readFile(path, "utf8"));
 }
 
+export async function listPackageDirectories(directory = packagesRoot) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+}
+
 async function assertFile(path, label) {
   const fileStat = await stat(path).catch(() => undefined);
   if (!fileStat?.isFile() || fileStat.size === 0) {
@@ -243,21 +251,27 @@ async function findSpecifierLeaks(directory) {
   return leaks;
 }
 
-await verifyDocs();
-assertRootScripts(await readJson(join(root, "package.json")));
+async function main() {
+  await verifyDocs();
+  assertRootScripts(await readJson(join(root, "package.json")));
 
-const packageDirectories = await readdir(packagesRoot);
-for (const directory of packageDirectories) {
-  await verifyPackage(directory);
-}
-await verifyMcpExecution();
-
-if (failures.length) {
-  process.stderr.write("Release verification failed:\n");
-  for (const failure of failures) {
-    process.stderr.write(`- ${failure}\n`);
+  const packageDirectories = await listPackageDirectories();
+  for (const directory of packageDirectories) {
+    await verifyPackage(directory);
   }
-  process.exit(1);
+  await verifyMcpExecution();
+
+  if (failures.length) {
+    process.stderr.write("Release verification failed:\n");
+    for (const failure of failures) {
+      process.stderr.write(`- ${failure}\n`);
+    }
+    process.exit(1);
+  }
+
+  process.stdout.write(`Release verification passed for ${packageDirectories.length} packages.\n`);
 }
 
-process.stdout.write(`Release verification passed for ${packageDirectories.length} packages.\n`);
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  await main();
+}

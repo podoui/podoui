@@ -64,6 +64,7 @@ const Editor = ({
   // ========== Refs ==========
   const editorRef = useRef<HTMLDivElement>(null);
   const codeEditorRef = useRef<HTMLTextAreaElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const paragraphButtonRef = useRef<HTMLDivElement>(null);
   const textColorButtonRef = useRef<HTMLDivElement>(null);
@@ -218,6 +219,67 @@ const Editor = ({
       node.style.left = `${Math.max(margin, window.innerWidth - rect.width - margin)}px`;
     }
   });
+
+  // 툴바가 여러 줄로 접히는 모바일에서는 마지막 그룹의 절대 위치 팝업이
+  // 화면 왼쪽으로 밀려날 수 있다. 모든 툴바 패널을 실제 렌더 크기로 측정해
+  // 뷰포트 네 방향 안으로 이동한다. 데스크톱에서는 경계를 넘지 않으므로
+  // transform이 0인 채 Figma의 툴바 기준 배치를 그대로 유지한다.
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const selector = [
+      `.${styles.paragraphDropdown}`,
+      `.${styles.colorPalette}`,
+      `.${styles.alignDropdown}`,
+      `.${styles.tableDropdown}`,
+      `.${styles.linkDropdown}`,
+      `.${styles.imageDropdown}`,
+      `.${styles.editLinkPopup}`,
+      `.${styles.imageEditPopup}`,
+    ].join(",");
+    const panels = Array.from(root.querySelectorAll<HTMLElement>(selector));
+    if (panels.length === 0) return;
+
+    const clampPanels = () => {
+      const margin = 8;
+      for (const panel of panels) {
+        panel.style.transform = "";
+        const rect = panel.getBoundingClientRect();
+        let x = 0;
+        let y = 0;
+        if (rect.left < margin) x = margin - rect.left;
+        if (rect.right + x > window.innerWidth - margin) {
+          x += window.innerWidth - margin - (rect.right + x);
+        }
+        if (rect.top < margin) y = margin - rect.top;
+        if (rect.bottom + y > window.innerHeight - margin) {
+          y += window.innerHeight - margin - (rect.bottom + y);
+        }
+        panel.style.transform = `translate(${x}px, ${y}px)`;
+      }
+    };
+
+    clampPanels();
+    window.addEventListener("resize", clampPanels);
+    window.addEventListener("scroll", clampPanels, true);
+    return () => {
+      window.removeEventListener("resize", clampPanels);
+      window.removeEventListener("scroll", clampPanels, true);
+    };
+  }, [
+    textStyle.isParagraphDropdownOpen,
+    textStyle.isTextColorOpen,
+    textStyle.isBgColorOpen,
+    textStyle.isAlignDropdownOpen,
+    tableEditor.isTableDropdownOpen,
+    linkEditor.isLinkDropdownOpen,
+    linkEditor.isEditLinkPopupOpen,
+    imageEditor.isImageDropdownOpen,
+    imageEditor.isImageEditPopupOpen,
+    youtubeEditor.isYoutubeDropdownOpen,
+    youtubeEditor.isYoutubeEditPopupOpen,
+  ]);
 
   // ========== Toolbar 설정 ==========
   const activeToolbar = toolbar || defaultToolbar;
@@ -615,6 +677,7 @@ const Editor = ({
   // ========== JSX 반환 ==========
   return (
     <div
+      ref={rootRef}
       className={`${styles.editor} ${statusClass}`}
       style={{ width, position: "relative" }}
       onKeyDown={handleEditorKeyDown}

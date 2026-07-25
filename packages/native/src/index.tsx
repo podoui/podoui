@@ -11,6 +11,13 @@ import React, {
   type ReactNode,
 } from "react";
 import {
+  Pressable as ReactNativePressable,
+  ScrollView as ReactNativeScrollView,
+  Text as ReactNativeText,
+  TextInput as ReactNativeTextInput,
+  View as ReactNativeView,
+} from "react-native";
+import {
   createButtonBehavior,
   createCheckboxBehavior,
   createFieldA11y,
@@ -396,11 +403,11 @@ export interface NativeComponents {
 export type NativeStyle = Record<string, string | number | undefined>;
 
 export const defaultNativeHost: NativeHost = {
-  Pressable: "Pressable",
-  ScrollView: "ScrollView",
-  Text: "Text",
-  TextInput: "TextInput",
-  View: "View",
+  Pressable: ReactNativePressable as unknown as NativeHostComponent,
+  ScrollView: ReactNativeScrollView as unknown as NativeHostComponent,
+  Text: ReactNativeText as unknown as NativeHostComponent,
+  TextInput: ReactNativeTextInput as unknown as NativeHostComponent,
+  View: ReactNativeView as unknown as NativeHostComponent,
 };
 
 const NativeThemeContext = createContext<NativeTheme>({

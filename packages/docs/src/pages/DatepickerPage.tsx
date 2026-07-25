@@ -15,7 +15,7 @@ const USAGE_TABS: CodeTab[] = [
       `import { DatePicker } from "podo-ui/react";\n` +
       `import "podo-ui/styles.css";\n` +
       `import "./podo/icons/PodoIcons.css";\n\n` +
-      `<DatePicker mode="instant" type="date" onChange={setDate} />`,
+      `<DatePicker mode="instant" type="date" value={date} onChange={setDate} />`,
   },
 ];
 
@@ -24,7 +24,7 @@ export function DatepickerPage() {
     <>
       <PageHeader
         title="날짜 선택 (DatePicker)"
-        intro="날짜 선택은 단일 날짜·기간과 시간 값을 달력 및 시간 목록에서 고르게 해요. Figma Web 페이지의 Datepicker 시안을 구현한 컴포넌트이며 현재 React와 Next.js 클라이언트 컴포넌트에서 지원해요."
+        intro="날짜 선택은 단일 날짜·기간, 날짜+시간, 시간 전용 값을 고르게 해요. 원본 Figma의 single/multiple 변형과 날짜 상태를 따르며 v1.2.1의 공개 기능을 React와 Next.js 클라이언트 컴포넌트에서 지원해요."
       />
 
       <DocSection index={0} title="Usage">
@@ -36,7 +36,7 @@ export function DatepickerPage() {
       <DocSection
         index={1}
         title="모드와 값 타입"
-        description="instant는 하나의 값, period는 시작·종료 값을 선택해요. date, time, datetime을 조합할 수 있어요."
+        description="instant는 하나의 값, period는 시작·종료 값을 선택해요. date, time, datetime, hour를 사용할 수 있어요."
       >
         <Card stage>
           <div className="stage-col">
@@ -44,19 +44,30 @@ export function DatepickerPage() {
             <DatePicker mode="period" type="date" placeholder="기간" />
             <DatePicker mode="instant" type="time" placeholder="시간" minuteStep={5} />
             <DatePicker mode="instant" type="datetime" placeholder="날짜와 시간" minuteStep={15} />
+            <DatePicker
+              mode="instant"
+              type="hour"
+              placeholder="시간(12시간제)"
+              hourFormat="12"
+              hourStep={2}
+              disabledHours={[0, 2, 4]}
+            />
+            <DatePicker mode="period" type="date" placeholder="빠른 기간" quickSelect />
           </div>
         </Card>
-        <PropertyTags values={["instant", "period", "date", "time", "datetime"]} />
+        <PropertyTags values={["instant", "period", "date", "time", "datetime", "hour"]} />
       </DocSection>
 
       <DocSection
         index={2}
         title="지원 범위"
-        description="Web Custom Elements, Hono SSR, React Native에는 아직 DatePicker renderer가 없어요. 이 환경에서 React 예제를 그대로 가져오면 동작하지 않으므로 지원 대상으로 표시하지 않아요."
+        description="Hono 서버 렌더러와 React Native에는 DatePicker가 없어요. Hono가 호스트인 앱은 React client island에서 같은 React 컴포넌트를 사용해야 하며, React Native는 웹 DatePicker를 가져오지 않아야 해요."
       >
         <SpecTable
           columns={["React", "Next.js", "Web", "Hono", "React Native"]}
-          rows={[["지원", "지원 (use client)", "미지원", "미지원", "미지원"]]}
+          rows={[
+            ["전체 지원", "전체 지원 (use client)", "미지원", "React island에서 지원", "미지원"],
+          ]}
         />
       </DocSection>
 
@@ -73,7 +84,7 @@ export function DatepickerPage() {
             ],
             [
               <code>type</code>,
-              <code>"date" | "time" | "datetime"</code>,
+              <code>"date" | "time" | "datetime" | "hour"</code>,
               <code>"date"</code>,
               "선택 값 종류",
             ],
@@ -96,6 +107,18 @@ export function DatepickerPage() {
               "분 간격",
             ],
             [
+              <code>hourFormat / hourStep</code>,
+              <code>"12" | "24" / 1 | 2 | 3 | 4 | 6 | 12</code>,
+              <code>"24" / 1</code>,
+              "hour 타입 표시 방식과 간격",
+            ],
+            [
+              <code>disabledHours</code>,
+              <code>number[]</code>,
+              "—",
+              "hour 타입에서 비활성화할 시각(0~23)",
+            ],
+            [
               <code>disable / enable</code>,
               <code>DateCondition[]</code>,
               "—",
@@ -113,6 +136,46 @@ export function DatepickerPage() {
               "—",
               "연도 선택 범위",
             ],
+            [
+              <code>quickSelect</code>,
+              <code>boolean</code>,
+              <code>false</code>,
+              "period 빠른 기간 선택과 이전·다음 기간 이동",
+            ],
+            [
+              <code>portal / direction</code>,
+              <code>{`boolean / "down" | "up" | "auto"`}</code>,
+              <code>false / "auto"</code>,
+              "body 포털 렌더링과 열림 방향",
+            ],
+            [
+              <code>hideNavArrow</code>,
+              <code>boolean</code>,
+              <code>false</code>,
+              "빠른 기간 이전·다음 화살표 숨김",
+            ],
+            [
+              <code>onReset</code>,
+              <code>() =&gt; void</code>,
+              "—",
+              "초기화 클릭 알림; 초기화 후 팝업은 열린 상태 유지",
+            ],
+          ]}
+        />
+      </DocSection>
+
+      <DocSection
+        index={4}
+        title="v1 호환 동작"
+        description="빠른 선택 프리셋은 v1.2.1 API(today, yesterday, thisWeek, lastWeek, last7Days, last30Days, thisMonth, lastMonth)를 유지해요. Figma 예시의 다음 주·다음 달·연도 문구는 공개 v1 API와 달라 시각 구조의 참고로만 사용해요."
+      >
+        <SpecTable
+          columns={["영역", "지원 기능"]}
+          rows={[
+            ["값", "controlled/uncontrolled, instant/period, reset/apply/cancel"],
+            ["날짜", "disable, enable, min/max, initialCalendar, yearRange, format"],
+            ["시간", "minuteStep, hourFormat, hourStep, disabledHours"],
+            ["오버레이", "align, portal, direction, 외부 클릭 닫기, 모바일 단일 달력"],
           ]}
         />
       </DocSection>
