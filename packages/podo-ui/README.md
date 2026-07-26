@@ -1,82 +1,92 @@
 # podo-ui
 
-Podo UI v2 — JSON 스펙 기반 디자인 시스템. 하나의 패키지로 web(Custom
-Elements), React, Hono(SSR), React Native 렌더러와 `podo` CLI, MCP 서버까지
-제공합니다.
-
-> **v1(SCSS 기반)과 v2는 호환되지 않습니다.** v1을 계속 사용하려면
-> `podo-ui@1`로 고정하세요.
-
-## 설치
+Figma 디자인 토큰과 컴포넌트를 React, Next.js, Hono SSR, React Native에서 함께 쓰는 JSON 스펙 기반 디자인 시스템입니다.
 
 ```bash
 npm install podo-ui
 ```
 
-React/React Native는 peer(선택)라서 쓰는 환경에서만 설치돼 있으면 됩니다.
+## React와 Next.js
 
-## 사용
+```tsx
+"use client"; // Next.js에서 상호작용 컴포넌트를 쓸 때만 필요합니다.
 
-```ts
-import { Button, Field, Input, PodoThemeProvider } from "podo-ui/react";
+import { Button, DatePicker, PodoThemeProvider } from "podo-ui/react";
+import "podo-ui/styles.css";
+import "podo-ui/icons.css";
+
+export default function Page() {
+  return (
+    <PodoThemeProvider theme="landing" colorScheme="light">
+      <Button>저장</Button>
+      <DatePicker type="date" placeholder="날짜를 선택하세요" />
+    </PodoThemeProvider>
+  );
+}
 ```
 
-| 서브패스            | 내용                                       |
-| ------------------- | ------------------------------------------ |
-| `podo-ui/web`       | 표준 Custom Elements 렌더러                |
-| `podo-ui/react`     | React 컴포넌트                             |
-| `podo-ui/hono`      | Hono TSX SSR 컴포넌트                      |
-| `podo-ui/native`    | React Native 컴포넌트                      |
-| `podo-ui/spec`      | 토큰/컴포넌트 JSON schema와 파서           |
-| `podo-ui/tokens`    | 토큰 resolver와 CSS/TS/RN 출력기 (`/node`) |
-| `podo-ui/icons`     | 아이콘 manifest와 WOFF/WOFF2/TTF 빌드      |
-| `podo-ui/core`      | 공통 behavior/a11y 헬퍼                    |
-| `podo-ui/codegen`   | 컴포넌트 코드 생성기                       |
-| `podo-ui/migration` | `.podo` 마이그레이션 러너                  |
-| `podo-ui/cli`       | CLI 진입점 (`runCli`)                      |
-| `podo-ui/mcp`       | MCP 서버 (`createPodoMcpServer`)           |
+## Hono SSR
 
-React Native 앱에서는 `createNativeComponents({ Pressable, ScrollView, Text, TextInput, View })`에
-`react-native`의 실제 컴포넌트를 주입해 사용하세요. `podo-ui/native`의
-top-level 컴포넌트 export는 문자열 호스트(`defaultNativeHost`) 기반의
-테스트 렌더러 전용 편의 export입니다. `podo build --target native`가 만든
-`tokens.native.ts`, `PodoIcons.native.ts`, `PodoIcons.ttf`를 provider의
-`tokens`, `iconGlyphs`, `iconFontFamily`에 연결해야 실제 기기에서도 테마와
-아이콘이 표시됩니다 (자세한 예시: docs/installation-guide.md).
+`podo-ui/hono`는 Button, Chip, Badge, Input, Textarea, Select, Tooltip, Toast, Table, Field, Switch, Checkbox, Radio, Icon, Typography를 서버 HTML로 출력합니다. DatePicker와 Editor는 브라우저 상태가 필요하므로 React island에서 `podo-ui/react`를 사용하세요.
 
-## 스타일
+```tsx
+import { Hono } from "hono";
+import { Button, renderCriticalCss } from "podo-ui/hono";
 
-```ts
-import "podo-ui/styles.css"; // 컴포넌트 CSS (라이트 폴백 내장)
-import "podo-ui/icons.css"; // 기본 아이콘 글리프 폰트 (PodoIcons)
+const app = new Hono();
+
+app.get("/", (c) =>
+  c.html(
+    <html lang="ko">
+      <head>
+        <link rel="stylesheet" href="/assets/podo.css" />
+        {renderCriticalCss({ theme: "landing", colorScheme: "light" })}
+      </head>
+      <body>
+        <Button>서버 렌더링 버튼</Button>
+      </body>
+    </html>
+  )
+);
+
+export default app;
 ```
 
-`podo init && podo build`를 쓰는 프로젝트는 빌드가 생성한
-`tokens.css`/`components.css`/`icons/PodoIcons.css`를 함께 import 하세요 —
-`.podo` 오버라이드(테마, 아이콘 그룹 포함)가 그 산출물에 반영됩니다.
-`podo-ui/icons.css`는 빌드 없이 쓰는 소비자를 위한 기본 아이콘 세트입니다.
+## React Native
 
-다크 모드(`data-color-scheme="dark"`): 기본 토큰 문서가 Figma theme
-컬렉션의 light/dark 값(112개 변수 — text/border/foreground/elevation/
-icon/table/button)을 그대로 내장하므로, `podo build`가 생성한 tokens.css를
-import하면 `data-podo-theme`+`data-color-scheme` 속성 전환만으로 전체
-컴포넌트가 다크로 재스타일됩니다. 프로젝트 `.podo` 토큰으로 값을
-오버라이드할 수 있고, v1 이식 컴포넌트(DatePicker/Editor)는 자체 다크
-스타일을 포함합니다.
+컴포넌트는 최상위 export에서 바로 가져옵니다. `createNativeComponents`는 호스트를 직접 바꿔야 하는 고급 사용 사례에만 필요합니다. 아이콘은 `podo build`가 만든 TTF와 glyph map을 Provider에 연결하고, Editor는 `react-native-webview`를 전달하세요.
 
-## CLI
+```tsx
+import { useState } from "react";
+import { WebView } from "react-native-webview";
+import { DatePicker, Editor, PodoNativeThemeProvider } from "podo-ui/native";
+
+export function Screen() {
+  const [html, setHtml] = useState("<p>모바일에서도 편집할 수 있어요.</p>");
+  return (
+    <PodoNativeThemeProvider theme="landing" colorScheme="light" webViewComponent={WebView}>
+      <DatePicker mode="period" type="date" quickSelect />
+      <Editor value={html} onChange={setHtml} />
+    </PodoNativeThemeProvider>
+  );
+}
+```
+
+## 프로젝트별 토큰
 
 ```bash
-npx podo-ui init      # .podo 생성 (또는: npx podo-ui — 인터랙티브 메뉴)
-npx podo-ui build     # 토큰/아이콘/컴포넌트 산출물 생성
-npx podo-ui import    # 피그마 플러그인에서 디자인 시스템 가져오기
+npx podo-ui init --target react --theme landing --out-dir src/podo --yes
 npx podo-ui validate
+npx podo-ui build --dry-run
+npx podo-ui build
 ```
 
-## MCP
+Figma 플러그인에서 보낸 디자인 시스템을 받으려면 먼저 `npx podo-ui import`를 실행하고 플러그인의 **프로젝트로 보내기**를 누릅니다. 새 Figma 파일 자체에는 플러그인의 **PODO 디자인 시스템 설치**를 사용하며 JSON 내보내기는 필요하지 않습니다.
 
-```bash
-claude mcp add podo -- npx podo-ui mcp
-```
+## 서브패스
 
-문서: https://podoui.com
+`react` · `web` · `hono` · `native` · `spec` · `tokens` · `icons` · `core` · `codegen` · `migration` · `cli` · `mcp`
+
+전체 설치법, 컴포넌트별 import 포함 예제, DatePicker·Editor 기능표는 [podoui.com](https://podoui.com)에서 확인하세요.
+
+> v1(SCSS 기반)을 계속 사용해야 한다면 `podo-ui@1`로 고정하세요. v1과 v2는 호환되지 않습니다.

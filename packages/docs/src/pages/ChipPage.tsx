@@ -19,7 +19,7 @@ const USAGE_TABS: CodeTab[] = [
     label: "React",
     code:
       `{/* 클릭하면 스스로 선택/해제 토글 — selected로 제어형 전환 */}\n` +
-      `<Chip onSelectedChange={setOn}>Label</Chip>`,
+      `<Chip defaultSelected>Label</Chip>`,
   },
   { target: "web", label: "Web", code: `<podo-chip>Label</podo-chip>` },
   {
@@ -30,7 +30,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "native",
     label: "React Native",
-    code: nativeComponentUsage(["Chip"], `<Chip onPress={toggle}>Label</Chip>`),
+    code: nativeComponentUsage(["Chip"], `<Chip defaultSelected>Label</Chip>`),
   },
 ];
 

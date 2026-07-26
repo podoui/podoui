@@ -15,15 +15,17 @@ const USAGE_TABS: CodeTab[] = [
       `"use client";\n\n` +
       `import { DatePicker } from "podo-ui/react";\n` +
       `import "podo-ui/styles.css";\n` +
-      `import "./podo/icons/PodoIcons.css";\n\n` +
-      `<DatePicker mode="instant" type="date" value={date} onChange={setDate} />`,
+      `import "podo-ui/icons.css";\n\n` +
+      `export default function Page() {\n` +
+      `  return <DatePicker mode="instant" type="date" onChange={(value) => console.log(value)} />;\n` +
+      `}`,
   },
   {
     target: "native",
     label: "React Native",
     code: nativeComponentUsage(
       ["DatePicker"],
-      `<DatePicker mode="period" type="date" quickSelect onChange={setDate} />`
+      `<DatePicker mode="period" type="date" quickSelect onChange={(value) => console.log(value)} />`
     ),
   },
 ];

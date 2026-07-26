@@ -17,6 +17,8 @@ const USAGE_TABS: CodeTab[] = [
     target: "react",
     label: "React",
     code:
+      `import { Toaster, toast } from "podo-ui/react";\n` +
+      `import "podo-ui/styles.css";\n\n` +
       `{/* 앱 루트에 한 번 */}\n<Toaster />\n\n` +
       `{/* 어디서든 호출 — 기본 normal 상태, top-center, 3초 뒤 자동 소멸 */}\n` +
       `toast("저장됐어요");\n` +
@@ -44,7 +46,7 @@ const USAGE_TABS: CodeTab[] = [
     code: nativeComponentUsage(
       ["Toast"],
       `{/* 앱의 오버레이 안에 배치해요 */}\n` +
-        `<Toast state="success" onClose={hide}>저장됐어요</Toast>`
+        `<Toast state="success" onClose={() => console.log("닫힘")}>저장됐어요</Toast>`
     ),
   },
 ];

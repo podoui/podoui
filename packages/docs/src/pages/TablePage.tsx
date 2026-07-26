@@ -17,7 +17,7 @@ const USAGE_TABS: CodeTab[] = [
     label: "React",
     code:
       `{/* 기본 타입은 horizon. checkbox: 선택 열 자동 주입 — 헤더는 전체 선택/해제 */}\n` +
-      `<Table checkbox onSelectionChange={setSelected}>\n` +
+      `<Table checkbox>\n` +
       `  <thead>\n    <tr><th>주문</th><th>상품</th><th>금액</th></tr>\n  </thead>\n` +
       `  <tbody>\n    <tr><td>#1024</td><td>포도 한 상자</td><td>32,000원</td></tr>\n  </tbody>\n` +
       `</Table>`,

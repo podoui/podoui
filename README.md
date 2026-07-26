@@ -1,66 +1,124 @@
 # Podo UI v2
 
-Podo UI v2 is a JSON-spec-first TypeScript design system. Design tokens, component specifications, icon metadata, themes, project overrides, builders, and MCP access are built around validated JSON contracts.
+Podo UI는 Figma의 디자인 토큰과 컴포넌트를 React, Next.js, Hono SSR, React Native에서 같은 규칙으로 사용할 수 있게 해 주는 TypeScript 디자인 시스템입니다. 토큰·컴포넌트 명세·아이콘·테마·프로젝트 오버라이드의 원본은 검증된 JSON이며, 생성 결과는 언제든 같은 입력에서 다시 만들 수 있습니다.
 
-## Install (consumers)
+> v1(SCSS 기반)과 v2는 호환되지 않습니다. 기존 v1 프로젝트는 `podo-ui@1`로 고정하세요.
 
-Everything ships as the single npm package [`podo-ui`](https://www.npmjs.com/package/podo-ui):
+## 가장 빠르게 시작하기
 
-```sh
+```bash
 npm install podo-ui
-npx podo-ui init --target react --theme dashboard
+```
+
+```tsx
+import { Button, PodoThemeProvider } from "podo-ui/react";
+import "podo-ui/styles.css";
+import "podo-ui/icons.css";
+
+export function App() {
+  return (
+    <PodoThemeProvider theme="landing" colorScheme="light">
+      <Button theme="solid-primary">저장</Button>
+    </PodoThemeProvider>
+  );
+}
+```
+
+패키지 기본 토큰과 아이콘으로 바로 사용할 수 있습니다. Figma 토큰이나 프로젝트 전용 테마가 필요한 경우에만 아래 CLI 흐름을 추가하면 됩니다.
+
+## 환경별 선택
+
+| 환경            | import           | DatePicker     | Editor          | 렌더링 방식            |
+| --------------- | ---------------- | -------------- | --------------- | ---------------------- |
+| React           | `podo-ui/react`  | 전체 지원      | 전체 지원       | Client React           |
+| Next.js         | `podo-ui/react`  | `"use client"` | `"use client"`  | SSR + Client Component |
+| Hono            | `podo-ui/hono`   | React island   | React island    | 15개 컴포넌트 순수 SSR |
+| React Native    | `podo-ui/native` | Native modal   | WebView WYSIWYG | Native UI              |
+| Custom Elements | `podo-ui/web`    | —              | —               | 브라우저 표준 요소     |
+
+DatePicker는 단일/기간, 날짜/시간/datetime/hour, 경계·비활성 조건·빠른 기간 선택을 지원합니다. Editor는 문단, 서식, 색상, 정렬, 목록, 표, 링크, 이미지, YouTube, HTML 편집을 지원합니다. 자세한 예제와 prop 표는 [공식 설명서](https://podoui.com)에서 확인할 수 있습니다.
+
+## React Native
+
+공개 컴포넌트는 실제 React Native 호스트에 이미 연결되어 있으므로 `createNativeComponents` 없이 바로 가져옵니다. 아이콘은 생성된 TTF를 로드해야 하며, WYSIWYG Editor를 쓰려면 `react-native-webview`를 Provider에 전달합니다.
+
+```tsx
+import { useFonts } from "expo-font";
+import { WebView } from "react-native-webview";
+import { useState } from "react";
+import { Button, Editor, PodoNativeThemeProvider } from "podo-ui/native";
+import { podoIconGlyphMap } from "./podo/icons/PodoIcons.native";
+
+const iconGlyphs = Object.fromEntries(
+  Object.entries(podoIconGlyphMap).map(([name, code]) => [name, String.fromCodePoint(code)])
+);
+
+export function App() {
+  const [html, setHtml] = useState("<p>모바일 에디터</p>");
+  const [loaded] = useFonts({ PodoIcons: require("./podo/icons/PodoIcons.ttf") });
+  if (!loaded) return null;
+
+  return (
+    <PodoNativeThemeProvider
+      theme="landing"
+      colorScheme="light"
+      iconGlyphs={iconGlyphs}
+      iconFontFamily="PodoIcons"
+      webViewComponent={WebView}
+    >
+      <Button>저장</Button>
+      <Editor value={html} onChange={setHtml} />
+    </PodoNativeThemeProvider>
+  );
+}
+```
+
+## Figma에서 새 파일에 설치하기
+
+최신 플러그인은 PODO 디자인 시스템 스냅샷을 자체 포함합니다.
+
+1. 빈 Figma Design 파일에서 PODO 플러그인을 엽니다.
+2. **PODO 디자인 시스템 설치**를 누릅니다.
+3. 플러그인이 `_podo` 페이지와 변수, 스타일, 컴포넌트를 설치할 때까지 기다립니다.
+
+일반 설치에는 JSON 내보내기가 필요하지 않습니다. **JSON 내보내기/가져오기**는 백업·복원용 고급 도구입니다.
+
+## Figma 내용을 코드 프로젝트로 가져오기
+
+```bash
+npx podo-ui import
+```
+
+1. 프로젝트 터미널에서 위 명령을 실행합니다. 수신기는 `localhost:4141`부터 사용 가능한 포트를 엽니다.
+2. 현재 Figma 파일에서 플러그인의 **프로젝트로 보내기**를 누릅니다.
+3. 터미널의 파일·경고·충돌 계획을 확인하고 적용합니다.
+4. 아래 검증 순서로 생성합니다.
+
+```bash
+npx podo-ui validate
+npx podo-ui build --dry-run
 npx podo-ui build
 ```
 
-```ts
-import { Button, PodoThemeProvider } from "podo-ui/react";
-```
+프로젝트 상태는 `.podo` 안에 보관됩니다. 생성된 `tokens.css`, `tokens.native.ts`, 컴포넌트 바인딩, 아이콘 CSS/폰트는 직접 수정하지 말고 JSON 원본을 바꾼 뒤 다시 빌드하세요.
 
-- Subpaths: `podo-ui/web · react · hono · native · spec · tokens · icons · core · codegen · migration · cli · mcp`
-- Bins: `podo` (CLI), `podo-ui` (interactive menu, Figma import entry), `podo-mcp` (MCP server)
-- `react` / `react-dom` / `react-native` are optional peers — install only what your target needs.
-- v1 (SCSS-based) is incompatible with v2; pin `podo-ui@1` to stay on v1.
+## 패키지 구성
 
-## Figma → project import
+- `podo-ui/react`, `podo-ui/web`, `podo-ui/hono`, `podo-ui/native`: 환경별 런타임
+- `podo-ui/spec`, `podo-ui/tokens`, `podo-ui/icons`: JSON 계약과 생성기
+- `podo-ui/core`, `podo-ui/codegen`, `podo-ui/migration`: 공통 동작·코드 생성·마이그레이션
+- `podo-ui/cli`, `podo-ui/mcp`: CLI와 MCP 서버 API
+- 실행 파일: `podo`, `podo-ui`, `podo-mcp`
 
-The [Figma plugin](./figma-plugin) can send the design system (variables, styles, components) straight into a project:
+## 저장소 개발
 
-1. In the project terminal run `npx podo-ui` → "피그마에서 가져오기" (or `npx podo-ui import`). The CLI listens on `http://localhost:4141-4145`.
-2. In Figma open the PODO plugin and press **프로젝트로 보내기**.
-3. Review the plan (files, warnings, conflicts) in the terminal, confirm, then run `npx podo-ui build`.
-
-After a local install the short `podo` bin works too (`npx podo build`), but plain `npx podo` without podo-ui installed resolves to an unrelated npm package — docs standardize on `npx podo-ui`.
-
-## Workspace layout
-
-`packages/*` are pnpm workspace packages named `@podoui/*`. They are **private/workspace-internal** — the npm `@podo` scope is owned by a third party and `podoui` is blocked by npm's name-similarity rule, so `packages/podo-ui` assembles all of them into the one published `podo-ui` package (see `packages/podo-ui/build.mjs`).
-
-- `@podoui/spec`: JSON schemas, parsers, and TypeScript contracts (including the Figma `podo-clone` export schema).
-- `@podoui/tokens`: token loading, merging, resolving, and target emitters.
-- `@podoui/icons` + `@podoui/icon-build`: icon manifest validation and font/native asset builders.
-- `@podoui/core`: shared behavior, accessibility, registry, and state helpers.
-- `@podoui/web`, `@podoui/react`, `@podoui/hono`, `@podoui/native`: runtime component targets.
-- `@podoui/codegen`, `@podoui/migration`: component file generation and `.podo` migrations.
-- `@podoui/cli`: `podo` command (init/build/validate/update/migrate/import/mcp) and the `podo-ui` menu.
-- `@podoui/mcp`: Model Context Protocol server for AI tool access to Podo specs.
-- `@podoui/docs`: static docs site (not published).
-- `podo-ui`: the published bundle of all of the above.
-
-## Local workflow
-
-```sh
+```bash
 pnpm install
-pnpm check            # typecheck, lint, tests, format, figma connect parse
 pnpm build
+pnpm check
 pnpm release:verify
 ```
 
-Use `pnpm examples:build` to compile only the example projects. Releasing: bump `packages/podo-ui/package.json`, then `pnpm release` (publishes `podo-ui` only; the final `npm publish` step needs a 2FA OTP).
+`packages/*`의 `@podoui/*` 패키지는 workspace 내부 모듈이며, 소비자는 하나의 공개 패키지 `podo-ui`만 설치합니다. 아키텍처 의도는 [plan.md](./plan.md), 진행 상태는 [todo.md](./todo.md), 운영 기록은 [docs](./docs)에서 확인할 수 있습니다.
 
-## Installed projects
-
-Project-local Podo state lives under `.podo`. The CLI and MCP tools must validate JSON specs before writing and keep generated outputs reproducible from JSON source. Writes outside `.podo` never happen without a dry-run/diff confirmation.
-
-## Documentation
-
-See [plan.md](./plan.md) and [todo.md](./todo.md) for the current architecture and execution checklist. Operational guides live in [docs](./docs).
+릴리스는 npm Trusted Publisher(OIDC)를 사용하는 GitHub Actions로 진행합니다. 버전 커밋과 태그를 푸시한 뒤 `Publish podo-ui` 워크플로를 실행하며 로컬 npm 토큰이나 OTP를 사용하지 않습니다.

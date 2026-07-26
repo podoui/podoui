@@ -15,7 +15,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "react",
     label: "React",
-    code: `<Checkbox label="이용약관 동의" checked={agreed} onCheckedChange={setAgreed} />`,
+    code: `<Checkbox label="이용약관 동의" defaultChecked />`,
   },
   {
     target: "web",
@@ -30,10 +30,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "native",
     label: "React Native",
-    code: nativeComponentUsage(
-      ["Checkbox"],
-      `<Checkbox label="이용약관 동의" checked={agreed} onCheckedChange={setAgreed} />`
-    ),
+    code: nativeComponentUsage(["Checkbox"], `<Checkbox label="이용약관 동의" defaultChecked />`),
   },
 ];
 

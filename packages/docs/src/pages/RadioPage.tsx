@@ -44,7 +44,7 @@ const USAGE_TABS: CodeTab[] = [
     code: nativeComponentUsage(
       ["Radio"],
       `{/* 네이티브 그룹이 없어 선택 하나 유지는 소비자 몫이에요 */}\n` +
-        `<Radio checked={plan === "basic"} onCheckedChange={() => setPlan("basic")} label="베이직" />`
+        `<Radio checked label="베이직" onCheckedChange={(checked) => console.log(checked)} />`
     ),
   },
 ];

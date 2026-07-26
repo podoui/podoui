@@ -23,12 +23,12 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "react",
     label: "React",
-    code: `import { Icon } from "podo-ui/react";\nimport "./podo/icons/PodoIcons.css";\n\n<Icon name="search" decorative={false} aria-label="검색" />`,
+    code: `import { Icon } from "podo-ui/react";\nimport "podo-ui/icons.css";\n\n<Icon name="search" decorative={false} aria-label="검색" />`,
   },
   {
     target: "web",
     label: "Web",
-    code: `import { registerPodoElements } from "podo-ui/web";\nimport "./podo/icons/PodoIcons.css";\n\nregisterPodoElements();\n\n<podo-icon name="search" decorative="false" aria-label="검색"></podo-icon>`,
+    code: `import { registerPodoElements } from "podo-ui/web";\nimport "podo-ui/icons.css";\n\nregisterPodoElements();\n\n<podo-icon name="search" decorative="false" aria-label="검색"></podo-icon>`,
   },
   {
     target: "hono",

@@ -6,7 +6,6 @@ import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
-import { nativeComponentUsage } from "../code-examples.js";
 
 const USAGE_TABS: CodeTab[] = [
   {
@@ -17,16 +16,24 @@ const USAGE_TABS: CodeTab[] = [
       `import { useState } from "react";\n` +
       `import { Editor } from "podo-ui/react";\n` +
       `import "podo-ui/styles.css";\n\n` +
-      `const [html, setHtml] = useState("<p>내용</p>");\n` +
-      `<Editor value={html} onChange={setHtml} height="320px" />`,
+      `export default function Page() {\n` +
+      `  const [html, setHtml] = useState("<p>내용</p>");\n` +
+      `  return <Editor value={html} onChange={setHtml} height="320px" />;\n` +
+      `}`,
   },
   {
     target: "native",
     label: "React Native",
-    code: nativeComponentUsage(
-      ["Editor", "EditorView"],
-      `<Editor value={html} onChange={setHtml} height={320} />\n<EditorView value={html} />`
-    ),
+    code:
+      `import { useState } from "react";\n` +
+      `import { Editor, EditorView } from "podo-ui/native";\n\n` +
+      `export function Screen() {\n` +
+      `  const [html, setHtml] = useState("<p>내용</p>");\n` +
+      `  return (<>\n` +
+      `    <Editor value={html} onChange={setHtml} height={320} />\n` +
+      `    <EditorView value={html} />\n` +
+      `  </>);\n` +
+      `}`,
   },
 ];
 

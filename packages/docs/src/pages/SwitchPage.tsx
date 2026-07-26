@@ -16,7 +16,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "react",
     label: "React",
-    code: `<Switch label="알림 받기" checked={enabled} onCheckedChange={setEnabled} />`,
+    code: `<Switch label="알림 받기" defaultChecked />`,
   },
   {
     target: "web",
@@ -31,10 +31,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "native",
     label: "React Native",
-    code: nativeComponentUsage(
-      ["Switch"],
-      `<Switch label="알림 받기" checked={enabled} onCheckedChange={setEnabled} />`
-    ),
+    code: nativeComponentUsage(["Switch"], `<Switch label="알림 받기" defaultChecked />`),
   },
 ];
 

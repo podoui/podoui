@@ -41,7 +41,6 @@ const USAGE_TABS: CodeTab[] = [
       `    { value: "strawberry", label: "딸기" },\n` +
       `    { value: "banana", label: "바나나" },\n` +
       `  ]}\n` +
-      `  onValueChange={setFruit}\n` +
       `/>`,
   },
   {
@@ -52,14 +51,14 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Select } from "podo-ui/hono";\n\n<Select placeholder="과일 선택" options={fruits} />`,
+    code: `import { Select } from "podo-ui/hono";\n\n<Select placeholder="과일 선택" options={[{ value: "strawberry", label: "딸기" }]} />`,
   },
   {
     target: "native",
     label: "React Native",
     code: nativeComponentUsage(
       ["Select"],
-      `<Select placeholder="과일 선택" options={fruits} onValueChange={setFruit} />`
+      `<Select placeholder="과일 선택" options={[{ value: "strawberry", label: "딸기" }]} />`
     ),
   },
 ];

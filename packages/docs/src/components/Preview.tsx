@@ -1,10 +1,13 @@
 import { useState, type ReactNode } from "react";
+import { Highlight, themes, type Language } from "prism-react-renderer";
 
 export interface CodeTab {
   /** Target key, e.g. "react" | "web" | "hono" | "native". */
   target: string;
   label: string;
   code: string;
+  /** Prism language. Component examples default to TSX. */
+  language?: Language;
 }
 
 interface PreviewProps {
@@ -17,13 +20,14 @@ export function Preview({ tabs, children }: PreviewProps) {
   const [active, setActive] = useState(0);
   const [copied, setCopied] = useState(false);
   const current = tabs[active] ?? tabs[0];
+  const code = current ? completeExample(current) : "";
 
   async function copy() {
     if (!current) {
       return;
     }
     try {
-      await navigator.clipboard.writeText(current.code);
+      await navigator.clipboard.writeText(code);
       setCopied(true);
       setTimeout(() => setCopied(false), 1200);
     } catch {
@@ -52,10 +56,57 @@ export function Preview({ tabs, children }: PreviewProps) {
         <button className="copy-btn" onClick={copy} type="button">
           {copied ? "Copied" : "Copy"}
         </button>
-        <pre>
-          <code>{current?.code}</code>
-        </pre>
+        <Highlight theme={themes.nightOwl} code={code} language={current?.language ?? "tsx"}>
+          {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            <pre
+              className={className}
+              style={style}
+              tabIndex={0}
+              aria-label={`${current?.label ?? ""} 예제 코드`}
+            >
+              <code>
+                {tokens.map((line, lineIndex) => (
+                  <span key={lineIndex} {...getLineProps({ line })}>
+                    <span className="code-line__number" aria-hidden="true">
+                      {lineIndex + 1}
+                    </span>
+                    <span className="code-line__content">
+                      {line.map((token, tokenIndex) => (
+                        <span key={tokenIndex} {...getTokenProps({ token })} />
+                      ))}
+                    </span>
+                  </span>
+                ))}
+              </code>
+            </pre>
+          )}
+        </Highlight>
       </div>
     </div>
   );
+}
+
+/**
+ * Short component examples remain easy to maintain in their page files while
+ * the rendered and copied example is complete enough to paste into a project.
+ */
+function completeExample(tab: CodeTab): string {
+  if (/^\s*import\s/m.test(tab.code)) {
+    return tab.code;
+  }
+
+  if (tab.target === "react") {
+    const components = Array.from(
+      new Set(Array.from(tab.code.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g), (match) => match[1]))
+    );
+    if (components.length > 0) {
+      return `import { ${components.join(", ")} } from "podo-ui/react";\nimport "podo-ui/styles.css";\n\n${tab.code}`;
+    }
+  }
+
+  if (tab.target === "web") {
+    return `import { registerPodoElements } from "podo-ui/web";\nimport "podo-ui/styles.css";\n\nregisterPodoElements();\n\n${tab.code}`;
+  }
+
+  return tab.code;
 }
