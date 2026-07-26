@@ -11,6 +11,9 @@ import React, {
   type ReactNode,
 } from "react";
 import {
+  Keyboard as ReactNativeKeyboard,
+  KeyboardAvoidingView as ReactNativeKeyboardAvoidingView,
+  Linking as ReactNativeLinking,
   Modal as ReactNativeModal,
   Pressable as ReactNativePressable,
   ScrollView as ReactNativeScrollView,
@@ -31,6 +34,8 @@ import {
 export type NativeHostComponent = string | React.ComponentType<Record<string, unknown>>;
 
 export interface NativeHost {
+  /** Optional keyboard-aware sheet host. Defaults to React Native KeyboardAvoidingView. */
+  KeyboardAvoidingView?: NativeHostComponent;
   /** Optional overlay host. Defaults to React Native Modal in the published entry. */
   Modal?: NativeHostComponent;
   Pressable: NativeHostComponent;
@@ -524,6 +529,7 @@ export interface NativeComponents {
 export type NativeStyle = Record<string, string | number | undefined>;
 
 export const defaultNativeHost: NativeHost = {
+  KeyboardAvoidingView: ReactNativeKeyboardAvoidingView as unknown as NativeHostComponent,
   Modal: ReactNativeModal as unknown as NativeHostComponent,
   Pressable: ReactNativePressable as unknown as NativeHostComponent,
   ScrollView: ReactNativeScrollView as unknown as NativeHostComponent,
@@ -728,6 +734,120 @@ const NATIVE_EDITOR_TOOLBAR: NativeEditorToolbarItem[] = [
   "format",
   "code",
 ];
+
+// Keep the native editor choices in lockstep with the v1 React editor.  The
+// presentation changes on phones (bottom sheets and long-press), but the
+// available authoring operations must not shrink just because the surface is
+// native.
+const NATIVE_EDITOR_COLORS = [
+  [
+    "#ff0000",
+    "#ff8000",
+    "#ffff00",
+    "#80ff00",
+    "#00ffff",
+    "#0080ff",
+    "#0000ff",
+    "#8000ff",
+    "#ff00ff",
+    "#ffffff",
+    "#000000",
+  ],
+  [
+    "#ffcccc",
+    "#ffe0cc",
+    "#ffffcc",
+    "#e0ffcc",
+    "#ccffff",
+    "#cce0ff",
+    "#ccccff",
+    "#e0ccff",
+    "#ffccff",
+    "#f5f5f5",
+    "#cccccc",
+  ],
+  [
+    "#ff9999",
+    "#ffcc99",
+    "#ffff99",
+    "#ccff99",
+    "#99ffff",
+    "#99ccff",
+    "#9999ff",
+    "#cc99ff",
+    "#ff99ff",
+    "#e6e6e6",
+    "#999999",
+  ],
+  [
+    "#ff6666",
+    "#ffb366",
+    "#ffff66",
+    "#b3ff66",
+    "#66ffff",
+    "#66b3ff",
+    "#6666ff",
+    "#b366ff",
+    "#ff66ff",
+    "#d9d9d9",
+    "#666666",
+  ],
+  [
+    "#cc0000",
+    "#cc6600",
+    "#cccc00",
+    "#66cc00",
+    "#00cccc",
+    "#0066cc",
+    "#0000cc",
+    "#6600cc",
+    "#cc00cc",
+    "#b3b3b3",
+    "#333333",
+  ],
+  [
+    "#800000",
+    "#804000",
+    "#808000",
+    "#408000",
+    "#008080",
+    "#004080",
+    "#000080",
+    "#400080",
+    "#800080",
+    "#808080",
+    "#1a1a1a",
+  ],
+] as const;
+
+const NATIVE_EDITOR_PARAGRAPHS = [
+  { value: "h1", label: "제목 1", size: 28, weight: "700" },
+  { value: "h2", label: "제목 2", size: 24, weight: "700" },
+  { value: "h3", label: "제목 3", size: 20, weight: "700" },
+  { value: "p", label: "본문", size: 16, weight: "400" },
+  { value: "p1", label: "P1", size: 24, weight: "400" },
+  { value: "p2", label: "P2", size: 20, weight: "400" },
+  { value: "p3", label: "P3", size: 16, weight: "400" },
+  { value: "p3_semibold", label: "P3 Semibold", size: 16, weight: "600" },
+  { value: "p4", label: "P4", size: 14, weight: "400" },
+  { value: "p4_semibold", label: "P4 Semibold", size: 14, weight: "600" },
+  { value: "p5", label: "P5", size: 12, weight: "400" },
+  { value: "p5_semibold", label: "P5 Semibold", size: 12, weight: "600" },
+] as const;
+
+const NATIVE_EDITOR_PANEL_TITLES: Record<string, string> = {
+  paragraph: "문단 형식",
+  color: "글꼴 색상",
+  background: "배경 색상",
+  align: "문단 정렬",
+  table: "표 삽입",
+  "table-context": "표 편집",
+  link: "링크 삽입",
+  image: "이미지 삽입",
+  "image-edit": "이미지 편집",
+  youtube: "YouTube 삽입",
+  "youtube-edit": "YouTube 편집",
+};
 
 function nativeStartOfDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -1015,23 +1135,19 @@ function nativeTableHtml(rows: number, columns: number): string {
 
 function nativeSanitizeEditorHtml(value: unknown): string {
   if (typeof value !== "string") return "";
+  const blockedElements =
+    "script|object|embed|form|input|meta|link|base|style|svg|math|template|details|summary|dialog|video|audio|canvas|noscript|frame|frameset";
   return value
+    .replace(new RegExp(`<(${blockedElements})\\b[^>]*>[\\s\\S]*?<\\/\\1\\s*>`, "gi"), "")
+    .replace(new RegExp(`<(?:${blockedElements})\\b[^>]*\\/?\\s*>`, "gi"), "")
+    .replace(/[\s/]+on[a-z][a-z0-9:_-]*\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/[\s/]+srcdoc\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
     .replace(
-      /<(script|object|embed|form|input|meta|link|base|style|svg|math|template)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,
-      ""
-    )
-    .replace(
-      /<(script|object|embed|form|input|meta|link|base|style|svg|math|template)\b[^>]*\/?\s*>/gi,
-      ""
-    )
-    .replace(/(?:\s|\/)+on[a-z][a-z0-9:_-]*\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-    .replace(/(?:\s|\/)+srcdoc\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-    .replace(
-      /(?:\s|\/)+(?:href|src|xlink:href|action|formaction)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,
+      /[\s/]+(?:href|src|xlink:href|action|formaction)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,
       (attribute) =>
         /(?:javascript|vbscript)\s*:|data\s*:\s*text\/html/i.test(attribute) ? "" : attribute
     )
-    .replace(/(?:\s|\/)+style\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, (attribute) =>
+    .replace(/[\s/]+style\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, (attribute) =>
       /(?:url\s*\(|expression\s*\(|@import|behavior\s*:|-moz-binding)/i.test(attribute)
         ? ""
         : attribute
@@ -1064,35 +1180,53 @@ function nativeEditorWebDocument(
 #editor{min-height:${options.editable ? "210px" : "1px"};padding:${options.editable ? "14px" : "0"};outline:none;word-break:break-word}
 #editor:empty:before{content:${placeholder};color:#9FA2AD;pointer-events:none}
 p{margin:0 0 10px}h1{font-size:28px;line-height:1.3;margin:0 0 12px}h2{font-size:24px;line-height:1.35;margin:0 0 12px}h3{font-size:20px;line-height:1.4;margin:0 0 10px}
+.podo-p1{font-size:24px}.podo-p2{font-size:20px}.podo-p3{font-size:16px}.podo-p4{font-size:14px}.podo-p5{font-size:12px}.podo-semibold{font-weight:600}
 ul,ol{padding-left:24px}blockquote{border-left:3px solid #D1D2D6;margin:10px 0;padding-left:12px;color:#6B6B73}
-a{color:#426CED}img{display:block;max-width:100%;height:auto;margin:10px auto;border-radius:8px}iframe{display:block;width:100%;min-height:190px;border:0;border-radius:8px;margin:10px 0}
-table{width:100%;border-collapse:collapse;margin:12px 0}td,th{border:1px solid #D1D2D6;min-width:44px;padding:8px;vertical-align:top}hr{border:0;border-top:1px solid #D1D2D6;margin:16px 0}
+a{color:#426CED}img{display:block;max-width:100%;height:auto;margin:10px auto;border-radius:8px}.podo-youtube{margin:10px auto;max-width:100%;position:relative}.podo-youtube iframe{display:block;width:100%;min-height:190px;border:0;border-radius:8px;pointer-events:none}
+table{width:100%;border-collapse:collapse;margin:12px 0}td,th{border:1px solid #D1D2D6;min-width:44px;padding:8px;vertical-align:top}td.podo-selected,th.podo-selected,img.podo-selected,.podo-youtube.podo-selected{outline:2px solid #426CED;outline-offset:1px}hr{border:0;border-top:1px solid #D1D2D6;margin:16px 0}
 </style></head><body><div id="editor" contenteditable="${options.editable ? "true" : "false"}" role="textbox" aria-multiline="true">${html}</div>
 <script>
 (function(){
-var editor=document.getElementById('editor');var savedRange=null;
+var editor=document.getElementById('editor');var savedRange=null;var activeTarget=null;var holdTimer=null;var holdStart=null;
 function post(payload){if(window.ReactNativeWebView){window.ReactNativeWebView.postMessage(JSON.stringify(payload));}}
 function saveRange(){var selection=window.getSelection();if(selection&&selection.rangeCount&&editor.contains(selection.anchorNode)){savedRange=selection.getRangeAt(0).cloneRange();}}
 function restoreRange(){if(!savedRange)return;var selection=window.getSelection();selection.removeAllRanges();selection.addRange(savedRange);}
-function emit(){saveRange();post({type:'input',html:editor.innerHTML,height:document.documentElement.scrollHeight});}
+function blurEditor(){saveRange();editor.setAttribute('contenteditable','false');editor.blur();document.body.setAttribute('tabindex','-1');document.body.focus({preventScroll:true});var selection=window.getSelection();if(selection)selection.removeAllRanges();}
+function focusEditor(){editor.setAttribute('contenteditable','true');editor.focus();var selection=window.getSelection();if(!selection)return;try{if(savedRange){selection.removeAllRanges();selection.addRange(savedRange);return;}}catch(error){}var range=document.createRange();range.selectNodeContents(editor);range.collapse(false);selection.removeAllRanges();selection.addRange(range);savedRange=range;}
+function postState(){if(!${options.editable ? "true" : "false"})return;var selection=window.getSelection();if(!selection||!selection.anchorNode||!editor.contains(selection.anchorNode))return;var node=selection.anchorNode.nodeType===3?selection.anchorNode.parentElement:selection.anchorNode;var block=node&&node.closest?node.closest('p,h1,h2,h3'):null;var paragraph=block?(block.tagName.toLowerCase()==='p'?(block.classList.contains('podo-p1')?'p1':block.classList.contains('podo-p2')?'p2':block.classList.contains('podo-p3')?(block.classList.contains('podo-semibold')?'p3_semibold':'p3'):block.classList.contains('podo-p4')?(block.classList.contains('podo-semibold')?'p4_semibold':'p4'):block.classList.contains('podo-p5')?(block.classList.contains('podo-semibold')?'p5_semibold':'p5'):'p'):block.tagName.toLowerCase()):'p';post({type:'state',bold:document.queryCommandState('bold'),italic:document.queryCommandState('italic'),underline:document.queryCommandState('underline'),strike:document.queryCommandState('strikeThrough'),align:document.queryCommandState('justifyCenter')?'center':document.queryCommandState('justifyRight')?'right':'left',paragraph:paragraph});}
+function emit(){saveRange();postState();post({type:'input',html:editor.innerHTML,height:document.documentElement.scrollHeight});}
 function postHeight(){post({type:'height',height:document.documentElement.scrollHeight});}
-function tableCell(){var selection=window.getSelection();if(!selection||!selection.anchorNode)return null;var node=selection.anchorNode.nodeType===3?selection.anchorNode.parentElement:selection.anchorNode;return node&&node.closest?node.closest('td,th'):null;}
+function clearSelected(){Array.prototype.forEach.call(editor.querySelectorAll('.podo-selected'),function(item){item.classList.remove('podo-selected');});}
+function targetInfo(target){var cell=target&&target.closest?target.closest('td,th'):null;if(cell)return{kind:'table',target:cell};var image=target&&target.closest?target.closest('img'):null;if(image)return{kind:'image',target:image};var youtube=target&&target.closest?target.closest('.podo-youtube'):null;if(youtube)return{kind:'youtube',target:youtube};return null;}
+function activate(info){if(!info)return;clearSelected();activeTarget=info.target;activeTarget.classList.add('podo-selected');if(info.kind==='table'){var range=document.createRange();range.selectNodeContents(activeTarget);range.collapse(true);blurEditor();savedRange=range;post({type:'context',kind:'table'});return;}var width=activeTarget.style.width||'100%';var align=activeTarget.style.marginLeft==='auto'&&activeTarget.style.marginRight==='auto'?'center':activeTarget.style.marginLeft==='auto'?'right':'left';blurEditor();post({type:'context',kind:info.kind,width:width,align:align,alt:info.kind==='image'?(activeTarget.getAttribute('alt')||''):''});}
+function tableCell(){if(activeTarget&&activeTarget.closest&&activeTarget.closest('td,th'))return activeTarget.closest('td,th');var selection=window.getSelection();if(!selection||!selection.anchorNode)return null;var node=selection.anchorNode.nodeType===3?selection.anchorNode.parentElement:selection.anchorNode;return node&&node.closest?node.closest('td,th'):null;}
 function tableCommand(name){var cell=tableCell();if(!cell)return;var row=cell.parentElement;var table=cell.closest('table');var index=Array.prototype.indexOf.call(row.children,cell);
 if(name==='row-above'||name==='row-below'){var clone=row.cloneNode(true);Array.prototype.forEach.call(clone.children,function(item){item.innerHTML='<br>';});row.parentElement.insertBefore(clone,name==='row-above'?row:row.nextSibling);}
 if(name==='row-delete'){row.remove();if(table&&!table.querySelector('tr'))table.remove();}
 if(name==='column-left'||name==='column-right'){Array.prototype.forEach.call(table.querySelectorAll('tr'),function(item){var ref=item.children[index];var next=document.createElement('td');next.innerHTML='<br>';item.insertBefore(next,name==='column-left'?ref:ref?ref.nextSibling:null);});}
 if(name==='column-delete'){Array.prototype.forEach.call(table.querySelectorAll('tr'),function(item){if(item.children[index])item.children[index].remove();});if(table&&!table.querySelector('td,th'))table.remove();}
+if(name==='cell-color')cell.style.backgroundColor=arguments[1]||'';
+if(name==='cell-align')cell.style.textAlign=arguments[1]||'left';
 if(name==='table-delete'&&table)table.remove();}
-function command(message){if(!${options.editable ? "true" : "false"})return;editor.focus();restoreRange();var name=message.command;var value=message.value||null;
+function mediaCommand(message){if(!activeTarget||!activeTarget.isConnected)return;if(message.action==='delete'){activeTarget.remove();activeTarget=null;return;}var width=message.width;if(width){activeTarget.style.width=width==='original'?'auto':width;}if(message.align){activeTarget.style.marginLeft=message.align==='center'||message.align==='right'?'auto':'0';activeTarget.style.marginRight=message.align==='center'||message.align==='left'?'auto':'0';}if(activeTarget.tagName==='IMG'&&typeof message.alt==='string')activeTarget.setAttribute('alt',message.alt);clearSelected();}
+function command(message){if(!${options.editable ? "true" : "false"})return;var name=message.command;var value=message.value||null;if(name.indexOf('table-')!==0&&name!=='media-edit'){focusEditor();}
 if(name==='insertHTML'){document.execCommand('insertHTML',false,value||'');}
-else if(name==='formatBlock'){document.execCommand('formatBlock',false,value||'p');}
-else if(name==='link'){var selection=window.getSelection();if(selection&&selection.isCollapsed){document.execCommand('insertHTML',false,'<a href="'+message.url+'" target="_blank" rel="noopener noreferrer">'+(message.label||message.url)+'</a>');}else{document.execCommand('createLink',false,message.url);}}
-else if(name==='image'){document.execCommand('insertHTML',false,'<img src="'+message.url+'" alt="'+(message.alt||'')+'">');}
-else if(name==='youtube'){document.execCommand('insertHTML',false,'<iframe src="'+message.url+'" title="YouTube video" allowfullscreen></iframe>');}
-else if(name.indexOf('table-')===0){tableCommand(name.slice(6));}
+else if(name==='formatBlock'){var style=value||'p';var block=/^h[1-3]$/.test(style)?style:'p';document.execCommand('formatBlock',false,block);var selection=window.getSelection();var node=selection&&selection.anchorNode?(selection.anchorNode.nodeType===3?selection.anchorNode.parentElement:selection.anchorNode):null;var paragraph=node&&node.closest?node.closest('p,h1,h2,h3'):null;if(paragraph){paragraph.className='';if(/^p[1-5]/.test(style))paragraph.classList.add('podo-'+style.slice(0,2));if(style.indexOf('semibold')>0)paragraph.classList.add('podo-semibold');}}
+else if(name==='link'){var selection=window.getSelection();if(selection&&selection.isCollapsed){var link=document.createElement('a');link.href=message.url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=message.label||message.url;document.execCommand('insertHTML',false,link.outerHTML);}else{document.execCommand('createLink',false,message.url);}}
+else if(name==='image'){var image=document.createElement('img');image.src=message.url;image.alt=message.alt||'';image.style.width=message.width==='original'?'auto':(message.width||'100%');image.style.marginLeft=message.align==='right'||message.align==='center'?'auto':'0';image.style.marginRight=message.align==='left'||message.align==='center'?'auto':'0';document.execCommand('insertHTML',false,image.outerHTML);}
+else if(name==='youtube'){var wrapper=document.createElement('div');wrapper.className='podo-youtube';wrapper.style.width=message.width==='original'?'560px':(message.width||'100%');wrapper.style.marginLeft=message.align==='right'||message.align==='center'?'auto':'0';wrapper.style.marginRight=message.align==='left'||message.align==='center'?'auto':'0';var frame=document.createElement('iframe');frame.src=message.url;frame.title='YouTube video';frame.setAttribute('allowfullscreen','');wrapper.appendChild(frame);document.execCommand('insertHTML',false,wrapper.outerHTML);}
+else if(name.indexOf('table-')===0){tableCommand(name.slice(6),value);if(!message.keepActive){clearSelected();activeTarget=null;focusEditor();}}
+else if(name==='media-edit'){mediaCommand(message);clearSelected();activeTarget=null;focusEditor();}
 else{document.execCommand(name,false,value);}emit();}
-function receive(event){try{var message=JSON.parse(event.data);if(message.type==='command')command(message);if(message.type==='set'&&editor.innerHTML!==message.html){editor.innerHTML=message.html||'';}}catch(error){}}
-editor.addEventListener('input',emit);editor.addEventListener('keyup',saveRange);editor.addEventListener('mouseup',saveRange);editor.addEventListener('touchend',saveRange);document.addEventListener('message',receive);window.addEventListener('message',receive);
+function receive(event){try{var message=JSON.parse(event.data);if(message.type==='command')command(message);if(message.type==='blur')blurEditor();if(message.type==='dismiss'){clearSelected();activeTarget=null;setTimeout(focusEditor,120);}if(message.type==='set'&&editor.innerHTML!==message.html){editor.innerHTML=message.html||'';}}catch(error){}}
+editor.addEventListener('input',emit);editor.addEventListener('keyup',function(){saveRange();postState();});editor.addEventListener('mouseup',function(){saveRange();postState();});
+editor.addEventListener('click',function(event){var info=targetInfo(event.target);if(info&&(info.kind==='image'||info.kind==='youtube')){event.preventDefault();activate(info);}});
+editor.addEventListener('contextmenu',function(event){var info=targetInfo(event.target);if(info){event.preventDefault();activate(info);}});
+editor.addEventListener('touchstart',function(event){var touch=event.touches&&event.touches[0];var info=targetInfo(event.target);if(!touch||!info)return;holdStart={x:touch.clientX,y:touch.clientY};clearTimeout(holdTimer);holdTimer=setTimeout(function(){activate(info);holdTimer=null;},550);},{passive:true});
+editor.addEventListener('touchmove',function(event){var touch=event.touches&&event.touches[0];if(holdTimer&&touch&&holdStart&&(Math.abs(touch.clientX-holdStart.x)>10||Math.abs(touch.clientY-holdStart.y)>10)){clearTimeout(holdTimer);holdTimer=null;}},{passive:true});
+editor.addEventListener('touchend',function(){if(holdTimer){clearTimeout(holdTimer);holdTimer=null;}saveRange();},{passive:true});
+document.addEventListener('message',receive);window.addEventListener('message',receive);
+document.addEventListener('selectionchange',postState);
 window.__podoReceive=receive;window.__podoCommand=command;window.__podoSetHtml=function(html){if(editor.innerHTML!==html){editor.innerHTML=html||'';}};
 window.addEventListener('load',postHeight);if(typeof ResizeObserver!=='undefined'){new ResizeObserver(postHeight).observe(document.body);}Array.prototype.forEach.call(editor.querySelectorAll('img,iframe'),function(asset){asset.addEventListener('load',postHeight);});
 post({type:'ready',height:document.documentElement.scrollHeight});
@@ -1102,6 +1236,26 @@ post({type:'ready',height:document.documentElement.scrollHeight});
 
 export function createNativeComponents(host: NativeHost = defaultNativeHost): NativeComponents {
   const glyphFallbacks: Record<string, string> = {
+    undo: "↶",
+    redo: "↷",
+    bold: "B",
+    italic: "I",
+    underline: "U",
+    strikethrough: "S",
+    "font-color": "A",
+    highlight: "▰",
+    "align-left": "≡",
+    "align-center": "≡",
+    "align-right": "≡",
+    "list-ul": "•",
+    "list-ol": "1.",
+    table: "▦",
+    link: "↗",
+    image: "▧",
+    youtube: "▶",
+    hr: "―",
+    eraser: "Tx",
+    code: "</>",
     check: "✓",
     close: "×",
     "chevron-left": "‹",
@@ -1149,6 +1303,18 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     const enabled = new Set(editorProps.toolbar ?? NATIVE_EDITOR_TOOLBAR);
     const [panel, setPanel] = useState<string | null>(null);
     const [auxValue, setAuxValue] = useState("");
+    const [mediaWidth, setMediaWidth] = useState("100%");
+    const [mediaAlign, setMediaAlign] = useState("center");
+    const [mediaAlt, setMediaAlt] = useState("");
+    const [tableColorOpen, setTableColorOpen] = useState(false);
+    const [formatState, setFormatState] = useState({
+      bold: false,
+      italic: false,
+      underline: false,
+      strike: false,
+      align: "left",
+      paragraph: "p",
+    });
     const [codeMode, setCodeMode] = useState(false);
     const [ready, setReady] = useState(false);
     const webRef = useRef<{
@@ -1179,8 +1345,17 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       }
       webRef.current?.postMessage?.(message);
     };
-    const command = (name: string, value?: string, extra?: Record<string, string>) => {
+    const command = (
+      name: string,
+      value?: string,
+      extra?: Record<string, string>,
+      closePanel = true
+    ) => {
       post({ type: "command", command: name, ...(value ? { value } : {}), ...extra });
+      if (closePanel) setPanel(null);
+    };
+    const dismissPanel = () => {
+      post({ type: "dismiss" });
       setPanel(null);
     };
 
@@ -1195,7 +1370,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     const toolButton = (
       key: string,
       label: string,
-      symbol: string,
+      iconName: string,
       action: () => void,
       active = false
     ) =>
@@ -1217,17 +1392,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             width: 36,
           },
         },
-        createElement(
-          host.Text,
-          {
-            style: {
-              color: active ? semantic.foregroundPrimary : semantic.text,
-              fontSize: symbol.length > 2 ? 11 : 18,
-              fontWeight: symbol === "B" ? "800" : "600",
-            },
-          },
-          symbol
-        )
+        nativeGlyph(theme, iconName, active ? semantic.foregroundPrimary : semantic.text, 18)
       );
     const panelButton = (key: string, label: string, action: () => void) =>
       createElement(
@@ -1251,111 +1416,378 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         createElement(host.Text, { style: { color: semantic.text, fontSize: 13 } }, label)
       );
     const togglePanel = (name: string) => {
+      ReactNativeKeyboard?.dismiss?.();
+      post({ type: "blur" });
       setAuxValue("");
-      setPanel((current) => (current === name ? null : name));
+      setMediaWidth("100%");
+      setMediaAlign("center");
+      setMediaAlt("");
+      setTableColorOpen(false);
+      if (panel === name) dismissPanel();
+      else setPanel(name);
     };
 
     const tools: ReactNode[] = [];
     if (enabled.has("undo-redo")) {
       tools.push(
-        toolButton("undo", "실행 취소", "↶", () => command("undo")),
-        toolButton("redo", "다시 실행", "↷", () => command("redo"))
+        toolButton("undo", "실행 취소", "undo", () => command("undo")),
+        toolButton("redo", "다시 실행", "redo", () => command("redo"))
       );
     }
     if (enabled.has("paragraph"))
-      tools.push(toolButton("paragraph", "문단 스타일", "¶", () => togglePanel("paragraph")));
+      tools.push(
+        createElement(
+          host.Pressable,
+          {
+            key: "paragraph",
+            accessibilityRole: "button",
+            accessibilityLabel: "문단 스타일",
+            onPress: () => togglePanel("paragraph"),
+            style: {
+              alignItems: "center",
+              borderColor: semantic.borderGray,
+              borderRadius: 7,
+              borderWidth: 1,
+              flexDirection: "row",
+              height: 36,
+              justifyContent: "center",
+              paddingHorizontal: 10,
+            },
+          },
+          createElement(
+            host.Text,
+            { style: { color: semantic.text, fontSize: 13 } },
+            NATIVE_EDITOR_PARAGRAPHS.find((option) => option.value === formatState.paragraph)
+              ?.label ?? "문단"
+          ),
+          nativeGlyph(theme, "chevron-right", semantic.textSubtil, 13, "90deg")
+        )
+      );
     if (enabled.has("text-style")) {
       tools.push(
-        toolButton("bold", "굵게", "B", () => command("bold")),
-        toolButton("italic", "기울임", "I", () => command("italic")),
-        toolButton("underline", "밑줄", "U", () => command("underline")),
-        toolButton("strike", "취소선", "S", () => command("strikeThrough"))
+        toolButton("bold", "굵게", "bold", () => command("bold"), formatState.bold),
+        toolButton("italic", "기울임", "italic", () => command("italic"), formatState.italic),
+        toolButton(
+          "underline",
+          "밑줄",
+          "underline",
+          () => command("underline"),
+          formatState.underline
+        ),
+        toolButton(
+          "strike",
+          "취소선",
+          "strikethrough",
+          () => command("strikeThrough"),
+          formatState.strike
+        )
       );
     }
     if (enabled.has("color")) {
       tools.push(
-        toolButton("color", "글자색", "A", () => togglePanel("color")),
-        toolButton("background", "배경색", "▰", () => togglePanel("background"))
+        toolButton("color", "글자색", "font-color", () => togglePanel("color")),
+        toolButton("background", "배경색", "highlight", () => togglePanel("background"))
       );
     }
     if (enabled.has("align"))
-      tools.push(toolButton("align", "문단 정렬", "≡", () => togglePanel("align")));
+      tools.push(
+        toolButton("align", "문단 정렬", "align-" + formatState.align, () => togglePanel("align"))
+      );
     if (enabled.has("list")) {
       tools.push(
-        toolButton("ul", "글머리 기호 목록", "•", () => command("insertUnorderedList")),
-        toolButton("ol", "번호 목록", "1.", () => command("insertOrderedList"))
+        toolButton("ul", "글머리 기호 목록", "list-ul", () => command("insertUnorderedList")),
+        toolButton("ol", "번호 목록", "list-ol", () => command("insertOrderedList"))
       );
     }
     if (enabled.has("table"))
-      tools.push(toolButton("table", "표", "▦", () => togglePanel("table")));
-    if (enabled.has("link")) tools.push(toolButton("link", "링크", "↗", () => togglePanel("link")));
+      tools.push(toolButton("table", "표", "table", () => togglePanel("table")));
+    if (enabled.has("link"))
+      tools.push(toolButton("link", "링크", "link", () => togglePanel("link")));
     if (enabled.has("image"))
-      tools.push(toolButton("image", "이미지", "▧", () => togglePanel("image")));
+      tools.push(toolButton("image", "이미지", "image", () => togglePanel("image")));
     if (enabled.has("youtube"))
-      tools.push(toolButton("youtube", "YouTube", "▶", () => togglePanel("youtube")));
+      tools.push(toolButton("youtube", "YouTube", "youtube", () => togglePanel("youtube")));
     if (enabled.has("hr"))
-      tools.push(toolButton("hr", "구분선", "―", () => command("insertHorizontalRule")));
+      tools.push(toolButton("hr", "구분선", "hr", () => command("insertHorizontalRule")));
     if (enabled.has("format"))
-      tools.push(toolButton("format", "서식 지우기", "Tx", () => command("removeFormat")));
+      tools.push(toolButton("format", "서식 지우기", "eraser", () => command("removeFormat")));
     if (enabled.has("code"))
       tools.push(
-        toolButton("code", "HTML 편집", "</>", () => setCodeMode((current) => !current), codeMode)
+        toolButton("code", "HTML 편집", "code", () => setCodeMode((current) => !current), codeMode)
       );
+
+    const mediaOptionControls = createElement(
+      host.View,
+      { style: { gap: 8 } },
+      createElement(host.Text, { style: { color: semantic.textSubtil, fontSize: 12 } }, "크기"),
+      createElement(
+        host.View,
+        { style: { flexDirection: "row", gap: 6 } },
+        ...["100%", "75%", "50%", "original"].map((width) =>
+          createElement(
+            host.Pressable,
+            {
+              key: width,
+              accessibilityRole: "button",
+              accessibilityLabel: width === "original" ? "원본 크기" : width + " 크기",
+              onPress: () => setMediaWidth(width),
+              style: {
+                alignItems: "center",
+                backgroundColor:
+                  mediaWidth === width ? semantic.foregroundInfoLight : semantic.background,
+                borderColor: mediaWidth === width ? semantic.borderPrimary : semantic.borderGray,
+                borderRadius: 8,
+                borderWidth: 1,
+                flex: 1,
+                minHeight: 38,
+                justifyContent: "center",
+              },
+            },
+            createElement(
+              host.Text,
+              {
+                style: {
+                  color: mediaWidth === width ? semantic.foregroundPrimary : semantic.text,
+                  fontSize: 13,
+                },
+              },
+              width === "original" ? "원본" : width
+            )
+          )
+        )
+      ),
+      createElement(host.Text, { style: { color: semantic.textSubtil, fontSize: 12 } }, "정렬"),
+      createElement(
+        host.View,
+        { style: { flexDirection: "row", gap: 6 } },
+        ...(["left", "center", "right"] as const).map((align) =>
+          createElement(
+            host.Pressable,
+            {
+              key: align,
+              accessibilityRole: "button",
+              accessibilityLabel:
+                align === "left" ? "왼쪽 정렬" : align === "center" ? "가운데 정렬" : "오른쪽 정렬",
+              onPress: () => setMediaAlign(align),
+              style: {
+                alignItems: "center",
+                backgroundColor:
+                  mediaAlign === align ? semantic.foregroundInfoLight : semantic.background,
+                borderColor: mediaAlign === align ? semantic.borderPrimary : semantic.borderGray,
+                borderRadius: 8,
+                borderWidth: 1,
+                flex: 1,
+                height: 40,
+                justifyContent: "center",
+              },
+            },
+            nativeGlyph(theme, "align-" + align, semantic.text, 18)
+          )
+        )
+      )
+    );
 
     let panelContent: ReactNode = null;
     if (panel === "paragraph") {
       panelContent = createElement(
         host.View,
-        { style: { flexDirection: "row", flexWrap: "wrap", gap: 6 } },
-        ...(["p", "h1", "h2", "h3"] as const).map((tag, index) =>
-          panelButton(tag, ["본문", "제목 1", "제목 2", "제목 3"][index] ?? tag, () =>
-            command("formatBlock", tag)
+        { style: { gap: 4 } },
+        ...NATIVE_EDITOR_PARAGRAPHS.map((option) =>
+          createElement(
+            host.Pressable,
+            {
+              key: option.value,
+              accessibilityRole: "button",
+              accessibilityLabel: option.label,
+              onPress: () => command("formatBlock", option.value),
+              style: {
+                alignItems: "center",
+                borderRadius: 8,
+                flexDirection: "row",
+                minHeight: 42,
+                paddingHorizontal: 10,
+              },
+            },
+            createElement(
+              host.Text,
+              {
+                style: {
+                  color: semantic.text,
+                  fontSize: option.size,
+                  fontWeight: option.weight,
+                },
+              },
+              option.label
+            )
           )
         )
       );
     } else if (panel === "color" || panel === "background") {
       panelContent = createElement(
         host.View,
-        { style: { flexDirection: "row", flexWrap: "wrap", gap: 8 } },
-        ...["#F23B3B", "#426CED", "#3EA856", "#FFAA00", "#18181B", "#FFFFFF"].map((color) =>
-          createElement(host.Pressable, {
-            key: color,
-            accessibilityRole: "button",
-            accessibilityLabel: `${panel === "color" ? "글자색" : "배경색"} ${color}`,
-            onPress: () => command(panel === "color" ? "foreColor" : "hiliteColor", color),
-            style: {
-              backgroundColor: color,
-              borderColor: semantic.borderGrayDeep,
-              borderRadius: 8,
-              borderWidth: 1,
-              height: 36,
-              width: 36,
-            },
-          })
+        { style: { gap: 5 } },
+        ...NATIVE_EDITOR_COLORS.map((row, rowIndex) =>
+          createElement(
+            host.View,
+            { key: "color-row-" + rowIndex, style: { flexDirection: "row", gap: 5 } },
+            ...row.map((color) =>
+              createElement(host.Pressable, {
+                key: color,
+                accessibilityRole: "button",
+                accessibilityLabel: (panel === "color" ? "글자색 " : "배경색 ") + color,
+                onPress: () => command(panel === "color" ? "foreColor" : "hiliteColor", color),
+                style: {
+                  backgroundColor: color,
+                  borderColor: semantic.borderGrayDeep,
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  flex: 1,
+                  height: 29,
+                  maxWidth: 29,
+                },
+              })
+            )
+          )
         )
       );
     } else if (panel === "align") {
       panelContent = createElement(
         host.View,
-        { style: { flexDirection: "row", flexWrap: "wrap", gap: 6 } },
-        panelButton("left", "왼쪽", () => command("justifyLeft")),
-        panelButton("center", "가운데", () => command("justifyCenter")),
-        panelButton("right", "오른쪽", () => command("justifyRight")),
-        panelButton("full", "양쪽", () => command("justifyFull"))
+        { style: { flexDirection: "row", gap: 8 } },
+        ...(
+          [
+            ["left", "왼쪽 정렬", "align-left", "justifyLeft"],
+            ["center", "가운데 정렬", "align-center", "justifyCenter"],
+            ["right", "오른쪽 정렬", "align-right", "justifyRight"],
+          ] as const
+        ).map(([key, label, icon, operation]) =>
+          createElement(
+            host.Pressable,
+            {
+              key,
+              accessibilityRole: "button",
+              accessibilityLabel: label,
+              onPress: () => command(operation),
+              style: {
+                alignItems: "center",
+                borderColor: semantic.borderGray,
+                borderRadius: 8,
+                borderWidth: 1,
+                flex: 1,
+                height: 48,
+                justifyContent: "center",
+              },
+            },
+            nativeGlyph(theme, icon, semantic.text, 20)
+          )
+        )
       );
     } else if (panel === "table") {
       panelContent = createElement(
         host.View,
-        { style: { flexDirection: "row", flexWrap: "wrap", gap: 6 } },
-        panelButton("table-2", "2×2 삽입", () => command("insertHTML", nativeTableHtml(2, 2))),
-        panelButton("table-3", "3×3 삽입", () => command("insertHTML", nativeTableHtml(3, 3))),
-        panelButton("row-above", "위 행 추가", () => command("table-row-above")),
-        panelButton("row-below", "아래 행 추가", () => command("table-row-below")),
-        panelButton("row-delete", "행 삭제", () => command("table-row-delete")),
-        panelButton("column-left", "왼쪽 열 추가", () => command("table-column-left")),
-        panelButton("column-right", "오른쪽 열 추가", () => command("table-column-right")),
-        panelButton("column-delete", "열 삭제", () => command("table-column-delete")),
-        panelButton("table-delete", "표 삭제", () => command("table-table-delete"))
+        { style: { alignItems: "center", gap: 5 } },
+        ...Array.from({ length: 6 }, (_, rowIndex) =>
+          createElement(
+            host.View,
+            { key: "table-row-" + rowIndex, style: { flexDirection: "row", gap: 5 } },
+            ...Array.from({ length: 6 }, (_, columnIndex) =>
+              createElement(host.Pressable, {
+                key: "table-" + (rowIndex + 1) + "-" + (columnIndex + 1),
+                accessibilityRole: "button",
+                accessibilityLabel: rowIndex + 1 + "행 " + (columnIndex + 1) + "열 표 삽입",
+                onPress: () =>
+                  command("insertHTML", nativeTableHtml(rowIndex + 1, columnIndex + 1)),
+                style: {
+                  backgroundColor: semantic.foregroundGrayLight,
+                  borderColor: semantic.borderGrayDeep,
+                  borderRadius: 3,
+                  borderWidth: 1,
+                  height: 34,
+                  width: 34,
+                },
+              })
+            )
+          )
+        ),
+        createElement(
+          host.Text,
+          { style: { color: semantic.textSubtil, fontSize: 12, marginTop: 4 } },
+          "삽입할 행과 열 크기를 선택하세요 · 표 셀은 길게 눌러 편집"
+        )
+      );
+    } else if (panel === "table-context") {
+      const tableAction = (
+        key: string,
+        label: string,
+        operation: string,
+        danger = false,
+        value?: string
+      ) =>
+        createElement(
+          host.Pressable,
+          {
+            key,
+            accessibilityRole: "button",
+            accessibilityLabel: label,
+            onPress: () => command(operation, value),
+            style: {
+              alignItems: "center",
+              borderRadius: 8,
+              flexDirection: "row",
+              minHeight: 42,
+              paddingHorizontal: 10,
+            },
+          },
+          createElement(host.Text, {
+            children: label,
+            style: { color: danger ? semantic.foregroundDanger : semantic.text, fontSize: 14 },
+          })
+        );
+      panelContent = createElement(
+        host.View,
+        { style: { gap: 2 } },
+        panelButton("cell-color", "셀 배경색", () => setTableColorOpen((current) => !current)),
+        tableColorOpen
+          ? createElement(
+              host.View,
+              { style: { gap: 5, paddingVertical: 6 } },
+              ...NATIVE_EDITOR_COLORS.map((row, rowIndex) =>
+                createElement(
+                  host.View,
+                  { key: "cell-row-" + rowIndex, style: { flexDirection: "row", gap: 5 } },
+                  ...row.map((color) =>
+                    createElement(host.Pressable, {
+                      key: color,
+                      accessibilityRole: "button",
+                      accessibilityLabel: "셀 배경색 " + color,
+                      onPress: () =>
+                        command("table-cell-color", color, { keepActive: "true" }, false),
+                      style: {
+                        backgroundColor: color,
+                        borderColor: semantic.borderGrayDeep,
+                        borderRadius: 4,
+                        borderWidth: 1,
+                        flex: 1,
+                        height: 27,
+                        maxWidth: 27,
+                      },
+                    })
+                  )
+                )
+              )
+            )
+          : null,
+        tableAction("color-reset", "배경색 초기화", "table-cell-color"),
+        tableAction("align-left", "왼쪽 정렬", "table-cell-align", false, "left"),
+        tableAction("align-center", "가운데 정렬", "table-cell-align", false, "center"),
+        tableAction("align-right", "오른쪽 정렬", "table-cell-align", false, "right"),
+        tableAction("row-above", "위에 행 추가", "table-row-above"),
+        tableAction("row-below", "아래에 행 추가", "table-row-below"),
+        tableAction("row-delete", "행 삭제", "table-row-delete"),
+        tableAction("column-left", "왼쪽에 열 추가", "table-column-left"),
+        tableAction("column-right", "오른쪽에 열 추가", "table-column-right"),
+        tableAction("column-delete", "열 삭제", "table-column-delete"),
+        tableAction("table-delete", "표 삭제", "table-table-delete", true)
       );
     } else if (panel === "link" || panel === "image" || panel === "youtube") {
       const kind = panel as "link" | "image" | "youtube";
@@ -1382,6 +1814,25 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           },
           value: auxValue,
         }),
+        kind === "image"
+          ? createElement(host.TextInput, {
+              accessibilityLabel: "대체 텍스트",
+              onChangeText: setMediaAlt,
+              placeholder: "이미지 설명...",
+              placeholderTextColor: semantic.placeholder,
+              style: {
+                backgroundColor: semantic.background,
+                borderColor: semantic.borderGray,
+                borderRadius: 8,
+                borderWidth: 1,
+                color: semantic.text,
+                minHeight: 40,
+                paddingHorizontal: 10,
+              },
+              value: mediaAlt,
+            })
+          : null,
+        kind !== "link" ? mediaOptionControls : null,
         createElement(
           host.View,
           { style: { flexDirection: "row", flexWrap: "wrap", gap: 6, justifyContent: "flex-end" } },
@@ -1394,15 +1845,61 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                   command("image", undefined, {
                     url: safeUrl,
                     alt: typeof picked === "object" ? (picked.alt ?? "") : "",
+                    width: mediaWidth,
+                    align: mediaAlign,
                   });
               })
             : null,
-          panelButton("cancel", "취소", () => setPanel(null)),
+          panelButton("cancel", "취소", dismissPanel),
           panelButton("insert", "삽입", () => {
             const safeUrl = nativeSafeEditorUrl(auxValue, kind);
             if (!safeUrl) return;
-            command(kind, undefined, { url: safeUrl });
+            command(kind, undefined, {
+              url: safeUrl,
+              ...(kind === "image" ? { alt: mediaAlt } : {}),
+              ...(kind !== "link" ? { width: mediaWidth, align: mediaAlign } : {}),
+            });
           })
+        )
+      );
+    } else if (panel === "image-edit" || panel === "youtube-edit") {
+      const kind = panel === "image-edit" ? "image" : "youtube";
+      panelContent = createElement(
+        host.View,
+        { style: { gap: 10 } },
+        kind === "image"
+          ? createElement(host.TextInput, {
+              accessibilityLabel: "대체 텍스트",
+              onChangeText: setMediaAlt,
+              placeholder: "이미지 설명...",
+              placeholderTextColor: semantic.placeholder,
+              style: {
+                backgroundColor: semantic.background,
+                borderColor: semantic.borderGray,
+                borderRadius: 8,
+                borderWidth: 1,
+                color: semantic.text,
+                minHeight: 40,
+                paddingHorizontal: 10,
+              },
+              value: mediaAlt,
+            })
+          : null,
+        mediaOptionControls,
+        createElement(
+          host.View,
+          { style: { flexDirection: "row", gap: 6, justifyContent: "space-between" } },
+          panelButton("delete", "삭제", () =>
+            command("media-edit", undefined, { action: "delete" })
+          ),
+          panelButton("cancel", "취소", dismissPanel),
+          panelButton("apply", "적용", () =>
+            command("media-edit", undefined, {
+              width: mediaWidth,
+              align: mediaAlign,
+              ...(kind === "image" ? { alt: mediaAlt } : {}),
+            })
+          )
         )
       );
     }
@@ -1413,6 +1910,100 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         ? (validation.error?.issues?.[0]?.message ?? "입력값을 확인하세요")
         : undefined;
     const editorHeight = editorProps.height ?? editorProps.minHeight ?? 260;
+    const panelBody = panelContent
+      ? createElement(
+          host.View,
+          {
+            accessibilityRole: "dialog",
+            accessibilityLabel: NATIVE_EDITOR_PANEL_TITLES[panel ?? ""] ?? "에디터 도구",
+            style: {
+              backgroundColor: semantic.background,
+              borderColor: semantic.borderGray,
+              borderTopLeftRadius: host.Modal ? 18 : 0,
+              borderTopRightRadius: host.Modal ? 18 : 0,
+              borderWidth: host.Modal ? 1 : 0,
+              gap: 12,
+              maxHeight: host.Modal ? "82%" : undefined,
+              paddingBottom: host.Modal ? 24 : 10,
+              paddingHorizontal: 14,
+              paddingTop: 12,
+            },
+          },
+          createElement(
+            host.View,
+            {
+              style: {
+                alignItems: "center",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                minHeight: 32,
+              },
+            },
+            createElement(
+              host.Text,
+              { style: { color: semantic.text, fontSize: 16, fontWeight: "600" } },
+              NATIVE_EDITOR_PANEL_TITLES[panel ?? ""] ?? "에디터 도구"
+            ),
+            createElement(
+              host.Pressable,
+              {
+                accessibilityRole: "button",
+                accessibilityLabel: "에디터 도구 닫기",
+                onPress: dismissPanel,
+                style: {
+                  alignItems: "center",
+                  height: 36,
+                  justifyContent: "center",
+                  width: 36,
+                },
+              },
+              nativeGlyph(theme, "close", semantic.textSubtil, 18)
+            )
+          ),
+          createElement(
+            host.ScrollView ?? host.View,
+            {
+              keyboardShouldPersistTaps: "handled",
+              showsVerticalScrollIndicator: false,
+              style: { maxHeight: host.Modal ? 560 : undefined },
+            },
+            panelContent
+          )
+        )
+      : null;
+    const panelLayer =
+      panelBody && host.Modal
+        ? createElement(
+            host.Modal,
+            {
+              animationType: "slide",
+              onRequestClose: dismissPanel,
+              presentationStyle: "overFullScreen",
+              transparent: true,
+              visible: true,
+            },
+            createElement(
+              host.KeyboardAvoidingView ?? host.View,
+              {
+                ...(host.KeyboardAvoidingView ? { behavior: "padding" } : {}),
+                style: { flex: 1, justifyContent: "flex-end" },
+              },
+              createElement(host.Pressable, {
+                accessibilityLabel: "에디터 도구 닫기",
+                onPress: dismissPanel,
+                style: {
+                  backgroundColor: "rgba(17, 17, 19, 0.48)",
+                  bottom: 0,
+                  left: 0,
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                },
+              }),
+              panelBody
+            )
+          )
+        : panelBody;
 
     return createElement(
       host.View,
@@ -1438,22 +2029,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         },
         ...tools
       ),
-      panelContent
-        ? createElement(
-            host.View,
-            {
-              accessibilityRole: "dialog",
-              accessibilityLabel: "에디터 도구",
-              style: {
-                backgroundColor: semantic.foregroundGray,
-                borderBottomColor: semantic.borderGray,
-                borderBottomWidth: 1,
-                padding: 10,
-              },
-            },
-            panelContent
-          )
-        : null,
+      panelLayer,
       codeMode
         ? createElement(host.TextInput, {
             accessibilityLabel: editorProps.accessibilityLabel ?? "HTML 편집기",
@@ -1482,20 +2058,51 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                 const message = JSON.parse(event.nativeEvent?.data ?? "{}") as {
                   type?: string;
                   html?: string;
+                  kind?: "table" | "image" | "youtube";
+                  width?: string;
+                  align?: string;
+                  alt?: string;
+                  bold?: boolean;
+                  italic?: boolean;
+                  underline?: boolean;
+                  strike?: boolean;
+                  paragraph?: string;
                 };
                 if (message.type === "ready") setReady(true);
+                if (message.type === "state") {
+                  setFormatState((current) => ({
+                    bold: Boolean(message.bold),
+                    italic: Boolean(message.italic),
+                    underline: Boolean(message.underline),
+                    strike: Boolean(message.strike),
+                    align: message.align || current.align,
+                    paragraph: message.paragraph || current.paragraph,
+                  }));
+                }
+                if (message.type === "context" && message.kind) {
+                  ReactNativeKeyboard?.dismiss?.();
+                  setMediaWidth(message.width || "100%");
+                  setMediaAlign(message.align || "center");
+                  setMediaAlt(message.alt || "");
+                  setTableColorOpen(false);
+                  setPanel(message.kind === "table" ? "table-context" : `${message.kind}-edit`);
+                }
                 if (message.type === "input" && typeof message.html === "string") {
                   const safeValue = nativeSanitizeEditorHtml(message.html);
                   lastWebValue.current = safeValue;
                   editorProps.onChange(safeValue);
+                  if (safeValue !== message.html) post({ type: "set", html: safeValue });
                 }
               } catch {
                 // Ignore malformed bridge messages from the embedded document.
               }
             },
-            onShouldStartLoadWithRequest: (request: { url?: string }) =>
-              request.url === "about:blank" ||
-              request.url?.startsWith("https://podo.local") === true,
+            onShouldStartLoadWithRequest: (request: { url?: string }) => {
+              const url = request.url ?? "";
+              if (url === "about:blank" || url.startsWith("https://podo.local")) return true;
+              if (/^https?:\/\//i.test(url)) void ReactNativeLinking?.openURL?.(url);
+              return false;
+            },
             originWhitelist: ["about:blank", "https://podo.local"],
             ref: webRef,
             scrollEnabled: true,

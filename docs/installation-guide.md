@@ -88,7 +88,16 @@ React Native — DatePicker의 overlay에는 `Modal`, WYSIWYG Editor에는
 `react-native-webview`가 필요합니다:
 
 ```tsx
-import { Modal, Pressable, ScrollView, Text, TextInput, View, useColorScheme } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+  useColorScheme,
+} from "react-native";
 import { WebView } from "react-native-webview";
 import { useFonts } from "expo-font";
 import { createNativeComponents, PodoNativeThemeProvider } from "podo-ui/native";
@@ -96,6 +105,7 @@ import { getPodoNativeTokens } from "./podo/tokens.native";
 import { podoIconGlyphMap } from "./podo/icons/PodoIcons.native";
 
 const { Button, Field, Icon, Input } = createNativeComponents({
+  KeyboardAvoidingView,
   Pressable,
   Modal,
   ScrollView,
@@ -133,6 +143,12 @@ export function App() {
 로드할 `PodoIcons.ttf`를 함께 생성합니다. Expo가 아닌 bare React Native라면 같은
 TTF를 앱 자산으로 링크한 뒤 등록한 family 이름을 `iconFontFamily`에 전달하세요.
 Editor를 사용하는 앱은 `pnpm add react-native-webview` 후 iOS pod도 설치해야 합니다.
+기본 아이콘 매니페스트에는 PC Editor와 같은 SVG 기반 편집 아이콘이 포함되므로,
+Editor를 쓸 때도 생성된 최신 `PodoIcons.ttf`와 `PodoIcons.native.ts`를 함께
+갱신해야 합니다. Native Editor의 문단·색상·정렬·표·링크·이미지·YouTube 설정은
+작은 화면에서 바텀시트로 열리고, PC의 표 우클릭 메뉴는 셀 롱프레스(마우스가
+연결된 환경에서는 우클릭)로 엽니다. 이미지와 YouTube는 콘텐츠를 탭해 크기·정렬을
+편집하거나 삭제할 수 있습니다.
 
 `podo-ui/native`의 top-level export는 React Native 기본 host에 바로 연결됩니다.
 Editor를 top-level export로 사용할 때는 Provider에

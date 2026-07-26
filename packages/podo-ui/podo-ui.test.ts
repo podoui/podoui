@@ -141,6 +141,33 @@ describe("podo-ui assembled package", () => {
     for (const name of referenced) {
       expect(css, `glyph "${name}"`).toContain(`.podo-icon-${name}::before`);
     }
+
+    const nativeGlyphs = readFileSync(join(dist, "icons-assets/PodoIcons.native.ts"), "utf8");
+    for (const name of [
+      "undo",
+      "redo",
+      "bold",
+      "italic",
+      "underline",
+      "strikethrough",
+      "font-color",
+      "highlight",
+      "align-left",
+      "align-center",
+      "align-right",
+      "list-ul",
+      "list-ol",
+      "table",
+      "link",
+      "image",
+      "youtube",
+      "hr",
+      "eraser",
+      "code",
+    ]) {
+      expect(css, `editor glyph "${name}"`).toContain(`.podo-icon-${name}::before`);
+      expect(nativeGlyphs, `native editor glyph "${name}"`).toContain(`"${name}"`);
+    }
   });
 
   it("leaks no workspace-internal @podoui import specifiers", () => {

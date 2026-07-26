@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 
 import React from "react";
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { Linking as ReactNativeLinking } from "react-native";
 import { describe, expect, it, vi } from "vitest";
 import {
   Badge,
@@ -25,6 +26,7 @@ import {
 } from "./index.js";
 
 const webViewMessages: string[] = [];
+const webViewProps = new Map<string, Record<string, unknown>>();
 const TestWebView = React.forwardRef(function TestWebView(
   props: Record<string, unknown>,
   ref: React.ForwardedRef<unknown>
@@ -37,6 +39,7 @@ const TestWebView = React.forwardRef(function TestWebView(
       webViewMessages.push(message);
     },
   }));
+  webViewProps.set(String(props.testID ?? ""), props);
   const source = props.source as { html?: string } | undefined;
   return (
     <button
@@ -55,6 +58,49 @@ const TestWebView = React.forwardRef(function TestWebView(
           },
         })
       }
+      onContextMenu={(event) => {
+        event.preventDefault();
+        (props.onMessage as ((event: { nativeEvent: { data: string } }) => void) | undefined)?.({
+          nativeEvent: { data: JSON.stringify({ type: "context", kind: "table" }) },
+        });
+      }}
+      onDoubleClick={() =>
+        (props.onMessage as ((event: { nativeEvent: { data: string } }) => void) | undefined)?.({
+          nativeEvent: {
+            data: JSON.stringify({
+              type: "context",
+              kind: "image",
+              width: "75%",
+              align: "right",
+              alt: "기존 설명",
+            }),
+          },
+        })
+      }
+      onKeyDown={(event) => {
+        if (event.key === "F2") {
+          (props.onMessage as ((event: { nativeEvent: { data: string } }) => void) | undefined)?.({
+            nativeEvent: {
+              data: JSON.stringify({
+                type: "input",
+                html: '<details\n/ontoggle="alert(1)" open>위험</details><img\n/onerror=alert(2) src="https://safe.test/a.png"><p>안전</p><script\nsrc="https://bad.test/x.js"/>',
+              }),
+            },
+          });
+        }
+        if (event.key === "F3") {
+          (props.onMessage as ((event: { nativeEvent: { data: string } }) => void) | undefined)?.({
+            nativeEvent: {
+              data: JSON.stringify({
+                type: "context",
+                kind: "youtube",
+                width: "50%",
+                align: "center",
+              }),
+            },
+          });
+        }
+      }}
     />
   );
 });
@@ -2123,7 +2169,13 @@ describe("@podoui/native", () => {
     function Harness(): React.ReactElement {
       const [value, setValue] = React.useState("<h2>초기 제목</h2>");
       return (
-        <PodoNativeThemeProvider theme="landing" colorScheme="light" webViewComponent={TestWebView}>
+        <PodoNativeThemeProvider
+          theme="landing"
+          colorScheme="light"
+          iconFontFamily="PodoIcons"
+          iconGlyphs={{ bold: "\uE101" }}
+          webViewComponent={TestWebView}
+        >
           <domNative.Editor value={value} onChange={setValue} testID="web-editor" />
           <domNative.EditorView value={value} testID="web-editor-view" />
           <button onClick={() => setValue("<p>줄\u2028구분\u2029문단</p>")}>외부 값 변경</button>
@@ -2137,7 +2189,19 @@ describe("@podoui/native", () => {
       'contenteditable="true"'
     );
     expect(screen.getByTestId("web-editor-webview").getAttribute("data-html")).toContain(
-      "editor.focus();restoreRange()"
+      "function focusEditor()"
+    );
+    expect(screen.getByTestId("web-editor-webview").getAttribute("data-html")).toContain(
+      "editor.setAttribute('contenteditable','false')"
+    );
+    expect(screen.getByTestId("web-editor-webview").getAttribute("data-html")).toContain(
+      "setTimeout(focusEditor,120)"
+    );
+    expect(screen.getByTestId("web-editor-webview").getAttribute("data-html")).toContain(
+      "addEventListener('contextmenu'"
+    );
+    expect(screen.getByTestId("web-editor-webview").getAttribute("data-html")).toContain(
+      "setTimeout(function(){activate(info)"
     );
     expect(screen.getByTestId("web-editor-view").getAttribute("data-html")).toContain(
       "ResizeObserver"
@@ -2146,9 +2210,53 @@ describe("@podoui/native", () => {
       'contenteditable="false"'
     );
 
-    fireEvent.click(within(container).getByLabelText("굵게"));
+    const boldButton = within(container).getByLabelText("굵게");
+    expect(boldButton.querySelector('[data-fontfamily="PodoIcons"]')?.textContent).toBe("\uE101");
+    fireEvent.click(boldButton);
     expect(webViewMessages.at(-1)).toContain("window.__podoCommand");
     expect(webViewMessages.at(-1)).toContain('"command":"bold"');
+
+    fireEvent.click(within(container).getByLabelText("문단 스타일"));
+    expect(screen.getByRole("dialog", { name: "문단 형식" })).toBeDefined();
+    expect(screen.getByLabelText("P5 Semibold")).toBeDefined();
+    fireEvent.click(screen.getByLabelText("에디터 도구 닫기"));
+
+    fireEvent.click(within(container).getByLabelText("글자색"));
+    expect(screen.getAllByLabelText(/^글자색 #/)).toHaveLength(66);
+    fireEvent.click(screen.getByLabelText("에디터 도구 닫기"));
+
+    fireEvent.contextMenu(screen.getByTestId("web-editor-webview"));
+    const tableDialog = within(screen.getByRole("dialog", { name: "표 편집" }));
+    expect(tableDialog.getByLabelText("위에 행 추가")).toBeDefined();
+    expect(tableDialog.getByLabelText("표 삭제")).toBeDefined();
+    fireEvent.click(tableDialog.getByLabelText("위에 행 추가"));
+    expect(webViewMessages.at(-1)).toContain('"command":"table-row-above"');
+
+    fireEvent.contextMenu(screen.getByTestId("web-editor-webview"));
+    fireEvent.click(
+      within(screen.getByRole("dialog", { name: "표 편집" })).getByLabelText("셀 배경색")
+    );
+    fireEvent.click(screen.getByLabelText("셀 배경색 #ff0000"));
+    expect(webViewMessages.at(-1)).toContain('"command":"table-cell-color"');
+    expect(webViewMessages.at(-1)).toContain('"keepActive":"true"');
+    expect(screen.getByRole("dialog", { name: "표 편집" })).toBeDefined();
+    fireEvent.click(
+      within(screen.getByRole("dialog", { name: "표 편집" })).getByLabelText("에디터 도구 닫기")
+    );
+
+    fireEvent.doubleClick(screen.getByTestId("web-editor-webview"));
+    const imageDialog = within(screen.getByRole("dialog", { name: "이미지 편집" }));
+    expect((imageDialog.getByLabelText("대체 텍스트") as HTMLInputElement).value).toBe("기존 설명");
+    fireEvent.click(imageDialog.getByLabelText("적용"));
+    expect(webViewMessages.at(-1)).toContain('"command":"media-edit"');
+    expect(webViewMessages.at(-1)).toContain('"width":"75%"');
+
+    fireEvent.keyDown(screen.getByTestId("web-editor-webview"), { key: "F3" });
+    const youtubeDialog = within(screen.getByRole("dialog", { name: "YouTube 편집" }));
+    expect(youtubeDialog.getByLabelText("삭제")).toBeDefined();
+    fireEvent.click(youtubeDialog.getByLabelText("적용"));
+    expect(webViewMessages.at(-1)).toContain('"command":"media-edit"');
+    expect(webViewMessages.at(-1)).toContain('"width":"50%"');
 
     fireEvent.click(screen.getByTestId("web-editor-webview"));
     expect(screen.getByTestId("web-editor-output").textContent).toBe(
@@ -2157,6 +2265,22 @@ describe("@podoui/native", () => {
     expect(screen.getByTestId("web-editor-view").getAttribute("data-html")).toContain(
       "<p><strong>브리지 입력</strong></p>"
     );
+
+    fireEvent.keyDown(screen.getByTestId("web-editor-webview"), { key: "F2" });
+    expect(screen.getByTestId("web-editor-output").textContent).toBe(
+      '<img src="https://safe.test/a.png"><p>안전</p>'
+    );
+    expect(webViewMessages.at(-1)).toContain("window.__podoSetHtml");
+    expect(webViewMessages.at(-1)).not.toMatch(/ontoggle|onerror|<details|<script/i);
+
+    const openUrl = vi.spyOn(ReactNativeLinking, "openURL").mockResolvedValue(undefined);
+    const shouldStart = webViewProps.get("web-editor-webview")?.onShouldStartLoadWithRequest as
+      | ((request: { url: string }) => boolean)
+      | undefined;
+    expect(shouldStart?.({ url: "https://podo.local/help" })).toBe(true);
+    expect(shouldStart?.({ url: "https://example.com/manual" })).toBe(false);
+    expect(openUrl).toHaveBeenCalledWith("https://example.com/manual");
+    openUrl.mockRestore();
 
     fireEvent.focus(screen.getByTestId("web-editor-webview"));
     fireEvent.click(screen.getByText("외부 값 변경"));
@@ -2171,7 +2295,7 @@ describe("@podoui/native", () => {
       <PodoNativeThemeProvider theme="landing" colorScheme="light" webViewComponent={TestWebView}>
         <domNative.Editor
           value={
-            '<svg/onload=alert(1)><a href=javascript:alert(2)>위험</a><iframe srcdoc="<script>alert(3)</script>"></iframe><p style="background:url(javascript:alert(4))">안전</p>'
+            '<svg/onload=alert(1)><details\n/ontoggle="alert(0)" open>위험</details><a href=javascript:alert(2)>위험</a><iframe srcdoc="<script>alert(3)</script>"></iframe><script\nsrc="https://bad.test/x.js"/><p style="background:url(javascript:alert(4))">안전</p>'
           }
           onChange={() => undefined}
           testID="hostile-editor"
@@ -2181,8 +2305,35 @@ describe("@podoui/native", () => {
 
     const document = screen.getByTestId("hostile-editor-webview").getAttribute("data-html") ?? "";
     const initialMarkup = document.split("<script>")[0] ?? "";
-    expect(initialMarkup).not.toMatch(/onload|javascript:|srcdoc|<svg|<script|<iframe/i);
+    expect(initialMarkup).not.toMatch(
+      /onload|ontoggle|javascript:|srcdoc|<svg|<script|<iframe|<details/i
+    );
     expect(initialMarkup).toContain("<p>안전</p>");
+  });
+
+  it("bridges native image picking into a safe image insertion command", async () => {
+    webViewMessages.length = 0;
+    const onImagePick = vi.fn(async () => ({
+      uri: "https://images.example.com/podo.png",
+      alt: "선택한 이미지",
+    }));
+    const { container } = render(
+      <PodoNativeThemeProvider theme="landing" colorScheme="light" webViewComponent={TestWebView}>
+        <domNative.Editor
+          value="<p>이미지</p>"
+          onChange={() => undefined}
+          onImagePick={onImagePick}
+          testID="picker-editor"
+        />
+      </PodoNativeThemeProvider>
+    );
+
+    fireEvent.click(within(container).getByLabelText("이미지"));
+    fireEvent.click(within(container).getByLabelText("사진 선택"));
+    await waitFor(() => expect(onImagePick).toHaveBeenCalledOnce());
+    await waitFor(() => expect(webViewMessages.at(-1)).toContain('"command":"image"'));
+    expect(webViewMessages.at(-1)).toContain('"url":"https://images.example.com/podo.png"');
+    expect(webViewMessages.at(-1)).toContain('"alt":"선택한 이미지"');
   });
 });
 

@@ -27,17 +27,146 @@
       "source": "svg/editor/italic.svg",
       "codepoint": "E102",
       "tags": ["editor", "format"]
+    },
+    "undo": {
+      "source": "svg/editor/undo.svg",
+      "codepoint": "E115",
+      "tags": ["editor", "format"]
+    },
+    "redo": {
+      "source": "svg/editor/redo.svg",
+      "codepoint": "E116",
+      "tags": ["editor", "format"]
+    },
+    "underline": {
+      "source": "svg/editor/underline.svg",
+      "codepoint": "E105",
+      "tags": ["editor", "format"]
+    },
+    "strikethrough": {
+      "source": "svg/editor/strikethrough.svg",
+      "codepoint": "E106",
+      "tags": ["editor", "format"]
+    },
+    "font-color": {
+      "source": "svg/editor/font-color.svg",
+      "codepoint": "E107",
+      "tags": ["editor", "format"]
+    },
+    "highlight": {
+      "source": "svg/editor/highlight.svg",
+      "codepoint": "E108",
+      "tags": ["editor", "format"]
+    },
+    "align-left": {
+      "source": "svg/editor/align-left.svg",
+      "codepoint": "E109",
+      "tags": ["editor", "format"]
+    },
+    "align-center": {
+      "source": "svg/editor/align-center.svg",
+      "codepoint": "E10A",
+      "tags": ["editor", "format"]
+    },
+    "align-right": {
+      "source": "svg/editor/align-right.svg",
+      "codepoint": "E10B",
+      "tags": ["editor", "format"]
+    },
+    "list-ul": {
+      "source": "svg/editor/list-ul.svg",
+      "codepoint": "E10C",
+      "tags": ["editor", "format"]
+    },
+    "list-ol": {
+      "source": "svg/editor/list-ol.svg",
+      "codepoint": "E10D",
+      "tags": ["editor", "format"]
+    },
+    "table": {
+      "source": "svg/editor/table.svg",
+      "codepoint": "E10E",
+      "tags": ["editor", "format"]
+    },
+    "link": {
+      "source": "svg/editor/link.svg",
+      "codepoint": "E10F",
+      "tags": ["editor", "format"]
+    },
+    "image": {
+      "source": "svg/editor/image.svg",
+      "codepoint": "E110",
+      "tags": ["editor", "format"]
+    },
+    "youtube": {
+      "source": "svg/editor/youtube.svg",
+      "codepoint": "E111",
+      "tags": ["editor", "format"]
+    },
+    "hr": {
+      "source": "svg/editor/hr.svg",
+      "codepoint": "E112",
+      "tags": ["editor", "format"]
+    },
+    "eraser": {
+      "source": "svg/editor/eraser.svg",
+      "codepoint": "E113",
+      "tags": ["editor", "format"]
+    },
+    "code": {
+      "source": "svg/editor/code.svg",
+      "codepoint": "E114",
+      "tags": ["editor", "format"]
     }
   },
   "groups": {
     "navigation": ["chevron-left", "chevron-right", "menu"],
-    "editor": ["bold", "italic"]
+    "editor": [
+      "undo",
+      "redo",
+      "bold",
+      "italic",
+      "underline",
+      "strikethrough",
+      "font-color",
+      "highlight",
+      "align-left",
+      "align-center",
+      "align-right",
+      "list-ul",
+      "list-ol",
+      "table",
+      "link",
+      "image",
+      "youtube",
+      "hr",
+      "eraser",
+      "code"
+    ]
   },
   "codepointLock": {
     "chevron-left": "E001",
     "chevron-right": "E002",
     "menu": "E003",
     "bold": "E101",
-    "italic": "E102"
+    "italic": "E102",
+    "undo": "E115",
+    "redo": "E116",
+    "underline": "E105",
+    "strikethrough": "E106",
+    "font-color": "E107",
+    "highlight": "E108",
+    "align-left": "E109",
+    "align-center": "E10A",
+    "align-right": "E10B",
+    "list-ul": "E10C",
+    "list-ol": "E10D",
+    "table": "E10E",
+    "link": "E10F",
+    "image": "E110",
+    "youtube": "E111",
+    "hr": "E112",
+    "eraser": "E113",
+    "code": "E114"
   }
 }
