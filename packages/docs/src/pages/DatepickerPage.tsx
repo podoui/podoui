@@ -5,6 +5,7 @@ import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
+import { nativeComponentUsage } from "../code-examples.js";
 
 const USAGE_TABS: CodeTab[] = [
   {
@@ -16,6 +17,14 @@ const USAGE_TABS: CodeTab[] = [
       `import "podo-ui/styles.css";\n` +
       `import "./podo/icons/PodoIcons.css";\n\n` +
       `<DatePicker mode="instant" type="date" value={date} onChange={setDate} />`,
+  },
+  {
+    target: "native",
+    label: "React Native",
+    code: nativeComponentUsage(
+      ["DatePicker"],
+      `<DatePicker mode="period" type="date" quickSelect onChange={setDate} />`
+    ),
   },
 ];
 
@@ -61,12 +70,18 @@ export function DatepickerPage() {
       <DocSection
         index={2}
         title="지원 범위"
-        description="Hono 서버 렌더러와 React Native에는 DatePicker가 없어요. Hono가 호스트인 앱은 React client island에서 같은 React 컴포넌트를 사용해야 하며, React Native는 웹 DatePicker를 가져오지 않아야 해요."
+        description="React Native는 podo-ui/native의 View·Pressable 기반 단일 달력 UI로 date, period, datetime, time, hour와 빠른 기간 선택을 지원해요. Hono 호스트에서는 React client island의 DatePicker를 사용해요."
       >
         <SpecTable
           columns={["React", "Next.js", "Web", "Hono", "React Native"]}
           rows={[
-            ["전체 지원", "전체 지원 (use client)", "미지원", "React island에서 지원", "미지원"],
+            [
+              "전체 지원",
+              "전체 지원 (use client)",
+              "미지원",
+              "React island에서 지원",
+              "Native UI 지원",
+            ],
           ]}
         />
       </DocSection>

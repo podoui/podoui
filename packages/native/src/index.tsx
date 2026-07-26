@@ -384,6 +384,115 @@ export interface NativeToastProps {
   testID?: string;
 }
 
+export type NativeDatePickerMode = "instant" | "period";
+export type NativeDatePickerType = "date" | "time" | "datetime" | "hour";
+export type NativeHourFormat = "24" | "12";
+export type NativeMinuteStep = 1 | 5 | 10 | 15 | 20 | 30;
+export type NativeHourStep = 1 | 2 | 3 | 4 | 6 | 12;
+
+export interface NativeTimeValue {
+  hour: number;
+  minute: number;
+}
+
+export interface NativeDatePickerValue {
+  date?: Date;
+  time?: NativeTimeValue;
+  endDate?: Date;
+  endTime?: NativeTimeValue;
+}
+
+export interface NativeDateRange {
+  from: Date;
+  to: Date;
+}
+
+export type NativeDateCondition = Date | NativeDateRange | ((date: Date) => boolean);
+
+export interface NativeDateTimeLimit {
+  date: Date;
+  time?: NativeTimeValue;
+}
+
+export interface NativeYearRange {
+  min?: number;
+  max?: number;
+}
+
+export type NativeCalendarInitial = "now" | "prevMonth" | "nextMonth" | Date;
+
+export interface NativeInitialCalendar {
+  start?: NativeCalendarInitial;
+  end?: NativeCalendarInitial;
+}
+
+export interface NativeDatePickerProps {
+  mode?: NativeDatePickerMode;
+  type?: NativeDatePickerType;
+  value?: NativeDatePickerValue;
+  defaultValue?: NativeDatePickerValue;
+  onChange?: (value: NativeDatePickerValue) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  showActions?: boolean;
+  disable?: NativeDateCondition[];
+  enable?: NativeDateCondition[];
+  minDate?: Date | NativeDateTimeLimit;
+  maxDate?: Date | NativeDateTimeLimit;
+  minuteStep?: NativeMinuteStep;
+  hourFormat?: NativeHourFormat;
+  disabledHours?: number[];
+  hourStep?: NativeHourStep;
+  format?: string;
+  initialCalendar?: NativeInitialCalendar;
+  yearRange?: NativeYearRange;
+  quickSelect?: boolean;
+  hideNavArrow?: boolean;
+  onReset?: () => void;
+  accessibilityLabel?: string;
+  testID?: string;
+}
+
+export type NativeEditorToolbarItem =
+  | "undo-redo"
+  | "paragraph"
+  | "text-style"
+  | "color"
+  | "align"
+  | "list"
+  | "table"
+  | "link"
+  | "image"
+  | "youtube"
+  | "hr"
+  | "format"
+  | "code";
+
+export interface NativeEditorValidator {
+  safeParse: (value: string) => {
+    success: boolean;
+    error?: { issues?: Array<{ message?: string }> };
+  };
+}
+
+export interface NativeEditorProps {
+  value: string;
+  onChange: (content: string) => void;
+  height?: number;
+  minHeight?: number;
+  maxHeight?: number;
+  placeholder?: string;
+  toolbar?: NativeEditorToolbarItem[];
+  validator?: NativeEditorValidator;
+  accessibilityLabel?: string;
+  testID?: string;
+}
+
+export interface NativeEditorViewProps {
+  value: string;
+  testID?: string;
+}
+
 export interface NativeComponents {
   Button: (props: NativeButtonProps) => React.ReactElement;
   Checkbox: (props: NativeCheckboxProps) => React.ReactElement;
@@ -398,6 +507,9 @@ export interface NativeComponents {
   Switch: (props: NativeSwitchProps) => React.ReactElement;
   Toast: (props: NativeToastProps) => React.ReactElement;
   Tooltip: (props: NativeTooltipProps) => React.ReactElement;
+  DatePicker: (props: NativeDatePickerProps) => React.ReactElement;
+  Editor: (props: NativeEditorProps) => React.ReactElement;
+  EditorView: (props: NativeEditorViewProps) => React.ReactElement;
 }
 
 export type NativeStyle = Record<string, string | number | undefined>;
@@ -588,6 +700,306 @@ const ICON_SIZES: Record<NonNullable<NativeIconProps["size"]>, number> = {
 // RN styles size border-box, so the box border counts toward maxHeight; the
 // content padding scrolls with the cells inside the content container.
 const SELECT_MENU_MAX_HEIGHT = 10 * 42 + 9 * 4 + 2 * 8 + 2 * 1;
+
+const NATIVE_EDITOR_TOOLBAR: NativeEditorToolbarItem[] = [
+  "undo-redo",
+  "paragraph",
+  "text-style",
+  "color",
+  "align",
+  "list",
+  "table",
+  "link",
+  "image",
+  "youtube",
+  "hr",
+  "format",
+  "code",
+];
+
+function nativeStartOfDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function nativeSameDay(left: Date | undefined, right: Date | undefined): boolean {
+  return Boolean(
+    left &&
+    right &&
+    left.getFullYear() === right.getFullYear() &&
+    left.getMonth() === right.getMonth() &&
+    left.getDate() === right.getDate()
+  );
+}
+
+function nativeDateInRange(date: Date, range: NativeDateRange): boolean {
+  const value = nativeStartOfDay(date).getTime();
+  return (
+    value >= nativeStartOfDay(range.from).getTime() && value <= nativeStartOfDay(range.to).getTime()
+  );
+}
+
+function nativeMatchesDateCondition(date: Date, condition: NativeDateCondition): boolean {
+  if (condition instanceof Date) {
+    return nativeSameDay(date, condition);
+  }
+  if (typeof condition === "function") {
+    return condition(date);
+  }
+  return nativeDateInRange(date, condition);
+}
+
+function nativeLimitDate(limit: Date | NativeDateTimeLimit | undefined): Date | undefined {
+  if (!limit) return undefined;
+  return limit instanceof Date ? limit : limit.date;
+}
+
+function nativeLimitTime(
+  limit: Date | NativeDateTimeLimit | undefined,
+  date: Date | undefined
+): NativeTimeValue | undefined {
+  if (!limit || limit instanceof Date || !date || !nativeSameDay(limit.date, date)) {
+    return undefined;
+  }
+  return limit.time;
+}
+
+function nativeClampTime(
+  date: Date | undefined,
+  time: NativeTimeValue,
+  props: NativeDatePickerProps,
+  step: number
+): NativeTimeValue {
+  const min = nativeLimitTime(props.minDate, date);
+  const max = nativeLimitTime(props.maxDate, date);
+  if (!min && !max) return time;
+
+  const toMinutes = (value: NativeTimeValue) => value.hour * 60 + value.minute;
+  const fromMinutes = (value: number): NativeTimeValue => ({
+    hour: Math.floor(value / 60),
+    minute: value % 60,
+  });
+  const minMinutes = min ? toMinutes(min) : 0;
+  const maxMinutes = max ? toMinutes(max) : 24 * 60 - 1;
+  const candidate = toMinutes(time);
+  if (candidate < minMinutes) {
+    const aligned = Math.ceil(minMinutes / step) * step;
+    return aligned <= maxMinutes && aligned < 24 * 60 ? fromMinutes(aligned) : { ...min! };
+  }
+  if (candidate > maxMinutes) {
+    const aligned = Math.floor(maxMinutes / step) * step;
+    return aligned >= minMinutes ? fromMinutes(aligned) : { ...max! };
+  }
+  return time;
+}
+
+function nativeDateDisabled(date: Date, props: NativeDatePickerProps): boolean {
+  const day = nativeStartOfDay(date).getTime();
+  const min = nativeLimitDate(props.minDate);
+  const max = nativeLimitDate(props.maxDate);
+  if (min && day < nativeStartOfDay(min).getTime()) return true;
+  if (max && day > nativeStartOfDay(max).getTime()) return true;
+  if (props.yearRange?.min != null && date.getFullYear() < props.yearRange.min) return true;
+  if (props.yearRange?.max != null && date.getFullYear() > props.yearRange.max) return true;
+  if (
+    props.enable?.length &&
+    !props.enable.some((condition) => nativeMatchesDateCondition(date, condition))
+  ) {
+    return true;
+  }
+  return Boolean(props.disable?.some((condition) => nativeMatchesDateCondition(date, condition)));
+}
+
+function nativeResolveCalendar(initial: NativeCalendarInitial | undefined, fallback: Date): Date {
+  if (initial instanceof Date) return new Date(initial.getFullYear(), initial.getMonth(), 1);
+  const base = new Date();
+  if (initial === "prevMonth") return new Date(base.getFullYear(), base.getMonth() - 1, 1);
+  if (initial === "nextMonth") return new Date(base.getFullYear(), base.getMonth() + 1, 1);
+  if (initial === "now") return new Date(base.getFullYear(), base.getMonth(), 1);
+  return new Date(fallback.getFullYear(), fallback.getMonth(), 1);
+}
+
+function nativeFormatDatePart(date: Date | undefined): string {
+  if (!date) return "";
+  return `${date.getFullYear()} - ${String(date.getMonth() + 1).padStart(2, "0")} - ${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function nativeFormatTimePart(
+  time: NativeTimeValue | undefined,
+  hourFormat: NativeHourFormat = "24"
+): string {
+  if (!time) return "";
+  if (hourFormat === "12") {
+    const period = time.hour < 12 ? "오전" : "오후";
+    const hour = time.hour % 12 || 12;
+    return `${period} ${String(hour).padStart(2, "0")} : ${String(time.minute).padStart(2, "0")}`;
+  }
+  return `${String(time.hour).padStart(2, "0")} : ${String(time.minute).padStart(2, "0")}`;
+}
+
+function nativeFormatDatePickerValue(
+  value: NativeDatePickerValue,
+  type: NativeDatePickerType,
+  pattern: string | undefined,
+  hourFormat: NativeHourFormat
+): string {
+  const date = value.date;
+  const time = value.time;
+  if (pattern) {
+    let output = pattern;
+    if (date) {
+      output = output
+        .replace(/y/g, String(date.getFullYear()))
+        .replace(/m/g, String(date.getMonth() + 1).padStart(2, "0"))
+        .replace(/d/g, String(date.getDate()).padStart(2, "0"));
+    }
+    if (time) {
+      output = output
+        .replace(/h/g, String(time.hour).padStart(2, "0"))
+        .replace(/i/g, String(time.minute).padStart(2, "0"));
+    }
+    return output;
+  }
+  if (type === "time" || type === "hour") return nativeFormatTimePart(time, hourFormat);
+  if (type === "datetime") {
+    return [nativeFormatDatePart(date), nativeFormatTimePart(time, hourFormat)]
+      .filter(Boolean)
+      .join(" ");
+  }
+  return nativeFormatDatePart(date);
+}
+
+function nativeCalendarDays(viewDate: Date): Date[] {
+  const first = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+  const start = new Date(first.getFullYear(), first.getMonth(), 1 - first.getDay());
+  return Array.from(
+    { length: 42 },
+    (_, index) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + index)
+  );
+}
+
+function nativeQuickRange(key: string, now = new Date()): { date: Date; endDate: Date } {
+  const today = nativeStartOfDay(now);
+  const addDays = (count: number) =>
+    new Date(today.getFullYear(), today.getMonth(), today.getDate() + count);
+  if (key === "today") return { date: today, endDate: today };
+  if (key === "yesterday") {
+    const yesterday = addDays(-1);
+    return { date: yesterday, endDate: yesterday };
+  }
+  if (key === "last7Days") return { date: addDays(-6), endDate: today };
+  if (key === "last30Days") return { date: addDays(-29), endDate: today };
+  if (key === "thisWeek") {
+    const date = addDays(-today.getDay());
+    return {
+      date,
+      endDate: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 6),
+    };
+  }
+  if (key === "lastWeek") {
+    const date = addDays(-today.getDay() - 7);
+    return {
+      date,
+      endDate: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 6),
+    };
+  }
+  if (key === "thisMonth") {
+    return {
+      date: new Date(today.getFullYear(), today.getMonth(), 1),
+      endDate: new Date(today.getFullYear(), today.getMonth() + 1, 0),
+    };
+  }
+  return {
+    date: new Date(today.getFullYear(), today.getMonth() - 1, 1),
+    endDate: new Date(today.getFullYear(), today.getMonth(), 0),
+  };
+}
+
+function nativeClampQuickRange(
+  range: { date: Date; endDate: Date },
+  props: NativeDatePickerProps
+): { date: Date; endDate: Date } {
+  const min = nativeLimitDate(props.minDate);
+  const max = nativeLimitDate(props.maxDate);
+  return {
+    date:
+      min && nativeStartOfDay(range.date).getTime() < nativeStartOfDay(min).getTime()
+        ? nativeStartOfDay(min)
+        : range.date,
+    endDate:
+      max && nativeStartOfDay(range.endDate).getTime() > nativeStartOfDay(max).getTime()
+        ? nativeStartOfDay(max)
+        : range.endDate,
+  };
+}
+
+function nativeQuickRangeDisabled(
+  range: { date: Date; endDate: Date },
+  props: NativeDatePickerProps
+): boolean {
+  const min = nativeLimitDate(props.minDate);
+  const max = nativeLimitDate(props.maxDate);
+  return Boolean(
+    (min && nativeStartOfDay(range.endDate).getTime() < nativeStartOfDay(min).getTime()) ||
+    (max && nativeStartOfDay(range.date).getTime() > nativeStartOfDay(max).getTime())
+  );
+}
+
+function nativeEncodeEditorUrlAttribute(value: string): string {
+  return Array.from(value, (character) => {
+    const codePoint = character.codePointAt(0) ?? 0;
+    if (!`"'<>\``.includes(character) && codePoint > 0x20 && codePoint !== 0x7f) {
+      return character;
+    }
+    return encodeURIComponent(character).replace(
+      /[!'()*]/g,
+      (reserved) => `%${reserved.charCodeAt(0).toString(16).toUpperCase()}`
+    );
+  })
+    .join("")
+    .replace(/&/g, "&amp;")
+    .replace(/\u2028/g, "%E2%80%A8")
+    .replace(/\u2029/g, "%E2%80%A9");
+}
+
+function nativeSafeEditorUrl(
+  value: string,
+  kind: "link" | "image" | "youtube"
+): string | undefined {
+  const source = value.trim();
+  if (kind === "youtube") {
+    const match = source.match(
+      /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/i
+    );
+    return match?.[1]
+      ? `https://www.youtube-nocookie.com/embed/${nativeEncodeEditorUrlAttribute(match[1])}`
+      : undefined;
+  }
+  const allowed =
+    kind === "image"
+      ? /^(?:https?:\/\/|data:image\/(?:png|gif|jpeg|webp);base64,)/i
+      : /^(?:https?:\/\/|mailto:|tel:|\/|#)/i;
+  return allowed.test(source) ? nativeEncodeEditorUrlAttribute(source) : undefined;
+}
+
+function nativePlainTextFromHtml(value: unknown): string {
+  return (typeof value === "string" ? value : "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(?:p|div|h[1-6]|li|blockquote|tr)>/gi, "\n")
+    .replace(/<li[^>]*>/gi, "• ")
+    .replace(/<hr\s*\/?>/gi, "────────")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function nativeTableHtml(rows: number, columns: number): string {
+  const cells = Array.from({ length: columns }, () => "<td><br></td>").join("");
+  return `<table><tbody>${Array.from({ length: rows }, () => `<tr>${cells}</tr>`).join("")}</tbody></table>`;
+}
 
 export function createNativeComponents(host: NativeHost = defaultNativeHost): NativeComponents {
   const components: NativeComponents = {
@@ -2085,6 +2497,826 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           : null
       );
     },
+    DatePicker: function NativeDatePicker(props) {
+      const theme = usePodoNativeTheme();
+      const semantic = nativeSemanticColors(theme);
+      const mode = props.mode ?? "instant";
+      const type = props.type ?? "date";
+      const hourFormat = props.hourFormat ?? "24";
+      const minuteStep = props.minuteStep ?? 1;
+      const hourStep = props.hourStep ?? 1;
+      const hasCalendar = type === "date" || type === "datetime";
+      const hasTime = type === "time" || type === "datetime" || type === "hour";
+      const showActions = props.showActions ?? mode === "period";
+      const initial = props.value ?? props.defaultValue ?? {};
+      const [internalValue, setInternalValue] = useState<NativeDatePickerValue>(initial);
+      const currentValue = props.value ?? internalValue;
+      const [draft, setDraft] = useState<NativeDatePickerValue>(currentValue);
+      const [open, setOpen] = useState(false);
+      const fallbackDate = currentValue.date ?? new Date();
+      const [viewDate, setViewDate] = useState(() =>
+        nativeResolveCalendar(props.initialCalendar?.start, fallbackDate)
+      );
+
+      useEffect(() => {
+        if (props.value) {
+          setDraft(props.value);
+          if (props.value.date) {
+            setViewDate(new Date(props.value.date.getFullYear(), props.value.date.getMonth(), 1));
+          }
+        }
+      }, [props.value]);
+
+      const emit = (next: NativeDatePickerValue, close = false) => {
+        setDraft(next);
+        if (props.value == null) setInternalValue(next);
+        props.onChange?.(next);
+        if (close) setOpen(false);
+      };
+      const updateDraft = (next: NativeDatePickerValue, complete = false) => {
+        setDraft(next);
+        if (!showActions && complete) emit(next, true);
+      };
+      const chooseDate = (date: Date) => {
+        if (nativeDateDisabled(date, props)) return;
+        const withClampedTime = (value: NativeDatePickerValue, end: boolean) => {
+          const timeKey = end ? "endTime" : "time";
+          const dateKey = end ? "endDate" : "date";
+          const time = value[timeKey];
+          const selectedDate = value[dateKey];
+          return time && selectedDate
+            ? { ...value, [timeKey]: nativeClampTime(selectedDate, time, props, minuteStep) }
+            : value;
+        };
+        if (mode === "period") {
+          if (!draft.date || draft.endDate) {
+            const withoutEnd = { ...draft };
+            delete withoutEnd.endDate;
+            delete withoutEnd.endTime;
+            updateDraft({ ...withoutEnd, date }, false);
+            return;
+          }
+          const first = nativeStartOfDay(draft.date);
+          const second = nativeStartOfDay(date);
+          let next: NativeDatePickerValue;
+          if (second.getTime() < first.getTime()) {
+            next = { ...draft, date: second, endDate: first };
+            delete next.time;
+            delete next.endTime;
+            if (draft.endTime) next.time = draft.endTime;
+            if (draft.time) next.endTime = draft.time;
+          } else {
+            next = { ...draft, date: first, endDate: second };
+          }
+          updateDraft(withClampedTime(withClampedTime(next, false), true), true);
+          return;
+        }
+        updateDraft(withClampedTime({ ...draft, date }, false), !hasTime);
+      };
+      const nextEnabledHour = (hour: number, delta: number): number => {
+        const blocked = new Set(props.disabledHours ?? []);
+        let candidate = hour;
+        for (let count = 0; count < 24; count += 1) {
+          candidate = (candidate + delta + 24) % 24;
+          if (!blocked.has(candidate)) return candidate;
+        }
+        return hour;
+      };
+      const changeTime = (end: boolean, unit: "hour" | "minute", delta: number) => {
+        const key = end ? "endTime" : "time";
+        const date = end ? draft.endDate : draft.date;
+        const previous = draft[key] ?? { hour: 0, minute: 0 };
+        const candidate =
+          unit === "hour"
+            ? {
+                ...previous,
+                hour: nextEnabledHour(previous.hour, delta * hourStep),
+              }
+            : (() => {
+                const minutes =
+                  (previous.hour * 60 + previous.minute + delta * minuteStep + 24 * 60) % (24 * 60);
+                return { hour: Math.floor(minutes / 60), minute: minutes % 60 };
+              })();
+        const next = nativeClampTime(date, candidate, props, type === "hour" ? 60 : minuteStep);
+        const value = { ...draft, [key]: next };
+        if (!showActions && mode === "instant") {
+          emit(value, false);
+        } else {
+          setDraft(value);
+        }
+      };
+      const triggerText = (end: boolean): string => {
+        const value = end
+          ? {
+              ...(currentValue.endDate ? { date: currentValue.endDate } : {}),
+              ...(currentValue.endTime ? { time: currentValue.endTime } : {}),
+            }
+          : currentValue;
+        if (type === "hour" && value.time) {
+          const hour = value.time.hour;
+          return hourFormat === "12"
+            ? `${hour < 12 ? "오전" : "오후"} ${hour % 12 || 12}시`
+            : `${hour}시`;
+        }
+        return (
+          nativeFormatDatePickerValue(value, type, props.format, hourFormat) ||
+          props.placeholder ||
+          (hasCalendar ? "YYYY - MM - DD" : "HH : MM")
+        );
+      };
+      const monthBlocked = (delta: number): boolean => {
+        const candidate = new Date(viewDate.getFullYear(), viewDate.getMonth() + delta, 1);
+        return Boolean(
+          (props.yearRange?.min != null && candidate.getFullYear() < props.yearRange.min) ||
+          (props.yearRange?.max != null && candidate.getFullYear() > props.yearRange.max)
+        );
+      };
+      const renderTrigger = (end: boolean) =>
+        createElement(
+          host.Pressable,
+          {
+            accessibilityRole: "button",
+            accessibilityLabel: props.accessibilityLabel ?? (end ? "종료 날짜 선택" : "날짜 선택"),
+            accessibilityState: { disabled: props.disabled, expanded: open },
+            disabled: props.disabled,
+            onPress: props.disabled
+              ? undefined
+              : () => {
+                  setDraft(currentValue);
+                  setOpen(!open);
+                },
+            style: {
+              alignItems: "center",
+              backgroundColor: props.disabled ? semantic.disabled : semantic.background,
+              borderColor: open ? semantic.borderPrimary : semantic.borderGray,
+              borderRadius: 10,
+              borderWidth: 1,
+              flex: 1,
+              minHeight: 42,
+              paddingHorizontal: 12,
+            },
+            testID: end ? `${props.testID ?? "podo-datepicker"}-end` : props.testID,
+            "data-open": open ? "true" : undefined,
+          },
+          createElement(
+            host.Text,
+            {
+              style: {
+                color: (
+                  end
+                    ? currentValue.endDate || currentValue.endTime
+                    : currentValue.date || currentValue.time
+                )
+                  ? semantic.text
+                  : semantic.placeholder,
+                fontSize: 14,
+              },
+            },
+            triggerText(end)
+          )
+        );
+      const renderTime = (end: boolean) => {
+        const time = (end ? draft.endTime : draft.time) ?? { hour: 0, minute: 0 };
+        const unitButton = (label: string, onPress: () => void, action: string) =>
+          createElement(
+            host.Pressable,
+            {
+              accessibilityRole: "button",
+              accessibilityLabel: action,
+              onPress,
+              style: {
+                alignItems: "center",
+                backgroundColor: semantic.foregroundGrayLight,
+                borderRadius: 8,
+                height: 34,
+                justifyContent: "center",
+                width: 34,
+              },
+            },
+            createElement(host.Text, { style: { color: semantic.text, fontSize: 18 } }, label)
+          );
+        return createElement(
+          host.View,
+          {
+            style: {
+              alignItems: "center",
+              flexDirection: "row",
+              gap: 8,
+              justifyContent: "center",
+              paddingVertical: 8,
+            },
+            testID: `${props.testID ?? "podo-datepicker"}-${end ? "end-" : ""}time`,
+          },
+          unitButton("−", () => changeTime(end, "hour", -1), "시간 감소"),
+          createElement(
+            host.Text,
+            { style: { color: semantic.text, fontSize: 18, fontWeight: "600", minWidth: 76 } },
+            type === "hour"
+              ? hourFormat === "12"
+                ? `${time.hour < 12 ? "오전" : "오후"} ${time.hour % 12 || 12}시`
+                : `${time.hour}시`
+              : nativeFormatTimePart(time, hourFormat)
+          ),
+          unitButton("+", () => changeTime(end, "hour", 1), "시간 증가"),
+          type === "hour" ? null : unitButton("−", () => changeTime(end, "minute", -1), "분 감소"),
+          type === "hour" ? null : unitButton("+", () => changeTime(end, "minute", 1), "분 증가")
+        );
+      };
+      const actionButton = (
+        label: string,
+        onPress: () => void,
+        primary = false,
+        disabled = false
+      ) =>
+        createElement(
+          host.Pressable,
+          {
+            accessibilityRole: "button",
+            accessibilityLabel: label,
+            accessibilityState: { disabled },
+            disabled,
+            onPress: disabled ? undefined : onPress,
+            style: {
+              backgroundColor: primary ? semantic.foregroundPrimary : semantic.foregroundGrayLight,
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+            },
+          },
+          createElement(
+            host.Text,
+            { style: { color: primary ? semantic.textStaticInvert : semantic.text, fontSize: 14 } },
+            label
+          )
+        );
+
+      const calendar = hasCalendar
+        ? createElement(
+            host.View,
+            { style: { gap: 8 } },
+            createElement(
+              host.View,
+              {
+                style: {
+                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                },
+              },
+              props.hideNavArrow
+                ? null
+                : actionButton(
+                    "‹",
+                    () => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1)),
+                    false,
+                    monthBlocked(-1)
+                  ),
+              createElement(
+                host.Text,
+                {
+                  accessibilityRole: "header",
+                  style: { color: semantic.text, fontSize: 16, fontWeight: "700" },
+                },
+                `${viewDate.getFullYear()}년 ${viewDate.getMonth() + 1}월`
+              ),
+              props.hideNavArrow
+                ? null
+                : actionButton(
+                    "›",
+                    () => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1)),
+                    false,
+                    monthBlocked(1)
+                  )
+            ),
+            createElement(
+              host.View,
+              { style: { flexDirection: "row" } },
+              ...["일", "월", "화", "수", "목", "금", "토"].map((weekday) =>
+                createElement(
+                  host.Text,
+                  {
+                    key: weekday,
+                    style: {
+                      color: semantic.textSubtil,
+                      flex: 1,
+                      fontSize: 12,
+                      textAlign: "center",
+                    },
+                  },
+                  weekday
+                )
+              )
+            ),
+            createElement(
+              host.View,
+              { accessibilityRole: "grid", style: { flexDirection: "row", flexWrap: "wrap" } },
+              ...nativeCalendarDays(viewDate).map((date) => {
+                const disabled = nativeDateDisabled(date, props);
+                const selected =
+                  nativeSameDay(date, draft.date) || nativeSameDay(date, draft.endDate);
+                const inRange = Boolean(
+                  draft.date &&
+                  draft.endDate &&
+                  nativeDateInRange(date, { from: draft.date, to: draft.endDate })
+                );
+                const outside = date.getMonth() !== viewDate.getMonth();
+                return createElement(
+                  host.Pressable,
+                  {
+                    key: date.toISOString(),
+                    accessibilityRole: "button",
+                    accessibilityLabel: `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`,
+                    accessibilityState: { disabled, selected },
+                    disabled,
+                    onPress: disabled ? undefined : () => chooseDate(date),
+                    style: {
+                      alignItems: "center",
+                      backgroundColor: selected
+                        ? semantic.foregroundPrimary
+                        : inRange
+                          ? semantic.foregroundInfoLight
+                          : "transparent",
+                      borderRadius: 8,
+                      justifyContent: "center",
+                      minHeight: 38,
+                      opacity: disabled ? 0.35 : outside ? 0.5 : 1,
+                      width: "14.2857%",
+                    },
+                    "data-state": selected ? "selected" : inRange ? "range" : undefined,
+                  },
+                  createElement(
+                    host.Text,
+                    {
+                      style: {
+                        color: selected ? semantic.textStaticInvert : semantic.text,
+                        fontSize: 14,
+                      },
+                    },
+                    String(date.getDate())
+                  )
+                );
+              })
+            )
+          )
+        : null;
+
+      const quick =
+        props.quickSelect && mode === "period"
+          ? createElement(
+              host.View,
+              { style: { flexDirection: "row", flexWrap: "wrap", gap: 6 } },
+              ...(
+                [
+                  ["today", "오늘"],
+                  ["yesterday", "어제"],
+                  ["thisWeek", "이번 주"],
+                  ["lastWeek", "지난 주"],
+                  ["last7Days", "최근 7일"],
+                  ["last30Days", "최근 30일"],
+                  ["thisMonth", "이번 달"],
+                  ["lastMonth", "지난 달"],
+                ] as const
+              ).map(([key, label]) => {
+                const rawRange = nativeQuickRange(key);
+                const range = nativeClampQuickRange(rawRange, props);
+                return actionButton(
+                  label,
+                  () => {
+                    updateDraft({ ...draft, ...range }, !showActions);
+                    setViewDate(new Date(range.date.getFullYear(), range.date.getMonth(), 1));
+                  },
+                  false,
+                  nativeQuickRangeDisabled(rawRange, props)
+                );
+              })
+            )
+          : null;
+
+      return createElement(
+        host.View,
+        { style: { gap: 6 }, testID: `${props.testID ?? "podo-datepicker"}-root` },
+        createElement(
+          host.View,
+          { style: { flexDirection: "row", gap: 6 } },
+          renderTrigger(false),
+          mode === "period" ? renderTrigger(true) : null
+        ),
+        open
+          ? createElement(
+              host.View,
+              {
+                accessibilityRole: "dialog",
+                accessibilityLabel: "날짜 선택",
+                style: {
+                  backgroundColor: semantic.background,
+                  borderColor: semantic.borderGray,
+                  borderRadius: 14,
+                  borderWidth: 1,
+                  gap: 10,
+                  padding: 12,
+                },
+                testID: `${props.testID ?? "podo-datepicker"}-dialog`,
+              },
+              quick,
+              calendar,
+              hasTime ? renderTime(false) : null,
+              hasTime && mode === "period" ? renderTime(true) : null,
+              showActions
+                ? createElement(
+                    host.View,
+                    { style: { flexDirection: "row", gap: 8, justifyContent: "flex-end" } },
+                    actionButton("초기화", () => {
+                      setDraft({});
+                      if (props.value == null) setInternalValue({});
+                      props.onChange?.({});
+                      props.onReset?.();
+                      setOpen(false);
+                    }),
+                    actionButton("취소", () => {
+                      setDraft(currentValue);
+                      setOpen(false);
+                    }),
+                    actionButton(
+                      "적용",
+                      () => emit(draft, true),
+                      true,
+                      mode === "period" && hasCalendar && (!draft.date || !draft.endDate)
+                    )
+                  )
+                : actionButton("닫기", () => setOpen(false))
+            )
+          : null
+      );
+    },
+    Editor: function NativeEditor(props) {
+      const theme = usePodoNativeTheme();
+      const semantic = nativeSemanticColors(theme);
+      const editorValue = typeof props.value === "string" ? props.value : "";
+      const enabled = new Set(props.toolbar ?? NATIVE_EDITOR_TOOLBAR);
+      const [selection, setSelection] = useState({ start: 0, end: 0 });
+      const [panel, setPanel] = useState<string | null>(null);
+      const [auxValue, setAuxValue] = useState("");
+      const [codeMode, setCodeMode] = useState(false);
+      const historyRef = useRef<string[]>([editorValue]);
+      const historyIndexRef = useRef(0);
+
+      useEffect(() => {
+        if (historyRef.current[historyIndexRef.current] !== editorValue) {
+          historyRef.current = [
+            ...historyRef.current.slice(0, historyIndexRef.current + 1),
+            editorValue,
+          ];
+          historyIndexRef.current = historyRef.current.length - 1;
+        }
+      }, [editorValue]);
+
+      const emitEditor = (next: string, track = true) => {
+        if (track && historyRef.current[historyIndexRef.current] !== next) {
+          historyRef.current = [...historyRef.current.slice(0, historyIndexRef.current + 1), next];
+          historyIndexRef.current = historyRef.current.length - 1;
+        }
+        props.onChange(next);
+      };
+      const replaceSelection = (before: string, after = "", fallback = "텍스트") => {
+        const start = Math.max(0, Math.min(selection.start, editorValue.length));
+        const end = Math.max(start, Math.min(selection.end, editorValue.length));
+        const picked = editorValue.slice(start, end) || fallback;
+        const next = `${editorValue.slice(0, start)}${before}${picked}${after}${editorValue.slice(end)}`;
+        emitEditor(next);
+        const cursor = start + before.length + picked.length + after.length;
+        setSelection({ start: cursor, end: cursor });
+      };
+      const insert = (html: string) => {
+        const start = Math.max(0, Math.min(selection.start, editorValue.length));
+        const end = Math.max(start, Math.min(selection.end, editorValue.length));
+        emitEditor(`${editorValue.slice(0, start)}${html}${editorValue.slice(end)}`);
+        const cursor = start + html.length;
+        setSelection({ start: cursor, end: cursor });
+      };
+      const undo = () => {
+        if (historyIndexRef.current <= 0) return;
+        historyIndexRef.current -= 1;
+        emitEditor(historyRef.current[historyIndexRef.current] ?? "", false);
+      };
+      const redo = () => {
+        if (historyIndexRef.current >= historyRef.current.length - 1) return;
+        historyIndexRef.current += 1;
+        emitEditor(historyRef.current[historyIndexRef.current] ?? "", false);
+      };
+      const editorButton = (label: string, action: () => void, active = false) =>
+        createElement(
+          host.Pressable,
+          {
+            accessibilityRole: "button",
+            accessibilityLabel: label,
+            onPress: action,
+            style: {
+              alignItems: "center",
+              backgroundColor: active ? semantic.foregroundInfoLight : semantic.foregroundGrayLight,
+              borderColor: active ? semantic.borderPrimary : semantic.borderGray,
+              borderRadius: 7,
+              borderWidth: 1,
+              justifyContent: "center",
+              minHeight: 34,
+              minWidth: 34,
+              paddingHorizontal: 8,
+            },
+          },
+          createElement(host.Text, { style: { color: semantic.text, fontSize: 13 } }, label)
+        );
+      const panelButton = (label: string, action: () => void) => editorButton(label, action);
+      const openPanel = (name: string) => {
+        setAuxValue("");
+        setPanel(panel === name ? null : name);
+      };
+      const toolbarChildren: ReactNode[] = [];
+      if (enabled.has("undo-redo")) {
+        toolbarChildren.push(editorButton("실행 취소", undo), editorButton("다시 실행", redo));
+      }
+      if (enabled.has("paragraph"))
+        toolbarChildren.push(editorButton("문단", () => openPanel("paragraph")));
+      if (enabled.has("text-style")) {
+        toolbarChildren.push(
+          editorButton("굵게", () => replaceSelection("<strong>", "</strong>")),
+          editorButton("기울임", () => replaceSelection("<em>", "</em>")),
+          editorButton("밑줄", () => replaceSelection("<u>", "</u>")),
+          editorButton("취소선", () => replaceSelection("<s>", "</s>"))
+        );
+      }
+      if (enabled.has("color")) {
+        toolbarChildren.push(
+          editorButton("글자색", () => openPanel("color")),
+          editorButton("배경색", () => openPanel("background"))
+        );
+      }
+      if (enabled.has("align"))
+        toolbarChildren.push(editorButton("정렬", () => openPanel("align")));
+      if (enabled.has("list")) {
+        toolbarChildren.push(
+          editorButton("목록", () => replaceSelection("<ul><li>", "</li></ul>", "목록")),
+          editorButton("번호 목록", () => replaceSelection("<ol><li>", "</li></ol>", "목록"))
+        );
+      }
+      if (enabled.has("table")) toolbarChildren.push(editorButton("표", () => openPanel("table")));
+      if (enabled.has("link")) toolbarChildren.push(editorButton("링크", () => openPanel("link")));
+      if (enabled.has("image"))
+        toolbarChildren.push(editorButton("이미지", () => openPanel("image")));
+      if (enabled.has("youtube"))
+        toolbarChildren.push(editorButton("YouTube", () => openPanel("youtube")));
+      if (enabled.has("hr")) toolbarChildren.push(editorButton("구분선", () => insert("<hr />")));
+      if (enabled.has("format")) {
+        toolbarChildren.push(
+          editorButton("서식 지우기", () => {
+            const start = Math.max(0, Math.min(selection.start, editorValue.length));
+            const end = Math.max(start, Math.min(selection.end, editorValue.length));
+            const source = editorValue.slice(start, end) || editorValue;
+            const plain = nativePlainTextFromHtml(source);
+            if (start === end) emitEditor(plain);
+            else emitEditor(`${editorValue.slice(0, start)}${plain}${editorValue.slice(end)}`);
+          })
+        );
+      }
+      if (enabled.has("code")) {
+        toolbarChildren.push(editorButton("HTML", () => setCodeMode(!codeMode), codeMode));
+      }
+
+      let panelContent: ReactNode = null;
+      if (panel === "paragraph") {
+        panelContent = createElement(
+          host.View,
+          { style: { flexDirection: "row", flexWrap: "wrap", gap: 6 } },
+          ...(
+            [
+              ["본문", "p"],
+              ["제목 1", "h1"],
+              ["제목 2", "h2"],
+              ["제목 3", "h3"],
+            ] as const
+          ).map(([label, tag]) =>
+            panelButton(label, () => {
+              replaceSelection(`<${tag}>`, `</${tag}>`, label);
+              setPanel(null);
+            })
+          )
+        );
+      } else if (panel === "color" || panel === "background") {
+        panelContent = createElement(
+          host.View,
+          { style: { flexDirection: "row", flexWrap: "wrap", gap: 6 } },
+          ...["#F23B3B", "#426CED", "#3EA856", "#FFAA00", "#18181B", "#FFFFFF"].map((color) =>
+            createElement(host.Pressable, {
+              key: color,
+              accessibilityRole: "button",
+              accessibilityLabel: `${panel === "color" ? "글자색" : "배경색"} ${color}`,
+              onPress: () => {
+                replaceSelection(
+                  `<span style="${panel === "color" ? "color" : "background-color"}:${color}">`,
+                  "</span>"
+                );
+                setPanel(null);
+              },
+              style: {
+                backgroundColor: color,
+                borderColor: semantic.borderGrayDeep,
+                borderRadius: 7,
+                borderWidth: 1,
+                height: 34,
+                width: 34,
+              },
+            })
+          )
+        );
+      } else if (panel === "align") {
+        panelContent = createElement(
+          host.View,
+          { style: { flexDirection: "row", gap: 6 } },
+          ...(
+            [
+              ["왼쪽", "left"],
+              ["가운데", "center"],
+              ["오른쪽", "right"],
+            ] as const
+          ).map(([label, align]) =>
+            panelButton(label, () => {
+              replaceSelection(`<p style="text-align:${align}">`, "</p>", label);
+              setPanel(null);
+            })
+          )
+        );
+      } else if (panel === "table") {
+        panelContent = createElement(
+          host.View,
+          { style: { flexDirection: "row", gap: 6 } },
+          panelButton("2×2 표 삽입", () => {
+            insert(nativeTableHtml(2, 2));
+            setPanel(null);
+          }),
+          panelButton("3×3 표 삽입", () => {
+            insert(nativeTableHtml(3, 3));
+            setPanel(null);
+          })
+        );
+      } else if (panel === "link" || panel === "image" || panel === "youtube") {
+        const placeholder =
+          panel === "link" ? "https://..." : panel === "image" ? "이미지 URL" : "YouTube URL";
+        panelContent = createElement(
+          host.View,
+          { style: { gap: 8 } },
+          createElement(host.TextInput, {
+            accessibilityLabel: placeholder,
+            autoCapitalize: "none",
+            onChangeText: setAuxValue,
+            placeholder,
+            placeholderTextColor: semantic.placeholder,
+            style: {
+              borderColor: semantic.borderGray,
+              borderRadius: 8,
+              borderWidth: 1,
+              color: semantic.text,
+              minHeight: 40,
+              paddingHorizontal: 10,
+            },
+            value: auxValue,
+          }),
+          createElement(
+            host.View,
+            { style: { flexDirection: "row", gap: 6, justifyContent: "flex-end" } },
+            panelButton("취소", () => setPanel(null)),
+            panelButton("삽입", () => {
+              const safeUrl = nativeSafeEditorUrl(auxValue, panel as "link" | "image" | "youtube");
+              if (!safeUrl) return;
+              if (panel === "link") replaceSelection(`<a href="${safeUrl}">`, "</a>", "링크");
+              if (panel === "image") insert(`<img src="${safeUrl}" alt="" />`);
+              if (panel === "youtube")
+                insert(`<iframe src="${safeUrl}" title="YouTube video"></iframe>`);
+              setPanel(null);
+            })
+          )
+        );
+      }
+
+      const validation = props.validator?.safeParse(editorValue);
+      const validationMessage =
+        validation && !validation.success
+          ? (validation.error?.issues?.[0]?.message ?? "입력값을 확인하세요")
+          : undefined;
+      const minHeight = props.minHeight ?? props.height ?? 220;
+      const maxHeight = props.maxHeight;
+
+      return createElement(
+        host.View,
+        {
+          style: {
+            backgroundColor: semantic.background,
+            borderColor: validationMessage ? semantic.borderDanger : semantic.borderGray,
+            borderRadius: 12,
+            borderWidth: 1,
+            gap: 8,
+            overflow: "hidden",
+            padding: 10,
+          },
+          testID: props.testID,
+          "data-mode": codeMode ? "code" : "rich",
+        },
+        createElement(
+          host.View,
+          {
+            accessibilityRole: "toolbar",
+            style: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
+          },
+          ...toolbarChildren
+        ),
+        panelContent
+          ? createElement(
+              host.View,
+              {
+                accessibilityRole: "dialog",
+                accessibilityLabel: "에디터 도구",
+                style: {
+                  backgroundColor: semantic.foregroundGray,
+                  borderColor: semantic.borderGray,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  padding: 10,
+                },
+              },
+              panelContent
+            )
+          : null,
+        createElement(host.TextInput, {
+          accessibilityLabel: props.accessibilityLabel ?? "리치 텍스트 편집기",
+          multiline: true,
+          onChangeText: emitEditor,
+          onSelectionChange: (event: {
+            nativeEvent?: { selection?: { start?: number; end?: number } };
+          }) => {
+            const next = event.nativeEvent?.selection;
+            if (next?.start != null && next.end != null) {
+              setSelection({ start: next.start, end: next.end });
+            }
+          },
+          placeholder: props.placeholder ?? "내용을 입력하세요...",
+          placeholderTextColor: semantic.placeholder,
+          style: {
+            color: semantic.text,
+            fontFamily: codeMode ? "monospace" : undefined,
+            fontSize: codeMode ? 13 : 16,
+            lineHeight: 24,
+            maxHeight,
+            minHeight,
+            padding: 10,
+            textAlignVertical: "top",
+          },
+          testID: `${props.testID ?? "podo-editor"}-input`,
+          value: editorValue,
+        }),
+        codeMode
+          ? null
+          : createElement(
+              host.View,
+              {
+                accessibilityLabel: "에디터 미리보기",
+                style: {
+                  backgroundColor: semantic.foregroundGray,
+                  borderRadius: 8,
+                  padding: 10,
+                },
+              },
+              createElement(
+                host.Text,
+                { style: { color: semantic.text, fontSize: 15, lineHeight: 23 } },
+                nativePlainTextFromHtml(editorValue) || props.placeholder || "내용을 입력하세요..."
+              )
+            ),
+        validationMessage
+          ? createElement(
+              host.Text,
+              {
+                accessibilityRole: "alert",
+                style: { color: semantic.foregroundDanger, fontSize: 13 },
+              },
+              validationMessage
+            )
+          : null
+      );
+    },
+    EditorView: function NativeEditorView(props) {
+      const theme = usePodoNativeTheme();
+      const semantic = nativeSemanticColors(theme);
+      return createElement(
+        host.View,
+        {
+          accessibilityLabel: "에디터 콘텐츠",
+          style: { gap: 6 },
+          testID: props.testID,
+        },
+        createElement(
+          host.Text,
+          { style: { color: semantic.text, fontSize: 16, lineHeight: 24 } },
+          nativePlainTextFromHtml(props.value)
+        )
+      );
+    },
   };
   return components;
 }
@@ -2103,6 +3335,9 @@ export const {
   Switch,
   Toast,
   Tooltip,
+  DatePicker,
+  Editor,
+  EditorView,
 } = createNativeComponents();
 
 function wireNativeControl(

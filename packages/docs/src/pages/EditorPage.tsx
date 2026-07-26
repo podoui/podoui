@@ -6,6 +6,7 @@ import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
+import { nativeComponentUsage } from "../code-examples.js";
 
 const USAGE_TABS: CodeTab[] = [
   {
@@ -18,6 +19,14 @@ const USAGE_TABS: CodeTab[] = [
       `import "podo-ui/styles.css";\n\n` +
       `const [html, setHtml] = useState("<p>내용</p>");\n` +
       `<Editor value={html} onChange={setHtml} height="320px" />`,
+  },
+  {
+    target: "native",
+    label: "React Native",
+    code: nativeComponentUsage(
+      ["Editor", "EditorView"],
+      `<Editor value={html} onChange={setHtml} height={320} />\n<EditorView value={html} />`
+    ),
   },
 ];
 
@@ -103,12 +112,18 @@ export function EditorPage() {
       <DocSection
         index={4}
         title="지원 범위"
-        description="Editor는 DOM Selection, contenteditable, Clipboard/File API를 사용해요. Hono 호스트에서는 React client island로 사용하고 React Native에서는 직접 가져오지 않아요."
+        description="React Native는 podo-ui/native의 TextInput selection과 HTML 직렬화 방식으로 13개 툴바 그룹, URL 기반 링크·이미지·YouTube, 표 삽입, HTML 모드와 EditorView를 지원해요. 브라우저 전용 File/Clipboard API와 DOM 요소 컨텍스트 메뉴는 사용하지 않아요. Hono 호스트에서는 React client island의 Editor를 사용해요."
       >
         <SpecTable
           columns={["React", "Next.js", "Web", "Hono", "React Native"]}
           rows={[
-            ["전체 지원", "전체 지원 (use client)", "미지원", "React island에서 지원", "미지원"],
+            [
+              "전체 지원",
+              "전체 지원 (use client)",
+              "미지원",
+              "React island에서 지원",
+              "Native UI 지원",
+            ],
           ]}
         />
       </DocSection>

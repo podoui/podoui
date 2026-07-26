@@ -1895,6 +1895,193 @@ describe("@podoui/native", () => {
     fireEvent.click(screen.getByText("잠긴 회신 이메일"));
     expect(document.activeElement).not.toBe(screen.getByTestId("locked-focus-input"));
   });
+
+  it("supports native date, period quick-select, and constrained time selection", () => {
+    const dateValue = (value: {
+      date?: Date;
+      endDate?: Date;
+      time?: { hour: number; minute: number };
+      endTime?: { hour: number; minute: number };
+    }) => ({
+      date: value.date
+        ? `${value.date.getFullYear()}-${value.date.getMonth() + 1}-${value.date.getDate()}`
+        : undefined,
+      endDate: value.endDate
+        ? `${value.endDate.getFullYear()}-${value.endDate.getMonth() + 1}-${value.endDate.getDate()}`
+        : undefined,
+      time: value.time,
+      endTime: value.endTime,
+    });
+    const dates: Array<ReturnType<typeof dateValue>> = [];
+    const periods: Array<ReturnType<typeof dateValue>> = [];
+    const times: Array<ReturnType<typeof dateValue>> = [];
+    const limitedTimes: Array<ReturnType<typeof dateValue>> = [];
+    const reversedPeriods: Array<ReturnType<typeof dateValue>> = [];
+
+    render(
+      <>
+        <domNative.DatePicker
+          testID="native-date"
+          initialCalendar={{ start: new Date(2026, 6, 1) }}
+          onChange={(value) => dates.push(dateValue(value))}
+        />
+        <domNative.DatePicker
+          testID="native-period"
+          mode="period"
+          quickSelect
+          onChange={(value) => periods.push(dateValue(value))}
+        />
+        <domNative.DatePicker
+          testID="native-time"
+          type="hour"
+          defaultValue={{ time: { hour: 10, minute: 0 } }}
+          disabledHours={[11]}
+          onChange={(value) => times.push(dateValue(value))}
+        />
+        <domNative.DatePicker
+          testID="native-limited-time"
+          type="datetime"
+          minuteStep={15}
+          defaultValue={{ date: new Date(2026, 6, 20), time: { hour: 10, minute: 0 } }}
+          minDate={{ date: new Date(2026, 6, 20), time: { hour: 9, minute: 45 } }}
+          onChange={(value) => limitedTimes.push(dateValue(value))}
+        />
+        <domNative.DatePicker
+          testID="native-reversed-period"
+          mode="period"
+          type="datetime"
+          initialCalendar={{ start: new Date(2026, 6, 1) }}
+          defaultValue={{
+            date: new Date(2026, 6, 20),
+            time: { hour: 18, minute: 30 },
+            endTime: { hour: 9, minute: 15 },
+          }}
+          onChange={(value) => reversedPeriods.push(dateValue(value))}
+        />
+      </>
+    );
+
+    fireEvent.click(screen.getByTestId("native-date"));
+    expect(screen.getByRole("dialog", { name: "날짜 선택" })).toBeDefined();
+    fireEvent.click(screen.getByLabelText("2026년 7월 20일"));
+    expect(dates.at(-1)?.date).toBe("2026-7-20");
+    expect(screen.queryByTestId("native-date-dialog")).toBeNull();
+
+    fireEvent.click(screen.getByTestId("native-period"));
+    fireEvent.click(screen.getByLabelText("최근 7일"));
+    fireEvent.click(screen.getByLabelText("적용"));
+    expect(periods.at(-1)?.date).toBeDefined();
+    expect(periods.at(-1)?.endDate).toBeDefined();
+
+    fireEvent.click(screen.getByTestId("native-period"));
+    fireEvent.click(screen.getByLabelText("이번 주"));
+    fireEvent.click(screen.getByLabelText("적용"));
+    const weekStart = periods.at(-1)?.date;
+    const weekEnd = periods.at(-1)?.endDate;
+    expect(weekStart).toBeDefined();
+    expect(weekEnd).toBeDefined();
+    expect(
+      (new Date(weekEnd!).getTime() - new Date(weekStart!).getTime()) / (24 * 60 * 60 * 1000)
+    ).toBe(6);
+
+    fireEvent.click(screen.getByTestId("native-time"));
+    fireEvent.click(within(screen.getByTestId("native-time-time")).getByLabelText("시간 증가"));
+    expect(times.at(-1)?.time?.hour).toBe(12);
+
+    fireEvent.click(screen.getByTestId("native-limited-time"));
+    const limited = within(screen.getByTestId("native-limited-time-time"));
+    fireEvent.click(limited.getByLabelText("분 감소"));
+    fireEvent.click(limited.getByLabelText("분 감소"));
+    expect(limitedTimes.at(-1)?.time).toEqual({ hour: 9, minute: 45 });
+
+    fireEvent.click(screen.getByTestId("native-reversed-period"));
+    const reversedDialog = within(screen.getByTestId("native-reversed-period-dialog"));
+    fireEvent.click(reversedDialog.getByLabelText("2026년 7월 10일"));
+    fireEvent.click(reversedDialog.getByLabelText("적용"));
+    expect(reversedPeriods.at(-1)).toMatchObject({
+      date: "2026-7-10",
+      endDate: "2026-7-20",
+      time: { hour: 9, minute: 15 },
+      endTime: { hour: 18, minute: 30 },
+    });
+  });
+
+  it("provides every native Editor toolbar group and serializes rich actions", () => {
+    function Harness(): React.ReactElement {
+      const [value, setValue] = React.useState("");
+      return (
+        <>
+          <domNative.Editor value={value} onChange={setValue} testID="native-editor" />
+          <domNative.EditorView value={value} testID="native-editor-view" />
+          <output data-testid="native-editor-output">{value}</output>
+        </>
+      );
+    }
+    render(<Harness />);
+
+    expect(screen.getByRole("toolbar").querySelectorAll("button").length).toBeGreaterThanOrEqual(
+      18
+    );
+    fireEvent.click(screen.getByLabelText("굵게"));
+    expect(screen.getByTestId("native-editor-output").textContent).toContain(
+      "<strong>텍스트</strong>"
+    );
+
+    fireEvent.click(screen.getByLabelText("표"));
+    fireEvent.click(screen.getByLabelText("3×3 표 삽입"));
+    expect(screen.getByTestId("native-editor-output").textContent).toContain("<table>");
+
+    fireEvent.click(screen.getByLabelText("링크"));
+    fireEvent.change(screen.getByLabelText("https://..."), {
+      target: { value: "https://example.com/native" },
+    });
+    fireEvent.click(screen.getByLabelText("삽입"));
+    expect(screen.getByTestId("native-editor-output").textContent).toContain(
+      'href="https://example.com/native"'
+    );
+
+    fireEvent.click(screen.getByLabelText("링크"));
+    fireEvent.change(screen.getByLabelText("https://..."), {
+      target: { value: 'javascript:alert("unsafe")' },
+    });
+    let editorDialog = within(screen.getByRole("dialog", { name: "에디터 도구" }));
+    fireEvent.click(editorDialog.getByLabelText("삽입"));
+    expect(screen.getByTestId("native-editor-output").textContent).not.toContain("javascript:");
+    fireEvent.click(editorDialog.getByLabelText("취소"));
+
+    fireEvent.click(screen.getByLabelText("링크"));
+    editorDialog = within(screen.getByRole("dialog", { name: "에디터 도구" }));
+    fireEvent.change(screen.getByLabelText("https://..."), {
+      target: { value: 'https://example.com/" onerror="alert(1)' },
+    });
+    fireEvent.click(editorDialog.getByLabelText("삽입"));
+    expect(screen.getByTestId("native-editor-output").textContent).toContain(
+      "https://example.com/%22%20onerror=%22alert(1)"
+    );
+    expect(screen.getByTestId("native-editor-output").textContent).not.toContain('" onerror="');
+
+    fireEvent.click(screen.getByLabelText("YouTube"));
+    fireEvent.change(screen.getByLabelText("YouTube URL"), {
+      target: { value: "https://youtu.be/dQw4w9WgXcQ" },
+    });
+    fireEvent.click(screen.getByLabelText("삽입"));
+    expect(screen.getByTestId("native-editor-output").textContent).toContain(
+      "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ"
+    );
+
+    fireEvent.click(screen.getByLabelText("HTML"));
+    expect(screen.getByTestId("native-editor").getAttribute("data-mode")).toBe("code");
+    expect(screen.getByTestId("native-editor-view").textContent).toContain("텍스트");
+    expect(screen.getByTestId("native-editor-input").getAttribute("data-selection")).toBeNull();
+
+    render(
+      <domNative.EditorView
+        value={undefined as unknown as string}
+        testID="native-editor-empty-view"
+      />
+    );
+    expect(screen.getByTestId("native-editor-empty-view").textContent).toBe("");
+  });
 });
 
 function TestPressable({
@@ -2031,7 +2218,11 @@ function TestTextInput(
       data-labelledby={props.accessibilityLabelledBy as string | undefined}
       data-describedby={props.accessibilityDescribedBy as string | undefined}
       data-testid={props.testID as string | undefined}
-      readOnly
+      data-selection={props.selection == null ? undefined : JSON.stringify(props.selection)}
+      onChange={(event) => {
+        (props.onChangeText as ((value: string) => void) | undefined)?.(event.target.value);
+      }}
+      readOnly={props.editable === false}
       value={(props.value ?? props.defaultValue ?? "") as string}
     />
   );
@@ -2064,6 +2255,7 @@ function TestView({
       data-position={props["data-position"] as string | undefined}
       data-ordinal={props["data-ordinal"] as string | undefined}
       data-open={props["data-open"] as string | undefined}
+      data-mode={props["data-mode"] as string | undefined}
       aria-label={props.accessibilityLabel as string | undefined}
       aria-multiselectable={props["aria-multiselectable"] as boolean | undefined}
     >
