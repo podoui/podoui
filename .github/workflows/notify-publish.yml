@@ -33,9 +33,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # 릴리스 게이트: check(타입/린트/테스트/포맷) → build → verify
-      - run: pnpm check
+      # 클린 체크아웃에서 podo-ui 하위 경로를 해석할 수 있도록 먼저 빌드한다.
       - run: pnpm build
+      - run: pnpm check
       - run: pnpm release:verify
 
       - name: Publish to npm (OIDC)

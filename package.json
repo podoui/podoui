@@ -30,8 +30,8 @@
     "changeset:dry-run": "changeset status --verbose && pnpm --filter './packages/*' pack --dry-run",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "pnpm check && pnpm build && pnpm release:verify && pnpm changeset:dry-run && pnpm --filter podo-ui publish --access public",
-    "prepublishOnly": "pnpm check && pnpm build && pnpm release:verify && pnpm changeset:dry-run"
+    "release": "pnpm build && pnpm check && pnpm release:verify && pnpm changeset:dry-run && pnpm --filter podo-ui publish --access public",
+    "prepublishOnly": "pnpm build && pnpm check && pnpm release:verify && pnpm changeset:dry-run"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
