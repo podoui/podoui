@@ -106,6 +106,14 @@ For Agy print mode, put `--print-timeout` after the prompt.
 agy --sandbox --print "Strictly review the current Podo v2 repository scope. Do not edit files. Return PASS only if the scope can be checked in todo.md." --print-timeout 10m
 ```
 
+## Package Publishing
+
+- Publish `podo-ui` through `.github/workflows/notify-publish.yml`, which is registered as the npm Trusted Publisher for `podoui/podoui`.
+- Prefer the GitHub Actions OIDC flow over local npm tokens or interactive `npm login`; it does not require a stored npm token or OTP.
+- After the release commit is pushed, create and push the matching `v*` tag (for example, `v2.3.1`) or manually dispatch the `Publish podo-ui` workflow.
+- Monitor the workflow through completion, verify the published version and integrity from the npm registry, then reinstall that exact registry version in downstream test projects.
+- Do not rename `notify-publish.yml` without first updating the Trusted Publisher configuration on npm.
+
 ## Documentation Rules
 
 - Keep `plan.md` as architecture intent.
