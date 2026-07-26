@@ -27,7 +27,6 @@ const INTRO =
 
 const USAGE_TABS: CodeTab[] = [
   { target: "react", label: "React", code: `<Button theme="solid-primary">Save</Button>` },
-  { target: "web", label: "Web", code: `<podo-button theme="solid-primary">Save</podo-button>` },
   {
     target: "hono",
     label: "Hono",

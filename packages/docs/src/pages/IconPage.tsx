@@ -26,11 +26,6 @@ const USAGE_TABS: CodeTab[] = [
     code: `import { Icon } from "podo-ui/react";\nimport "podo-ui/icons.css";\n\n<Icon name="search" decorative={false} aria-label="검색" />`,
   },
   {
-    target: "web",
-    label: "Web",
-    code: `import { registerPodoElements } from "podo-ui/web";\nimport "podo-ui/icons.css";\n\nregisterPodoElements();\n\n<podo-icon name="search" decorative="false" aria-label="검색"></podo-icon>`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code: `import { Icon } from "podo-ui/hono";\n\n{/* 서버가 생성된 PodoIcons.css와 폰트 파일도 제공해야 해요. */}\n<Icon name="search" decorative={false} aria-label="검색" />`,

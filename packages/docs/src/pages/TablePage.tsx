@@ -23,16 +23,6 @@ const USAGE_TABS: CodeTab[] = [
       `</Table>`,
   },
   {
-    target: "web",
-    label: "Web",
-    code:
-      `<!-- 표 시맨틱 보존을 위해 커스텀 엘리먼트 대신 클래스로 제공돼요 -->\n` +
-      `<!-- 선택 열은 셀에 podo-checkbox를 직접 조합해요 -->\n` +
-      `<table class="podo-table" data-type="horizon">\n` +
-      `  <thead>...</thead>\n  <tbody>...</tbody>\n` +
-      `</table>`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code:

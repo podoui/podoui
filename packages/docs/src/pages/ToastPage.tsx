@@ -26,14 +26,6 @@ const USAGE_TABS: CodeTab[] = [
       `toast.danger("저장에 실패했어요", { manual: true }); // X를 눌러야 닫혀요`,
   },
   {
-    target: "web",
-    label: "Web",
-    code:
-      `<!-- 카드 컴포넌트. 큐/자동 소멸은 React 전용이라 직접 배치해요 -->\n` +
-      `<podo-toast state="success" closable>저장됐어요</podo-toast>\n` +
-      `<!-- closable X 클릭 시 podo-close 이벤트 -->`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code:

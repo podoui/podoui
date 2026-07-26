@@ -2066,13 +2066,21 @@ describe("@podoui/native", () => {
     ).toBe(6);
 
     fireEvent.click(screen.getByTestId("native-time"));
-    fireEvent.click(within(screen.getByTestId("native-time-time")).getByLabelText("시간 증가"));
+    const nativeTime = within(screen.getByTestId("native-time-time"));
+    expect(screen.getByRole("dialog", { name: "시간 선택" })).toBeDefined();
+    expect(nativeTime.getByText("시간")).toBeDefined();
+    fireEvent.click(nativeTime.getByLabelText("12시"));
+    expect(times).toHaveLength(0);
+    fireEvent.click(nativeTime.getByLabelText("선택"));
     expect(times.at(-1)?.time?.hour).toBe(12);
 
     fireEvent.click(screen.getByTestId("native-limited-time"));
     const limited = within(screen.getByTestId("native-limited-time-time"));
-    fireEvent.click(limited.getByLabelText("분 감소"));
-    fireEvent.click(limited.getByLabelText("분 감소"));
+    fireEvent.click(limited.getByLabelText("09시"));
+    fireEvent.click(limited.getByLabelText("45분"));
+    fireEvent.click(
+      within(screen.getByTestId("native-limited-time-dialog")).getByLabelText("적용")
+    );
     expect(limitedTimes.at(-1)?.time).toEqual({ hour: 9, minute: 45 });
 
     fireEvent.click(screen.getByTestId("native-reversed-period"));

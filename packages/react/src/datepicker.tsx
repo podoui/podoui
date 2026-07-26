@@ -1245,14 +1245,18 @@ const DatePicker: React.FC<DatePickerProps> = ({
   );
 
   const shouldShowActions = showActions ?? (mode === "period" && type !== "hour");
-  // 날짜 선택 시에만 달력 드롭다운 표시 (시/분은 native select 사용)
   const isCalendarOpen = selectingPart === "date" || selectingPart === "endDate";
+  const isTimeOpen =
+    selectingPart === "hour" ||
+    selectingPart === "minute" ||
+    selectingPart === "endHour" ||
+    selectingPart === "endMinute";
   // 적용/초기화 버튼: 달력이 열려 있거나, 커밋되지 않은 임시 변경이 있을 때 표시
   // (시간 전용 패널은 달력을 열지 않으므로 pending 변경만으로도 노출되어야 함)
   const isActionsVisible = shouldShowActions && (isCalendarOpen || hasPendingChanges);
   // disabled는 렌더 단계에서도 드롭다운을 항상 거부한다 — 열린 채 disabled로
   // 바뀌어도 정리 effect가 돌기 전 한 프레임조차 상호작용 UI가 남지 않는다.
-  const isDropdownOpen = !disabled && (isCalendarOpen || isActionsVisible);
+  const isDropdownOpen = !disabled && (isCalendarOpen || isTimeOpen || isActionsVisible);
 
   const updateDropdownPlacement = useCallback(() => {
     if (!inputRef.current) return;
@@ -1316,6 +1320,22 @@ const DatePicker: React.FC<DatePickerProps> = ({
     };
   }, [isDropdownOpen, portal, updateDropdownPlacement]);
 
+  // 시간 패널을 다시 열었을 때 현재 선택값이 보이도록 두 스크롤 열을 정렬한다.
+  useEffect(() => {
+    if (!isTimeOpen) return;
+    const frame = requestAnimationFrame(() => {
+      dropdownRef.current
+        ?.querySelectorAll<HTMLElement>("[data-time-selected='true']")
+        .forEach((item) => {
+          const column = item.parentElement;
+          if (column) {
+            column.scrollTop = Math.max(0, item.offsetTop - column.clientHeight / 2 + 21);
+          }
+        });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [isTimeOpen, selectingPart, tempValue.time, tempValue.endTime]);
+
   // 바깥 클릭으로 닫기 — Escape와 동일한 취소 의미론.
   // 커밋되지 않은 임시 변경을 버려 pending 상태를 정리해야 액션 버튼이 노출된
   // 드롭다운(hasPendingChanges)도 닫힌다. pending이 없는 일반 케이스에서는
@@ -1345,7 +1365,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
       setTempValue(committedValue);
       setHasPendingChanges(false);
       setSelectingPart(null);
-      const trigger = inputRef.current?.querySelector<HTMLElement>("button, select");
+      const trigger = inputRef.current?.querySelector<HTMLElement>(
+        "button:not([tabindex='-1']), select:not([tabindex='-1'])"
+      );
       trigger?.focus();
     };
 
@@ -1712,7 +1734,15 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
   const handlePartClick = (part: SelectingPart) => {
     if (disabled) return;
-    setSelectingPart(selectingPart === part ? null : part);
+    if (selectingPart === part) {
+      if (part === "hour" || part === "minute" || part === "endHour" || part === "endMinute") {
+        setTempValue(committedValue);
+        setHasPendingChanges(false);
+      }
+      setSelectingPart(null);
+      return;
+    }
+    setSelectingPart(part);
   };
 
   const displayValue = shouldShowActions ? tempValue : committedValue;
@@ -1786,6 +1816,128 @@ const DatePicker: React.FC<DatePickerProps> = ({
     Math.min(index * hourStep, 23)
   ).filter((hour, index, hours) => index === 0 || hour !== hours[index - 1]);
 
+  const isEndTimePart = (part: SelectingPart) => part === "endHour" || part === "endMinute";
+
+  const getTimeForPart = (part: SelectingPart) =>
+    isEndTimePart(part) ? tempValue.endTime : tempValue.time;
+
+  const getDateForPart = (part: SelectingPart) =>
+    isEndTimePart(part) ? tempValue.endDate : tempValue.date;
+
+  const isHourOptionDisabled = (part: SelectingPart, hour: number): boolean => {
+    if (type === "hour" && disabledHours?.includes(hour)) return true;
+    const currentDate = getDateForPart(part);
+    if (!currentDate) return false;
+    const minLimit = minDate ? extractDateTimeLimit(minDate) : null;
+    const maxLimit = maxDate ? extractDateTimeLimit(maxDate) : null;
+    if (minLimit?.time && isSameDay(currentDate, minLimit.date) && hour < minLimit.time.hour) {
+      return true;
+    }
+    if (maxLimit?.time && isSameDay(currentDate, maxLimit.date) && hour > maxLimit.time.hour) {
+      return true;
+    }
+    return false;
+  };
+
+  const isMinuteOptionDisabled = (part: SelectingPart, minute: number): boolean => {
+    const currentDate = getDateForPart(part);
+    const currentTime = getTimeForPart(part);
+    if (!currentDate || !currentTime) return false;
+    const minLimit = minDate ? extractDateTimeLimit(minDate) : null;
+    const maxLimit = maxDate ? extractDateTimeLimit(maxDate) : null;
+    if (
+      minLimit?.time &&
+      isSameDay(currentDate, minLimit.date) &&
+      currentTime.hour === minLimit.time.hour &&
+      minute < minLimit.time.minute
+    ) {
+      return true;
+    }
+    if (
+      maxLimit?.time &&
+      isSameDay(currentDate, maxLimit.date) &&
+      currentTime.hour === maxLimit.time.hour &&
+      minute > maxLimit.time.minute
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const calculateTimeChange = (
+    part: SelectingPart,
+    unit: "hour" | "minute",
+    selected: number
+  ): TimeValue => {
+    if (type === "hour") return { hour: selected, minute: 0 };
+
+    const currentDate = getDateForPart(part);
+    const currentTime = getTimeForPart(part);
+    const minLimit = minDate ? extractDateTimeLimit(minDate) : null;
+    const maxLimit = maxDate ? extractDateTimeLimit(maxDate) : null;
+    let newHour = unit === "hour" ? selected : (currentTime?.hour ?? 0);
+    let newMinute = unit === "minute" ? selected : (currentTime?.minute ?? 0);
+
+    if (currentDate) {
+      if (
+        minLimit?.time &&
+        isSameDay(currentDate, minLimit.date) &&
+        newHour === minLimit.time.hour &&
+        newMinute < minLimit.time.minute
+      ) {
+        const carried = ceilTimeToStep(newHour, minLimit.time.minute, minuteStep);
+        newHour = carried.hour;
+        newMinute = carried.minute;
+      }
+      if (
+        maxLimit?.time &&
+        isSameDay(currentDate, maxLimit.date) &&
+        newHour === maxLimit.time.hour &&
+        newMinute > maxLimit.time.minute
+      ) {
+        newMinute = Math.floor(maxLimit.time.minute / minuteStep) * minuteStep;
+      }
+    }
+
+    if (unit === "hour" && newMinute % minuteStep !== 0) {
+      newMinute = Math.floor(newMinute / minuteStep) * minuteStep;
+    }
+
+    return currentDate
+      ? clampTimeToLimits(
+          currentDate,
+          { hour: newHour, minute: newMinute },
+          minDate,
+          maxDate,
+          minuteStep
+        )
+      : { hour: newHour, minute: newMinute };
+  };
+
+  const updateTime = (
+    part: SelectingPart,
+    unit: "hour" | "minute",
+    selected: number,
+    legacySelect = false
+  ) => {
+    if (disabled) return;
+    const nextTime = calculateTimeChange(part, unit, selected);
+    const nextValue = isEndTimePart(part)
+      ? { ...tempValue, endTime: nextTime }
+      : { ...tempValue, time: nextTime };
+    setTempValue(nextValue);
+
+    // 숨겨진 native select는 기존 폼/테스트 호환 계약을 유지한다. 새 패널 경로는
+    // 피그마의 명시적인 `선택` 버튼을 눌렀을 때만 커밋한다.
+    if (!legacySelect) {
+      setHasPendingChanges(true);
+    } else if (type === "hour" || !shouldShowActions) {
+      commitValue(nextValue);
+    } else {
+      setHasPendingChanges(true);
+    }
+  };
+
   // Helper to render hour select
   const renderHourSelect = (
     time: TimeValue | undefined,
@@ -1796,96 +1948,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
     const hour = time?.hour ?? 0;
     const hours = isHourOnly ? hourOptions : Array.from({ length: 24 }, (_, i) => i);
     const isEnd = part === "endHour";
-    const currentDate = isEnd ? tempValue.endDate : tempValue.date;
-
-    // minDate/maxDate 시간 제한 계산
-    const minLimit = minDate ? extractDateTimeLimit(minDate) : null;
-    const maxLimit = maxDate ? extractDateTimeLimit(maxDate) : null;
-
-    const isHourDisabled = (h: number): boolean => {
-      if (isHourOnly && disabledHours?.includes(h)) return true;
-      if (!currentDate) return false;
-
-      // minDate와 같은 날짜인 경우
-      if (minLimit?.time && isSameDay(currentDate, minLimit.date)) {
-        if (h < minLimit.time.hour) return true;
-      }
-      // maxDate와 같은 날짜인 경우
-      if (maxLimit?.time && isSameDay(currentDate, maxLimit.date)) {
-        if (h > maxLimit.time.hour) return true;
-      }
-      return false;
-    };
-
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const selectedHour = parseInt(e.target.value, 10);
-
-      if (isHourOnly) {
-        const nextTime = { hour: selectedHour, minute: 0 };
-        const nextValue = isEnd
-          ? { ...tempValue, endTime: nextTime }
-          : { ...tempValue, time: nextTime };
-        setTempValue(nextValue);
-        commitValue(nextValue);
-        return;
-      }
-
-      const currentTime = isEnd ? tempValue.endTime : tempValue.time;
-      let newHour = selectedHour;
-      let newMinute = currentTime?.minute ?? 0;
-
-      // 시간 변경 시 분이 범위를 벗어나면 자동 보정
-      if (currentDate) {
-        // minDate와 같은 날짜이고 선택한 시간이 minLimit 시간과 같은 경우
-        if (
-          minLimit?.time &&
-          isSameDay(currentDate, minLimit.date) &&
-          selectedHour === minLimit.time.hour
-        ) {
-          if (newMinute < minLimit.time.minute) {
-            // minuteStep에 맞춰 올림 (60분 오버플로는 다음 시간으로 자리올림)
-            const carried = ceilTimeToStep(selectedHour, minLimit.time.minute, minuteStep);
-            newHour = carried.hour;
-            newMinute = carried.minute;
-          }
-        }
-        // maxDate와 같은 날짜이고 (자리올림 반영 후) 시간이 maxLimit 시간과 같은 경우
-        if (
-          maxLimit?.time &&
-          isSameDay(currentDate, maxLimit.date) &&
-          newHour === maxLimit.time.hour
-        ) {
-          if (newMinute > maxLimit.time.minute) {
-            // minuteStep에 맞춰 내림
-            newMinute = Math.floor(maxLimit.time.minute / minuteStep) * minuteStep;
-          }
-        }
-      }
-
-      // minuteStep에 맞지 않는 분 값 보정
-      if (newMinute % minuteStep !== 0) {
-        newMinute = Math.floor(newMinute / minuteStep) * minuteStep;
-      }
-
-      // 스텝 보정 결과가 min/max 시간 창을 벗어났으면 창 안으로 클램프한다
-      const newTime: TimeValue = currentDate
-        ? clampTimeToLimits(
-            currentDate,
-            { hour: newHour, minute: newMinute },
-            minDate,
-            maxDate,
-            minuteStep
-          )
-        : { hour: newHour, minute: newMinute };
-
-      const newValue = isEnd ? { ...tempValue, endTime: newTime } : { ...tempValue, time: newTime };
-      setTempValue(newValue);
-      if (shouldShowActions) {
-        // 적용 버튼으로 커밋 — 시간 패널에서도 액션 영역이 노출되도록 표시
-        setHasPendingChanges(true);
-      } else {
-        commitValue(newValue);
-      }
+      updateTime(part, "hour", parseInt(e.target.value, 10), true);
     };
 
     const displayHour = hours.includes(hour)
@@ -1897,21 +1961,40 @@ const DatePicker: React.FC<DatePickerProps> = ({
         ) ?? 0);
 
     return (
-      <select
-        className={`${styles.timeSelect} ${isHourOnly ? styles.hourSelect : ""} ${isPlaceholder ? styles.placeholder : ""}`}
-        value={displayHour}
-        onChange={handleChange}
-        disabled={disabled}
-        aria-label={
-          isHourOnly ? (isEnd ? "종료 시간 선택" : "시간 선택") : isEnd ? "종료 시 선택" : "시 선택"
-        }
-      >
-        {hours.map((h) => (
-          <option key={h} value={h} disabled={isHourDisabled(h)}>
-            {isHourOnly ? formatHourLabel(h) : String(h).padStart(2, "0")}
-          </option>
-        ))}
-      </select>
+      <>
+        <select
+          className={styles.timeNativeSelect}
+          value={displayHour}
+          onChange={handleChange}
+          disabled={disabled}
+          tabIndex={-1}
+          aria-label={
+            isHourOnly
+              ? isEnd
+                ? "종료 시간 선택"
+                : "시간 선택"
+              : isEnd
+                ? "종료 시 선택"
+                : "시 선택"
+          }
+        >
+          {hours.map((h) => (
+            <option key={h} value={h} disabled={isHourOptionDisabled(part, h)}>
+              {isHourOnly ? formatHourLabel(h) : String(h).padStart(2, "0")}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className={`${styles.timeTrigger} ${isHourOnly ? styles.hourSelect : ""} ${isPlaceholder ? styles.placeholder : ""} ${selectingPart === part ? styles.active : ""}`}
+          onClick={() => handlePartClick(part)}
+          disabled={disabled}
+          aria-label={isEnd ? "종료 시 선택 열기" : "시 선택 열기"}
+          aria-expanded={selectingPart === part}
+        >
+          {isHourOnly ? formatHourLabel(displayHour) : String(displayHour).padStart(2, "0")}
+        </button>
+      </>
     );
   };
 
@@ -1925,87 +2008,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
     // minuteStep에 따라 분 옵션 생성 (0, step, step*2, ...)
     const minutes = Array.from({ length: Math.ceil(60 / minuteStep) }, (_, i) => i * minuteStep);
     const isEnd = part === "endMinute";
-    const currentDate = isEnd ? tempValue.endDate : tempValue.date;
-    const currentTime = isEnd ? tempValue.endTime : tempValue.time;
-
-    // minDate/maxDate 시간 제한 계산
-    const minLimit = minDate ? extractDateTimeLimit(minDate) : null;
-    const maxLimit = maxDate ? extractDateTimeLimit(maxDate) : null;
-
-    const isMinuteDisabled = (m: number): boolean => {
-      if (!currentDate || !currentTime) return false;
-
-      // minDate와 같은 날짜이고 같은 시간인 경우
-      if (
-        minLimit?.time &&
-        isSameDay(currentDate, minLimit.date) &&
-        currentTime.hour === minLimit.time.hour
-      ) {
-        if (m < minLimit.time.minute) return true;
-      }
-      // maxDate와 같은 날짜이고 같은 시간인 경우
-      if (
-        maxLimit?.time &&
-        isSameDay(currentDate, maxLimit.date) &&
-        currentTime.hour === maxLimit.time.hour
-      ) {
-        if (m > maxLimit.time.minute) return true;
-      }
-      return false;
-    };
-
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      let selectedMinute = parseInt(e.target.value, 10);
-      const selectedHour = currentTime?.hour ?? 0;
-      let newHour = selectedHour;
-
-      // 분 선택 시 범위 자동 보정
-      if (currentDate) {
-        // minDate와 같은 날짜이고 같은 시간인 경우
-        if (
-          minLimit?.time &&
-          isSameDay(currentDate, minLimit.date) &&
-          selectedHour === minLimit.time.hour
-        ) {
-          if (selectedMinute < minLimit.time.minute) {
-            // minuteStep에 맞춰 올림 (60분 오버플로는 다음 시간으로 자리올림)
-            const carried = ceilTimeToStep(selectedHour, minLimit.time.minute, minuteStep);
-            newHour = carried.hour;
-            selectedMinute = carried.minute;
-          }
-        }
-        // maxDate와 같은 날짜이고 (자리올림 반영 후) 같은 시간인 경우
-        if (
-          maxLimit?.time &&
-          isSameDay(currentDate, maxLimit.date) &&
-          newHour === maxLimit.time.hour
-        ) {
-          if (selectedMinute > maxLimit.time.minute) {
-            // minuteStep에 맞춰 내림
-            selectedMinute = Math.floor(maxLimit.time.minute / minuteStep) * minuteStep;
-          }
-        }
-      }
-
-      // 스텝 보정 결과가 min/max 시간 창을 벗어났으면 창 안으로 클램프한다
-      const newTime: TimeValue = currentDate
-        ? clampTimeToLimits(
-            currentDate,
-            { hour: newHour, minute: selectedMinute },
-            minDate,
-            maxDate,
-            minuteStep
-          )
-        : { hour: newHour, minute: selectedMinute };
-
-      const newValue = isEnd ? { ...tempValue, endTime: newTime } : { ...tempValue, time: newTime };
-      setTempValue(newValue);
-      if (shouldShowActions) {
-        // 적용 버튼으로 커밋 — 시간 패널에서도 액션 영역이 노출되도록 표시
-        setHasPendingChanges(true);
-      } else {
-        commitValue(newValue);
-      }
+      updateTime(part, "minute", parseInt(e.target.value, 10), true);
     };
 
     // 커밋된 값이 minuteStep에 정렬돼 있지 않을 수 있다 — clampTimeToLimits가
@@ -2018,19 +2022,170 @@ const DatePicker: React.FC<DatePickerProps> = ({
       : [...minutes, minute].sort((a, b) => a - b);
 
     return (
-      <select
-        className={`${styles.timeSelect} ${isPlaceholder ? styles.placeholder : ""}`}
-        value={minute}
-        onChange={handleChange}
-        disabled={disabled}
-        aria-label={isEnd ? "종료 분 선택" : "분 선택"}
-      >
-        {optionMinutes.map((m) => (
-          <option key={m} value={m} disabled={isMinuteDisabled(m)}>
-            {String(m).padStart(2, "0")}
-          </option>
-        ))}
-      </select>
+      <>
+        <select
+          className={styles.timeNativeSelect}
+          value={minute}
+          onChange={handleChange}
+          disabled={disabled}
+          tabIndex={-1}
+          aria-label={isEnd ? "종료 분 선택" : "분 선택"}
+        >
+          {optionMinutes.map((m) => (
+            <option key={m} value={m} disabled={isMinuteOptionDisabled(part, m)}>
+              {String(m).padStart(2, "0")}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className={`${styles.timeTrigger} ${isPlaceholder ? styles.placeholder : ""} ${selectingPart === part ? styles.active : ""}`}
+          onClick={() => handlePartClick(part)}
+          disabled={disabled}
+          aria-label={isEnd ? "종료 분 선택 열기" : "분 선택 열기"}
+          aria-expanded={selectingPart === part}
+        >
+          {String(minute).padStart(2, "0")}
+        </button>
+      </>
+    );
+  };
+
+  const renderTimePicker = () => {
+    const part = selectingPart;
+    const isEnd = isEndTimePart(part);
+    const hourPart: SelectingPart = isEnd ? "endHour" : "hour";
+    const minutePart: SelectingPart = isEnd ? "endMinute" : "minute";
+    const time = getTimeForPart(part) ?? { hour: 0, minute: 0 };
+    const hours = type === "hour" ? hourOptions : Array.from({ length: 24 }, (_, i) => i);
+    const baseMinutes = Array.from(
+      { length: Math.ceil(60 / minuteStep) },
+      (_, i) => i * minuteStep
+    );
+    const minutes = baseMinutes.includes(time.minute)
+      ? baseMinutes
+      : [...baseMinutes, time.minute].sort((a, b) => a - b);
+
+    const selectNow = () => {
+      const now = new Date();
+      let hour =
+        type === "hour"
+          ? hours.reduce(
+              (closest, option) =>
+                Math.abs(option - now.getHours()) < Math.abs(closest - now.getHours())
+                  ? option
+                  : closest,
+              hours[0] ?? 0
+            )
+          : now.getHours();
+      if (type === "hour" && isHourOptionDisabled(hourPart, hour)) {
+        hour = hours.find((option) => !isHourOptionDisabled(hourPart, option)) ?? hour;
+      }
+      const minute = type === "hour" ? 0 : Math.floor(now.getMinutes() / minuteStep) * minuteStep;
+      const currentDate = getDateForPart(part);
+      const nextTime = currentDate
+        ? clampTimeToLimits(currentDate, { hour, minute }, minDate, maxDate, minuteStep)
+        : { hour, minute };
+      setTempValue((current) =>
+        isEnd ? { ...current, endTime: nextTime } : { ...current, time: nextTime }
+      );
+      setHasPendingChanges(true);
+    };
+
+    const column = (
+      label: string,
+      values: number[],
+      selected: number,
+      unit: "hour" | "minute",
+      unitPart: SelectingPart
+    ) => {
+      const isOptionDisabled = (value: number) =>
+        unit === "hour"
+          ? isHourOptionDisabled(unitPart, value)
+          : isMinuteOptionDisabled(unitPart, value);
+      const enabledValues = values.filter((value) => !isOptionDisabled(value));
+      const focusableValue = enabledValues.includes(selected) ? selected : enabledValues[0];
+
+      const moveOptionFocus = (event: React.KeyboardEvent<HTMLButtonElement>, value: number) => {
+        if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        const currentIndex = enabledValues.indexOf(value);
+        let nextValue: number | undefined;
+        if (event.key === "Home") nextValue = enabledValues[0];
+        else if (event.key === "End") nextValue = enabledValues.at(-1);
+        else {
+          const direction = event.key === "ArrowDown" ? 1 : -1;
+          const nextIndex = Math.min(
+            enabledValues.length - 1,
+            Math.max(0, currentIndex + direction)
+          );
+          nextValue = enabledValues[nextIndex];
+        }
+        if (nextValue === undefined) return;
+        const nextOption = event.currentTarget.parentElement?.querySelector<HTMLButtonElement>(
+          `[data-time-value="${nextValue}"]`
+        );
+        updateTime(unitPart, unit, nextValue);
+        nextOption?.focus();
+      };
+
+      return (
+        <div className={styles.timeWrapper}>
+          <div className={styles.timeLabel}>{label}</div>
+          <div
+            className={styles.timeColumn}
+            role="listbox"
+            aria-label={`${isEnd ? "종료 " : ""}${label} 선택`}
+          >
+            {values.map((value) => {
+              const optionDisabled = isOptionDisabled(value);
+              const optionSelected = selected === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  role="option"
+                  className={`${styles.timeItem} ${optionSelected ? styles.selected : ""}`}
+                  aria-selected={optionSelected}
+                  tabIndex={value === focusableValue ? 0 : -1}
+                  disabled={optionDisabled}
+                  data-time-selected={optionSelected ? "true" : undefined}
+                  data-time-value={value}
+                  onClick={() => updateTime(unitPart, unit, value)}
+                  onKeyDown={(event) => moveOptionFocus(event, value)}
+                >
+                  {String(value).padStart(2, "0")}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <div className={styles.timeSelector}>
+        <div className={styles.timeColumns}>
+          {column("시간", hours, time.hour, "hour", hourPart)}
+          {type === "hour" ? null : column("분", minutes, time.minute, "minute", minutePart)}
+        </div>
+        <div className={styles.timeController}>
+          <button
+            type="button"
+            className={`${styles.timeControllerButton} ${styles.reset}`}
+            onClick={selectNow}
+          >
+            지금
+          </button>
+          <button
+            type="button"
+            className={`${styles.timeControllerButton} ${styles.apply}`}
+            onClick={handleApply}
+          >
+            선택
+          </button>
+        </div>
+      </div>
     );
   };
 
@@ -2172,7 +2327,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
   // Render dropdown content based on selecting part
   const renderDropdownContent = () => {
-    // 날짜 선택만 드롭다운으로 표시 (시/분은 native select 사용)
+    if (isTimeOpen) return renderTimePicker();
+
     if (selectingPart === "date" || selectingPart === "endDate") {
       // period 모드: 두 개의 달력을 나란히 표시
       if (mode === "period") {
@@ -2265,7 +2421,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   const dropdownContents = (
     <>
       {renderDropdownContent()}
-      {isActionsVisible && (
+      {isActionsVisible && !isTimeOpen && (
         <div className={styles.bottomActions}>
           <span className={styles.periodText}>
             {mode === "period" && (tempValue.date || tempValue.time) ? formatPeriodText() : ""}
@@ -2304,7 +2460,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
     const dropdown = (
       <div
         ref={dropdownRef}
-        className={`${styles.dropdown} ${portal ? styles.portalDropdown : ""} ${align === "right" ? styles.right : ""} ${upClass}`}
+        className={`${styles.dropdown} ${isTimeOpen ? styles.timeDropdown : ""} ${portal ? styles.portalDropdown : ""} ${align === "right" ? styles.right : ""} ${upClass}`}
         style={
           portal
             ? {
@@ -2328,7 +2484,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
             : commonStyle
         }
         role="dialog"
-        aria-label="날짜 선택"
+        aria-label={isTimeOpen ? "시간 선택" : "날짜 선택"}
       >
         {dropdownContents}
       </div>

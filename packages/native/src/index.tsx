@@ -3739,7 +3739,9 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
       const hourStep = props.hourStep ?? 1;
       const hasCalendar = type === "date" || type === "datetime";
       const hasTime = type === "time" || type === "datetime" || type === "hour";
-      const showActions = props.showActions ?? mode === "period";
+      // 시간 선택은 Figma의 명시적 `선택`/`적용` 단계를 따른다. 날짜 전용 instant만
+      // 기존처럼 날짜를 누르는 즉시 커밋한다.
+      const showActions = props.showActions ?? (mode === "period" || hasTime);
       const initial = props.value ?? props.defaultValue ?? {};
       const [internalValue, setInternalValue] = useState<NativeDatePickerValue>(initial);
       const currentValue = props.value ?? internalValue;
@@ -3805,16 +3807,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         }
         updateDraft(withClampedTime({ ...draft, date }, false), !hasTime);
       };
-      const nextEnabledHour = (hour: number, delta: number): number => {
-        const blocked = new Set(props.disabledHours ?? []);
-        let candidate = hour;
-        for (let count = 0; count < 24; count += 1) {
-          candidate = (candidate + delta + 24) % 24;
-          if (!blocked.has(candidate)) return candidate;
-        }
-        return hour;
-      };
-      const changeTime = (end: boolean, unit: "hour" | "minute", delta: number) => {
+      const selectTime = (end: boolean, unit: "hour" | "minute", selected: number) => {
         const key = end ? "endTime" : "time";
         const date = end ? draft.endDate : draft.date;
         const previous = draft[key] ?? { hour: 0, minute: 0 };
@@ -3822,20 +3815,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           unit === "hour"
             ? {
                 ...previous,
-                hour: nextEnabledHour(previous.hour, delta * hourStep),
+                hour: selected,
               }
-            : (() => {
-                const minutes =
-                  (previous.hour * 60 + previous.minute + delta * minuteStep + 24 * 60) % (24 * 60);
-                return { hour: Math.floor(minutes / 60), minute: minutes % 60 };
-              })();
+            : { ...previous, minute: selected };
         const next = nativeClampTime(date, candidate, props, type === "hour" ? 60 : minuteStep);
-        const value = { ...draft, [key]: next };
-        if (!showActions && mode === "instant") {
-          emit(value, false);
-        } else {
-          setDraft(value);
-        }
+        setDraft({ ...draft, [key]: next });
       };
       const triggerText = (end: boolean): string => {
         const value = end
@@ -3914,49 +3898,206 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         );
       const renderTime = (end: boolean) => {
         const time = (end ? draft.endTime : draft.time) ?? { hour: 0, minute: 0 };
-        const unitButton = (label: string, onPress: () => void, action: string) =>
+        const hours = Array.from(
+          { length: type === "hour" ? Math.ceil(24 / hourStep) : 24 },
+          (_, index) => (type === "hour" ? index * hourStep : index)
+        ).filter((hour) => hour < 24);
+        const minutes = Array.from(
+          { length: Math.ceil(60 / minuteStep) },
+          (_, index) => index * minuteStep
+        );
+        const selectedDate = end ? draft.endDate : draft.date;
+        const minTime = nativeLimitTime(props.minDate, selectedDate);
+        const maxTime = nativeLimitTime(props.maxDate, selectedDate);
+        const optionDisabled = (unit: "hour" | "minute", value: number) => {
+          if (unit === "hour") {
+            if (type === "hour" && props.disabledHours?.includes(value)) return true;
+            return Boolean((minTime && value < minTime.hour) || (maxTime && value > maxTime.hour));
+          }
+          return Boolean(
+            (minTime && time.hour === minTime.hour && value < minTime.minute) ||
+            (maxTime && time.hour === maxTime.hour && value > maxTime.minute)
+          );
+        };
+        const TimeColumnHost = host.ScrollView ?? host.View;
+        const renderColumn = (
+          label: string,
+          values: number[],
+          selected: number,
+          unit: "hour" | "minute"
+        ) =>
+          createElement(
+            host.View,
+            {
+              style: { flex: 1, height: 262, minWidth: 0 },
+            },
+            createElement(
+              host.Text,
+              {
+                style: {
+                  color: semantic.textSubtil,
+                  fontSize: 16,
+                  lineHeight: 26,
+                  textAlign: "center",
+                },
+              },
+              label
+            ),
+            createElement(
+              TimeColumnHost,
+              {
+                accessibilityRole: "list",
+                accessibilityLabel: `${end ? "종료 " : ""}${label} 선택`,
+                showsVerticalScrollIndicator: false,
+                style: host.ScrollView ? { flex: 1 } : { flex: 1, gap: 4 },
+                ...(host.ScrollView
+                  ? {
+                      contentContainerStyle: { flexDirection: "column", gap: 4 },
+                      contentOffset: {
+                        x: 0,
+                        y: Math.max(0, values.indexOf(selected) * 46 - 84),
+                      },
+                    }
+                  : {}),
+              },
+              ...values.map((value) => {
+                const isSelected = selected === value;
+                const isDisabled = optionDisabled(unit, value);
+                const display =
+                  unit === "hour" && type === "hour"
+                    ? hourFormat === "12"
+                      ? `${value < 12 ? "오전" : "오후"} ${value % 12 || 12}시`
+                      : `${value}시`
+                    : String(value).padStart(2, "0");
+                return createElement(
+                  host.Pressable,
+                  {
+                    key: value,
+                    accessibilityRole: "button",
+                    accessibilityLabel: `${display}${unit === "minute" ? "분" : unit === "hour" && type !== "hour" ? "시" : ""}`,
+                    accessibilityState: { disabled: isDisabled, selected: isSelected },
+                    disabled: isDisabled,
+                    onPress: isDisabled ? undefined : () => selectTime(end, unit, value),
+                    style: {
+                      alignItems: "center",
+                      backgroundColor: "transparent",
+                      borderRadius: 8,
+                      justifyContent: "center",
+                      minHeight: 42,
+                      opacity: isDisabled ? 0.35 : 1,
+                      paddingHorizontal: 8,
+                    },
+                  },
+                  createElement(
+                    host.Text,
+                    {
+                      style: {
+                        color: isSelected ? semantic.foregroundPrimary : semantic.text,
+                        fontSize: 16,
+                        lineHeight: 26,
+                      },
+                    },
+                    display
+                  )
+                );
+              })
+            )
+          );
+        const selectNow = () => {
+          const now = new Date();
+          let hour =
+            type === "hour"
+              ? hours.reduce(
+                  (closest, option) =>
+                    Math.abs(option - now.getHours()) < Math.abs(closest - now.getHours())
+                      ? option
+                      : closest,
+                  hours[0] ?? 0
+                )
+              : now.getHours();
+          if (type === "hour" && props.disabledHours?.includes(hour)) {
+            hour = hours.find((option) => !props.disabledHours?.includes(option)) ?? hour;
+          }
+          const minute =
+            type === "hour" ? 0 : Math.floor(now.getMinutes() / minuteStep) * minuteStep;
+          const key = end ? "endTime" : "time";
+          const date = end ? draft.endDate : draft.date;
+          setDraft({
+            ...draft,
+            [key]: nativeClampTime(
+              date,
+              { hour, minute },
+              props,
+              type === "hour" ? 60 : minuteStep
+            ),
+          });
+        };
+        const standaloneTime = hasTime && !hasCalendar && mode === "instant";
+        const controllerButton = (label: string, onPress: () => void, primary = false) =>
           createElement(
             host.Pressable,
             {
               accessibilityRole: "button",
-              accessibilityLabel: action,
+              accessibilityLabel: label,
               onPress,
               style: {
                 alignItems: "center",
-                backgroundColor: semantic.foregroundGrayLight,
+                backgroundColor: primary
+                  ? semantic.foregroundPrimary
+                  : semantic.foregroundGrayLight,
                 borderRadius: 8,
-                height: 34,
+                flex: 1,
                 justifyContent: "center",
-                width: 34,
+                minHeight: 36,
+                paddingHorizontal: 16,
+                paddingVertical: 2,
               },
             },
-            createElement(host.Text, { style: { color: semantic.text, fontSize: 18 } }, label)
+            createElement(
+              host.Text,
+              {
+                style: {
+                  color: primary ? semantic.textStaticInvert : semantic.text,
+                  fontSize: 14,
+                  lineHeight: 22,
+                },
+              },
+              label
+            )
           );
         return createElement(
           host.View,
           {
             style: {
-              alignItems: "center",
-              flexDirection: "row",
-              gap: 8,
-              justifyContent: "center",
-              paddingVertical: 8,
+              height: standaloneTime ? 333 : 274,
+              overflow: "hidden",
             },
             testID: `${props.testID ?? "podo-datepicker"}-${end ? "end-" : ""}time`,
           },
-          unitButton("−", () => changeTime(end, "hour", -1), "시간 감소"),
           createElement(
-            host.Text,
-            { style: { color: semantic.text, fontSize: 18, fontWeight: "600", minWidth: 76 } },
-            type === "hour"
-              ? hourFormat === "12"
-                ? `${time.hour < 12 ? "오전" : "오후"} ${time.hour % 12 || 12}시`
-                : `${time.hour}시`
-              : nativeFormatTimePart(time, hourFormat)
+            host.View,
+            { style: { flexDirection: "row", height: 274, paddingTop: 12 } },
+            renderColumn("시간", hours, time.hour, "hour"),
+            type === "hour" ? null : renderColumn("분", minutes, time.minute, "minute")
           ),
-          unitButton("+", () => changeTime(end, "hour", 1), "시간 증가"),
-          type === "hour" ? null : unitButton("−", () => changeTime(end, "minute", -1), "분 감소"),
-          type === "hour" ? null : unitButton("+", () => changeTime(end, "minute", 1), "분 증가")
+          standaloneTime
+            ? createElement(
+                host.View,
+                {
+                  style: {
+                    borderColor: semantic.borderGray,
+                    borderTopWidth: 1,
+                    flexDirection: "row",
+                    gap: 12,
+                    height: 59,
+                    paddingHorizontal: 16,
+                    paddingVertical: 11,
+                  },
+                },
+                controllerButton("지금", selectNow),
+                controllerButton("선택", () => emit(draft, true), true)
+              )
+            : null
         );
       };
       const actionButton = (
@@ -4151,66 +4292,70 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             )
           : null;
 
-      const DialogHost = host.Modal && host.ScrollView ? host.ScrollView : host.View;
+      const standaloneTime = hasTime && !hasCalendar && mode === "instant";
+      const dialogScrollable = !standaloneTime && Boolean(host.Modal && host.ScrollView);
+      const DialogHost = dialogScrollable ? host.ScrollView! : host.View;
       const dialogShellStyle = {
         backgroundColor: semantic.background,
         borderColor: semantic.borderGray,
-        borderRadius: 18,
-        borderWidth: host.Modal ? 0 : 1,
+        borderRadius: standaloneTime ? 10 : 18,
+        borderWidth: standaloneTime ? 1 : host.Modal ? 0 : 1,
         flexGrow: 0,
         flexShrink: 1,
+        height: standaloneTime ? 335 : undefined,
         maxHeight: host.Modal ? "88%" : undefined,
-        maxWidth: 420,
+        maxWidth: standaloneTime ? 300 : 420,
         width: "100%",
       };
-      const dialogContentStyle = { gap: 12, padding: 16 };
+      const dialogContentStyle = standaloneTime ? { gap: 0, padding: 0 } : { gap: 12, padding: 16 };
       const dialog = createElement(
         DialogHost,
         {
           accessibilityRole: "dialog",
-          accessibilityLabel: "날짜 선택",
-          style:
-            host.Modal && host.ScrollView
-              ? dialogShellStyle
-              : { ...dialogShellStyle, ...dialogContentStyle },
-          ...(host.Modal && host.ScrollView ? { contentContainerStyle: dialogContentStyle } : {}),
+          accessibilityLabel: standaloneTime ? "시간 선택" : "날짜 선택",
+          style: dialogScrollable
+            ? dialogShellStyle
+            : { ...dialogShellStyle, ...dialogContentStyle },
+          ...(dialogScrollable ? { contentContainerStyle: dialogContentStyle } : {}),
           testID: `${props.testID ?? "podo-datepicker"}-dialog`,
         },
-        createElement(
-          host.View,
-          {
-            style: {
-              alignItems: "center",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            },
-          },
-          createElement(
-            host.Text,
-            { style: { color: semantic.text, fontSize: 18, fontWeight: "700" } },
-            mode === "period" ? "기간 선택" : hasCalendar ? "날짜 선택" : "시간 선택"
-          ),
-          host.Modal
-            ? createElement(
-                host.Pressable,
-                {
-                  accessibilityRole: "button",
-                  accessibilityLabel: "닫기",
-                  onPress: () => {
-                    setDraft(currentValue);
-                    setOpen(false);
-                  },
-                  style: { padding: 8 },
+        standaloneTime
+          ? null
+          : createElement(
+              host.View,
+              {
+                style: {
+                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                 },
-                nativeGlyph(theme, "close", semantic.iconSubtil, 20)
-              )
-            : null
-        ),
+              },
+              createElement(
+                host.Text,
+                { style: { color: semantic.text, fontSize: 18, fontWeight: "700" } },
+                mode === "period" ? "기간 선택" : hasCalendar ? "날짜 선택" : "시간 선택"
+              ),
+              host.Modal
+                ? createElement(
+                    host.Pressable,
+                    {
+                      accessibilityRole: "button",
+                      accessibilityLabel: "닫기",
+                      onPress: () => {
+                        setDraft(currentValue);
+                        setOpen(false);
+                      },
+                      style: { padding: 8 },
+                    },
+                    nativeGlyph(theme, "close", semantic.iconSubtil, 20)
+                  )
+                : null
+            ),
         quick,
         calendar,
         hasTime ? renderTime(false) : null,
         hasTime && mode === "period" ? renderTime(true) : null,
-        showActions
+        showActions && !standaloneTime
           ? createElement(
               host.View,
               { style: { flexDirection: "row", gap: 8, justifyContent: "flex-end" } },
@@ -4271,7 +4416,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                     },
                   },
                   createElement(host.Pressable, {
-                    accessibilityLabel: "날짜 선택 닫기",
+                    accessibilityLabel: standaloneTime ? "시간 선택 닫기" : "날짜 선택 닫기",
                     onPress: () => {
                       setDraft(currentValue);
                       setOpen(false);

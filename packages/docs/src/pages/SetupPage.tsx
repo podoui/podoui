@@ -22,19 +22,6 @@ const SETUP_TABS: CodeTab[] = [
       `  );\n}`,
   },
   {
-    target: "web",
-    label: "Web",
-    code:
-      `// 터미널: npm i podo-ui\n` +
-      `import { registerPodoElements } from "podo-ui/web";\n` +
-      `import "podo-ui/styles.css";\n` +
-      `import "podo-ui/icons.css";\n\n` +
-      `registerPodoElements();\n\n` +
-      `document.body.innerHTML = \`\n` +
-      `  <podo-button theme="solid-primary">저장</podo-button>\n` +
-      `\`;`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code:

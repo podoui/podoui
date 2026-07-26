@@ -21,7 +21,6 @@ const USAGE_TABS: CodeTab[] = [
       `{/* 클릭하면 스스로 선택/해제 토글 — selected로 제어형 전환 */}\n` +
       `<Chip defaultSelected>Label</Chip>`,
   },
-  { target: "web", label: "Web", code: `<podo-chip>Label</podo-chip>` },
   {
     target: "hono",
     label: "Hono",

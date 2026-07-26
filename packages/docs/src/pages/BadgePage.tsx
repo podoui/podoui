@@ -13,7 +13,6 @@ const INTRO =
 
 const USAGE_TABS: CodeTab[] = [
   { target: "react", label: "React", code: `<Badge>99</Badge>` },
-  { target: "web", label: "Web", code: `<podo-badge>99</podo-badge>` },
   {
     target: "hono",
     label: "Hono",

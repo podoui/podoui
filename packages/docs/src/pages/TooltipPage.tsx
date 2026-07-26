@@ -22,13 +22,6 @@ const USAGE_TABS: CodeTab[] = [
       `</Tooltip>`,
   },
   {
-    target: "web",
-    label: "Web",
-    code:
-      `<!-- 정적 말풍선 — 표시/배치는 직접 제어해요 -->\n` +
-      `<podo-tooltip label="임시 저장돼요" position="top" ordinal="second"></podo-tooltip>`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code:

@@ -19,11 +19,6 @@ const USAGE_TABS: CodeTab[] = [
     code: `<Switch label="알림 받기" defaultChecked />`,
   },
   {
-    target: "web",
-    label: "Web",
-    code: `<podo-switch label="알림 받기"></podo-switch>\n<!-- podo-checked-change 이벤트로 값 수신 -->`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code: `import { Switch } from "podo-ui/hono";\n\n<Switch checked label="알림 받기" />`,

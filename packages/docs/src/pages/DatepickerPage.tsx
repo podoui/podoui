@@ -75,15 +75,9 @@ export function DatepickerPage() {
         description="React Native는 podo-ui/native의 View·Pressable 기반 단일 달력 UI로 date, period, datetime, time, hour와 빠른 기간 선택을 지원해요. Hono 호스트에서는 React client island의 DatePicker를 사용해요."
       >
         <SpecTable
-          columns={["React", "Next.js", "Web", "Hono", "React Native"]}
+          columns={["React", "Next.js", "Hono", "React Native"]}
           rows={[
-            [
-              "전체 지원",
-              "전체 지원 (use client)",
-              "미지원",
-              "React island에서 지원",
-              "Native UI 지원",
-            ],
+            ["전체 지원", "전체 지원 (use client)", "React island에서 지원", "Native UI 지원"],
           ]}
         />
       </DocSection>

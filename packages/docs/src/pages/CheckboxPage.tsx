@@ -18,11 +18,6 @@ const USAGE_TABS: CodeTab[] = [
     code: `<Checkbox label="이용약관 동의" defaultChecked />`,
   },
   {
-    target: "web",
-    label: "Web",
-    code: `<podo-checkbox label="이용약관 동의"></podo-checkbox>\n<!-- podo-checked-change 이벤트로 값 수신 -->`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code: `import { Checkbox } from "podo-ui/hono";\n\n<Checkbox checked label="이용약관 동의" />`,

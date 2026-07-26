@@ -14,11 +14,6 @@ const INTRO =
 const USAGE_TABS: CodeTab[] = [
   { target: "react", label: "React", code: `<Textarea placeholder="플레이스홀더" />` },
   {
-    target: "web",
-    label: "Web",
-    code: `<podo-textarea placeholder="플레이스홀더"></podo-textarea>`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code: `import { Textarea } from "podo-ui/hono";\n\n<Textarea name="memo" placeholder="플레이스홀더" />`,

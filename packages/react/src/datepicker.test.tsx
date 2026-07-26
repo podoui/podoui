@@ -15,6 +15,107 @@ describe("DatePicker", () => {
     vi.useRealTimers();
   });
 
+  it("renders the Figma time picker and commits only through Select", () => {
+    const onChange = vi.fn();
+    render(<DatePicker mode="instant" type="time" value={emptyValue} onChange={onChange} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "시 선택 열기" }));
+
+    const dialog = screen.getByRole("dialog", { name: "시간 선택" });
+    const hours = within(dialog).getByRole("listbox", { name: "시간 선택" });
+    const minutes = within(dialog).getByRole("listbox", { name: "분 선택" });
+    expect(within(dialog).getByText("시간")).toBeTruthy();
+    expect(within(dialog).getByText("분")).toBeTruthy();
+    expect(dialog.classList.contains("podo-dp-timeDropdown")).toBe(true);
+
+    fireEvent.click(within(hours).getByRole("option", { name: "10" }));
+    fireEvent.click(within(minutes).getByRole("option", { name: "30" }));
+    expect(onChange).not.toHaveBeenCalled();
+
+    fireEvent.click(within(dialog).getByRole("button", { name: "선택" }));
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith({ time: { hour: 10, minute: 30 } });
+    expect(screen.queryByRole("dialog", { name: "시간 선택" })).toBeNull();
+  });
+
+  it("uses roving focus in time columns and supports listbox arrow keys", () => {
+    render(
+      <DatePicker
+        mode="instant"
+        type="time"
+        value={{ time: { hour: 8, minute: 15 } }}
+        onChange={() => {}}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "시 선택 열기" }));
+    const dialog = screen.getByRole("dialog", { name: "시간 선택" });
+    const hours = within(dialog).getByRole("listbox", { name: "시간 선택" });
+    const hourOptions = within(hours).getAllByRole("option") as HTMLButtonElement[];
+    expect(hourOptions.filter((option) => option.tabIndex === 0)).toHaveLength(1);
+
+    const selectedHour = within(hours).getByRole("option", { name: "08" });
+    selectedHour.focus();
+    fireEvent.keyDown(selectedHour, { key: "ArrowDown" });
+
+    const nextHour = within(hours).getByRole("option", { name: "09" });
+    expect(nextHour.getAttribute("aria-selected")).toBe("true");
+    expect(document.activeElement).toBe(nextHour);
+    expect(hourOptions.filter((option) => option.tabIndex === 0)).toHaveLength(1);
+  });
+
+  it("selects the current stepped time through Now before applying", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 6, 27, 14, 37));
+    const onChange = vi.fn();
+    render(
+      <DatePicker
+        mode="instant"
+        type="time"
+        minuteStep={15}
+        value={emptyValue}
+        onChange={onChange}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "시 선택 열기" }));
+    fireEvent.click(screen.getByRole("button", { name: "지금" }));
+    expect(onChange).not.toHaveBeenCalled();
+    const dialog = screen.getByRole("dialog", { name: "시간 선택" });
+    expect(within(dialog).getByRole("option", { name: "14" }).getAttribute("aria-selected")).toBe(
+      "true"
+    );
+    expect(within(dialog).getByRole("option", { name: "30" }).getAttribute("aria-selected")).toBe(
+      "true"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "선택" }));
+    expect(onChange).toHaveBeenCalledWith({ time: { hour: 14, minute: 30 } });
+  });
+
+  it("cancels a time draft when its active trigger is toggled closed", () => {
+    const onChange = vi.fn();
+    render(
+      <DatePicker
+        mode="instant"
+        type="time"
+        value={{ time: { hour: 8, minute: 15 } }}
+        onChange={onChange}
+      />
+    );
+
+    const trigger = screen.getByRole("button", { name: "시 선택 열기" });
+    fireEvent.click(trigger);
+    const dialog = screen.getByRole("dialog", { name: "시간 선택" });
+    const hourList = within(dialog).getByRole("listbox", { name: "시간 선택" });
+    fireEvent.click(within(hourList).getByRole("option", { name: "10" }));
+    fireEvent.click(trigger);
+
+    expect(screen.queryByRole("dialog", { name: "시간 선택" })).toBeNull();
+    expect(onChange).not.toHaveBeenCalled();
+    expect(trigger.textContent).toBe("08");
+  });
+
   it("commits both times via Apply in period time mode", () => {
     const onChange = vi.fn();
     render(<DatePicker mode="period" type="time" value={emptyValue} onChange={onChange} />);

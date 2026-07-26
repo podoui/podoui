@@ -32,16 +32,6 @@ const USAGE_TABS: CodeTab[] = [
       `</Field>`,
   },
   {
-    target: "web",
-    label: "Web",
-    code:
-      `<podo-field required count-max="500">\n` +
-      `  <span slot="label">제목</span>\n` +
-      `  <span slot="helper-text">도움말 텍스트</span>\n` +
-      `  <podo-input></podo-input>\n` +
-      `</podo-field>`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code:

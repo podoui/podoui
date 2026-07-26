@@ -21,16 +21,6 @@ const USAGE_TABS: CodeTab[] = [
       `<Radio name="plan" value="pro" label="프로" />`,
   },
   {
-    target: "web",
-    label: "Web",
-    code:
-      `<!-- 그룹 배타 선택 보존을 위해 커스텀 엘리먼트 대신 클래스로 제공돼요 -->\n` +
-      `<label class="podo-radio-wrap">\n` +
-      `  <input type="radio" class="podo-radio" name="plan" checked />\n` +
-      `  <span class="podo-radio__text">베이직</span>\n` +
-      `</label>`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code:

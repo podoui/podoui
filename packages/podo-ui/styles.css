@@ -1943,6 +1943,48 @@
   cursor: not-allowed;
   opacity: 0.6;
 }
+.podo-dp-timeNativeSelect {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.podo-dp-timeTrigger {
+  appearance: none;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  color: var(--color-text-body);
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.podo-dp-timeTrigger:hover {
+  background: var(--color-default);
+}
+.podo-dp-timeTrigger.podo-dp-active {
+  background: var(--color-default-fill);
+}
+.podo-dp-timeTrigger.podo-dp-placeholder {
+  color: var(--color-text-action-disabled);
+}
+.podo-dp-timeTrigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 .podo-dp-hourSelect {
   min-width: 72px;
   text-align: center;
@@ -2026,6 +2068,18 @@
   bottom: auto;
   margin-top: 0;
   margin-bottom: 4px;
+}
+.podo-dp-dropdown.podo-dp-timeDropdown {
+  width: min(300px, calc(100vw - 16px));
+  min-width: 163px;
+  height: 335px;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--color-bg-modal);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .podo-dp-calendar {
@@ -2298,9 +2352,11 @@
 .podo-dp-timeSelector {
   display: flex;
   flex-direction: column;
-  min-width: 120px;
-  background: var(--color-bg-block);
-  border-radius: 4px;
+  width: 100%;
+  height: 100%;
+  min-width: 163px;
+  background: var(--color-bg-modal);
+  overflow: hidden;
 }
 
 .podo-dp-timeDisplay {
@@ -2363,12 +2419,15 @@
 
 .podo-dp-timeColumn {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 2px;
-  padding: 8px;
-  max-height: 200px;
+  gap: 4px;
+  min-height: 0;
+  padding: 0;
   overflow-y: auto;
-  border-top: 1px solid var(--color-border);
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
 }
 .podo-dp-timeColumn::-webkit-scrollbar {
   width: 4px;
@@ -2379,7 +2438,7 @@
 }
 
 .podo-dp-timeItem {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
   font-weight: 400;
 }
@@ -2388,28 +2447,82 @@
 }
 @media screen and (max-width: calc(768px - 1px)) {
   .podo-dp-timeItem {
-    font-size: 12px;
+    font-size: 16px;
   }
 }
 .podo-dp-timeItem {
   display: flex;
+  flex: 0 0 42px;
   align-items: center;
   justify-content: center;
-  padding: 4px 8px;
+  min-height: 42px;
+  padding: 8px;
   background: none;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  color: var(--color-text-body);
   cursor: pointer;
   transition: background 0.2s;
   text-align: center;
+  font-variant-numeric: tabular-nums;
 }
-.podo-dp-timeItem:hover {
+.podo-dp-timeItem:hover:not(:disabled):not(.podo-dp-selected) {
   background: var(--color-default);
 }
 .podo-dp-timeItem.podo-dp-selected {
-  background: var(--color-primary);
+  background: none;
+  color: var(--color-primary);
+  font-weight: 400;
+}
+.podo-dp-timeItem:disabled {
+  color: var(--color-text-action-disabled);
+  cursor: not-allowed;
+}
+
+.podo-dp-timeColumns {
+  display: flex;
+  flex: 0 0 274px;
+  min-height: 0;
+  padding-top: 12px;
+}
+
+.podo-dp-timeController {
+  display: flex;
+  flex: 0 0 59px;
+  gap: 12px;
+  padding: 11px 16px 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.podo-dp-timeControllerButton {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  min-height: 36px;
+  padding: 2px 16px;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  cursor: pointer;
+}
+.podo-dp-timeControllerButton.podo-dp-reset {
+  color: var(--color-text-body);
+  background: var(--color-default-fill);
+}
+.podo-dp-timeControllerButton.podo-dp-reset:hover {
+  background: var(--color-default-hover);
+}
+.podo-dp-timeControllerButton.podo-dp-apply {
   color: var(--color-primary-reverse);
-  font-weight: 600;
+  background: var(--color-primary);
+}
+.podo-dp-timeControllerButton.podo-dp-apply:hover {
+  background: var(--color-primary-hover);
 }
 
 .podo-dp-bottomActions {
@@ -2507,13 +2620,14 @@
 
 .podo-dp-timeWrapper {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  border-left: 1px solid var(--color-border);
-  padding-left: 16px;
+  min-width: 0;
+  min-height: 0;
 }
 
 .podo-dp-timeLabel {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
   font-weight: 400;
 }
@@ -2522,13 +2636,17 @@
 }
 @media screen and (max-width: calc(768px - 1px)) {
   .podo-dp-timeLabel {
-    font-size: 12px;
+    font-size: 16px;
   }
 }
 .podo-dp-timeLabel {
   color: var(--color-text-sub);
-  margin-bottom: 4px;
+  flex: 0 0 26px;
+  margin: 0;
   text-align: center;
+}
+.podo-dp-timeLabel:not(button) {
+  color: var(--color-text-sub);
 }
 
 .podo-dp-periodCalendarWrapper {

@@ -44,11 +44,6 @@ const USAGE_TABS: CodeTab[] = [
       `/>`,
   },
   {
-    target: "web",
-    label: "Web",
-    code: `<podo-select\n  placeholder="과일 선택"\n  options='[{"value":"strawberry","label":"딸기"}]'\n></podo-select>`,
-  },
-  {
     target: "hono",
     label: "Hono",
     code: `import { Select } from "podo-ui/hono";\n\n<Select placeholder="과일 선택" options={[{ value: "strawberry", label: "딸기" }]} />`,
