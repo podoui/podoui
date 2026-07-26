@@ -1185,8 +1185,11 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     const close = (event: Event) => {
       if (
         event.target instanceof Node &&
-        menuListRef.current &&
-        menuListRef.current.contains(event.target)
+        (menuListRef.current?.contains(event.target) ||
+          // 검색 입력의 커서·텍스트 폭 변화가 input 자체 scroll을 만들 수
+          // 있어요. 트리거 루트 내부 스크롤은 바깥 레이아웃 이동이 아니므로
+          // 메뉴를 닫지 않아야 타이핑과 다중 선택을 계속할 수 있어요.
+          rootRef.current?.contains(event.target))
       ) {
         return;
       }

@@ -668,6 +668,38 @@ describe("@podoui/react", () => {
     expect(document.body.querySelector(".podo-select__menu-list[data-portal]")).toBeNull();
   });
 
+  it("keeps a searchable portal menu open when its trigger input scrolls", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select
+        multiple
+        searchable
+        defaultValues={["design"]}
+        placeholder="담당 분야"
+        options={[
+          { value: "design", label: "Design" },
+          { value: "mobile", label: "Mobile" },
+        ]}
+      />
+    );
+
+    await user.click(within(container).getByRole("combobox"));
+    const search = within(container).getByRole("combobox");
+    expect(search.classList.contains("podo-select__search")).toBe(true);
+    expect(document.body.querySelector(".podo-select__menu-list[data-portal]")).not.toBeNull();
+
+    // 실제 Chrome은 칩 뒤 인라인 검색창의 커서/폭이 바뀔 때 input 자체에
+    // scroll 이벤트를 낼 수 있어요. 페이지 스크롤로 오인해 닫히면 안 돼요.
+    fireEvent.scroll(search);
+    await user.type(search, "Mobile");
+
+    expect(document.body.querySelector(".podo-select__menu-list[data-portal]")).not.toBeNull();
+    expect(screen.getByRole("option", { name: "Mobile" })).toBeDefined();
+
+    await user.keyboard("{Escape}");
+    expect(document.body.querySelector(".podo-select__menu-list[data-portal]")).toBeNull();
+  });
+
   it("survives SSR with defaultOpen and portals the menu after mount", () => {
     const options = [{ value: "grape", label: "포도" }];
 
