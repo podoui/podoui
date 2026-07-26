@@ -12,9 +12,9 @@
     "styles.css"
   ],
   "bin": {
-    "podo": "./dist/cli/index.js",
-    "podo-ui": "./dist/cli/menu.js",
-    "podo-mcp": "./dist/mcp/index.js"
+    "podo": "dist/cli/index.js",
+    "podo-ui": "dist/cli/menu.js",
+    "podo-mcp": "dist/mcp/index.js"
   },
   "exports": {
     "./styles.css": "./styles.css",
