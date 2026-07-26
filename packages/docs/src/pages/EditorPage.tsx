@@ -112,7 +112,7 @@ export function EditorPage() {
       <DocSection
         index={4}
         title="지원 범위"
-        description="React Native는 podo-ui/native의 TextInput selection과 HTML 직렬화 방식으로 13개 툴바 그룹, URL 기반 링크·이미지·YouTube, 표 삽입, HTML 모드와 EditorView를 지원해요. 브라우저 전용 File/Clipboard API와 DOM 요소 컨텍스트 메뉴는 사용하지 않아요. Hono 호스트에서는 React client island의 Editor를 사용해요."
+        description="React Native는 react-native-webview의 contenteditable 문서로 실제 WYSIWYG 편집을 제공해요. 13개 툴바 그룹, URL·네이티브 picker 기반 이미지, 링크·YouTube, 표 삽입과 행·열 편집, HTML 모드와 EditorView를 지원합니다. Provider의 webViewComponent 또는 createNativeComponents의 WebView host를 설정하세요. Hono 호스트에서는 React client island의 Editor를 사용해요."
       >
         <SpecTable
           columns={["React", "Next.js", "Web", "Hono", "React Native"]}

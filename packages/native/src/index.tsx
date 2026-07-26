@@ -11,6 +11,7 @@ import React, {
   type ReactNode,
 } from "react";
 import {
+  Modal as ReactNativeModal,
   Pressable as ReactNativePressable,
   ScrollView as ReactNativeScrollView,
   Text as ReactNativeText,
@@ -30,12 +31,16 @@ import {
 export type NativeHostComponent = string | React.ComponentType<Record<string, unknown>>;
 
 export interface NativeHost {
+  /** Optional overlay host. Defaults to React Native Modal in the published entry. */
+  Modal?: NativeHostComponent;
   Pressable: NativeHostComponent;
   /** Optional scroll container — the Select menu uses it for its ten-row cap. */
   ScrollView?: NativeHostComponent;
   Text: NativeHostComponent;
   TextInput: NativeHostComponent;
   View: NativeHostComponent;
+  /** Optional rich-editor surface, normally react-native-webview's WebView. */
+  WebView?: NativeHostComponent;
 }
 
 export interface NativeTheme {
@@ -50,6 +55,8 @@ export interface NativeTheme {
   iconGlyphs?: Record<string, string>;
   /** Font family loaded from the generated PodoIcons.ttf asset. */
   iconFontFamily?: string;
+  /** react-native-webview WebView component used for the WYSIWYG Editor. */
+  webViewComponent?: NativeHostComponent;
 }
 
 export interface NativeThemeProviderProps extends NativeTheme {
@@ -484,6 +491,8 @@ export interface NativeEditorProps {
   placeholder?: string;
   toolbar?: NativeEditorToolbarItem[];
   validator?: NativeEditorValidator;
+  /** Optional native image picker bridge. Return a URI or an object with URI/alt text. */
+  onImagePick?: () => Promise<string | { uri: string; alt?: string } | undefined>;
   accessibilityLabel?: string;
   testID?: string;
 }
@@ -515,6 +524,7 @@ export interface NativeComponents {
 export type NativeStyle = Record<string, string | number | undefined>;
 
 export const defaultNativeHost: NativeHost = {
+  Modal: ReactNativeModal as unknown as NativeHostComponent,
   Pressable: ReactNativePressable as unknown as NativeHostComponent,
   ScrollView: ReactNativeScrollView as unknown as NativeHostComponent,
   Text: ReactNativeText as unknown as NativeHostComponent,
@@ -533,6 +543,7 @@ export function PodoNativeThemeProvider({
   tokens,
   iconGlyphs,
   iconFontFamily,
+  webViewComponent,
   children,
 }: NativeThemeProviderProps): React.ReactElement {
   const value = {
@@ -541,6 +552,7 @@ export function PodoNativeThemeProvider({
     ...(typeof tokens === "undefined" ? {} : { tokens }),
     ...(typeof iconGlyphs === "undefined" ? {} : { iconGlyphs }),
     ...(typeof iconFontFamily === "undefined" ? {} : { iconFontFamily }),
+    ...(typeof webViewComponent === "undefined" ? {} : { webViewComponent }),
   };
 
   return <NativeThemeContext.Provider value={value}>{children}</NativeThemeContext.Provider>;
@@ -1001,7 +1013,559 @@ function nativeTableHtml(rows: number, columns: number): string {
   return `<table><tbody>${Array.from({ length: rows }, () => `<tr>${cells}</tr>`).join("")}</tbody></table>`;
 }
 
+function nativeSanitizeEditorHtml(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return value
+    .replace(
+      /<(script|object|embed|form|input|meta|link|base|style|svg|math|template)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,
+      ""
+    )
+    .replace(
+      /<(script|object|embed|form|input|meta|link|base|style|svg|math|template)\b[^>]*\/?\s*>/gi,
+      ""
+    )
+    .replace(/(?:\s|\/)+on[a-z][a-z0-9:_-]*\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/(?:\s|\/)+srcdoc\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(
+      /(?:\s|\/)+(?:href|src|xlink:href|action|formaction)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi,
+      (attribute) =>
+        /(?:javascript|vbscript)\s*:|data\s*:\s*text\/html/i.test(attribute) ? "" : attribute
+    )
+    .replace(/(?:\s|\/)+style\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, (attribute) =>
+      /(?:url\s*\(|expression\s*\(|@import|behavior\s*:|-moz-binding)/i.test(attribute)
+        ? ""
+        : attribute
+    )
+    .replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe\s*>/gi, (iframe) => {
+      const source = iframe.match(
+        /\bsrc\s*=\s*(["'])https:\/\/www\.youtube-nocookie\.com\/embed\/([A-Za-z0-9_-]{6,})\1/i
+      );
+      return source?.[2] ? `<podo-youtube data-video="${source[2]}"></podo-youtube>` : "";
+    })
+    .replace(/<\/?iframe\b[^>]*>/gi, "")
+    .replace(
+      /<podo-youtube data-video="([A-Za-z0-9_-]{6,})"><\/podo-youtube>/gi,
+      '<iframe src="https://www.youtube-nocookie.com/embed/$1" title="YouTube video" allowfullscreen></iframe>'
+    );
+}
+
+function nativeEditorWebDocument(
+  value: unknown,
+  options: { editable: boolean; color: string; background: string; placeholder?: string }
+): string {
+  const html = nativeSanitizeEditorHtml(value);
+  const placeholder = JSON.stringify(options.placeholder ?? "내용을 입력하세요...")
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e");
+  return `<!doctype html>
+<html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<style>
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:${options.background};color:${options.color};font-family:-apple-system,BlinkMacSystemFont,"Pretendard",sans-serif;font-size:16px;line-height:1.6}
+#editor{min-height:${options.editable ? "210px" : "1px"};padding:${options.editable ? "14px" : "0"};outline:none;word-break:break-word}
+#editor:empty:before{content:${placeholder};color:#9FA2AD;pointer-events:none}
+p{margin:0 0 10px}h1{font-size:28px;line-height:1.3;margin:0 0 12px}h2{font-size:24px;line-height:1.35;margin:0 0 12px}h3{font-size:20px;line-height:1.4;margin:0 0 10px}
+ul,ol{padding-left:24px}blockquote{border-left:3px solid #D1D2D6;margin:10px 0;padding-left:12px;color:#6B6B73}
+a{color:#426CED}img{display:block;max-width:100%;height:auto;margin:10px auto;border-radius:8px}iframe{display:block;width:100%;min-height:190px;border:0;border-radius:8px;margin:10px 0}
+table{width:100%;border-collapse:collapse;margin:12px 0}td,th{border:1px solid #D1D2D6;min-width:44px;padding:8px;vertical-align:top}hr{border:0;border-top:1px solid #D1D2D6;margin:16px 0}
+</style></head><body><div id="editor" contenteditable="${options.editable ? "true" : "false"}" role="textbox" aria-multiline="true">${html}</div>
+<script>
+(function(){
+var editor=document.getElementById('editor');var savedRange=null;
+function post(payload){if(window.ReactNativeWebView){window.ReactNativeWebView.postMessage(JSON.stringify(payload));}}
+function saveRange(){var selection=window.getSelection();if(selection&&selection.rangeCount&&editor.contains(selection.anchorNode)){savedRange=selection.getRangeAt(0).cloneRange();}}
+function restoreRange(){if(!savedRange)return;var selection=window.getSelection();selection.removeAllRanges();selection.addRange(savedRange);}
+function emit(){saveRange();post({type:'input',html:editor.innerHTML,height:document.documentElement.scrollHeight});}
+function postHeight(){post({type:'height',height:document.documentElement.scrollHeight});}
+function tableCell(){var selection=window.getSelection();if(!selection||!selection.anchorNode)return null;var node=selection.anchorNode.nodeType===3?selection.anchorNode.parentElement:selection.anchorNode;return node&&node.closest?node.closest('td,th'):null;}
+function tableCommand(name){var cell=tableCell();if(!cell)return;var row=cell.parentElement;var table=cell.closest('table');var index=Array.prototype.indexOf.call(row.children,cell);
+if(name==='row-above'||name==='row-below'){var clone=row.cloneNode(true);Array.prototype.forEach.call(clone.children,function(item){item.innerHTML='<br>';});row.parentElement.insertBefore(clone,name==='row-above'?row:row.nextSibling);}
+if(name==='row-delete'){row.remove();if(table&&!table.querySelector('tr'))table.remove();}
+if(name==='column-left'||name==='column-right'){Array.prototype.forEach.call(table.querySelectorAll('tr'),function(item){var ref=item.children[index];var next=document.createElement('td');next.innerHTML='<br>';item.insertBefore(next,name==='column-left'?ref:ref?ref.nextSibling:null);});}
+if(name==='column-delete'){Array.prototype.forEach.call(table.querySelectorAll('tr'),function(item){if(item.children[index])item.children[index].remove();});if(table&&!table.querySelector('td,th'))table.remove();}
+if(name==='table-delete'&&table)table.remove();}
+function command(message){if(!${options.editable ? "true" : "false"})return;editor.focus();restoreRange();var name=message.command;var value=message.value||null;
+if(name==='insertHTML'){document.execCommand('insertHTML',false,value||'');}
+else if(name==='formatBlock'){document.execCommand('formatBlock',false,value||'p');}
+else if(name==='link'){var selection=window.getSelection();if(selection&&selection.isCollapsed){document.execCommand('insertHTML',false,'<a href="'+message.url+'" target="_blank" rel="noopener noreferrer">'+(message.label||message.url)+'</a>');}else{document.execCommand('createLink',false,message.url);}}
+else if(name==='image'){document.execCommand('insertHTML',false,'<img src="'+message.url+'" alt="'+(message.alt||'')+'">');}
+else if(name==='youtube'){document.execCommand('insertHTML',false,'<iframe src="'+message.url+'" title="YouTube video" allowfullscreen></iframe>');}
+else if(name.indexOf('table-')===0){tableCommand(name.slice(6));}
+else{document.execCommand(name,false,value);}emit();}
+function receive(event){try{var message=JSON.parse(event.data);if(message.type==='command')command(message);if(message.type==='set'&&editor.innerHTML!==message.html){editor.innerHTML=message.html||'';}}catch(error){}}
+editor.addEventListener('input',emit);editor.addEventListener('keyup',saveRange);editor.addEventListener('mouseup',saveRange);editor.addEventListener('touchend',saveRange);document.addEventListener('message',receive);window.addEventListener('message',receive);
+window.__podoReceive=receive;window.__podoCommand=command;window.__podoSetHtml=function(html){if(editor.innerHTML!==html){editor.innerHTML=html||'';}};
+window.addEventListener('load',postHeight);if(typeof ResizeObserver!=='undefined'){new ResizeObserver(postHeight).observe(document.body);}Array.prototype.forEach.call(editor.querySelectorAll('img,iframe'),function(asset){asset.addEventListener('load',postHeight);});
+post({type:'ready',height:document.documentElement.scrollHeight});
+})();
+</script></body></html>`;
+}
+
 export function createNativeComponents(host: NativeHost = defaultNativeHost): NativeComponents {
+  const glyphFallbacks: Record<string, string> = {
+    check: "✓",
+    close: "×",
+    "chevron-left": "‹",
+    "chevron-right": "›",
+    calendar: "▣",
+    time: "◷",
+  };
+  const nativeGlyph = (
+    theme: NativeTheme,
+    name: string,
+    color: string,
+    size = 20,
+    rotate?: string
+  ) =>
+    createElement(
+      host.Text,
+      {
+        accessibilityElementsHidden: true,
+        importantForAccessibility: "no-hide-descendants",
+        "aria-hidden": true,
+        style: {
+          color,
+          fontFamily: theme.iconFontFamily,
+          fontSize: size,
+          height: size,
+          lineHeight: size,
+          textAlign: "center",
+          transform: rotate ? [{ rotate }] : undefined,
+          width: size,
+        },
+      },
+      theme.iconGlyphs?.[name] ?? glyphFallbacks[name] ?? name
+    );
+
+  function NativeWebEditor({
+    editorProps,
+    WebViewComponent,
+  }: {
+    editorProps: NativeEditorProps;
+    WebViewComponent: NativeHostComponent;
+  }): React.ReactElement {
+    const theme = usePodoNativeTheme();
+    const semantic = nativeSemanticColors(theme);
+    const editorValue = typeof editorProps.value === "string" ? editorProps.value : "";
+    const enabled = new Set(editorProps.toolbar ?? NATIVE_EDITOR_TOOLBAR);
+    const [panel, setPanel] = useState<string | null>(null);
+    const [auxValue, setAuxValue] = useState("");
+    const [codeMode, setCodeMode] = useState(false);
+    const [ready, setReady] = useState(false);
+    const webRef = useRef<{
+      injectJavaScript?: (script: string) => void;
+      postMessage?: (message: string) => void;
+    } | null>(null);
+    const lastWebValue = useRef(nativeSanitizeEditorHtml(editorValue));
+
+    const post = (payload: Record<string, unknown>) => {
+      const message = JSON.stringify(payload);
+      if (webRef.current?.injectJavaScript) {
+        const encodedPayload = JSON.stringify(payload)
+          .replace(/</g, "\\u003c")
+          .replace(/\u2028/g, "\\u2028")
+          .replace(/\u2029/g, "\\u2029");
+        const encodedHtml = (JSON.stringify(String(payload.html ?? "")) ?? '""')
+          .replace(/</g, "\\u003c")
+          .replace(/\u2028/g, "\\u2028")
+          .replace(/\u2029/g, "\\u2029");
+        const script =
+          payload.type === "command"
+            ? `window.__podoCommand&&window.__podoCommand(${encodedPayload});true;`
+            : payload.type === "set"
+              ? `window.__podoSetHtml&&window.__podoSetHtml(${encodedHtml});true;`
+              : `window.__podoReceive&&window.__podoReceive({data:${JSON.stringify(message)}});true;`;
+        webRef.current.injectJavaScript(script);
+        return;
+      }
+      webRef.current?.postMessage?.(message);
+    };
+    const command = (name: string, value?: string, extra?: Record<string, string>) => {
+      post({ type: "command", command: name, ...(value ? { value } : {}), ...extra });
+      setPanel(null);
+    };
+
+    useEffect(() => {
+      const safeValue = nativeSanitizeEditorHtml(editorValue);
+      if (ready && safeValue !== lastWebValue.current) {
+        lastWebValue.current = safeValue;
+        post({ type: "set", html: safeValue });
+      }
+    }, [editorValue, ready]);
+
+    const toolButton = (
+      key: string,
+      label: string,
+      symbol: string,
+      action: () => void,
+      active = false
+    ) =>
+      createElement(
+        host.Pressable,
+        {
+          key,
+          accessibilityRole: "button",
+          accessibilityLabel: label,
+          onPress: action,
+          style: {
+            alignItems: "center",
+            backgroundColor: active ? semantic.foregroundInfoLight : "transparent",
+            borderColor: active ? semantic.borderPrimary : "transparent",
+            borderRadius: 7,
+            borderWidth: 1,
+            height: 36,
+            justifyContent: "center",
+            width: 36,
+          },
+        },
+        createElement(
+          host.Text,
+          {
+            style: {
+              color: active ? semantic.foregroundPrimary : semantic.text,
+              fontSize: symbol.length > 2 ? 11 : 18,
+              fontWeight: symbol === "B" ? "800" : "600",
+            },
+          },
+          symbol
+        )
+      );
+    const panelButton = (key: string, label: string, action: () => void) =>
+      createElement(
+        host.Pressable,
+        {
+          key,
+          accessibilityRole: "button",
+          accessibilityLabel: label,
+          onPress: action,
+          style: {
+            alignItems: "center",
+            backgroundColor: semantic.background,
+            borderColor: semantic.borderGray,
+            borderRadius: 8,
+            borderWidth: 1,
+            justifyContent: "center",
+            minHeight: 38,
+            paddingHorizontal: 12,
+          },
+        },
+        createElement(host.Text, { style: { color: semantic.text, fontSize: 13 } }, label)
+      );
+    const togglePanel = (name: string) => {
+      setAuxValue("");
+      setPanel((current) => (current === name ? null : name));
+    };
+
+    const tools: ReactNode[] = [];
+    if (enabled.has("undo-redo")) {
+      tools.push(
+        toolButton("undo", "실행 취소", "↶", () => command("undo")),
+        toolButton("redo", "다시 실행", "↷", () => command("redo"))
+      );
+    }
+    if (enabled.has("paragraph"))
+      tools.push(toolButton("paragraph", "문단 스타일", "¶", () => togglePanel("paragraph")));
+    if (enabled.has("text-style")) {
+      tools.push(
+        toolButton("bold", "굵게", "B", () => command("bold")),
+        toolButton("italic", "기울임", "I", () => command("italic")),
+        toolButton("underline", "밑줄", "U", () => command("underline")),
+        toolButton("strike", "취소선", "S", () => command("strikeThrough"))
+      );
+    }
+    if (enabled.has("color")) {
+      tools.push(
+        toolButton("color", "글자색", "A", () => togglePanel("color")),
+        toolButton("background", "배경색", "▰", () => togglePanel("background"))
+      );
+    }
+    if (enabled.has("align"))
+      tools.push(toolButton("align", "문단 정렬", "≡", () => togglePanel("align")));
+    if (enabled.has("list")) {
+      tools.push(
+        toolButton("ul", "글머리 기호 목록", "•", () => command("insertUnorderedList")),
+        toolButton("ol", "번호 목록", "1.", () => command("insertOrderedList"))
+      );
+    }
+    if (enabled.has("table"))
+      tools.push(toolButton("table", "표", "▦", () => togglePanel("table")));
+    if (enabled.has("link")) tools.push(toolButton("link", "링크", "↗", () => togglePanel("link")));
+    if (enabled.has("image"))
+      tools.push(toolButton("image", "이미지", "▧", () => togglePanel("image")));
+    if (enabled.has("youtube"))
+      tools.push(toolButton("youtube", "YouTube", "▶", () => togglePanel("youtube")));
+    if (enabled.has("hr"))
+      tools.push(toolButton("hr", "구분선", "―", () => command("insertHorizontalRule")));
+    if (enabled.has("format"))
+      tools.push(toolButton("format", "서식 지우기", "Tx", () => command("removeFormat")));
+    if (enabled.has("code"))
+      tools.push(
+        toolButton("code", "HTML 편집", "</>", () => setCodeMode((current) => !current), codeMode)
+      );
+
+    let panelContent: ReactNode = null;
+    if (panel === "paragraph") {
+      panelContent = createElement(
+        host.View,
+        { style: { flexDirection: "row", flexWrap: "wrap", gap: 6 } },
+        ...(["p", "h1", "h2", "h3"] as const).map((tag, index) =>
+          panelButton(tag, ["본문", "제목 1", "제목 2", "제목 3"][index] ?? tag, () =>
+            command("formatBlock", tag)
+          )
+        )
+      );
+    } else if (panel === "color" || panel === "background") {
+      panelContent = createElement(
+        host.View,
+        { style: { flexDirection: "row", flexWrap: "wrap", gap: 8 } },
+        ...["#F23B3B", "#426CED", "#3EA856", "#FFAA00", "#18181B", "#FFFFFF"].map((color) =>
+          createElement(host.Pressable, {
+            key: color,
+            accessibilityRole: "button",
+            accessibilityLabel: `${panel === "color" ? "글자색" : "배경색"} ${color}`,
+            onPress: () => command(panel === "color" ? "foreColor" : "hiliteColor", color),
+            style: {
+              backgroundColor: color,
+              borderColor: semantic.borderGrayDeep,
+              borderRadius: 8,
+              borderWidth: 1,
+              height: 36,
+              width: 36,
+            },
+          })
+        )
+      );
+    } else if (panel === "align") {
+      panelContent = createElement(
+        host.View,
+        { style: { flexDirection: "row", flexWrap: "wrap", gap: 6 } },
+        panelButton("left", "왼쪽", () => command("justifyLeft")),
+        panelButton("center", "가운데", () => command("justifyCenter")),
+        panelButton("right", "오른쪽", () => command("justifyRight")),
+        panelButton("full", "양쪽", () => command("justifyFull"))
+      );
+    } else if (panel === "table") {
+      panelContent = createElement(
+        host.View,
+        { style: { flexDirection: "row", flexWrap: "wrap", gap: 6 } },
+        panelButton("table-2", "2×2 삽입", () => command("insertHTML", nativeTableHtml(2, 2))),
+        panelButton("table-3", "3×3 삽입", () => command("insertHTML", nativeTableHtml(3, 3))),
+        panelButton("row-above", "위 행 추가", () => command("table-row-above")),
+        panelButton("row-below", "아래 행 추가", () => command("table-row-below")),
+        panelButton("row-delete", "행 삭제", () => command("table-row-delete")),
+        panelButton("column-left", "왼쪽 열 추가", () => command("table-column-left")),
+        panelButton("column-right", "오른쪽 열 추가", () => command("table-column-right")),
+        panelButton("column-delete", "열 삭제", () => command("table-column-delete")),
+        panelButton("table-delete", "표 삭제", () => command("table-table-delete"))
+      );
+    } else if (panel === "link" || panel === "image" || panel === "youtube") {
+      const kind = panel as "link" | "image" | "youtube";
+      const placeholder =
+        kind === "link" ? "https://..." : kind === "image" ? "이미지 URL" : "YouTube URL";
+      panelContent = createElement(
+        host.View,
+        { style: { gap: 8 } },
+        createElement(host.TextInput, {
+          accessibilityLabel: placeholder,
+          autoCapitalize: "none",
+          autoCorrect: false,
+          onChangeText: setAuxValue,
+          placeholder,
+          placeholderTextColor: semantic.placeholder,
+          style: {
+            backgroundColor: semantic.background,
+            borderColor: semantic.borderGray,
+            borderRadius: 8,
+            borderWidth: 1,
+            color: semantic.text,
+            minHeight: 40,
+            paddingHorizontal: 10,
+          },
+          value: auxValue,
+        }),
+        createElement(
+          host.View,
+          { style: { flexDirection: "row", flexWrap: "wrap", gap: 6, justifyContent: "flex-end" } },
+          kind === "image" && editorProps.onImagePick
+            ? panelButton("picker", "사진 선택", async () => {
+                const picked = await editorProps.onImagePick?.();
+                const uri = typeof picked === "string" ? picked : picked?.uri;
+                const safeUrl = uri ? nativeSafeEditorUrl(uri, "image") : undefined;
+                if (safeUrl)
+                  command("image", undefined, {
+                    url: safeUrl,
+                    alt: typeof picked === "object" ? (picked.alt ?? "") : "",
+                  });
+              })
+            : null,
+          panelButton("cancel", "취소", () => setPanel(null)),
+          panelButton("insert", "삽입", () => {
+            const safeUrl = nativeSafeEditorUrl(auxValue, kind);
+            if (!safeUrl) return;
+            command(kind, undefined, { url: safeUrl });
+          })
+        )
+      );
+    }
+
+    const validation = editorProps.validator?.safeParse(editorValue);
+    const validationMessage =
+      validation && !validation.success
+        ? (validation.error?.issues?.[0]?.message ?? "입력값을 확인하세요")
+        : undefined;
+    const editorHeight = editorProps.height ?? editorProps.minHeight ?? 260;
+
+    return createElement(
+      host.View,
+      {
+        style: {
+          backgroundColor: semantic.background,
+          borderColor: validationMessage ? semantic.borderDanger : semantic.borderGray,
+          borderRadius: 12,
+          borderWidth: 1,
+          overflow: "hidden",
+        },
+        testID: editorProps.testID,
+        "data-mode": codeMode ? "code" : "rich",
+      },
+      createElement(
+        host.ScrollView ?? host.View,
+        {
+          accessibilityRole: "toolbar",
+          horizontal: true,
+          showsHorizontalScrollIndicator: false,
+          style: { borderBottomColor: semantic.borderGray, borderBottomWidth: 1 },
+          contentContainerStyle: { alignItems: "center", gap: 2, padding: 6 },
+        },
+        ...tools
+      ),
+      panelContent
+        ? createElement(
+            host.View,
+            {
+              accessibilityRole: "dialog",
+              accessibilityLabel: "에디터 도구",
+              style: {
+                backgroundColor: semantic.foregroundGray,
+                borderBottomColor: semantic.borderGray,
+                borderBottomWidth: 1,
+                padding: 10,
+              },
+            },
+            panelContent
+          )
+        : null,
+      codeMode
+        ? createElement(host.TextInput, {
+            accessibilityLabel: editorProps.accessibilityLabel ?? "HTML 편집기",
+            multiline: true,
+            onChangeText: (next: string) => editorProps.onChange(nativeSanitizeEditorHtml(next)),
+            placeholder: editorProps.placeholder ?? "내용을 입력하세요...",
+            placeholderTextColor: semantic.placeholder,
+            style: {
+              color: semantic.text,
+              fontFamily: "monospace",
+              fontSize: 13,
+              height: editorHeight,
+              padding: 14,
+              textAlignVertical: "top",
+            },
+            testID: `${editorProps.testID ?? "podo-editor"}-code-input`,
+            value: editorValue,
+          })
+        : createElement(WebViewComponent, {
+            accessibilityLabel: editorProps.accessibilityLabel ?? "리치 텍스트 편집기",
+            automaticallyAdjustContentInsets: false,
+            javaScriptEnabled: true,
+            keyboardDisplayRequiresUserAction: false,
+            onMessage: (event: { nativeEvent?: { data?: string } }) => {
+              try {
+                const message = JSON.parse(event.nativeEvent?.data ?? "{}") as {
+                  type?: string;
+                  html?: string;
+                };
+                if (message.type === "ready") setReady(true);
+                if (message.type === "input" && typeof message.html === "string") {
+                  const safeValue = nativeSanitizeEditorHtml(message.html);
+                  lastWebValue.current = safeValue;
+                  editorProps.onChange(safeValue);
+                }
+              } catch {
+                // Ignore malformed bridge messages from the embedded document.
+              }
+            },
+            onShouldStartLoadWithRequest: (request: { url?: string }) =>
+              request.url === "about:blank" ||
+              request.url?.startsWith("https://podo.local") === true,
+            originWhitelist: ["about:blank", "https://podo.local"],
+            ref: webRef,
+            scrollEnabled: true,
+            source: {
+              html: nativeEditorWebDocument(editorValue, {
+                editable: true,
+                color: semantic.text,
+                background: semantic.background,
+                ...(editorProps.placeholder ? { placeholder: editorProps.placeholder } : {}),
+              }),
+              baseUrl: "https://podo.local",
+            },
+            style: {
+              backgroundColor: semantic.background,
+              height: editorHeight,
+              maxHeight: editorProps.maxHeight,
+              minHeight: editorProps.minHeight,
+            },
+            testID: `${editorProps.testID ?? "podo-editor"}-webview`,
+          }),
+      validationMessage
+        ? createElement(
+            host.Text,
+            {
+              accessibilityRole: "alert",
+              style: { color: semantic.foregroundDanger, fontSize: 13, padding: 10 },
+            },
+            validationMessage
+          )
+        : null
+    );
+  }
+
+  function NativeWebEditorView({
+    viewerProps,
+    WebViewComponent,
+  }: {
+    viewerProps: NativeEditorViewProps;
+    WebViewComponent: NativeHostComponent;
+  }): React.ReactElement {
+    const theme = usePodoNativeTheme();
+    const semantic = nativeSemanticColors(theme);
+    const [height, setHeight] = useState(24);
+    return createElement(WebViewComponent, {
+      accessibilityLabel: "에디터 콘텐츠",
+      javaScriptEnabled: true,
+      onMessage: (event: { nativeEvent?: { data?: string } }) => {
+        try {
+          const message = JSON.parse(event.nativeEvent?.data ?? "{}") as { height?: number };
+          if (typeof message.height === "number") setHeight(Math.max(24, message.height));
+        } catch {
+          // Ignore malformed bridge messages from the embedded document.
+        }
+      },
+      onShouldStartLoadWithRequest: (request: { url?: string }) =>
+        request.url === "about:blank" || request.url?.startsWith("https://podo.local") === true,
+      originWhitelist: ["about:blank", "https://podo.local"],
+      scrollEnabled: false,
+      source: {
+        html: nativeEditorWebDocument(viewerProps.value, {
+          editable: false,
+          color: semantic.text,
+          background: semantic.background,
+        }),
+        baseUrl: "https://podo.local",
+      },
+      style: { backgroundColor: semantic.background, height },
+      testID: viewerProps.testID,
+    });
+  }
   const components: NativeComponents = {
     Button: (props) => {
       const theme = usePodoNativeTheme();
@@ -1138,7 +1702,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               disabled: behavior.disabled,
               onPress: behavior.pressable ? props.onRemove : undefined,
             },
-            createElement(host.Text, { style: { color: box.label, fontSize: 14 } }, "✕")
+            nativeGlyph(theme, "close", box.label, 14)
           )
         );
       }
@@ -1560,13 +2124,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                     width: 18,
                   },
                 },
-                isSelected
-                  ? createElement(
-                      host.Text,
-                      { style: { color: semantic.textStaticInvert, fontSize: 12 } },
-                      "✓"
-                    )
-                  : null
+                isSelected ? nativeGlyph(theme, "check", semantic.textStaticInvert, 12) : null
               )
             : null,
           createElement(
@@ -1582,15 +2140,36 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             },
             option.label
           ),
-          !multiple && isSelected
-            ? createElement(
-                host.Text,
-                { style: { color: semantic.textPrimary, fontSize: 16 } },
-                "✓"
-              )
-            : null
+          !multiple && isSelected ? nativeGlyph(theme, "check", semantic.textPrimary, 16) : null
         );
       });
+
+      const menu = createElement(
+        host.ScrollView ?? host.View,
+        {
+          ref: menuRef,
+          role: "listbox",
+          nativeID: menuId,
+          "aria-multiselectable": multiple ? true : undefined,
+          testID: `${props.testID ?? "podo-select"}-menu`,
+          ...(host.ScrollView
+            ? {
+                style: {
+                  ...styles.selectMenu,
+                  maxHeight: host.Modal ? 360 : SELECT_MENU_MAX_HEIGHT,
+                },
+                contentContainerStyle: styles.selectMenuContent,
+              }
+            : {
+                style: {
+                  ...styles.selectMenu,
+                  ...styles.selectMenuContent,
+                  maxHeight: SELECT_MENU_MAX_HEIGHT,
+                },
+              }),
+        },
+        ...cells
+      );
 
       return createElement(
         host.View,
@@ -1667,48 +2246,94 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                   accessibilityLabel: "모두 해제",
                   onPress: clearAll,
                 },
-                createElement(
-                  host.Text,
-                  { style: { color: semantic.iconSubtil, fontSize: 14 } },
-                  "✕"
-                )
+                nativeGlyph(theme, "close", semantic.iconSubtil, 16)
               )
             : null,
           readOnly
             ? null
-            : createElement(host.Text, { style: { color: semantic.text, fontSize: 16 } }, "▾")
+            : nativeGlyph(
+                theme,
+                "chevron-right",
+                semantic.iconSubtil,
+                20,
+                open ? "-90deg" : "90deg"
+              )
         ),
         open
-          ? createElement(
-              // The menu scrolls past ten rows when the host ships a
-              // ScrollView; hosts without one fall back to a capped View.
-              host.ScrollView ?? host.View,
-              {
-                ref: menuRef,
-                role: "listbox",
-                nativeID: menuId,
-                "aria-multiselectable": multiple ? true : undefined,
-                // Real RN ScrollView lays its children out in an inner content
-                // container: box styles (maxHeight/background/border/radius)
-                // stay on style while the child-layout styles
-                // (padding/gap/flexDirection) must ride contentContainerStyle.
-                // The View fallback has no content container, so both merge
-                // onto style.
-                ...(host.ScrollView
-                  ? {
-                      style: { ...styles.selectMenu, maxHeight: SELECT_MENU_MAX_HEIGHT },
-                      contentContainerStyle: styles.selectMenuContent,
-                    }
-                  : {
+          ? host.Modal
+            ? createElement(
+                host.Modal,
+                {
+                  animationType: "fade",
+                  onRequestClose: () => setOpen(false),
+                  presentationStyle: "overFullScreen",
+                  transparent: true,
+                  visible: true,
+                },
+                createElement(
+                  host.View,
+                  {
+                    style: {
+                      flex: 1,
+                      justifyContent: "flex-end",
+                      padding: 16,
+                    },
+                  },
+                  createElement(host.Pressable, {
+                    accessibilityLabel: "선택 메뉴 닫기",
+                    onPress: () => setOpen(false),
+                    style: {
+                      backgroundColor: "rgba(17, 17, 19, 0.48)",
+                      bottom: 0,
+                      left: 0,
+                      position: "absolute",
+                      right: 0,
+                      top: 0,
+                    },
+                  }),
+                  createElement(
+                    host.View,
+                    {
+                      accessibilityRole: "dialog",
+                      accessibilityLabel: "선택 메뉴",
                       style: {
-                        ...styles.selectMenu,
-                        ...styles.selectMenuContent,
-                        maxHeight: SELECT_MENU_MAX_HEIGHT,
+                        backgroundColor: semantic.background,
+                        borderRadius: 18,
+                        gap: 10,
+                        padding: 12,
                       },
-                    }),
-              },
-              ...cells
-            )
+                    },
+                    createElement(
+                      host.View,
+                      {
+                        style: {
+                          alignItems: "center",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          paddingHorizontal: 4,
+                        },
+                      },
+                      createElement(
+                        host.Text,
+                        { style: { color: semantic.text, fontSize: 18, fontWeight: "700" } },
+                        props.accessibilityLabel ?? props.placeholder ?? "선택"
+                      ),
+                      createElement(
+                        host.Pressable,
+                        {
+                          accessibilityRole: "button",
+                          accessibilityLabel: "닫기",
+                          onPress: () => setOpen(false),
+                          style: { padding: 8 },
+                        },
+                        nativeGlyph(theme, "close", semantic.iconSubtil, 20)
+                      )
+                    ),
+                    menu
+                  )
+                )
+              )
+            : menu
           : null
       );
     },
@@ -2307,7 +2932,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                       width: 24,
                     },
                   },
-                  createElement(host.Text, { style: { color: toastText, fontSize: 16 } }, "✕")
+                  nativeGlyph(theme, "close", toastText, 16)
                 )
               : null
           ),
@@ -2652,12 +3277,15 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               borderRadius: 10,
               borderWidth: 1,
               flex: 1,
+              flexDirection: "row",
+              gap: 8,
               minHeight: 42,
               paddingHorizontal: 12,
             },
             testID: end ? `${props.testID ?? "podo-datepicker"}-end` : props.testID,
             "data-open": open ? "true" : undefined,
           },
+          nativeGlyph(theme, hasCalendar ? "calendar" : "time", semantic.iconSubtil, 18),
           createElement(
             host.Text,
             {
@@ -2669,11 +3297,13 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
                 )
                   ? semantic.text
                   : semantic.placeholder,
+                flex: 1,
                 fontSize: 14,
               },
             },
             triggerText(end)
-          )
+          ),
+          nativeGlyph(theme, "chevron-right", semantic.iconSubtil, 18, open ? "-90deg" : "90deg")
         );
       const renderTime = (end: boolean) => {
         const time = (end ? draft.endTime : draft.time) ?? { hour: 0, minute: 0 };
@@ -2726,7 +3356,8 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         label: string,
         onPress: () => void,
         primary = false,
-        disabled = false
+        disabled = false,
+        iconName?: string
       ) =>
         createElement(
           host.Pressable,
@@ -2744,9 +3375,28 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             },
           },
           createElement(
-            host.Text,
-            { style: { color: primary ? semantic.textStaticInvert : semantic.text, fontSize: 14 } },
-            label
+            host.View,
+            { style: { alignItems: "center", flexDirection: "row", gap: 4 } },
+            iconName
+              ? nativeGlyph(
+                  theme,
+                  iconName,
+                  primary ? semantic.textStaticInvert : semantic.text,
+                  18
+                )
+              : null,
+            iconName
+              ? null
+              : createElement(
+                  host.Text,
+                  {
+                    style: {
+                      color: primary ? semantic.textStaticInvert : semantic.text,
+                      fontSize: 14,
+                    },
+                  },
+                  label
+                )
           )
         );
 
@@ -2766,10 +3416,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               props.hideNavArrow
                 ? null
                 : actionButton(
-                    "‹",
+                    "이전 달",
                     () => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1)),
                     false,
-                    monthBlocked(-1)
+                    monthBlocked(-1),
+                    "chevron-left"
                   ),
               createElement(
                 host.Text,
@@ -2782,10 +3433,11 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
               props.hideNavArrow
                 ? null
                 : actionButton(
-                    "›",
+                    "다음 달",
                     () => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1)),
                     false,
-                    monthBlocked(1)
+                    monthBlocked(1),
+                    "chevron-right"
                   )
             ),
             createElement(
@@ -2892,6 +3544,92 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             )
           : null;
 
+      const DialogHost = host.Modal && host.ScrollView ? host.ScrollView : host.View;
+      const dialogShellStyle = {
+        backgroundColor: semantic.background,
+        borderColor: semantic.borderGray,
+        borderRadius: 18,
+        borderWidth: host.Modal ? 0 : 1,
+        flexGrow: 0,
+        flexShrink: 1,
+        maxHeight: host.Modal ? "88%" : undefined,
+        maxWidth: 420,
+        width: "100%",
+      };
+      const dialogContentStyle = { gap: 12, padding: 16 };
+      const dialog = createElement(
+        DialogHost,
+        {
+          accessibilityRole: "dialog",
+          accessibilityLabel: "날짜 선택",
+          style:
+            host.Modal && host.ScrollView
+              ? dialogShellStyle
+              : { ...dialogShellStyle, ...dialogContentStyle },
+          ...(host.Modal && host.ScrollView ? { contentContainerStyle: dialogContentStyle } : {}),
+          testID: `${props.testID ?? "podo-datepicker"}-dialog`,
+        },
+        createElement(
+          host.View,
+          {
+            style: {
+              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            },
+          },
+          createElement(
+            host.Text,
+            { style: { color: semantic.text, fontSize: 18, fontWeight: "700" } },
+            mode === "period" ? "기간 선택" : hasCalendar ? "날짜 선택" : "시간 선택"
+          ),
+          host.Modal
+            ? createElement(
+                host.Pressable,
+                {
+                  accessibilityRole: "button",
+                  accessibilityLabel: "닫기",
+                  onPress: () => {
+                    setDraft(currentValue);
+                    setOpen(false);
+                  },
+                  style: { padding: 8 },
+                },
+                nativeGlyph(theme, "close", semantic.iconSubtil, 20)
+              )
+            : null
+        ),
+        quick,
+        calendar,
+        hasTime ? renderTime(false) : null,
+        hasTime && mode === "period" ? renderTime(true) : null,
+        showActions
+          ? createElement(
+              host.View,
+              { style: { flexDirection: "row", gap: 8, justifyContent: "flex-end" } },
+              actionButton("초기화", () => {
+                setDraft({});
+                if (props.value == null) setInternalValue({});
+                props.onChange?.({});
+                props.onReset?.();
+                setOpen(false);
+              }),
+              actionButton("취소", () => {
+                setDraft(currentValue);
+                setOpen(false);
+              }),
+              actionButton(
+                "적용",
+                () => emit(draft, true),
+                true,
+                mode === "period" && hasCalendar && (!draft.date || !draft.endDate)
+              )
+            )
+          : host.Modal
+            ? null
+            : actionButton("닫기", () => setOpen(false))
+      );
+
       return createElement(
         host.View,
         { style: { gap: 6 }, testID: `${props.testID ?? "podo-datepicker"}-root` },
@@ -2902,49 +3640,48 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           mode === "period" ? renderTrigger(true) : null
         ),
         open
-          ? createElement(
-              host.View,
-              {
-                accessibilityRole: "dialog",
-                accessibilityLabel: "날짜 선택",
-                style: {
-                  backgroundColor: semantic.background,
-                  borderColor: semantic.borderGray,
-                  borderRadius: 14,
-                  borderWidth: 1,
-                  gap: 10,
-                  padding: 12,
+          ? host.Modal
+            ? createElement(
+                host.Modal,
+                {
+                  animationType: "fade",
+                  onRequestClose: () => {
+                    setDraft(currentValue);
+                    setOpen(false);
+                  },
+                  presentationStyle: "overFullScreen",
+                  transparent: true,
+                  visible: true,
                 },
-                testID: `${props.testID ?? "podo-datepicker"}-dialog`,
-              },
-              quick,
-              calendar,
-              hasTime ? renderTime(false) : null,
-              hasTime && mode === "period" ? renderTime(true) : null,
-              showActions
-                ? createElement(
-                    host.View,
-                    { style: { flexDirection: "row", gap: 8, justifyContent: "flex-end" } },
-                    actionButton("초기화", () => {
-                      setDraft({});
-                      if (props.value == null) setInternalValue({});
-                      props.onChange?.({});
-                      props.onReset?.();
-                      setOpen(false);
-                    }),
-                    actionButton("취소", () => {
+                createElement(
+                  host.View,
+                  {
+                    style: {
+                      alignItems: "center",
+                      flex: 1,
+                      justifyContent: "center",
+                      padding: 16,
+                    },
+                  },
+                  createElement(host.Pressable, {
+                    accessibilityLabel: "날짜 선택 닫기",
+                    onPress: () => {
                       setDraft(currentValue);
                       setOpen(false);
-                    }),
-                    actionButton(
-                      "적용",
-                      () => emit(draft, true),
-                      true,
-                      mode === "period" && hasCalendar && (!draft.date || !draft.endDate)
-                    )
-                  )
-                : actionButton("닫기", () => setOpen(false))
-            )
+                    },
+                    style: {
+                      backgroundColor: "rgba(17, 17, 19, 0.48)",
+                      bottom: 0,
+                      left: 0,
+                      position: "absolute",
+                      right: 0,
+                      top: 0,
+                    },
+                  }),
+                  dialog
+                )
+              )
+            : dialog
           : null
       );
     },
@@ -2969,6 +3706,14 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           historyIndexRef.current = historyRef.current.length - 1;
         }
       }, [editorValue]);
+
+      const WebViewComponent = host.WebView ?? theme.webViewComponent;
+      if (WebViewComponent) {
+        return createElement(NativeWebEditor, {
+          editorProps: props,
+          WebViewComponent,
+        });
+      }
 
       const emitEditor = (next: string, track = true) => {
         if (track && historyRef.current[historyIndexRef.current] !== next) {
@@ -3303,6 +4048,13 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     EditorView: function NativeEditorView(props) {
       const theme = usePodoNativeTheme();
       const semantic = nativeSemanticColors(theme);
+      const WebViewComponent = host.WebView ?? theme.webViewComponent;
+      if (WebViewComponent) {
+        return createElement(NativeWebEditorView, {
+          viewerProps: props,
+          WebViewComponent,
+        });
+      }
       return createElement(
         host.View,
         {

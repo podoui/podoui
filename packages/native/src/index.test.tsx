@@ -24,6 +24,41 @@ import {
   usePodoNativeTheme,
 } from "./index.js";
 
+const webViewMessages: string[] = [];
+const TestWebView = React.forwardRef(function TestWebView(
+  props: Record<string, unknown>,
+  ref: React.ForwardedRef<unknown>
+): React.ReactElement {
+  React.useImperativeHandle(ref, () => ({
+    injectJavaScript(script: string) {
+      webViewMessages.push(script);
+    },
+    postMessage(message: string) {
+      webViewMessages.push(message);
+    },
+  }));
+  const source = props.source as { html?: string } | undefined;
+  return (
+    <button
+      aria-label={props.accessibilityLabel as string | undefined}
+      data-html={source?.html}
+      data-testid={props.testID as string | undefined}
+      onFocus={() =>
+        (props.onMessage as ((event: { nativeEvent: { data: string } }) => void) | undefined)?.({
+          nativeEvent: { data: JSON.stringify({ type: "ready", height: 240 }) },
+        })
+      }
+      onClick={() =>
+        (props.onMessage as ((event: { nativeEvent: { data: string } }) => void) | undefined)?.({
+          nativeEvent: {
+            data: JSON.stringify({ type: "input", html: "<p><strong>브리지 입력</strong></p>" }),
+          },
+        })
+      }
+    />
+  );
+});
+
 const domNative = createNativeComponents({
   Pressable: TestPressable,
   Text: TestText,
@@ -2017,12 +2052,12 @@ describe("@podoui/native", () => {
         </>
       );
     }
-    render(<Harness />);
+    const { container } = render(<Harness />);
 
     expect(screen.getByRole("toolbar").querySelectorAll("button").length).toBeGreaterThanOrEqual(
       18
     );
-    fireEvent.click(screen.getByLabelText("굵게"));
+    fireEvent.click(within(container).getByLabelText("굵게"));
     expect(screen.getByTestId("native-editor-output").textContent).toContain(
       "<strong>텍스트</strong>"
     );
@@ -2081,6 +2116,73 @@ describe("@podoui/native", () => {
       />
     );
     expect(screen.getByTestId("native-editor-empty-view").textContent).toBe("");
+  });
+
+  it("uses a WebView WYSIWYG surface and bridges toolbar commands and HTML updates", () => {
+    webViewMessages.length = 0;
+    function Harness(): React.ReactElement {
+      const [value, setValue] = React.useState("<h2>초기 제목</h2>");
+      return (
+        <PodoNativeThemeProvider theme="landing" colorScheme="light" webViewComponent={TestWebView}>
+          <domNative.Editor value={value} onChange={setValue} testID="web-editor" />
+          <domNative.EditorView value={value} testID="web-editor-view" />
+          <button onClick={() => setValue("<p>줄\u2028구분\u2029문단</p>")}>외부 값 변경</button>
+          <output data-testid="web-editor-output">{value}</output>
+        </PodoNativeThemeProvider>
+      );
+    }
+    const { container } = render(<Harness />);
+
+    expect(screen.getByTestId("web-editor-webview").getAttribute("data-html")).toContain(
+      'contenteditable="true"'
+    );
+    expect(screen.getByTestId("web-editor-webview").getAttribute("data-html")).toContain(
+      "editor.focus();restoreRange()"
+    );
+    expect(screen.getByTestId("web-editor-view").getAttribute("data-html")).toContain(
+      "ResizeObserver"
+    );
+    expect(screen.getByTestId("web-editor-view").getAttribute("data-html")).toContain(
+      'contenteditable="false"'
+    );
+
+    fireEvent.click(within(container).getByLabelText("굵게"));
+    expect(webViewMessages.at(-1)).toContain("window.__podoCommand");
+    expect(webViewMessages.at(-1)).toContain('"command":"bold"');
+
+    fireEvent.click(screen.getByTestId("web-editor-webview"));
+    expect(screen.getByTestId("web-editor-output").textContent).toBe(
+      "<p><strong>브리지 입력</strong></p>"
+    );
+    expect(screen.getByTestId("web-editor-view").getAttribute("data-html")).toContain(
+      "<p><strong>브리지 입력</strong></p>"
+    );
+
+    fireEvent.focus(screen.getByTestId("web-editor-webview"));
+    fireEvent.click(screen.getByText("외부 값 변경"));
+    expect(webViewMessages.at(-1)).toContain("window.__podoSetHtml");
+    expect(webViewMessages.at(-1)).toContain("\\u2028");
+    expect(webViewMessages.at(-1)).toContain("\\u2029");
+    expect(webViewMessages.at(-1)).not.toContain("줄\u2028구분");
+  });
+
+  it("sanitizes hostile native Editor HTML before it reaches a WebView", () => {
+    render(
+      <PodoNativeThemeProvider theme="landing" colorScheme="light" webViewComponent={TestWebView}>
+        <domNative.Editor
+          value={
+            '<svg/onload=alert(1)><a href=javascript:alert(2)>위험</a><iframe srcdoc="<script>alert(3)</script>"></iframe><p style="background:url(javascript:alert(4))">안전</p>'
+          }
+          onChange={() => undefined}
+          testID="hostile-editor"
+        />
+      </PodoNativeThemeProvider>
+    );
+
+    const document = screen.getByTestId("hostile-editor-webview").getAttribute("data-html") ?? "";
+    const initialMarkup = document.split("<script>")[0] ?? "";
+    expect(initialMarkup).not.toMatch(/onload|javascript:|srcdoc|<svg|<script|<iframe/i);
+    expect(initialMarkup).toContain("<p>안전</p>");
   });
 });
 

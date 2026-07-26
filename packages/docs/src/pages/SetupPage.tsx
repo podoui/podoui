@@ -51,7 +51,8 @@ const SETUP_TABS: CodeTab[] = [
     code:
       `npx podo-ui init --target native --theme landing --dark-mode --out-dir src/podo --yes\n` +
       `npx podo-ui build --dry-run && npx podo-ui build\n\n` +
-      `import { Pressable, ScrollView, Text, TextInput, View, useColorScheme } from "react-native";\n` +
+      `import { Modal, Pressable, ScrollView, Text, TextInput, View, useColorScheme } from "react-native";\n` +
+      `import { WebView } from "react-native-webview";\n` +
       `import { useFonts } from "expo-font";\n` +
       `import { createNativeComponents, PodoNativeThemeProvider } from "podo-ui/native";\n` +
       `import { getPodoNativeTokens } from "./podo/tokens.native";\n` +
@@ -59,7 +60,7 @@ const SETUP_TABS: CodeTab[] = [
       `const iconGlyphs = Object.fromEntries(\n` +
       `  Object.entries(podoIconGlyphMap).map(([name, code]) => [name, String.fromCodePoint(code)])\n` +
       `);\n` +
-      `const ui = createNativeComponents({ Pressable, ScrollView, Text, TextInput, View });\n\n` +
+      `const ui = createNativeComponents({ Modal, Pressable, ScrollView, Text, TextInput, View, WebView });\n\n` +
       `export function App() {\n` +
       `  const colorScheme = useColorScheme() === "dark" ? "dark" : "light";\n` +
       `  const [fontsLoaded] = useFonts({\n` +

@@ -84,11 +84,12 @@ export const page = (
 );
 ```
 
-React Native — 실제 RN 앱에서는 반드시 `createNativeComponents`에 RN 호스트
-컴포넌트를 주입해 사용합니다 (`plan.md`의 host adapter 계약):
+React Native — DatePicker의 overlay에는 `Modal`, WYSIWYG Editor에는
+`react-native-webview`가 필요합니다:
 
 ```tsx
-import { Pressable, ScrollView, Text, TextInput, View, useColorScheme } from "react-native";
+import { Modal, Pressable, ScrollView, Text, TextInput, View, useColorScheme } from "react-native";
+import { WebView } from "react-native-webview";
 import { useFonts } from "expo-font";
 import { createNativeComponents, PodoNativeThemeProvider } from "podo-ui/native";
 import { getPodoNativeTokens } from "./podo/tokens.native";
@@ -96,10 +97,12 @@ import { podoIconGlyphMap } from "./podo/icons/PodoIcons.native";
 
 const { Button, Field, Icon, Input } = createNativeComponents({
   Pressable,
+  Modal,
   ScrollView,
   Text,
   TextInput,
   View,
+  WebView,
 });
 const iconGlyphs = Object.fromEntries(
   Object.entries(podoIconGlyphMap).map(([name, code]) => [name, String.fromCodePoint(code)])
@@ -129,12 +132,12 @@ export function App() {
 `podo build`는 native 타깃에 `tokens.native.ts`, 코드포인트 맵, 실제 기기에서
 로드할 `PodoIcons.ttf`를 함께 생성합니다. Expo가 아닌 bare React Native라면 같은
 TTF를 앱 자산으로 링크한 뒤 등록한 family 이름을 `iconFontFamily`에 전달하세요.
+Editor를 사용하는 앱은 `pnpm add react-native-webview` 후 iOS pod도 설치해야 합니다.
 
-`podo-ui/native`의 top-level export(`import { Button } from "podo-ui/native"`)는
-문자열 호스트 태그(`defaultNativeHost`)에 바인딩된 테스트 렌더러 전용
-편의 export입니다. react-test-renderer 류에서는 동작하지만 실제 React
-Native 렌더러는 문자열 호스트를 해석하지 못하므로 앱 코드에서는 위처럼
-주입 방식을 사용하세요.
+`podo-ui/native`의 top-level export는 React Native 기본 host에 바로 연결됩니다.
+Editor를 top-level export로 사용할 때는 Provider에
+`webViewComponent={WebView}`를 전달하세요. 커스텀 host adapter는 위처럼
+`createNativeComponents`의 `WebView`에 직접 전달할 수도 있습니다.
 
 ## Validate
 
