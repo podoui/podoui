@@ -43,12 +43,26 @@ for (const asset of metadata.assets) {
   }
 }
 
+for (const consumer of metadata.consumers ?? []) {
+  try {
+    const source = await readFile(join(communityRoot, consumer.source));
+    const consumed = await readFile(join(communityRoot, consumer.file));
+    if (!source.equals(consumed)) {
+      failures.push(
+        `${consumer.file}: ${consumer.source}와 바이트가 일치하지 않습니다`,
+      );
+    }
+  } catch (error) {
+    failures.push(`${consumer.file}: 소비 자산을 읽을 수 없습니다 (${error.message})`);
+  }
+}
+
 if (failures.length > 0) {
   console.error("Figma Community 배포 자산 검증 실패:");
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
   console.log(
-    `Figma Community 배포 자산 ${metadata.assets.length}개가 원본 규격 및 체크섬과 일치합니다.`,
+    `Figma Community 배포 자산 ${metadata.assets.length}개와 소비 자산 ${(metadata.consumers ?? []).length}개가 원본 규격 및 체크섬과 일치합니다.`,
   );
 }

@@ -18,7 +18,18 @@
   h1 {
     font-size: 14px;
     font-weight: 700;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin-bottom: 12px;
+  }
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    flex: 0 0 auto;
   }
   section {
     border: 1px solid #e6e6e6;
@@ -128,7 +139,10 @@
 </style>
 </head>
 <body>
-  <h1>PODO Design System <span style="color:#8c8c8c;font-size:10px;font-weight:400">v0.7.2</span></h1>
+  <header class="brand">
+    <img class="brand-logo" src="__PODO_LOGO_DATA_URI__" alt="" width="28" height="28">
+    <h1>PODO Design System <span style="color:#8c8c8c;font-size:10px;font-weight:400">v0.7.3</span></h1>
+  </header>
   <!-- __PODO_SNAPSHOT__ : build.mjs가 snapshot.json을 이 위치에 삽입한다.
        아래 메인 스크립트가 파싱 시점에 getElementById로 감지하므로
        반드시 스크립트보다 앞(문서 순서상 먼저)이어야 한다. -->

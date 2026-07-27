@@ -21,5 +21,12 @@
       "height": 1080,
       "sha256": "444581746d0b2f6c159ab294ae351098504b51ed3dd3fd07e1830c0cd27743d6"
     }
+  ],
+  "consumers": [
+    {
+      "file": "../../packages/docs/src/assets/favicon.png",
+      "source": "icon.png",
+      "purpose": "documentation-favicon"
+    }
   ]
 }

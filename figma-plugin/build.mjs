@@ -20,6 +20,12 @@ const options = {
 // (JSON에서 "<"와 "/"는 문자열 안에만 나타나므로 전역 치환이 안전하다).
 const copyUi = () => {
   let html = readFileSync('src/ui.html', 'utf8');
+  const logoMarker = '__PODO_LOGO_DATA_URI__';
+  if (!html.includes(logoMarker)) {
+    throw new Error('src/ui.html에 PODO 로고 마커가 없습니다.');
+  }
+  const logoDataUri = `data:image/png;base64,${readFileSync('community/icon.png').toString('base64')}`;
+  html = html.replaceAll(logoMarker, logoDataUri);
   if (existsSync('snapshot.json')) {
     const marker = '<!-- __PODO_SNAPSHOT__';
     if (!html.includes(marker)) {

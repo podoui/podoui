@@ -19,3 +19,5 @@
 이 파일들은 플러그인 런타임 번들에 포함되지 않으며 `manifest.json`에서 참조하지 않습니다. Community 게시 정보는 Figma의 게시 화면에서 관리되기 때문입니다.
 
 원본 디자인을 수정한 경우 두 노드를 PNG 1×로 다시 내보내 파일을 교체하고, `assets.json`의 SHA-256도 함께 갱신합니다.
+
+`icon.png`은 플러그인 UI 빌드에서 데이터 URI로 직접 내장되고, 문서 사이트의 `packages/docs/src/assets/favicon.png`에도 동일한 바이트로 적용됩니다. `community:check`가 두 소비 지점의 로고가 원본과 달라지지 않았는지 함께 검사합니다.
