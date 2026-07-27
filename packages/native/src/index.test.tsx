@@ -2220,6 +2220,19 @@ describe("@podoui/native", () => {
 
     const boldButton = within(container).getByLabelText("굵게");
     expect(boldButton.querySelector('[data-fontfamily="PodoIcons"]')?.textContent).toBe("\uE101");
+    // The generated font preserves wide SVG advances. The last code glyph is
+    // 640/512 em, so its Text canvas must be wider than its 18px font size or
+    // iOS/Android clip the right edge. Square glyphs still receive a small
+    // anti-aliasing safety margin.
+    expect(
+      within(container)
+        .getByLabelText("HTML 편집")
+        .querySelector('[data-fontfamily="PodoIcons"]')
+        ?.getAttribute("data-width")
+    ).toBe("25");
+    expect(
+      boldButton.querySelector('[data-fontfamily="PodoIcons"]')?.getAttribute("data-width")
+    ).toBe("20");
     fireEvent.click(boldButton);
     expect(webViewMessages.at(-1)).toContain("window.__podoCommand");
     expect(webViewMessages.at(-1)).toContain('"command":"bold"');
@@ -2450,6 +2463,7 @@ function TestText({
       data-color={styleRecord?.color as string | undefined}
       data-fontsize={styleRecord?.fontSize == null ? undefined : String(styleRecord.fontSize)}
       data-fontfamily={styleRecord?.fontFamily as string | undefined}
+      data-width={styleRecord?.width == null ? undefined : String(styleRecord.width)}
       data-testid={testID as string | undefined}
     >
       {children}

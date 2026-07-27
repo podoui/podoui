@@ -711,6 +711,21 @@ const ICON_SIZES: Record<NonNullable<NativeIconProps["size"]>, number> = {
   lg: 32,
 };
 
+// Fantasticon normalizes the icon font to a 512-unit height while preserving
+// each source SVG's horizontal advance. Most glyphs fit a square em, but the
+// wider editor glyphs below do not. Giving them a square Text box clips their
+// right edge on iOS/Android (most noticeably the final `code` toolbar item).
+// Keep this in sync with packages/icons/samples/svg/editor viewBox widths.
+const NATIVE_GLYPH_ADVANCE_RATIOS: Readonly<Record<string, number>> = {
+  highlight: 576 / 512,
+  link: 640 / 512,
+  youtube: 576 / 512,
+  hr: 640 / 512,
+  eraser: 576 / 512,
+  code: 640 / 512,
+};
+const NATIVE_GLYPH_HORIZONTAL_SAFETY = 2;
+
 // Select menu ten-row cap (select.component.json: the menu "caps at ten 42px
 // rows (474px) and scrolls beyond"). Computed from this file's own styles:
 // 10 rows × selectCell minHeight 42 + 9 gaps × selectMenuContent gap 4
@@ -1269,10 +1284,13 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     color: string,
     size = 20,
     rotate?: string
-  ) =>
-    createElement(
+  ) => {
+    const advanceRatio = NATIVE_GLYPH_ADVANCE_RATIOS[name] ?? 1;
+    const glyphWidth = Math.ceil(size * advanceRatio) + NATIVE_GLYPH_HORIZONTAL_SAFETY;
+    return createElement(
       host.Text,
       {
+        allowFontScaling: false,
         accessibilityElementsHidden: true,
         importantForAccessibility: "no-hide-descendants",
         "aria-hidden": true,
@@ -1284,11 +1302,12 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           lineHeight: size,
           textAlign: "center",
           transform: rotate ? [{ rotate }] : undefined,
-          width: size,
+          width: glyphWidth,
         },
       },
       theme.iconGlyphs?.[name] ?? glyphFallbacks[name] ?? name
     );
+  };
 
   function NativeWebEditor({
     editorProps,
