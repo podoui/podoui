@@ -6,6 +6,8 @@
   "scripts": {
     "build": "node build.mjs",
     "typecheck": "tsc --noEmit",
+    "community:check": "node scripts/check-community-assets.mjs",
+    "check": "npm run typecheck && npm run build && npm run community:check",
     "watch": "node build.mjs --watch"
   },
   "devDependencies": {

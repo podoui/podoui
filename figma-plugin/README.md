@@ -1,5 +1,14 @@
 # PODO Design System — Figma 플러그인
 
+## Community 배포 자산
+
+Figma Community 게시용 최종 자산은 [`community/`](./community/)에 있습니다.
+
+- `icon.png`: 플러그인 아이콘, 128 × 128
+- `thumbnail.png`: Community 썸네일, 1920 × 1080
+
+두 파일은 원본 PODO Figma 파일의 `리소스` 섹션(`16375:5064`)에서 직접 내보낸 PNG입니다. `npm run community:check`는 크기와 체크섬을 검사하며, 상세 업로드 절차와 원본 노드 ID는 [`community/README.md`](./community/README.md)를 참고하세요.
+
 PODO 디자인 시스템 원본 파일의 **로컬 변수(컬렉션·모드 포함), 로컬 스타일, 모든 컴포넌트 / 컴포넌트 세트**를
 JSON 파일 하나로 내보내고, 다른(빈) 파일에서 `_podo` 페이지를 만들어 동일하게 복원하는 플러그인입니다.
 

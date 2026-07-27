@@ -1,0 +1,25 @@
+{
+  "source": {
+    "fileKey": "uaLVvCUnvoWj4oz6ZMXxwP",
+    "sectionNodeId": "16375:5064",
+    "url": "https://www.figma.com/design/uaLVvCUnvoWj4oz6ZMXxwP/PODO-Design-System?node-id=16375-5064"
+  },
+  "assets": [
+    {
+      "file": "icon.png",
+      "role": "plugin-icon",
+      "nodeId": "16375:5062",
+      "width": 128,
+      "height": 128,
+      "sha256": "e39f640cd42b12367133347d84990b7077cfad60dd538eb5d2221f28e12c40f6"
+    },
+    {
+      "file": "thumbnail.png",
+      "role": "community-thumbnail",
+      "nodeId": "16375:5241",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "444581746d0b2f6c159ab294ae351098504b51ed3dd3fd07e1830c0cd27743d6"
+    }
+  ]
+}
