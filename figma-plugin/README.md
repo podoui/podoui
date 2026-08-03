@@ -9,6 +9,10 @@ Figma Community 게시용 최종 자산은 [`community/`](./community/)에 있�
 
 두 파일은 원본 PODO Figma 파일의 `리소스` 섹션(`16375:5064`)에서 직접 내보낸 PNG입니다. `npm run community:check`는 크기와 체크섬을 검사하며, 상세 업로드 절차와 원본 노드 ID는 [`community/README.md`](./community/README.md)를 참고하세요.
 
+Community 게시 시 전예진, 권오수, 이은규, 정호성, 장수호를 **Additional contributors**에
+모두 등록합니다. `manifest.json`은 이 메타데이터를 지원하지 않으므로 정확한 계정 이메일과 수동
+등록 순서는 [`community/README.md`](./community/README.md#community-기여자)에 관리합니다.
+
 PODO 디자인 시스템 원본 파일의 **로컬 변수(컬렉션·모드 포함), 로컬 스타일, 모든 컴포넌트 / 컴포넌트 세트**를
 JSON 파일 하나로 내보내고, 다른(빈) 파일에서 `_podo` 페이지를 만들어 동일하게 복원하는 플러그인입니다.
 

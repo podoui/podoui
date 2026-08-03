@@ -5,6 +5,13 @@
   "type": "module",
   "packageManager": "pnpm@10.30.2",
   "author": "hada0127 <work@tarucy.net>",
+  "contributors": [
+    "전예진 (Main Designer) <yenny.uxui@gmail.com>",
+    "권오수 (Designer) <rnjsdhtn95@gmail.com>",
+    "이은규 (Main Developer) <tarucy@gmail.com>",
+    "정호성 (Developer) <innerbloo@gmail.com>",
+    "장수호 (Developer) <jangs4339@gmail.com>"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -25,7 +32,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "figma:check": "figma connect parse",
-    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm format:check && pnpm figma:check",
+    "contributors:check": "node scripts/check-contributors.mjs",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm format:check && pnpm figma:check && pnpm contributors:check",
     "release:verify": "node scripts/verify-release.mjs",
     "changeset:dry-run": "changeset status --verbose && pnpm --filter './packages/*' pack --dry-run",
     "changeset": "changeset",

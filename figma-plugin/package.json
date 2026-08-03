@@ -3,6 +3,13 @@
   "version": "0.7.3",
   "private": true,
   "type": "module",
+  "contributors": [
+    "전예진 (Main Designer) <yenny.uxui@gmail.com>",
+    "권오수 (Designer) <rnjsdhtn95@gmail.com>",
+    "이은규 (Main Developer) <tarucy@gmail.com>",
+    "정호성 (Developer) <innerbloo@gmail.com>",
+    "장수호 (Developer) <jangs4339@gmail.com>"
+  ],
   "scripts": {
     "build": "node build.mjs",
     "typecheck": "tsc --noEmit",

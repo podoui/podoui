@@ -110,6 +110,16 @@ npx podo-ui build
 - `podo-ui/cli`, `podo-ui/mcp`: CLI와 MCP 서버 API
 - 실행 파일: `podo`, `podo-ui`, `podo-mcp`
 
+## 기여자
+
+| 이름   | 역할           | 이메일                                              |
+| ------ | -------------- | --------------------------------------------------- |
+| 전예진 | Main Designer  | [yenny.uxui@gmail.com](mailto:yenny.uxui@gmail.com) |
+| 권오수 | Designer       | [rnjsdhtn95@gmail.com](mailto:rnjsdhtn95@gmail.com) |
+| 이은규 | Main Developer | [tarucy@gmail.com](mailto:tarucy@gmail.com)         |
+| 정호성 | Developer      | [innerbloo@gmail.com](mailto:innerbloo@gmail.com)   |
+| 장수호 | Developer      | [jangs4339@gmail.com](mailto:jangs4339@gmail.com)   |
+
 ## 저장소 개발
 
 ```bash

@@ -11,10 +11,36 @@
 
 ## 게시할 때
 
-1. Figma 데스크톱 앱에서 **Plugins → Manage plugins**를 엽니다.
-2. PODO Design System 플러그인의 메뉴에서 **Publish** 또는 **Publish update**를 선택합니다.
-3. 이미지 단계에서 `icon.png`와 `thumbnail.png`를 각각 업로드합니다.
-4. 제출 전에 `npm run community:check`로 파일 손상이나 잘못된 크기가 없는지 확인합니다.
+1. `npm run community:check`로 파일 손상이나 잘못된 크기가 없는지 확인합니다.
+2. 아래 다섯 명에게 플러그인 리소스가 연결된 Figma 파일의 명시적인 **can view** 또는
+   **can edit** 권한을 부여합니다. 팀 권한만으로 접근하는 상태는 creator 후보 자격이 되지 않습니다.
+3. 각 기여자가 게시할 계정에 연결된 Figma Community 프로필을 가지고 있는지 확인합니다.
+   조직 리소스라면 Community 프로필이 해당 work account에 연결되어 있어야 합니다.
+4. Figma 데스크톱 앱에서 **Plugins → Manage plugins**를 엽니다.
+5. PODO Design System 플러그인의 메뉴에서 **Publish** 또는 **Publish update**를 선택합니다.
+6. 이미지 단계에서 `icon.png`와 `thumbnail.png`를 각각 업로드합니다.
+7. **Add the final details → Additional contributors**에서 아래 다섯 명을 이메일로 검색해 모두 추가합니다.
+8. 게시 후 각 기여자가 Figma 계정 알림에서 creator 요청을 **수락**했는지 확인합니다. 수락한
+   사람만 Community 플러그인 페이지와 각자의 Community 프로필에 creator로 표시됩니다.
+
+### Community 기여자
+
+| 이름 | 역할 | Figma 계정 검색 이메일 |
+| --- | --- | --- |
+| 전예진 | Main Designer | `yenny.uxui@gmail.com` |
+| 권오수 | Designer | `rnjsdhtn95@gmail.com` |
+| 이은규 | Main Developer | `tarucy@gmail.com` |
+| 정호성 | Developer | `innerbloo@gmail.com` |
+| 장수호 | Developer | `jangs4339@gmail.com` |
+
+Figma의 `manifest.json`에는 기여자 필드가 없습니다. 위 명단은 Figma Community 게시/업데이트
+화면의 **Additional contributors**에서 등록하고 각 당사자가 요청을 수락해야 실제 플러그인 페이지에
+표시됩니다. 검색 결과에 나오지 않으면 해당 계정의 Community 프로필 연결과 Figma 파일의 명시적
+권한부터 확인합니다.
+
+여러 사람이 이후 업데이트도 게시해야 할 때만 플러그인 권한 화면의 **Manage permissions**에서
+publisher로 별도 초대합니다. publisher는 업데이트를 배포할 수 있는 권한이며 Community에 보이는
+creator/contributor 등록과는 다른 항목입니다.
 
 이 파일들은 플러그인 런타임 번들에 포함되지 않으며 `manifest.json`에서 참조하지 않습니다. Community 게시 정보는 Figma의 게시 화면에서 관리되기 때문입니다.
 

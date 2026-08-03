@@ -445,6 +445,12 @@
   - 완료 기준: react/web/hono/native 4타깃 코드 스니펫을 탭으로 보여준다. react/web은 `button.component.json`의 examples와, hono/native는 각 렌더러 사용법과 일치한다.
   - 완료 기준: 현재 Figma·JSON 스펙의 theme 8종(solid/outline × primary/assistive/white/danger) × size(xs/sm/md/lg)와 normal/hover/pressed/disabled 상태를 보여주는 쇼케이스가 있다.
   - 완료 기준: theme/size/prefix/suffix/disabled/fill/onPress/onClick을 담은 props 테이블이 있고, 값이 `button.component.json`과 일치한다.
+- [x] v2 소개 페이지와 기여자 메타데이터
+  - 완료 기준: 첫 접속과 GNB 로고 클릭이 `#/` 소개 페이지를 열고, 문서 라우트의 사이드바 동작을 유지한다.
+  - 완료 기준: v1 소개 페이지의 흐름을 참고해 JSON 스펙·멀티 런타임·Figma/CLI 연동을 설명하며 데스크톱/모바일과 light/dark에 대응한다.
+  - 완료 기준: 기여자 5명이 소개 페이지 하단과 루트 `README.md`, 공개 npm 패키지 및 Figma 플러그인 메타데이터에 같은 이름·역할·이메일로 기록되고 자동 정합성 검사가 있다.
+  - 완료 기준: Figma Community의 Additional contributors 수동 등록 절차와 자동 배포 불가 사유가 운영 문서에 명시된다.
+  - 완료 기준: 소개 라우팅 테스트, docs 프로덕션 빌드, Figma 플러그인 검증이 통과한다.
 
 ## Phase 12: Figma 가져오기 (plugin → CLI 원스텝)
 

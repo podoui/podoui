@@ -14,9 +14,9 @@ Build Podo v2 as a JSON-spec-first TypeScript design system:
 
 1. Implement the next unchecked scope in `todo.md`.
 2. Run local verification for that scope.
-3. Ask both Claude Code and Agy for strict review.
+3. Ask a separate Codex reviewer agent for strict review.
 4. Fix every blocking review finding.
-5. Only after both reviews pass, update `todo.md` checkboxes for the completed scope.
+5. Only after the Codex review passes, update `todo.md` checkboxes for the completed scope.
 6. Commit the passing scope.
 7. Push the branch.
 8. Continue to the next scope.
@@ -61,7 +61,7 @@ If a command cannot run because dependencies are not installed or the current ph
 
 ## Review Standard
 
-Claude Code and Agy reviews must be strict. Ask reviewers to focus on:
+The Codex review must be strict and performed by a separate reviewer agent that did not implement the scope. The reviewer must not edit files. Ask the reviewer to focus on:
 
 - incorrect architecture decisions
 - missed `todo.md` completion criteria
@@ -74,37 +74,15 @@ Claude Code and Agy reviews must be strict. Ask reviewers to focus on:
 
 Only non-blocking suggestions may remain unresolved before checking `todo.md`.
 
-## Known Agent CLI Invocations
+## Codex Review Invocation
 
-Use `--` before the prompt when invoking Claude Code with `--tools`; otherwise the prompt can be parsed as another tool value.
+Use an independent Codex reviewer agent or sub-agent with repository read access. Give it the current contiguous scope, its `todo.md` completion criteria, the complete diff, and local verification results. Use this review request as the baseline:
 
-```bash
-claude -p --permission-mode dontAsk --tools "Read,Grep,Bash" -- "Strictly review the current Podo v2 repository scope. Do not edit files. Return PASS only if the scope can be checked in todo.md."
+```text
+Strictly review the current Podo v2 repository scope. Do not edit files. Inspect AGENTS.md, todo.md, the complete diff, and relevant tests. Focus on architecture, missed completion criteria, validation, package/export/config mistakes, reproducibility, unsafe writes, migration/update risks, and blocking test gaps. Return PASS only if the scope can be checked in todo.md; otherwise list every blocking finding with file paths and concrete fixes. Label non-blocking suggestions separately.
 ```
 
-If Claude Code tool-enabled print mode hangs in this repository, first verify the CLI itself with the safe-mode smoke command, then use safe-mode for a prompt-only review fallback.
-
-```bash
-claude -p --safe-mode --permission-mode dontAsk -- "Reply with OK only."
-```
-
-The `cc-telegram` project at `/Users/ourteam/project/cc-telegram` invokes Claude by starting `claude --dangerously-skip-permissions` and writing the prompt to stdin. This method was tested in this repository and should be the first fallback when `claude -p` hangs.
-
-```bash
-printf '%s' "Strictly review the current Podo v2 repository scope. Do not edit files. Return PASS only if the scope can be checked in todo.md." | claude --dangerously-skip-permissions
-```
-
-When tool-enabled Claude print mode keeps hanging but the model itself responds, disable tools and stream the result. This works for prompt-only reviews when the prompt already includes the needed evidence; if a report file is required, manually save the returned markdown.
-
-```bash
-claude -p --safe-mode --no-session-persistence --verbose --model sonnet --tools "" --output-format stream-json --include-partial-messages -- "Return a strict markdown review based only on the facts in this prompt."
-```
-
-For Agy print mode, put `--print-timeout` after the prompt.
-
-```bash
-agy --sandbox --print "Strictly review the current Podo v2 repository scope. Do not edit files. Return PASS only if the scope can be checked in todo.md." --print-timeout 10m
-```
+The implementing agent must not self-approve. If no independent Codex reviewer is available, stop before checking `todo.md`, committing, or pushing and report the review blocker.
 
 ## Package Publishing
 

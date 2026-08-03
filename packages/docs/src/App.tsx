@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { PodoThemeProvider } from "@podoui/react";
 import { NAV, findBySlug } from "./nav.js";
 import logoUrl from "./assets/logo.svg";
+import { HomePage } from "./pages/HomePage.js";
 
 // GNB top-level nav (Figma 516:3871).
 const TOP_NAV: { label: string; href?: string }[] = [
@@ -13,7 +14,7 @@ const TOP_NAV: { label: string; href?: string }[] = [
 ];
 
 function currentSlug(): string {
-  return window.location.hash.replace(/^#\/?/, "") || NAV[0]!.slug;
+  return window.location.hash.replace(/^#\/?/, "");
 }
 
 /** Groups nav items by their `group` field, preserving first-seen order. */
@@ -40,6 +41,7 @@ export function App() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
+  const isHome = slug === "";
   const active = findBySlug(slug) ?? NAV[0]!;
   const Page = active.page;
 
@@ -58,6 +60,13 @@ export function App() {
                     key={item.label}
                     className="gnb__nav-link"
                     href={item.href}
+                    aria-current={
+                      (item.label === "Doc" && !isHome && active.group === "Guide") ||
+                      (item.label === "Foundation" && !isHome && active.group === "Foundation") ||
+                      (item.label === "Component" && !isHome && active.group === "Components")
+                        ? "page"
+                        : undefined
+                    }
                     {...(item.href.startsWith("http")
                       ? { target: "_blank", rel: "noreferrer" }
                       : {})}
@@ -91,32 +100,38 @@ export function App() {
         </div>
       </header>
 
-      <div className="site-layout">
-        <nav className="site-sidebar" aria-label="Components">
-          {groupedNav().map((group) => (
-            <div key={group.name}>
-              <p className="site-sidebar__group-title">{group.name}</p>
-              <ul className="site-sidebar__list">
-                {group.items.map((item) => (
-                  <li key={item.slug}>
-                    <a
-                      className="site-sidebar__link"
-                      href={`#/${item.slug}`}
-                      aria-current={item.slug === active.slug ? "page" : undefined}
-                    >
-                      {item.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </nav>
-
-        <main className="site-content">
-          <Page />
+      {isHome ? (
+        <main className="home-main">
+          <HomePage />
         </main>
-      </div>
+      ) : (
+        <div className="site-layout">
+          <nav className="site-sidebar" aria-label="Components">
+            {groupedNav().map((group) => (
+              <div key={group.name}>
+                <p className="site-sidebar__group-title">{group.name}</p>
+                <ul className="site-sidebar__list">
+                  {group.items.map((item) => (
+                    <li key={item.slug}>
+                      <a
+                        className="site-sidebar__link"
+                        href={`#/${item.slug}`}
+                        aria-current={item.slug === active.slug ? "page" : undefined}
+                      >
+                        {item.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+
+          <main className="site-content">
+            <Page />
+          </main>
+        </div>
+      )}
     </PodoThemeProvider>
   );
 }

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "전예진",
+    "roleKo": "메인 디자이너",
+    "roleEn": "Main Designer",
+    "email": "yenny.uxui@gmail.com"
+  },
+  {
+    "name": "권오수",
+    "roleKo": "디자이너",
+    "roleEn": "Designer",
+    "email": "rnjsdhtn95@gmail.com"
+  },
+  {
+    "name": "이은규",
+    "roleKo": "메인 개발자",
+    "roleEn": "Main Developer",
+    "email": "tarucy@gmail.com"
+  },
+  {
+    "name": "정호성",
+    "roleKo": "개발자",
+    "roleEn": "Developer",
+    "email": "innerbloo@gmail.com"
+  },
+  {
+    "name": "장수호",
+    "roleKo": "개발자",
+    "roleEn": "Developer",
+    "email": "jangs4339@gmail.com"
+  }
+]
