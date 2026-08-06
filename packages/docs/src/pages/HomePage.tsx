@@ -12,7 +12,7 @@ const FEATURES = [
     number: "02",
     title: "모든 제품에 같은 규칙을",
     description:
-      "React와 Next.js, Hono SSR, React Native, Web Components까지 하나의 스펙에서 각 환경에 맞는 코드를 만듭니다.",
+      "React와 Next.js, Hono, React Native까지 하나의 스펙에서 각 환경에 맞는 코드를 만듭니다.",
   },
   {
     number: "03",
@@ -22,7 +22,7 @@ const FEATURES = [
   },
 ] as const;
 
-const TARGETS = ["React", "Next.js", "Hono", "React Native", "Web Components", "Figma"];
+const TARGETS = ["React", "Next.js", "Hono", "React Native", "Figma"];
 
 export function HomePage() {
   return (

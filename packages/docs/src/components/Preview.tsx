@@ -95,6 +95,9 @@ export function Preview({ tabs, children }: PreviewProps) {
 function normalizeTabs(tabs: CodeTab[]): CodeTab[] {
   return tabs.flatMap((tab) => {
     if (tab.target === "web") return [];
+    if (tab.target === "hono") {
+      return [{ ...tab, target: "hono-ssr", label: "Hono SSR" }];
+    }
     if (tab.target !== "react") return [tab];
 
     const frameworkNeutralCode = tab.code
@@ -108,6 +111,12 @@ function normalizeTabs(tabs: CodeTab[]): CodeTab[] {
         label: "Next.js",
         code: `"use client";\n\n${frameworkNeutralCode}`,
       },
+      {
+        ...tab,
+        target: "hono-csr",
+        label: "Hono CSR",
+        code: frameworkNeutralCode,
+      },
     ];
   });
 }
@@ -117,6 +126,10 @@ function normalizeTabs(tabs: CodeTab[]): CodeTab[] {
  * the rendered and copied example is complete enough to paste into a project.
  */
 function completeExample(tab: CodeTab): string {
+  if (tab.target === "hono-csr") {
+    return completeHonoCsrExample(tab.code);
+  }
+
   if (/^\s*import\s/m.test(tab.code)) {
     return tab.code;
   }
@@ -134,4 +147,97 @@ function completeExample(tab: CodeTab): string {
   }
 
   return tab.code;
+}
+
+/**
+ * Hono's client-side option is a React island mounted into the HTML shell that
+ * Hono serves. Keep it distinct from podo-ui/hono's static SSR renderer so the
+ * two runtime contracts are never presented as interchangeable.
+ */
+function completeHonoCsrExample(code: string): string {
+  const shellComment =
+    `// Hono 응답에 <div id="podo-root"></div>와\n` +
+    `// <script type="module" src="/src/podo-client.tsx"></script>를 포함하세요.\n`;
+  const rootImport = `import { createRoot } from "react-dom/client";\n`;
+  const componentName = code.match(
+    /(?:export\s+default\s+|export\s+)?function\s+([A-Z][A-Za-z0-9]*)\s*\(/
+  )?.[1];
+
+  if (componentName) {
+    const source = completeReactExample(code);
+    return (
+      shellComment +
+      rootImport +
+      source +
+      `\n\nconst root = document.getElementById("podo-root");\n` +
+      `if (!root) throw new Error("#podo-root를 찾을 수 없습니다.");\n` +
+      `createRoot(root).render(<${componentName} />);`
+    );
+  }
+
+  const importMatches = Array.from(code.matchAll(/^import\s+.*;$/gm));
+  const lastImport = importMatches.at(-1);
+  if (lastImport?.index !== undefined) {
+    const importEnd = lastImport.index + lastImport[0].length;
+    const imports = code.slice(0, importEnd).trim();
+    const jsx = code.slice(importEnd).trim();
+    return createHonoIsland(shellComment, rootImport, imports, jsx);
+  }
+
+  const components = Array.from(
+    new Set(Array.from(code.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g), (match) => match[1]))
+  );
+  const imports =
+    components.length > 0
+      ? `import { ${components.join(", ")} } from "podo-ui/react";\nimport "podo-ui/styles.css";`
+      : `import "podo-ui/styles.css";`;
+  return createHonoIsland(shellComment, rootImport, imports, code.trim());
+}
+
+function completeReactExample(code: string): string {
+  if (/^\s*import\s/m.test(code)) {
+    return code;
+  }
+
+  const components = Array.from(
+    new Set(Array.from(code.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g), (match) => match[1]))
+  );
+  if (components.length === 0) {
+    return code;
+  }
+
+  return `import { ${components.join(", ")} } from "podo-ui/react";\nimport "podo-ui/styles.css";\n\n${code}`;
+}
+
+function createHonoIsland(
+  shellComment: string,
+  rootImport: string,
+  imports: string,
+  jsx: string
+): string {
+  const leadingComments: string[] = [];
+  const jsxLines = jsx.split("\n");
+  while (jsxLines[0]?.trimStart().startsWith("//")) {
+    leadingComments.push(jsxLines.shift()!.trim());
+  }
+  const commentBlock = leadingComments.length > 0 ? `${leadingComments.join("\n")}\n` : "";
+
+  return (
+    shellComment +
+    rootImport +
+    imports +
+    `\n\n${commentBlock}function PodoIsland() {\n` +
+    `  return (\n    <>\n${indent(jsxLines.join("\n").trim(), 6)}\n    </>\n  );\n}\n\n` +
+    `const root = document.getElementById("podo-root");\n` +
+    `if (!root) throw new Error("#podo-root를 찾을 수 없습니다.");\n` +
+    `createRoot(root).render(<PodoIsland />);`
+  );
+}
+
+function indent(value: string, spaces: number): string {
+  const prefix = " ".repeat(spaces);
+  return value
+    .split("\n")
+    .map((line) => `${prefix}${line}`)
+    .join("\n");
 }

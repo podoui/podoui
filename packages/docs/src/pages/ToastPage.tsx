@@ -17,13 +17,17 @@ const USAGE_TABS: CodeTab[] = [
     target: "react",
     label: "React",
     code:
-      `import { Toaster, toast } from "podo-ui/react";\n` +
+      `import { Button, Toaster, toast } from "podo-ui/react";\n` +
       `import "podo-ui/styles.css";\n\n` +
-      `{/* 앱 루트에 한 번 */}\n<Toaster />\n\n` +
-      `{/* 어디서든 호출 — 기본 normal 상태, top-center, 3초 뒤 자동 소멸 */}\n` +
-      `toast("저장됐어요");\n` +
-      `toast.success("전송됐어요"); // 상태 단축 호출\n` +
-      `toast.danger("저장에 실패했어요", { manual: true }); // X를 눌러야 닫혀요`,
+      `export function App() {\n` +
+      `  return (\n` +
+      `    <>\n` +
+      `      {/* 앱 루트에 한 번 */}\n` +
+      `      <Toaster />\n` +
+      `      <Button onPress={() => toast.success("저장됐어요")}>저장</Button>\n` +
+      `    </>\n` +
+      `  );\n` +
+      `}`,
   },
   {
     target: "hono",

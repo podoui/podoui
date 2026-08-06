@@ -324,6 +324,11 @@ a {
   outline-offset: -2px;
 }
 
+.preview__code pre code {
+  display: table;
+  min-width: 100%;
+}
+
 .preview__code pre code > span {
   display: table-row;
 }
@@ -334,8 +339,14 @@ a {
 }
 
 .code-line__number {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 46px;
   min-width: 46px;
   padding: 0 14px 0 12px;
+  background: #011627;
   color: #5f7e97;
   text-align: right;
   user-select: none;

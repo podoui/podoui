@@ -19,6 +19,7 @@ describe("docs introduction routing", () => {
 
     expect(screen.getByRole("heading", { name: "디자인과 코드를하나의 스펙으로." })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "함께 만든 사람들" })).toBeTruthy();
+    expect(screen.queryByText("Web Components")).toBeNull();
 
     for (const name of ["전예진", "권오수", "이은규", "정호성", "장수호"]) {
       expect(screen.getByText(name)).toBeTruthy();
