@@ -3,69 +3,91 @@ import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { SpecTable } from "../components/SpecTable.js";
-import { COLOR_TOKEN_TABS, PROJECT_THEME_TABS } from "./setup-examples.js";
+import { GLOBAL_TOKEN_TABS, PROJECT_THEME_TABS } from "./setup-examples.js";
 
-const SETUP_TABS: CodeTab[] = [
+export const SETUP_TABS: CodeTab[] = [
   {
-    target: "react",
-    label: "React / Next.js",
+    target: "setup-react",
+    label: "React",
     code:
       `// 터미널: npm i podo-ui\n` +
-      `// Next.js App Router라면 이 파일 맨 위에 "use client"를 추가하세요.\n` +
       `import { Button, PodoThemeProvider } from "podo-ui/react";\n` +
       `import "podo-ui/styles.css";\n` +
       `import "podo-ui/icons.css";\n\n` +
       `export function App() {\n` +
       `  return (\n` +
-      `    <PodoThemeProvider theme="landing" colorScheme="light">\n` +
+      `    <PodoThemeProvider theme="landing" colorScheme="light" applyToDocument>\n` +
       `      <Button theme="solid-primary">저장</Button>\n` +
       `    </PodoThemeProvider>\n` +
       `  );\n}`,
   },
   {
-    target: "hono",
-    label: "Hono",
+    target: "setup-next",
+    label: "Next.js",
     code:
+      `// app/layout.tsx\n` +
+      `import "podo-ui/styles.css";\n` +
+      `import "podo-ui/icons.css";\n` +
+      `import { Providers } from "./providers";\n\n` +
+      `export default function RootLayout({ children }: { children: React.ReactNode }) {\n` +
+      `  return (\n` +
+      `    <html lang="ko" data-podo-theme="landing" data-color-scheme="light">\n` +
+      `      <body><Providers>{children}</Providers></body>\n` +
+      `    </html>\n` +
+      `  );\n` +
+      `}\n\n` +
+      `// app/providers.tsx\n` +
+      `"use client";\n` +
+      `import { PodoThemeProvider } from "podo-ui/react";\n` +
+      `export function Providers({ children }: { children: React.ReactNode }) {\n` +
+      `  return <PodoThemeProvider theme="landing" colorScheme="light" applyToDocument>{children}</PodoThemeProvider>;\n` +
+      `}`,
+  },
+  {
+    target: "setup-hono-csr",
+    label: "Hono CSR",
+    code:
+      `// client.tsx — Hono가 내려 준 #podo-root에 React를 붙입니다.\n` +
+      `import { createRoot } from "react-dom/client";\n` +
+      `import { Button, PodoThemeProvider } from "podo-ui/react";\n` +
+      `import "podo-ui/styles.css";\n\n` +
+      `const root = document.getElementById("podo-root");\n` +
+      `if (!root) throw new Error("#podo-root를 찾을 수 없습니다.");\n` +
+      `createRoot(root).render(\n` +
+      `  <PodoThemeProvider theme="landing" colorScheme="light" applyToDocument>\n` +
+      `    <Button>클라이언트 화면</Button>\n` +
+      `  </PodoThemeProvider>\n` +
+      `);`,
+  },
+  {
+    target: "setup-hono-ssr",
+    label: "Hono SSR",
+    code:
+      `// Vite의 ?raw import로 패키지 CSS를 첫 HTML에 넣습니다.\n` +
+      `import podoCss from "podo-ui/styles.css?raw";\n` +
       `import { Hono } from "hono";\n` +
       `import { Button, renderCriticalCss } from "podo-ui/hono";\n\n` +
       `const app = new Hono();\n\n` +
       `app.get("/", (c) => c.html(\n` +
-      `  <html lang="ko">\n` +
+      `  <html lang="ko" data-podo-theme="landing" data-color-scheme="light">\n` +
       `    <head>\n` +
-      `      <link rel="stylesheet" href="/assets/podo.css" />\n` +
-      `      <link rel="stylesheet" href="/assets/podo-icons.css" />\n` +
-      `      {renderCriticalCss({ theme: "landing", colorScheme: "light" })}\n` +
+      `      {renderCriticalCss({ theme: "landing", colorScheme: "light", css: podoCss })}\n` +
       `    </head>\n` +
       `    <body><Button>서버에서 렌더링</Button></body>\n` +
       `  </html>\n` +
       `));\n\nexport default app;`,
   },
   {
-    target: "native",
+    target: "setup-native",
     label: "React Native",
     code:
-      `import { useColorScheme } from "react-native";\n` +
-      `import { WebView } from "react-native-webview";\n` +
-      `import { useFonts } from "expo-font";\n` +
       `import { Button, PodoNativeThemeProvider } from "podo-ui/native";\n` +
-      `import { getPodoNativeTokens } from "./podo/tokens.native";\n` +
-      `import { podoIconGlyphMap } from "./podo/icons/PodoIcons.native";\n\n` +
-      `const iconGlyphs = Object.fromEntries(\n` +
-      `  Object.entries(podoIconGlyphMap).map(([name, code]) => [name, String.fromCodePoint(code)])\n` +
-      `);\n` +
+      `\n` +
       `export function App() {\n` +
-      `  const colorScheme = useColorScheme() === "dark" ? "dark" : "light";\n` +
-      `  const [fontsLoaded] = useFonts({\n` +
-      `    PodoIcons: require("./podo/icons/PodoIcons.ttf"),\n` +
-      `  });\n` +
-      `  if (!fontsLoaded) return null;\n\n` +
       `  return (\n` +
-      `    <PodoNativeThemeProvider\n` +
-      `      theme="landing" colorScheme={colorScheme}\n` +
-      `      tokens={getPodoNativeTokens("landing", colorScheme)}\n` +
-      `      iconGlyphs={iconGlyphs} iconFontFamily="PodoIcons"\n` +
-      `      webViewComponent={WebView}\n` +
-      `    >\n      <Button>저장</Button>\n    </PodoNativeThemeProvider>\n` +
+      `    <PodoNativeThemeProvider theme="landing" colorScheme="light">\n` +
+      `      <Button>저장</Button>\n` +
+      `    </PodoNativeThemeProvider>\n` +
       `  );\n}`,
   },
 ];
@@ -75,19 +97,23 @@ export function SetupPage() {
     <>
       <PageHeader
         title="설치와 토큰 적용"
-        intro="처음에는 npm 패키지만 설치해 바로 사용할 수 있어요. Figma 토큰이나 프로젝트별 테마가 필요할 때만 CLI로 .podo를 만들고, 검증과 미리보기를 거쳐 생성물을 적용하세요."
+        intro="Podo UI는 기본 디자인으로 바로 시작할 수 있고, 준비가 되면 같은 코드를 유지한 채 팀의 Figma 토큰으로 바꿀 수 있어요. 먼저 아래에서 사용하는 환경을 고르고 첫 화면을 띄워 보세요."
       />
 
-      <DocSection index={0} title="환경별 설정">
+      <DocSection
+        index={0}
+        title="1. 패키지를 설치하고 첫 화면 띄우기"
+        description="모든 환경에서 설치 명령은 npm i podo-ui 하나입니다. 탭을 고른 뒤 코드를 앱의 시작점에 넣으세요. Next.js와 Hono는 첫 HTML에도 테마 속성을 넣어 두면 화면이 뜨는 순간부터 올바른 색이 보입니다."
+      >
         <Preview tabs={SETUP_TABS}>
-          <Button>생성 토큰이 적용된 버튼</Button>
+          <Button>첫 Podo 버튼</Button>
         </Preview>
       </DocSection>
 
       <DocSection
         index={1}
-        title="프로젝트 전체 테마 적용"
-        description="앱 루트에 landing/dashboard 테마와 light/dark 색상 모드를 지정하세요. React의 applyToDocument는 포털로 body에 렌더되는 UI까지 같은 CSS 토큰을 상속하도록 html 요소에도 테마를 적용합니다. Hono SSR은 첫 HTML부터 속성을 넣어 테마 깜빡임을 줄이고, React Native는 선택한 생성 토큰 객체를 Provider에 전달합니다."
+        title="2. 앱 전체에 테마 한 번 적용하기"
+        description="화면마다 테마를 반복하지 않아도 됩니다. 앱 루트에서 landing 또는 dashboard와 light 또는 dark를 한 번 정하세요. React의 applyToDocument는 모달처럼 body로 이동하는 UI도 같은 토큰을 쓰게 하고, 서버 렌더링은 HTML에 속성을 미리 넣어 첫 화면의 깜빡임을 막습니다."
       >
         <Preview tabs={PROJECT_THEME_TABS}>
           <Button>프로젝트 테마가 적용된 버튼</Button>
@@ -96,27 +122,29 @@ export function SetupPage() {
 
       <DocSection
         index={2}
-        title="의미 기반 색상 토큰 사용"
-        description="색상값을 직접 쓰지 말고 text, foreground, border 같은 의미 토큰을 사용하세요. 웹 런타임은 생성된 CSS 변수를 사용하면 상위 테마에 따라 자동으로 바뀌고, React Native는 getPodoNativeTokens로 현재 theme/colorScheme의 값을 선택합니다."
+        title="3. 어디서든 디자인 토큰 사용하기"
+        description="Podo 컴포넌트 밖의 화면도 같은 디자인 언어로 만들 수 있어요. 웹에서는 생성된 tokens.css를 시작점에서 한 번 불러오고 --podo-* CSS 변수를 사용하세요. 색상뿐 아니라 간격, 반경, 타이포그래피까지 루트 테마를 따라 자동으로 바뀝니다. React Native에서는 Provider에 넣은 토큰을 usePodoNativeTokens로 꺼냅니다."
       >
-        <Preview tabs={COLOR_TOKEN_TABS}>
+        <Preview tabs={GLOBAL_TOKEN_TABS}>
           <p
             style={{
-              color: "var(--podo-text-success)",
-              background: "var(--podo-foreground-success-light)",
-              padding: "var(--podo-spacing-scale-4)",
+              color: "var(--podo-text-basic)",
+              background: "var(--podo-elevation-basic)",
+              padding: "var(--podo-spacing-scale-8)",
               borderRadius: "var(--podo-radius-control-md)",
+              fontFamily: "var(--podo-typography-body-medium-fontFamily)",
+              fontSize: "var(--podo-typography-body-medium-fontSize)",
             }}
           >
-            의미 기반 색상 토큰 예제
+            전역 토큰으로 만든 계정 카드
           </p>
         </Preview>
       </DocSection>
 
       <DocSection
         index={3}
-        title="Figma 플러그인의 최신 사용 흐름"
-        description="플러그인은 최신 PODO 디자인 시스템 스냅샷을 자체 포함합니다. 새 Figma 파일에서는 내보내기 없이 ‘PODO 디자인 시스템 설치’를 누르세요. JSON 내보내기·가져오기는 고급 도구이며 일반 설치 절차가 아닙니다."
+        title="4. 팀 디자인을 가져오고 싶을 때"
+        description="기본 테마만 쓴다면 여기까지면 충분합니다. 팀 토큰이 필요하면 먼저 npx podo-ui init --target react --theme landing --out-dir src/podo --yes로 .podo를 만드세요. 그다음 import를 대기시킨 뒤 플러그인에서 ‘프로젝트로 보내기’를 누르면 CLI가 변경 내용을 먼저 보여 줍니다. Next.js와 Hono CSR도 target react를, Hono SSR은 hono를, React Native는 native를 사용합니다."
       >
         <SpecTable
           columns={["하려는 일", "순서", "결과"]}
@@ -128,7 +156,7 @@ export function SetupPage() {
             ],
             [
               "코드 프로젝트에 적용",
-              "npx podo-ui import → 프로젝트로 보내기",
+              "npx podo-ui init → npx podo-ui import → 프로젝트로 보내기",
               ".podo 입력과 검토 가능한 변경 계획",
             ],
             ["파일로 백업·복원", "고급 도구 → JSON 내보내기/가져오기", ".podo-export.json"],
@@ -138,24 +166,28 @@ export function SetupPage() {
 
       <DocSection
         index={4}
-        title="프로젝트 토큰 생성과 검증"
-        description="아래 명령은 Figma에서 받은 JSON과 프로젝트 오버라이드를 재현 가능한 CSS·TypeScript·폰트로 만듭니다. 생성 파일을 직접 수정하지 말고 .podo의 원본 JSON을 바꾸세요."
+        title="5. 변경 내용을 확인하고 토큰 만들기"
+        description="먼저 검증하고, dry-run으로 바뀔 파일을 살펴본 다음 실제 생성하세요. 만들어진 CSS·TypeScript·폰트는 언제든 .podo의 JSON에서 다시 만들 수 있으므로 직접 고치지 않는 것이 안전합니다."
       >
         <SpecTable
           columns={["명령", "역할"]}
           rows={[
+            [
+              <code>npx podo-ui init --target react --theme landing --out-dir src/podo --yes</code>,
+              "처음 한 번 .podo 작업 공간 만들기",
+            ],
+            [<code>npx podo-ui import</code>, "Figma 변경 계획을 받고 확인 후 적용"],
             [<code>npx podo-ui validate</code>, "JSON 스키마·참조·아이콘 입력 검증"],
-            [<code>npx podo-ui init --target react</code>, ".podo와 대상별 기본 설정 생성"],
             [<code>npx podo-ui build --dry-run</code>, "생성/갱신 파일 계획 확인"],
-            [<code>npx podo-ui build --force</code>, "검토한 기존 생성물을 재생성"],
+            [<code>npx podo-ui build</code>, "확인한 토큰·컴포넌트·아이콘 생성"],
           ]}
         />
       </DocSection>
 
       <DocSection
         index={5}
-        title="환경별 지원 범위"
-        description="React와 Next.js는 동일한 React 컴포넌트를 사용합니다. Hono는 15개 컴포넌트를 순수 SSR로 출력하고, DatePicker와 Editor처럼 브라우저 상태가 필요한 기능은 React island로 붙입니다. React Native는 네이티브 UI와 WebView 기반 Editor를 제공합니다."
+        title="환경마다 어디까지 쓸 수 있나요?"
+        description="React와 Next.js는 같은 컴포넌트를 사용합니다. Hono의 기본 UI는 서버에서 바로 만들 수 있고, DatePicker와 Editor처럼 브라우저 상태가 필요한 화면만 React island로 붙입니다. React Native는 네이티브 UI와 WebView 기반 Editor를 제공합니다. 전역 토큰은 아래 모든 환경과 일반 HTML/CSS에서 사용할 수 있습니다."
       >
         <SpecTable
           columns={["환경", "기본 컴포넌트", "DatePicker", "Editor"]}

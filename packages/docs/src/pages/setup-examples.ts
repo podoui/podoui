@@ -2,6 +2,26 @@ import type { CodeTab } from "../components/Preview.js";
 
 export const PROJECT_THEME_TABS: CodeTab[] = [
   {
+    target: "theme-html",
+    label: "HTML / CSS",
+    code:
+      `<!-- 준비:\n` +
+      `  npx podo-ui init --target web --theme landing --out-dir public/podo --yes\n` +
+      `  npx podo-ui build\n` +
+      `  cp node_modules/podo-ui/styles.css public/podo/styles.css\n` +
+      `  public 폴더를 사이트의 정적 루트로 제공합니다.\n` +
+      `-->\n` +
+      `<html lang="ko" data-podo-theme="landing" data-color-scheme="light">\n` +
+      `  <head>\n` +
+      `    <link rel="stylesheet" href="/podo/styles.css" />\n` +
+      `    <link rel="stylesheet" href="/podo/tokens.css" />\n` +
+      `    <link rel="stylesheet" href="/podo/components.css" />\n` +
+      `  </head>\n` +
+      `  <body>...</body>\n` +
+      `</html>`,
+    language: "markup",
+  },
+  {
     target: "theme-react",
     label: "React",
     code:
@@ -73,6 +93,10 @@ export const PROJECT_THEME_TABS: CodeTab[] = [
     target: "theme-hono-ssr",
     label: "Hono SSR",
     code:
+      `// Vite의 ?raw import로 CSS를 읽어 첫 HTML에 넣습니다.\n` +
+      `import podoCss from "podo-ui/styles.css?raw";\n` +
+      `import tokensCss from "./podo/tokens.css?raw";\n` +
+      `import componentsCss from "./podo/components.css?raw";\n` +
       `import { Hono } from "hono";\n` +
       `import { Button, renderCriticalCss } from "podo-ui/hono";\n\n` +
       `const app = new Hono();\n` +
@@ -81,9 +105,10 @@ export const PROJECT_THEME_TABS: CodeTab[] = [
       `app.get("/", (c) => c.html(\n` +
       `  <html lang="ko" data-podo-theme={theme} data-color-scheme={colorScheme}>\n` +
       `    <head>\n` +
-      `      <link rel="stylesheet" href="/assets/podo.css" />\n` +
-      `      <link rel="stylesheet" href="/assets/tokens.css" />\n` +
-      `      {renderCriticalCss({ theme, colorScheme })}\n` +
+      `      {renderCriticalCss({\n` +
+      `        theme, colorScheme,\n` +
+      `        css: [podoCss, tokensCss, componentsCss].join("\\n"),\n` +
+      `      })}\n` +
       `    </head>\n` +
       `    <body><Button>서버 테마</Button></body>\n` +
       `  </html>\n` +
@@ -111,70 +136,111 @@ export const PROJECT_THEME_TABS: CodeTab[] = [
   },
 ];
 
-export const COLOR_TOKEN_TABS: CodeTab[] = [
+export const GLOBAL_TOKEN_TABS: CodeTab[] = [
   {
-    target: "color-react",
+    target: "tokens-html",
+    label: "HTML / CSS",
+    code:
+      `/* tokens.css를 HTML에서 한 번 불러온 뒤 어느 스타일시트에서나 사용합니다. */\n` +
+      `.account-card {\n` +
+      `  color: var(--podo-text-basic);\n` +
+      `  background: var(--podo-elevation-basic);\n` +
+      `  border: 1px solid var(--podo-border-gary);\n` +
+      `  border-radius: var(--podo-radius-control-md);\n` +
+      `  padding: var(--podo-spacing-scale-8);\n` +
+      `  font-family: var(--podo-typography-body-medium-fontFamily);\n` +
+      `  font-size: var(--podo-typography-body-medium-fontSize);\n` +
+      `  line-height: var(--podo-typography-body-medium-lineHeight);\n` +
+      `}`,
+    language: "css",
+  },
+  {
+    target: "tokens-react",
     label: "React",
     code:
-      `import "./podo/tokens.css";\n\n` +
-      `export function SuccessMessage() {\n` +
+      `// main.tsx에서 ./podo/tokens.css를 한 번 import한 뒤\n` +
+      `// 모든 컴포넌트의 style, CSS Module, styled API에서 같은 변수를 씁니다.\n` +
+      `export function AccountCard() {\n` +
       `  return (\n` +
-      `    <p style={{\n` +
-      `      color: "var(--podo-text-success)",\n` +
-      `      backgroundColor: "var(--podo-foreground-success-light)",\n` +
-      `    }}>저장되었습니다.</p>\n` +
+      `    <article style={{\n` +
+      `      color: "var(--podo-text-basic)",\n` +
+      `      background: "var(--podo-elevation-basic)",\n` +
+      `      padding: "var(--podo-spacing-scale-8)",\n` +
+      `      borderRadius: "var(--podo-radius-control-md)",\n` +
+      `      fontSize: "var(--podo-typography-body-medium-fontSize)",\n` +
+      `    }}>계정 정보</article>\n` +
       `  );\n` +
       `}`,
   },
   {
-    target: "color-next",
+    target: "tokens-next",
     label: "Next.js",
     code:
       `// app/layout.tsx에서 ./podo/tokens.css를 한 번 import합니다.\n` +
-      `export default function Notice() {\n` +
+      `// CSS 변수는 Server Component와 Client Component에서 똑같이 동작합니다.\n` +
+      `export default function AccountCard() {\n` +
       `  return (\n` +
-      `    <aside style={{\n` +
-      `      color: "var(--podo-text-primary)",\n` +
-      `      borderColor: "var(--podo-border-primary)",\n` +
-      `    }}>서버 컴포넌트에서도 CSS 토큰을 사용합니다.</aside>\n` +
+      `    <article className="account-card">서버 컴포넌트도 전역 토큰을 상속합니다.</article>\n` +
       `  );\n` +
+      `}\n\n` +
+      `/* app/globals.css */\n` +
+      `.account-card {\n` +
+      `  color: var(--podo-text-primary);\n` +
+      `  padding: var(--podo-spacing-scale-8);\n` +
+      `  border: 1px solid var(--podo-border-primary);\n` +
+      `  border-radius: var(--podo-radius-control-md);\n` +
       `}`,
   },
   {
-    target: "color-hono-csr",
+    target: "tokens-hono-csr",
     label: "Hono CSR",
     code:
-      `// React island 번들에서 생성된 tokens.css를 import합니다.\n` +
+      `// React island의 진입 파일에서 생성된 tokens.css를 한 번 import합니다.\n` +
       `import "./podo/tokens.css";\n\n` +
-      `export function Warning() {\n` +
-      `  return <strong style={{ color: "var(--podo-text-warning)" }}>확인이 필요합니다.</strong>;\n` +
+      `export function AccountCard() {\n` +
+      `  return <section style={{\n` +
+      `    color: "var(--podo-text-basic)",\n` +
+      `    padding: "var(--podo-spacing-scale-8)",\n` +
+      `    borderRadius: "var(--podo-radius-control-md)",\n` +
+      `  }}>React island도 문서 루트의 토큰을 상속합니다.</section>;\n` +
       `}`,
   },
   {
-    target: "color-hono-ssr",
+    target: "tokens-hono-ssr",
     label: "Hono SSR",
     code:
       `// public/app.css\n` +
-      `.status {\n` +
-      `  color: var(--podo-text-danger);\n` +
-      `  background: var(--podo-foreground-danger-light);\n` +
+      `.account-card {\n` +
+      `  color: var(--podo-text-basic);\n` +
+      `  background: var(--podo-elevation-basic);\n` +
+      `  padding: var(--podo-spacing-scale-8);\n` +
+      `  border-radius: var(--podo-radius-control-md);\n` +
       `}\n\n` +
       `// server.tsx — HTML head에서 생성된 tokens.css와 app.css를 로드하세요.\n` +
-      `export const Status = () => <p class="status">처리하지 못했습니다.</p>;`,
+      `export const AccountCard = () => <section class="account-card">서버 토큰</section>;`,
     language: "tsx",
   },
   {
-    target: "color-native",
+    target: "tokens-native",
     label: "React Native",
     code:
-      `import { Text, View, useColorScheme } from "react-native";\n` +
+      `import { Text, View } from "react-native";\n` +
+      `import { usePodoNativeTokens } from "podo-ui/native";\n` +
       `import { getPodoNativeTokens } from "./podo/tokens.native";\n\n` +
-      `export function SuccessMessage() {\n` +
-      `  const scheme = useColorScheme() === "dark" ? "dark" : "light";\n` +
-      `  const colors = getPodoNativeTokens("landing", scheme);\n` +
+      `type AppTokens = ReturnType<typeof getPodoNativeTokens>;\n\n` +
+      `export function AccountCard() {\n` +
+      `  const tokens = usePodoNativeTokens<AppTokens>();\n` +
       `  return (\n` +
-      `    <View style={{ backgroundColor: colors.foreground["success-light"] }}>\n` +
-      `      <Text style={{ color: colors.text.success }}>저장되었습니다.</Text>\n` +
+      `    <View style={{\n` +
+      `      backgroundColor: tokens.elevation.basic,\n` +
+      `      padding: tokens.spacing.scale[8],\n` +
+      `      borderRadius: tokens.radius.control.md,\n` +
+      `    }}>\n` +
+      `      <Text style={{\n` +
+      `        color: tokens.text.basic,\n` +
+      `        fontFamily: tokens.typography.body.medium.fontFamily,\n` +
+      `        fontSize: tokens.typography.body.medium.fontSize.mobile,\n` +
+      `      }}>계정 정보</Text>\n` +
       `    </View>\n` +
       `  );\n` +
       `}`,

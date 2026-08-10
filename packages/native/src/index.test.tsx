@@ -23,6 +23,7 @@ import {
   createNativeComponents,
   defaultNativeHost,
   usePodoNativeTheme,
+  usePodoNativeTokens,
 } from "./index.js";
 
 const webViewMessages: string[] = [];
@@ -298,6 +299,52 @@ describe("@podoui/native", () => {
     );
 
     expect(screen.getByTestId("native-theme").textContent).toBe("dashboard:dark");
+  });
+
+  it("provides generated tokens to app code through the native token hook", () => {
+    const tokens = {
+      spacing: { scale: { 8: 16 } },
+      text: { basic: "#18181B" },
+    } as const;
+
+    function Probe(): React.ReactElement {
+      const current = usePodoNativeTokens<typeof tokens>();
+      return (
+        <span data-testid="native-tokens">
+          {`${current.spacing.scale[8]}:${current.text.basic}`}
+        </span>
+      );
+    }
+
+    render(
+      <PodoNativeThemeProvider theme="landing" colorScheme="light" tokens={tokens}>
+        <Probe />
+      </PodoNativeThemeProvider>
+    );
+
+    expect(screen.getByTestId("native-tokens").textContent).toBe("16:#18181B");
+  });
+
+  it("explains how to fix a missing native token provider value", () => {
+    function Probe(): React.ReactElement {
+      usePodoNativeTokens();
+      return <span>unreachable</span>;
+    }
+
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    try {
+      expect(() =>
+        render(
+          <PodoNativeThemeProvider theme="landing" colorScheme="light">
+            <Probe />
+          </PodoNativeThemeProvider>
+        )
+      ).toThrow(
+        "usePodoNativeTokens requires PodoNativeThemeProvider to receive generated tokens."
+      );
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 
   it("applies theme token styles to native host components", () => {

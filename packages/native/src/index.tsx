@@ -581,6 +581,23 @@ export function usePodoNativeTheme(): NativeTheme {
   return useContext(NativeThemeContext);
 }
 
+/**
+ * Reads the generated token object installed by PodoNativeThemeProvider.
+ * Pass `ReturnType<typeof getPodoNativeTokens>` as TTokens to preserve the
+ * generated project's exact token paths and values.
+ */
+export function usePodoNativeTokens<
+  TTokens extends Record<string, unknown> = Record<string, unknown>,
+>(): TTokens {
+  const theme = useContext(NativeThemeContext);
+  if (!theme.tokens) {
+    throw new Error(
+      "usePodoNativeTokens requires PodoNativeThemeProvider to receive generated tokens."
+    );
+  }
+  return theme.tokens as TTokens;
+}
+
 export function adaptReactNativeTokens(value: unknown): unknown {
   if (typeof value === "string") {
     const px = value.match(/^(-?(?:\d+|\d*\.\d+))px$/);

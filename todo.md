@@ -613,6 +613,11 @@
 
 ### C. 컴포넌트·품질
 
+- [x] 전 플랫폼 전역 디자인 토큰 사용 흐름과 설치 문서 전면 개편
+  - 완료 기준: 일반 HTML/CSS, React, Next.js, Hono CSR, Hono SSR, React Native에서 앱 루트에 테마를 한 번 적용하고 컴포넌트 밖에서도 생성 토큰을 사용하는 복사 가능한 예제가 있다.
+  - 완료 기준: 웹 CSS 변수와 React Native Provider 토큰 접근이 실제 공개 API·생성물 이름으로 검증되며, 누락된 런타임 접근 API가 있으면 테스트와 함께 보강된다.
+  - 완료 기준: 루트 및 npm 패키지 README와 사이트 설치 안내가 설치 → 첫 화면 → 전역 테마/토큰 → 프로젝트 토큰 생성 순서의 자연스러운 한국어 안내로 재작성된다.
+  - 완료 기준: 전체 품질 검사, 브라우저 검증 및 독립 Codex strict review가 통과한다.
 - [x] v1 레이아웃 유틸리티 이식과 문서화
   - 완료 기준: Border, Radius, Shadow/Elevation, Display/Visibility 계약이 검증된 JSON을 원본으로 CSS/SCSS 산출된다.
   - 완료 기준: `podo-ui/styles.css`가 실제 호환 클래스를 포함하고, 현재 테마 속성 및 v1 반응형 구간을 지원한다.

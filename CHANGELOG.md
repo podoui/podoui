@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.3.9 (2026-08-11)
+
+- Native: 생성 토큰의 정확한 타입을 유지하며 앱 어디서나 Provider 토큰을 읽는
+  `usePodoNativeTokens` 훅을 추가한다.
+- Docs: 일반 HTML/CSS, React, Next.js, Hono CSR/SSR, React Native의 앱 루트
+  테마 설정과 색상·간격·반경·타이포그래피 전역 토큰 사용 예제를 추가한다.
+- Docs: 루트 README, npm README, 사이트 설치 안내를 첫 설치부터 프로젝트
+  토큰 생성까지 자연스럽게 이어지는 사용자 중심 흐름으로 전면 개편한다.
+
 ## 2.3.8 (2026-08-10)
 
 - Utilities: v1의 Border, Radius, Shadow/Elevation, Display/Visibility 계약을
