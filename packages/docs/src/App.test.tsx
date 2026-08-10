@@ -46,6 +46,8 @@ describe("docs introduction routing", () => {
     render(<App />);
 
     expect(screen.getByRole("heading", { name: "간격 (Spacing)" })).toBeTruthy();
+    expect(screen.getByText(/관련된 요소는 가깝게, 다른 그룹은 충분히 떨어뜨려/)).toBeTruthy();
+    expect(screen.getByText(/현재 v2 JSON 스펙에 채택된 primitive scale/)).toBeTruthy();
     expect(screen.getByText("--podo-spacing-scale-1")).toBeTruthy();
     expect(screen.getByText("--podo-spacing-component-field-gap")).toBeTruthy();
     expect(screen.getAllByText("s(6)")).toHaveLength(2);
@@ -56,6 +58,8 @@ describe("docs introduction routing", () => {
     render(<App />);
 
     expect(screen.getByRole("heading", { name: "그리드 (Grid)" })).toBeTruthy();
+    expect(screen.getByText(/콘텐츠의 시작점, 폭, 정렬을 일관되게/)).toBeTruthy();
+    expect(screen.getByText(/좁은 화면에서는 컬럼 수와 간격을 줄여/)).toBeTruthy();
     expect(screen.getByText("12 columns")).toBeTruthy();
     expect(screen.getByText("6 columns")).toBeTruthy();
     expect(screen.getByText("4 columns")).toBeTruthy();
@@ -67,6 +71,8 @@ describe("docs introduction routing", () => {
     render(<App />);
 
     const gallery = screen.getByRole("list", { name: "전체 아이콘 29개" });
+    expect(screen.getByText(/선형 스타일과 1.2px 스트로크/)).toBeTruthy();
+    expect(screen.getByText(/12·16·20·24·32·40px 체계/)).toBeTruthy();
     expect(within(gallery).getAllByRole("listitem")).toHaveLength(29);
     expect(within(gallery).getByText("undo")).toBeTruthy();
     expect(within(gallery).getByText("youtube")).toBeTruthy();

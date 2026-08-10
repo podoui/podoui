@@ -462,6 +462,10 @@
   - 완료 기준: Editor 툴바가 light/dark scheme에서 올바른 elevation token을 사용한다.
   - 완료 기준: 기본 JSON manifest의 전체 아이콘이 생성 산출물 기반 갤러리에 빠짐없이 표시된다.
   - 완료 기준: 문서 라우팅 테스트, 전체 품질 검사, light/dark 브라우저 시각 검증이 통과한다.
+- [x] 최신 Figma 원본 기반 Foundation 설명 정합화
+  - 완료 기준: 다운로드된 `PODO Design System.fig`의 Icon 설명과 현재 spacing 변수를 확인해 문서에 반영한다.
+  - 완료 기준: Spacing·Grid·Icon 설명이 v2 JSON 토큰, 12/6/4 호환 그리드, 공개 Icon 크기 API와 충돌하지 않는다.
+  - 완료 기준: 문서 라우팅 테스트, 전체 품질 검사, 브라우저 시각 검증 및 Codex strict review가 통과한다.
 
 ## Phase 12: Figma 가져오기 (plugin → CLI 원스텝)
 

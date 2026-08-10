@@ -53,13 +53,13 @@ export function SpacingPage() {
     <>
       <PageHeader
         title="간격 (Spacing)"
-        intro="간격 토큰은 요소 사이의 리듬과 정보 위계를 일관되게 만들어요. v2의 JSON 토큰을 우선 사용하고, 기존 그리드는 v1 호환 간격을 그대로 유지합니다."
+        intro="간격은 요소 사이의 여백을 일정한 규칙으로 관리해 화면의 리듬과 정보 위계를 만드는 기준이에요. 관련된 요소는 가깝게, 다른 그룹은 충분히 떨어뜨려 관계를 분명히 하고, 반복되는 간격으로 정렬과 밀도를 일관되게 유지해요. v2에서는 JSON 스펙을 원본으로 CSS 변수와 TypeScript 토큰을 생성하며, 기존 그리드 간격은 v1 호환 계약으로 분리해요."
       />
 
       <DocSection
         index={0}
         title="기본 간격 토큰"
-        description="프로젝트의 JSON 스펙에서 생성된 primitive spacing scale이에요. CSS 변수와 TypeScript 토큰은 같은 원본에서 만들어집니다."
+        description="Figma 원본의 spacing 체계 중 현재 v2 JSON 스펙에 채택된 primitive scale이에요. 공개 토큰은 4px·8px이며, CSS 변수와 TypeScript 값이 같은 JSON 원본에서 생성돼요."
       >
         <Card>
           <SpacingScale items={PRIMITIVE_SPACING} />
@@ -77,7 +77,7 @@ export function SpacingPage() {
       <DocSection
         index={1}
         title="컴포넌트 간격"
-        description="의미가 정해진 간격은 primitive 값을 직접 반복하지 않고 component token으로 사용해요."
+        description="입력 필드 내부처럼 쓰임이 정해진 간격은 primitive 값을 직접 반복하지 않고 component token으로 연결해요. 원본 값이 바뀌어도 같은 역할의 간격을 한 번에 갱신할 수 있어요."
       >
         <Card>
           <SpacingScale items={COMPONENT_SPACING} />

@@ -36,7 +36,7 @@ export function IconPage() {
     <>
       <PageHeader
         title="아이콘 (Icon)"
-        intro="아이콘은 동작과 상태를 작은 시각 기호로 전달해요. 현재 이름과 코드포인트는 JSON 아이콘 매니페스트에서 생성되며, 웹에서는 생성 폰트 CSS를 함께 불러와야 해요."
+        intro="아이콘은 기능과 상태, 정보의 의미를 직관적으로 전달하는 시각 요소예요. 복잡한 내용을 간결하게 표현해 사용자의 이해와 탐색을 돕고, 버튼·메뉴·알림·상태 표시를 빠르게 구분하게 해요. v2에서는 이름과 코드포인트를 JSON 매니페스트에서 생성하며, 웹에서는 생성된 폰트 CSS를 함께 불러와요."
       />
 
       <DocSection index={0} title="Usage">
@@ -47,8 +47,8 @@ export function IconPage() {
 
       <DocSection
         index={1}
-        title="아이콘 목록"
-        description={`현재 기본 매니페스트가 생성하는 ${podoIconNames.length}개 아이콘을 모두 보여줘요. 프로젝트의 .podo/icons를 바꾸고 podo build를 실행하면 이 목록과 타입·CSS·폰트가 함께 갱신돼요.`}
+        title="아이콘 에셋 (icon)"
+        description={`아이콘은 24px 그리드를 기준으로 제작하고, 선형 스타일과 1.2px 스트로크로 형태·두께·시각적 무게를 일관되게 맞춰요. 아래에는 현재 기본 매니페스트가 생성하는 ${podoIconNames.length}개 아이콘을 모두 보여줘요. 프로젝트의 .podo/icons를 바꾸고 podo build를 실행하면 이 목록과 타입·CSS·폰트가 함께 갱신돼요.`}
       >
         <Card>
           <ul className="icon-gallery" aria-label={`전체 아이콘 ${podoIconNames.length}개`}>
@@ -62,7 +62,11 @@ export function IconPage() {
         </Card>
       </DocSection>
 
-      <DocSection index={2} title="크기 (size)">
+      <DocSection
+        index={2}
+        title="크기 (size)"
+        description="Figma 원본은 사용 위치와 정보 중요도에 따라 12·16·20·24·32·40px 체계를 정의해요. 현재 v2 Icon 공개 API는 그중 16px(sm)·24px(md)·32px(lg)를 지원하며, 작은 아이콘은 보조 정보와 밀도 높은 UI에, 큰 아이콘은 주요 기능과 강조 영역에 사용해요."
+      >
         <Card stage>
           <StageItem>
             <Icon name="search" size="sm" />
