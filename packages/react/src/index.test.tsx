@@ -1833,6 +1833,33 @@ describe("@podoui/react", () => {
     expect(screen.getByRole("heading", { name: "Dashboard" }).className).toContain("podo-text--h1");
   });
 
+  it("can apply and restore an app-wide document theme", () => {
+    document.documentElement.dataset.podoTheme = "existing";
+    document.documentElement.dataset.colorScheme = "light";
+    const { rerender, unmount } = render(
+      <PodoThemeProvider theme="landing" colorScheme="dark" applyToDocument>
+        App
+      </PodoThemeProvider>
+    );
+
+    expect(document.documentElement.dataset.podoTheme).toBe("landing");
+    expect(document.documentElement.dataset.colorScheme).toBe("dark");
+
+    rerender(
+      <PodoThemeProvider theme="dashboard" colorScheme="light" applyToDocument>
+        App
+      </PodoThemeProvider>
+    );
+    expect(document.documentElement.dataset.podoTheme).toBe("dashboard");
+    expect(document.documentElement.dataset.colorScheme).toBe("light");
+
+    unmount();
+    expect(document.documentElement.dataset.podoTheme).toBe("existing");
+    expect(document.documentElement.dataset.colorScheme).toBe("light");
+    delete document.documentElement.dataset.podoTheme;
+    delete document.documentElement.dataset.colorScheme;
+  });
+
   it("snapshots themed variant markup for visual regression", () => {
     const { container } = render(
       <PodoThemeProvider theme="dashboard" colorScheme="dark">

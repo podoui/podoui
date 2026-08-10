@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.6 (2026-08-10)
+
+- React: `PodoThemeProvider applyToDocument`를 추가해 앱 전체와 body 포털이
+  같은 `data-podo-theme`·`data-color-scheme` 토큰 범위를 사용하도록 지원한다.
+- Docs: Hono Cloudflare Worker 기반 clean URL, 페이지 전환 스크롤 초기화,
+  기존 `#/` 주소 자동 이전과 React·Next.js·Hono CSR/SSR·React Native별
+  프로젝트 테마 및 의미 기반 색상 예제를 추가한다.
+
 ## 2.3.0 (2026-07-22)
 
 - 다크 모드 지원: 원본 Figma 파일의 theme 컬렉션(112개 변수, light/dark

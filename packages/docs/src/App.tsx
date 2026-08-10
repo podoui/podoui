@@ -3,19 +3,21 @@ import { PodoThemeProvider } from "@podoui/react";
 import { NAV, findBySlug } from "./nav.js";
 import logoUrl from "./assets/logo.svg";
 import { HomePage } from "./pages/HomePage.js";
+import {
+  DocsLink,
+  migrateLegacyHashRoute,
+  readCurrentSlug,
+  scrollDocumentToTop,
+} from "./routing.js";
 
 // GNB top-level nav (Figma 516:3871).
 const TOP_NAV: { label: string; href?: string }[] = [
-  { label: "Doc", href: "#/setup" },
-  { label: "Foundation", href: "#/color" },
-  { label: "Component", href: "#/button" },
+  { label: "Doc", href: "/setup" },
+  { label: "Foundation", href: "/color" },
+  { label: "Component", href: "/button" },
   // v1(SCSS 기반) 문서 — 외부 링크는 새 탭으로 연다.
   { label: "v1 Docs", href: "https://v1.podoui.com" },
 ];
-
-function currentSlug(): string {
-  return window.location.hash.replace(/^#\/?/, "");
-}
 
 /** Groups nav items by their `group` field, preserving first-seen order. */
 function groupedNav(): { name: string; items: typeof NAV }[] {
@@ -32,47 +34,66 @@ function groupedNav(): { name: string; items: typeof NAV }[] {
 }
 
 export function App() {
-  const [slug, setSlug] = useState(currentSlug);
+  const [slug, setSlug] = useState(readCurrentSlug);
   const [colorScheme, setColorScheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    const onHash = () => setSlug(currentSlug());
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
+    migrateLegacyHashRoute();
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    const onLocationChange = () => setSlug(readCurrentSlug());
+    window.addEventListener("popstate", onLocationChange);
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+      window.removeEventListener("popstate", onLocationChange);
+    };
   }, []);
+
+  useEffect(() => {
+    scrollDocumentToTop();
+  }, [slug]);
 
   const isHome = slug === "";
   const active = findBySlug(slug) ?? NAV[0]!;
   const Page = active.page;
 
   return (
-    <PodoThemeProvider theme="landing" colorScheme={colorScheme}>
+    <PodoThemeProvider theme="landing" colorScheme={colorScheme} applyToDocument>
       <header className="gnb">
         <div className="gnb__inner">
-          <a className="gnb__brand" href="#/">
+          <DocsLink className="gnb__brand" to="/">
             <img src={logoUrl} alt="PODO.UI" className="gnb__logo" />
-          </a>
+          </DocsLink>
           <div className="gnb__right">
             <nav className="gnb__nav" aria-label="Sections">
               {TOP_NAV.map((item) =>
                 item.href ? (
-                  <a
-                    key={item.label}
-                    className="gnb__nav-link"
-                    href={item.href}
-                    aria-current={
-                      (item.label === "Doc" && !isHome && active.group === "Guide") ||
-                      (item.label === "Foundation" && !isHome && active.group === "Foundation") ||
-                      (item.label === "Component" && !isHome && active.group === "Components")
-                        ? "page"
-                        : undefined
-                    }
-                    {...(item.href.startsWith("http")
-                      ? { target: "_blank", rel: "noreferrer" }
-                      : {})}
-                  >
-                    {item.label}
-                  </a>
+                  item.href.startsWith("http") ? (
+                    <a
+                      key={item.label}
+                      className="gnb__nav-link"
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <DocsLink
+                      key={item.label}
+                      className="gnb__nav-link"
+                      to={item.href}
+                      aria-current={
+                        (item.label === "Doc" && !isHome && active.group === "Guide") ||
+                        (item.label === "Foundation" && !isHome && active.group === "Foundation") ||
+                        (item.label === "Component" && !isHome && active.group === "Components")
+                          ? "page"
+                          : undefined
+                      }
+                    >
+                      {item.label}
+                    </DocsLink>
+                  )
                 ) : (
                   <span key={item.label} className="gnb__nav-link gnb__nav-link--disabled">
                     {item.label}
@@ -113,13 +134,13 @@ export function App() {
                 <ul className="site-sidebar__list">
                   {group.items.map((item) => (
                     <li key={item.slug}>
-                      <a
+                      <DocsLink
                         className="site-sidebar__link"
-                        href={`#/${item.slug}`}
+                        to={`/${item.slug}`}
                         aria-current={item.slug === active.slug ? "page" : undefined}
                       >
                         {item.title}
-                      </a>
+                      </DocsLink>
                     </li>
                   ))}
                 </ul>

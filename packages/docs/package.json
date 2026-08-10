@@ -16,6 +16,7 @@
   "dependencies": {
     "@podoui/react": "workspace:*",
     "@podoui/tokens": "workspace:*",
+    "hono": "^4.12.25",
     "podo-ui": "workspace:*",
     "pretendard": "^1.3.9",
     "prism-react-renderer": "^2.4.1",

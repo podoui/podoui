@@ -3,6 +3,7 @@ import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
 import { Preview, type CodeTab } from "../components/Preview.js";
 import { SpecTable } from "../components/SpecTable.js";
+import { COLOR_TOKEN_TABS, PROJECT_THEME_TABS } from "./setup-examples.js";
 
 const SETUP_TABS: CodeTab[] = [
   {
@@ -85,6 +86,35 @@ export function SetupPage() {
 
       <DocSection
         index={1}
+        title="프로젝트 전체 테마 적용"
+        description="앱 루트에 landing/dashboard 테마와 light/dark 색상 모드를 지정하세요. React의 applyToDocument는 포털로 body에 렌더되는 UI까지 같은 CSS 토큰을 상속하도록 html 요소에도 테마를 적용합니다. Hono SSR은 첫 HTML부터 속성을 넣어 테마 깜빡임을 줄이고, React Native는 선택한 생성 토큰 객체를 Provider에 전달합니다."
+      >
+        <Preview tabs={PROJECT_THEME_TABS}>
+          <Button>프로젝트 테마가 적용된 버튼</Button>
+        </Preview>
+      </DocSection>
+
+      <DocSection
+        index={2}
+        title="의미 기반 색상 토큰 사용"
+        description="색상값을 직접 쓰지 말고 text, foreground, border 같은 의미 토큰을 사용하세요. 웹 런타임은 생성된 CSS 변수를 사용하면 상위 테마에 따라 자동으로 바뀌고, React Native는 getPodoNativeTokens로 현재 theme/colorScheme의 값을 선택합니다."
+      >
+        <Preview tabs={COLOR_TOKEN_TABS}>
+          <p
+            style={{
+              color: "var(--podo-text-success)",
+              background: "var(--podo-foreground-success-light)",
+              padding: "var(--podo-spacing-scale-4)",
+              borderRadius: "var(--podo-radius-control-md)",
+            }}
+          >
+            의미 기반 색상 토큰 예제
+          </p>
+        </Preview>
+      </DocSection>
+
+      <DocSection
+        index={3}
         title="Figma 플러그인의 최신 사용 흐름"
         description="플러그인은 최신 PODO 디자인 시스템 스냅샷을 자체 포함합니다. 새 Figma 파일에서는 내보내기 없이 ‘PODO 디자인 시스템 설치’를 누르세요. JSON 내보내기·가져오기는 고급 도구이며 일반 설치 절차가 아닙니다."
       >
@@ -107,7 +137,7 @@ export function SetupPage() {
       </DocSection>
 
       <DocSection
-        index={2}
+        index={4}
         title="프로젝트 토큰 생성과 검증"
         description="아래 명령은 Figma에서 받은 JSON과 프로젝트 오버라이드를 재현 가능한 CSS·TypeScript·폰트로 만듭니다. 생성 파일을 직접 수정하지 말고 .podo의 원본 JSON을 바꾸세요."
       >
@@ -123,7 +153,7 @@ export function SetupPage() {
       </DocSection>
 
       <DocSection
-        index={3}
+        index={5}
         title="환경별 지원 범위"
         description="React와 Next.js는 동일한 React 컴포넌트를 사용합니다. Hono는 15개 컴포넌트를 순수 SSR로 출력하고, DatePicker와 Editor처럼 브라우저 상태가 필요한 기능은 React island로 붙입니다. React Native는 네이티브 UI와 WebView 기반 Editor를 제공합니다."
       >

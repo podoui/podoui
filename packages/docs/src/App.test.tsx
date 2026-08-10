@@ -2,16 +2,18 @@
 
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "./App.js";
 
 describe("docs introduction routing", () => {
   beforeEach(() => {
-    window.location.hash = "";
+    window.history.replaceState({}, "", "/");
+    vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
   });
 
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
   });
 
   it("renders the introduction and every contributor on first visit", () => {
@@ -27,7 +29,7 @@ describe("docs introduction routing", () => {
   });
 
   it("returns to the introduction when the logo is clicked", async () => {
-    window.location.hash = "#/button";
+    window.history.replaceState({}, "", "/button");
     render(<App />);
 
     expect(screen.getByRole("heading", { name: "버튼 (Button)" })).toBeTruthy();
@@ -36,13 +38,43 @@ describe("docs introduction routing", () => {
     await user.click(screen.getByRole("link", { name: "PODO.UI" }));
 
     await waitFor(() => {
-      expect(window.location.hash).toBe("#/");
+      expect(window.location.pathname).toBe("/");
+      expect(window.location.hash).toBe("");
       expect(screen.getByRole("heading", { name: "디자인과 코드를하나의 스펙으로." })).toBeTruthy();
     });
   });
 
+  it("uses clean paths and scrolls to the top after internal navigation", async () => {
+    render(<App />);
+    const scrollTo = vi.mocked(window.scrollTo);
+    scrollTo.mockClear();
+
+    const setupLink = screen.getByRole("link", { name: /시작하기/ });
+    expect(setupLink.getAttribute("href")).toBe("/setup");
+    await userEvent.setup().click(setupLink);
+
+    await waitFor(() => {
+      expect(window.location.pathname).toBe("/setup");
+      expect(window.location.hash).toBe("");
+      expect(screen.getByRole("heading", { name: "설치와 토큰 적용" })).toBeTruthy();
+      expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: "auto" });
+      expect(window.history.scrollRestoration).toBe("manual");
+    });
+  });
+
+  it("migrates legacy hash links to the equivalent clean path", async () => {
+    window.history.replaceState({}, "", "/#/button");
+    render(<App />);
+
+    expect(screen.getByRole("heading", { name: "버튼 (Button)" })).toBeTruthy();
+    await waitFor(() => {
+      expect(window.location.pathname).toBe("/button");
+      expect(window.location.hash).toBe("");
+    });
+  });
+
   it("renders the JSON-backed spacing foundation page", () => {
-    window.location.hash = "#/spacing";
+    window.history.replaceState({}, "", "/spacing");
     render(<App />);
 
     expect(screen.getByRole("heading", { name: "간격 (Spacing)" })).toBeTruthy();
@@ -59,7 +91,7 @@ describe("docs introduction routing", () => {
   });
 
   it("renders the responsive legacy grid contract page", () => {
-    window.location.hash = "#/grid";
+    window.history.replaceState({}, "", "/grid");
     render(<App />);
 
     expect(screen.getByRole("heading", { name: "그리드 (Grid)" })).toBeTruthy();
@@ -72,7 +104,7 @@ describe("docs introduction routing", () => {
   });
 
   it("renders every icon from the generated manifest", () => {
-    window.location.hash = "#/icon";
+    window.history.replaceState({}, "", "/icon");
     render(<App />);
 
     const gallery = screen.getByRole("list", { name: "전체 아이콘 152개" });

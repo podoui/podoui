@@ -7,7 +7,9 @@
   // accounts, so pin the deploy target explicitly.
   "account_id": "f4ff770fb924e8c46020c9b7124cb49e",
   "compatibility_date": "2026-07-01",
+  "main": "src/worker.ts",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
   },
 }

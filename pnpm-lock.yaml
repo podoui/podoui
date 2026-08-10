@@ -162,6 +162,9 @@ importers:
       '@podoui/tokens':
         specifier: workspace:*
         version: link:../tokens
+      hono:
+        specifier: ^4.12.25
+        version: 4.12.25
       podo-ui:
         specifier: workspace:*
         version: link:../podo-ui

@@ -22,7 +22,7 @@ import { TooltipPage } from "./pages/TooltipPage.js";
 import { TypographyPage } from "./pages/TypographyPage.js";
 
 export interface NavItem {
-  /** URL slug, used as the hash route (e.g. #/button). */
+  /** URL slug, used as the clean document route (e.g. /button). */
   slug: string;
   title: string;
   group: string;

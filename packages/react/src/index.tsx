@@ -37,6 +37,11 @@ export interface PodoThemeContextValue {
 
 export interface PodoThemeProviderProps extends PodoThemeContextValue {
   children: ReactNode;
+  /**
+   * Also applies the theme attributes to document.documentElement. Use this
+   * for an app-wide theme so portalled content inherits the same CSS tokens.
+   */
+  applyToDocument?: boolean;
 }
 
 export interface PodoPressEvent {
@@ -403,8 +408,34 @@ export const PodoThemeContext = createContext<PodoThemeContextValue>({
 export function PodoThemeProvider({
   theme,
   colorScheme,
+  applyToDocument = false,
   children,
 }: PodoThemeProviderProps): React.ReactElement {
+  useEffect(() => {
+    if (!applyToDocument) {
+      return;
+    }
+
+    const root = document.documentElement;
+    const previousTheme = root.dataset.podoTheme;
+    const previousColorScheme = root.dataset.colorScheme;
+    root.dataset.podoTheme = theme;
+    root.dataset.colorScheme = colorScheme;
+
+    return () => {
+      if (previousTheme === undefined) {
+        delete root.dataset.podoTheme;
+      } else {
+        root.dataset.podoTheme = previousTheme;
+      }
+      if (previousColorScheme === undefined) {
+        delete root.dataset.colorScheme;
+      } else {
+        root.dataset.colorScheme = previousColorScheme;
+      }
+    };
+  }, [applyToDocument, colorScheme, theme]);
+
   return (
     <PodoThemeContext.Provider value={{ theme, colorScheme }}>
       <div data-podo-theme={theme} data-color-scheme={colorScheme}>

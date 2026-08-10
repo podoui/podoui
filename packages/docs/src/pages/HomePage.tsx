@@ -1,5 +1,6 @@
 import contributors from "../data/contributors.json" with { type: "json" };
 import logoUrl from "../assets/logo.svg";
+import { DocsLink } from "../routing.js";
 
 const FEATURES = [
   {
@@ -40,10 +41,10 @@ export function HomePage() {
             <br className="home-desktop-break" /> 모든 제품에서 같은 경험으로 구현하세요.
           </p>
           <div className="home-actions">
-            <a className="home-button home-button--primary" href="#/setup">
+            <DocsLink className="home-button home-button--primary" to="/setup">
               시작하기
               <ArrowIcon />
-            </a>
+            </DocsLink>
             <a
               className="home-button home-button--secondary"
               href="https://github.com/podoui/podoui"
@@ -137,9 +138,9 @@ export function HomePage() {
             변경을 추측하지 마세요. 스펙을 검증하고, 생성될 diff를 확인한 다음, 필요한 모든 런타임에
             같은 결정을 전달합니다.
           </p>
-          <a href="#/button">
+          <DocsLink to="/button">
             실제 컴포넌트 보기 <ArrowIcon />
-          </a>
+          </DocsLink>
         </div>
         <ol className="workflow-steps">
           <li>
@@ -175,9 +176,9 @@ export function HomePage() {
             설치부터 Figma 가져오기, 각 플랫폼별 컴포넌트 사용법까지 문서에서 확인할 수 있습니다.
           </p>
         </div>
-        <a className="home-button home-button--light" href="#/setup">
+        <DocsLink className="home-button home-button--light" to="/setup">
           문서 열기 <ArrowIcon />
-        </a>
+        </DocsLink>
       </section>
 
       <section className="contributors" aria-labelledby="contributors-title">
