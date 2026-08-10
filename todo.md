@@ -456,6 +456,12 @@
   - 완료 기준: Hono CSR(React island)과 Hono SSR(`podo-ui/hono`) 예제를 가능한 컴포넌트에서 별도 탭으로 제공한다.
   - 완료 기준: 소개 페이지의 지원 환경 설명에서 Web Components를 제외한다.
   - 완료 기준: 탭 전환 테스트, docs 프로덕션 빌드, 브라우저 시각 검증이 통과한다.
+- [x] 간격·그리드·아이콘 Foundation 문서와 Editor 테마 보정
+  - 완료 기준: JSON spacing token과 v1 호환 간격을 시각 예제 및 CSS 변수 표로 제공한다.
+  - 완료 기준: 12/6/4 반응형 grid, breakpoint, span 및 호환 class 범위를 실제 grid 예제로 제공한다.
+  - 완료 기준: Editor 툴바가 light/dark scheme에서 올바른 elevation token을 사용한다.
+  - 완료 기준: 기본 JSON manifest의 전체 아이콘이 생성 산출물 기반 갤러리에 빠짐없이 표시된다.
+  - 완료 기준: 문서 라우팅 테스트, 전체 품질 검사, light/dark 브라우저 시각 검증이 통과한다.
 
 ## Phase 12: Figma 가져오기 (plugin → CLI 원스텝)
 

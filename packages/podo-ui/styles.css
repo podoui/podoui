@@ -1683,7 +1683,7 @@
 .podo-ed-editorView {
   --color-bg-block: var(--podo-foreground-basic, #ffffff);
   --color-bg-disabled: var(--podo-foreground-disabled, #e4e4e7);
-  --color-bg-elevation: var(--podo-foreground-natural, #fafafa);
+  --color-bg-elevation: var(--podo-elevation-gray, #f9f9f9);
   --color-bg-elevation-1: #ffffff;
   --color-bg-modal: #ffffff;
   --color-border: var(--podo-border-gary, #e4e4e7);
@@ -1729,7 +1729,7 @@
 .podo-ed-editorView[data-color-scheme="dark"] {
   --color-bg-block: var(--podo-foreground-basic, rgba(0, 0, 0, 0.09));
   --color-bg-disabled: var(--podo-foreground-disabled, #2c2c31);
-  --color-bg-elevation: var(--podo-foreground-natural, #09090b);
+  --color-bg-elevation: var(--podo-elevation-gray, #27272a);
   --color-bg-elevation-1: #18181b;
   --color-bg-modal: #2c2c31;
   --color-border: var(--podo-border-gary, #52525b);

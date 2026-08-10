@@ -7,11 +7,13 @@ import { ColorPage } from "./pages/ColorPage.js";
 import { DatepickerPage } from "./pages/DatepickerPage.js";
 import { EditorPage } from "./pages/EditorPage.js";
 import { FieldPage } from "./pages/FieldPage.js";
+import { GridPage } from "./pages/GridPage.js";
 import { IconPage } from "./pages/IconPage.js";
 import { InputPage } from "./pages/InputPage.js";
 import { RadioPage } from "./pages/RadioPage.js";
 import { SelectPage } from "./pages/SelectPage.js";
 import { SetupPage } from "./pages/SetupPage.js";
+import { SpacingPage } from "./pages/SpacingPage.js";
 import { SwitchPage } from "./pages/SwitchPage.js";
 import { TablePage } from "./pages/TablePage.js";
 import { TextareaPage } from "./pages/TextareaPage.js";
@@ -35,6 +37,8 @@ export const NAV: NavItem[] = [
   { slug: "setup", title: "설치와 토큰 적용", group: "Guide", page: SetupPage },
   { slug: "color", title: "Color", group: "Foundation", page: ColorPage },
   { slug: "typography", title: "Typography", group: "Foundation", page: TypographyPage },
+  { slug: "spacing", title: "Spacing", group: "Foundation", page: SpacingPage },
+  { slug: "grid", title: "Grid", group: "Foundation", page: GridPage },
   { slug: "icon", title: "Icon", group: "Foundation", page: IconPage },
   { slug: "badge", title: "Badge", group: "Components", page: BadgePage },
   { slug: "button", title: "Button", group: "Components", page: ButtonPage },

@@ -5,15 +5,35 @@
     "woff2"
   ],
   "codepoints": {
+    "align-center": 57610,
+    "align-left": 57609,
+    "align-right": 57611,
+    "bold": 57601,
     "calendar": 57348,
     "check": 57351,
     "chevron-left": 57346,
     "chevron-right": 57347,
     "close": 57352,
+    "code": 57620,
+    "eraser": 57619,
+    "font-color": 57607,
+    "highlight": 57608,
+    "hr": 57618,
+    "image": 57616,
+    "italic": 57602,
+    "link": 57615,
+    "list-ol": 57613,
+    "list-ul": 57612,
     "menu": 57345,
+    "redo": 57622,
     "refresh": 57350,
     "search": 57353,
-    "time": 57349
+    "strikethrough": 57606,
+    "table": 57614,
+    "time": 57349,
+    "underline": 57605,
+    "undo": 57621,
+    "youtube": 57617
   },
   "woff2": true
 }

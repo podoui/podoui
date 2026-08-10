@@ -15,12 +15,32 @@
   line-height: 1;
 }
 
+.podo-icon-align-center::before { content: "\E10A"; }
+.podo-icon-align-left::before { content: "\E109"; }
+.podo-icon-align-right::before { content: "\E10B"; }
+.podo-icon-bold::before { content: "\E101"; }
 .podo-icon-calendar::before { content: "\E004"; }
 .podo-icon-check::before { content: "\E007"; }
 .podo-icon-chevron-left::before { content: "\E002"; }
 .podo-icon-chevron-right::before { content: "\E003"; }
 .podo-icon-close::before { content: "\E008"; }
+.podo-icon-code::before { content: "\E114"; }
+.podo-icon-eraser::before { content: "\E113"; }
+.podo-icon-font-color::before { content: "\E107"; }
+.podo-icon-highlight::before { content: "\E108"; }
+.podo-icon-hr::before { content: "\E112"; }
+.podo-icon-image::before { content: "\E110"; }
+.podo-icon-italic::before { content: "\E102"; }
+.podo-icon-link::before { content: "\E10F"; }
+.podo-icon-list-ol::before { content: "\E10D"; }
+.podo-icon-list-ul::before { content: "\E10C"; }
 .podo-icon-menu::before { content: "\E001"; }
+.podo-icon-redo::before { content: "\E116"; }
 .podo-icon-refresh::before { content: "\E006"; }
 .podo-icon-search::before { content: "\E009"; }
+.podo-icon-strikethrough::before { content: "\E106"; }
+.podo-icon-table::before { content: "\E10E"; }
 .podo-icon-time::before { content: "\E005"; }
+.podo-icon-underline::before { content: "\E105"; }
+.podo-icon-undo::before { content: "\E115"; }
+.podo-icon-youtube::before { content: "\E111"; }

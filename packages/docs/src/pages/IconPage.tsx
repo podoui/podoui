@@ -1,4 +1,5 @@
 import { Icon } from "@podoui/react";
+import { podoIconNames } from "../podo/icons/PodoIcons.icons.js";
 import { Card, StageItem } from "../components/Card.js";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -6,18 +7,6 @@ import { Preview, type CodeTab } from "../components/Preview.js";
 import { PropertyTags } from "../components/PropertyTags.js";
 import { SpecTable } from "../components/SpecTable.js";
 import { nativeComponentUsage } from "../code-examples.js";
-
-const ICONS = [
-  "menu",
-  "chevron-left",
-  "chevron-right",
-  "calendar",
-  "time",
-  "refresh",
-  "check",
-  "close",
-  "search",
-] as const;
 
 const USAGE_TABS: CodeTab[] = [
   {
@@ -59,15 +48,17 @@ export function IconPage() {
       <DocSection
         index={1}
         title="아이콘 목록"
-        description="현재 기본 매니페스트가 생성하는 9개 아이콘이에요. 프로젝트의 .podo/icons를 바꾸고 podo build를 실행하면 타입·CSS·폰트가 함께 갱신돼요."
+        description={`현재 기본 매니페스트가 생성하는 ${podoIconNames.length}개 아이콘을 모두 보여줘요. 프로젝트의 .podo/icons를 바꾸고 podo build를 실행하면 이 목록과 타입·CSS·폰트가 함께 갱신돼요.`}
       >
-        <Card stage>
-          {ICONS.map((name) => (
-            <span key={name} className="icon-sample">
-              <Icon name={name} />
-              <code>{name}</code>
-            </span>
-          ))}
+        <Card>
+          <ul className="icon-gallery" aria-label={`전체 아이콘 ${podoIconNames.length}개`}>
+            {podoIconNames.map((name) => (
+              <li key={name} className="icon-sample">
+                <Icon name={name} size="lg" />
+                <code>{name}</code>
+              </li>
+            ))}
+          </ul>
         </Card>
       </DocSection>
 

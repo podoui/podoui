@@ -153,6 +153,9 @@ importers:
       '@podoui/react':
         specifier: workspace:*
         version: link:../react
+      '@podoui/tokens':
+        specifier: workspace:*
+        version: link:../tokens
       podo-ui:
         specifier: workspace:*
         version: link:../podo-ui

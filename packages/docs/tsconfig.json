@@ -9,5 +9,5 @@
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"],
-  "references": [{ "path": "../react" }]
+  "references": [{ "path": "../react" }, { "path": "../tokens" }]
 }

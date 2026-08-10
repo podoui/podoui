@@ -1,13 +1,33 @@
-export type PodoIconName = "calendar" | "check" | "chevron-left" | "chevron-right" | "close" | "menu" | "refresh" | "search" | "time";
+export type PodoIconName = "align-center" | "align-left" | "align-right" | "bold" | "calendar" | "check" | "chevron-left" | "chevron-right" | "close" | "code" | "eraser" | "font-color" | "highlight" | "hr" | "image" | "italic" | "link" | "list-ol" | "list-ul" | "menu" | "redo" | "refresh" | "search" | "strikethrough" | "table" | "time" | "underline" | "undo" | "youtube";
 
 export const podoIconNames = [
+  "align-center",
+  "align-left",
+  "align-right",
+  "bold",
   "calendar",
   "check",
   "chevron-left",
   "chevron-right",
   "close",
+  "code",
+  "eraser",
+  "font-color",
+  "highlight",
+  "hr",
+  "image",
+  "italic",
+  "link",
+  "list-ol",
+  "list-ul",
   "menu",
+  "redo",
   "refresh",
   "search",
-  "time"
+  "strikethrough",
+  "table",
+  "time",
+  "underline",
+  "undo",
+  "youtube"
 ] as const;
