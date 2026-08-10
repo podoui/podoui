@@ -118,4 +118,28 @@ describe("docs introduction routing", () => {
     expect(within(gallery).getByText("undo")).toBeTruthy();
     expect(within(gallery).getByText("youtube")).toBeTruthy();
   });
+
+  it("portals the DatePicker usage dialog outside the clipped preview", async () => {
+    window.history.replaceState({}, "", "/datepicker");
+    render(<App />);
+
+    await userEvent.setup().click(screen.getByRole("button", { name: "날짜를 선택하세요" }));
+    const dialog = screen.getByRole("dialog", { name: "날짜 선택" });
+    expect(dialog.parentElement).toBe(document.body);
+    expect(dialog.closest(".preview")).toBeNull();
+  });
+
+  it("documents external Editor image processing for every interactive target", () => {
+    window.history.replaceState({}, "", "/editor");
+    render(<App />);
+
+    expect(screen.getByRole("heading", { name: "외부 이미지 업로드 처리" })).toBeTruthy();
+    expect(screen.getByText(/선택·클립보드 붙여넣기·드롭이 모두 같은 비동기 콜백/)).toBeTruthy();
+    expect(screen.getAllByRole("tab", { name: "React" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("tab", { name: "Next.js" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("tab", { name: "Hono CSR" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("tab", { name: "React Native" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByText("onImageUpload").length).toBeGreaterThan(0);
+    expect(screen.getByText("onImageUploadError")).toBeTruthy();
+  });
 });

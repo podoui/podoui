@@ -55,6 +55,8 @@ const Editor = ({
   validator,
   placeholder = "내용을 입력하세요...",
   toolbar,
+  onImageUpload,
+  onImageUploadError,
   ariaLabel = "리치 텍스트 편집기",
 }: EditorProps) => {
   // ========== State ==========
@@ -187,6 +189,9 @@ const Editor = ({
     selectionManager,
     onInput: () => handleInputRef.current(),
     fileInputRef: imageFileInputRef,
+    onImageUpload,
+    onImageUploadError,
+    contentVersion: value,
   });
 
   const youtubeEditor = useYoutubeEditor({
@@ -445,28 +450,17 @@ const Editor = ({
   }, []);
 
   const handleDrop = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
+    async (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
 
-      const files = e.dataTransfer?.files;
-      if (!files || files.length === 0) return;
+      const files = Array.from(e.dataTransfer?.files ?? []);
+      if (files.length === 0) return;
 
       // 이미지 파일만 처리
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+      for (const file of files) {
         if (file.type.startsWith("image/")) {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            const dataUrl = event.target?.result as string;
-            if (dataUrl) {
-              if (editorRef.current) {
-                editorRef.current.focus();
-              }
-              imageEditor.insertImageAtCursor(dataUrl, file.name || "dropped-image");
-            }
-          };
-          reader.readAsDataURL(file);
+          await imageEditor.insertImageFileAtCursor(file, file.name || "dropped-image");
         }
       }
     },
@@ -488,14 +482,7 @@ const Editor = ({
             e.preventDefault();
             const file = item.getAsFile();
             if (file) {
-              const reader = new FileReader();
-              reader.onload = (event) => {
-                const dataUrl = event.target?.result as string;
-                if (dataUrl) {
-                  imageEditor.insertImageAtCursor(dataUrl, file.name || "pasted-image");
-                }
-              };
-              reader.readAsDataURL(file);
+              void imageEditor.insertImageFileAtCursor(file, file.name || "pasted-image");
             }
             return;
           }
@@ -509,14 +496,7 @@ const Editor = ({
           const file = files[i];
           if (file.type.startsWith("image/")) {
             e.preventDefault();
-            const reader = new FileReader();
-            reader.onload = (event) => {
-              const dataUrl = event.target?.result as string;
-              if (dataUrl) {
-                imageEditor.insertImageAtCursor(dataUrl, file.name || "pasted-image");
-              }
-            };
-            reader.readAsDataURL(file);
+            void imageEditor.insertImageFileAtCursor(file, file.name || "pasted-image");
             return;
           }
         }
@@ -1158,6 +1138,7 @@ const Editor = ({
                           type="button"
                           onClick={() => imageFileInputRef.current?.click()}
                           className={styles.fileSelectButton}
+                          disabled={imageEditor.isImageUploading}
                         >
                           {imageEditor.imageFile ? imageEditor.imageFile.name : "파일 선택"}
                         </button>
@@ -1262,16 +1243,20 @@ const Editor = ({
                       type="button"
                       onClick={imageEditor.closeImageDropdown}
                       className={styles.default}
+                      disabled={imageEditor.isImageUploading}
                     >
                       취소
                     </button>
                     <button
                       type="button"
                       onClick={imageEditor.insertImage}
-                      disabled={!imageEditor.imageUrl && !imageEditor.imageFile}
+                      disabled={
+                        imageEditor.isImageUploading ||
+                        (!imageEditor.imageUrl && !imageEditor.imageFile)
+                      }
                       className={styles.primary}
                     >
-                      삽입
+                      {imageEditor.isImageUploading ? "업로드 중…" : "삽입"}
                     </button>
                   </div>
                 </div>

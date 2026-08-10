@@ -17,7 +17,7 @@ const USAGE_TABS: CodeTab[] = [
       `import "podo-ui/styles.css";\n` +
       `import "podo-ui/icons.css";\n\n` +
       `export default function Page() {\n` +
-      `  return <DatePicker mode="instant" type="date" onChange={(value) => console.log(value)} />;\n` +
+      `  return <DatePicker portal direction="auto" mode="instant" type="date" onChange={(value) => console.log(value)} />;\n` +
       `}`,
   },
   {
@@ -40,7 +40,13 @@ export function DatepickerPage() {
 
       <DocSection index={0} title="Usage">
         <Preview tabs={USAGE_TABS}>
-          <DatePicker mode="instant" type="date" placeholder="날짜를 선택하세요" />
+          <DatePicker
+            portal
+            direction="auto"
+            mode="instant"
+            type="date"
+            placeholder="날짜를 선택하세요"
+          />
         </Preview>
       </DocSection>
 

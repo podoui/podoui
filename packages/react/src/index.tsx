@@ -2525,6 +2525,11 @@ export type {
   InitialCalendar,
 } from "./datepicker.js";
 export { default as Editor } from "./editor/index.js";
-export type { EditorProps, ToolbarItem } from "./editor/types.js";
+export type {
+  EditorImageUploadHandler,
+  EditorImageUploadResult,
+  EditorProps,
+  ToolbarItem,
+} from "./editor/types.js";
 export { default as EditorView } from "./editor/view.js";
 export type { EditorViewProps } from "./editor/view.js";

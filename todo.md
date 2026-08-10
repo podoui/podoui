@@ -613,6 +613,9 @@
 
 ### C. 컴포넌트·품질
 
+- [x] Editor 외부 이미지 처리와 DatePicker 문서 예제 오버레이 보정
+  - 완료 기준: React/Next.js/Hono CSR의 파일 선택·붙여넣기·드롭과 React Native picker가 외부 업로드 콜백을 지원한다.
+  - 완료 기준: 플랫폼별 사용 예제와 Hono SSR 경계를 문서화하고 DatePicker Usage 팝업이 예제 프레임에 잘리지 않는다.
 - [ ] 다음 컴포넌트 시안 작업 계속 (Button/Chip/Input/Field 완료; 워크플로: 스펙 → 4렌더러 → 테스트 → docs → figma.tsx)
 - [x] Pretendard 폰트 자산 확정
   - 토큰의 `fontAsset.dataUrl`이 `"AAAA"` 플레이스홀더. docs는 임시로 jsDelivr CDN 로드 중.

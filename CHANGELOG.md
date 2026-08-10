@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.3.7 (2026-08-10)
+
+- Editor: React·Next.js·Hono CSR에서 파일 선택·붙여넣기·드롭 이미지를
+  `onImageUpload`으로 외부 저장소에 처리하고 반환 URL을 삽입할 수 있다.
+  React Native도 picker 결과를 같은 방식의 공개 URI로 교체하며, 양쪽 모두
+  실패 콜백과 기존 인라인/data URL 동작을 유지한다.
+- Docs: 플랫폼별 외부 이미지 업로드 예제와 Hono SSR 경계를 설명하고,
+  DatePicker Usage 팝업을 body 포털로 렌더링해 예제 프레임에 잘리지 않게 한다.
+
 ## 2.3.6 (2026-08-10)
 
 - React: `PodoThemeProvider applyToDocument`를 추가해 앱 전체와 body 포털이

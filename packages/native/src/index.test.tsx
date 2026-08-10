@@ -2356,6 +2356,64 @@ describe("@podoui/native", () => {
     expect(webViewMessages.at(-1)).toContain('"url":"https://images.example.com/podo.png"');
     expect(webViewMessages.at(-1)).toContain('"alt":"선택한 이미지"');
   });
+
+  it("uploads a picked native image before inserting the returned public URI", async () => {
+    webViewMessages.length = 0;
+    const pickedAsset = { uri: "file:///private/podo.jpg", alt: "로컬 이미지" };
+    const onImageUpload = vi.fn(async () => ({
+      uri: "https://cdn.example.com/podo.jpg?token=a&expires=b",
+      alt: "CDN 이미지",
+    }));
+    const { container } = render(
+      <PodoNativeThemeProvider theme="landing" colorScheme="light" webViewComponent={TestWebView}>
+        <domNative.Editor
+          value="<p>이미지</p>"
+          onChange={() => undefined}
+          onImagePick={async () => pickedAsset}
+          onImageUpload={onImageUpload}
+          testID="upload-editor"
+        />
+      </PodoNativeThemeProvider>
+    );
+
+    fireEvent.click(within(container).getByLabelText("이미지"));
+    fireEvent.click(within(container).getByLabelText("사진 선택"));
+
+    await waitFor(() => expect(onImageUpload).toHaveBeenCalledWith(pickedAsset));
+    await waitFor(() => expect(webViewMessages.at(-1)).toContain('"command":"image"'));
+    expect(webViewMessages.at(-1)).toContain(
+      '"url":"https://cdn.example.com/podo.jpg?token=a&expires=b"'
+    );
+    expect(webViewMessages.at(-1)).not.toContain("&amp;");
+    expect(webViewMessages.at(-1)).toContain('"alt":"CDN 이미지"');
+  });
+
+  it("reports a native image upload failure without inserting it", async () => {
+    webViewMessages.length = 0;
+    const pickedAsset = { uri: "file:///private/broken.jpg" };
+    const failure = new Error("upload failed");
+    const onImageUploadError = vi.fn();
+    const { container } = render(
+      <PodoNativeThemeProvider theme="landing" colorScheme="light" webViewComponent={TestWebView}>
+        <domNative.Editor
+          value="<p>이미지</p>"
+          onChange={() => undefined}
+          onImagePick={async () => pickedAsset}
+          onImageUpload={async () => {
+            throw failure;
+          }}
+          onImageUploadError={onImageUploadError}
+          testID="failed-upload-editor"
+        />
+      </PodoNativeThemeProvider>
+    );
+
+    fireEvent.click(within(container).getByLabelText("이미지"));
+    fireEvent.click(within(container).getByLabelText("사진 선택"));
+
+    await waitFor(() => expect(onImageUploadError).toHaveBeenCalledWith(failure, pickedAsset));
+    expect(webViewMessages.some((message) => message.includes('"command":"image"'))).toBe(false);
+  });
 });
 
 function TestPressable({

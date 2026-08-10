@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
@@ -656,6 +656,159 @@ describe("Editor", () => {
     expect(content.querySelectorAll(".resize-handle")).toHaveLength(8);
     // 편집 팝업은 그대로 열려 있다
     expect(screen.getByRole("button", { name: "이미지 삭제" })).toBeTruthy();
+  });
+
+  it("routes selected image files through the external upload handler", async () => {
+    const upload = vi.fn(async () => ({
+      src: "https://cdn.example.com/selected.png",
+      alt: "업로드된 이미지",
+    }));
+    const { container } = render(
+      <Editor value="<p>본문</p>" onChange={() => {}} onImageUpload={upload} />
+    );
+    const editable = container.querySelector(".podo-ed-editorContent") as HTMLElement;
+    select((range) => {
+      range.selectNodeContents(editable);
+      range.collapse(false);
+    });
+
+    fireEvent.click(screen.getByTitle("이미지"));
+    const file = new File(["selected"], "selected.png", { type: "image/png" });
+    fireEvent.change(container.querySelector('input[type="file"]')!, {
+      target: { files: [file] },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "삽입" }));
+
+    await waitFor(() => expect(upload).toHaveBeenCalledWith(file));
+    await waitFor(() => {
+      const image = editable.querySelector("img")!;
+      expect(image.src).toBe("https://cdn.example.com/selected.png");
+      expect(image.alt).toBe("업로드된 이미지");
+    });
+  });
+
+  it("routes dropped and pasted image files through the external upload handler", async () => {
+    const upload = vi.fn(async (file: File) => `https://cdn.example.com/${file.name}`);
+    const { container } = render(
+      <Editor value="<p>본문</p>" onChange={() => {}} onImageUpload={upload} />
+    );
+    const editable = container.querySelector(".podo-ed-editorContent") as HTMLElement;
+    select((range) => {
+      range.selectNodeContents(editable);
+      range.collapse(false);
+    });
+
+    const dropped = new File(["drop"], "drop.png", { type: "image/png" });
+    fireEvent.drop(editable, { dataTransfer: { files: [dropped] } });
+    await waitFor(() => expect(upload).toHaveBeenCalledWith(dropped));
+    await waitFor(() =>
+      expect(editable.querySelector('img[src="https://cdn.example.com/drop.png"]')).toBeTruthy()
+    );
+
+    select((range) => {
+      range.selectNodeContents(editable);
+      range.collapse(false);
+    });
+    const pasted = new File(["paste"], "paste.png", { type: "image/png" });
+    fireEvent.paste(editable, {
+      clipboardData: {
+        files: [],
+        items: [{ type: "image/png", getAsFile: () => pasted }],
+      },
+    });
+    await waitFor(() => expect(upload).toHaveBeenCalledWith(pasted));
+    await waitFor(() =>
+      expect(editable.querySelector('img[src="https://cdn.example.com/paste.png"]')).toBeTruthy()
+    );
+  });
+
+  it("reports an external image upload failure without inserting the file", async () => {
+    const failure = new Error("storage unavailable");
+    const onImageUploadError = vi.fn();
+    const { container } = render(
+      <Editor
+        value="<p>본문</p>"
+        onChange={() => {}}
+        onImageUpload={async () => {
+          throw failure;
+        }}
+        onImageUploadError={onImageUploadError}
+      />
+    );
+    const editable = container.querySelector(".podo-ed-editorContent") as HTMLElement;
+    select((range) => {
+      range.selectNodeContents(editable);
+      range.collapse(false);
+    });
+    const file = new File(["bad"], "bad.png", { type: "image/png" });
+    fireEvent.drop(editable, { dataTransfer: { files: [file] } });
+
+    await waitFor(() => expect(onImageUploadError).toHaveBeenCalledWith(failure, file));
+    expect(editable.querySelector("img")).toBeNull();
+  });
+
+  it("discards a deferred drop upload after the Editor unmounts", async () => {
+    let resolveUpload: (src: string) => void = () => {};
+    const onImageUpload = vi.fn(
+      () =>
+        new Promise<string>((resolve) => {
+          resolveUpload = resolve;
+        })
+    );
+    const view = render(
+      <main data-testid="upload-host">
+        <Editor value="<p>본문</p>" onChange={() => {}} onImageUpload={onImageUpload} />
+      </main>
+    );
+    const editable = view.container.querySelector(".podo-ed-editorContent") as HTMLElement;
+    select((range) => {
+      range.selectNodeContents(editable);
+      range.collapse(false);
+    });
+    const file = new File(["late"], "late.png", { type: "image/png" });
+    fireEvent.drop(editable, { dataTransfer: { files: [file] } });
+    await waitFor(() => expect(onImageUpload).toHaveBeenCalledWith(file));
+
+    view.rerender(<main data-testid="upload-host" />);
+    await act(async () => {
+      resolveUpload("https://cdn.example.com/late.png");
+      await Promise.resolve();
+    });
+
+    expect(screen.getByTestId("upload-host").querySelector("img")).toBeNull();
+    expect(document.body.querySelector('img[src="https://cdn.example.com/late.png"]')).toBeNull();
+  });
+
+  it("discards a deferred drop upload when the controlled value is replaced", async () => {
+    let resolveUpload: (src: string) => void = () => {};
+    const onImageUpload = vi.fn(
+      () =>
+        new Promise<string>((resolve) => {
+          resolveUpload = resolve;
+        })
+    );
+    const view = render(
+      <Editor value="<p>이전 본문</p>" onChange={() => {}} onImageUpload={onImageUpload} />
+    );
+    const editable = view.container.querySelector(".podo-ed-editorContent") as HTMLElement;
+    select((range) => {
+      range.selectNodeContents(editable);
+      range.collapse(false);
+    });
+    const file = new File(["stale"], "stale.png", { type: "image/png" });
+    fireEvent.drop(editable, { dataTransfer: { files: [file] } });
+    await waitFor(() => expect(onImageUpload).toHaveBeenCalledWith(file));
+
+    view.rerender(
+      <Editor value="<p>새 본문</p>" onChange={() => {}} onImageUpload={onImageUpload} />
+    );
+    await act(async () => {
+      resolveUpload("https://cdn.example.com/stale.png");
+      await Promise.resolve();
+    });
+
+    expect(editable.textContent).toBe("새 본문");
+    expect(editable.querySelector("img")).toBeNull();
   });
 
   it("deletes an image without leaving an empty alignment wrapper", () => {

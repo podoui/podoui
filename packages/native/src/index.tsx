@@ -487,6 +487,15 @@ export interface NativeEditorValidator {
   };
 }
 
+export interface NativeEditorImageAsset {
+  uri: string;
+  alt?: string;
+}
+
+export type NativeEditorImageUploadHandler = (
+  asset: NativeEditorImageAsset
+) => Promise<string | NativeEditorImageAsset>;
+
 export interface NativeEditorProps {
   value: string;
   onChange: (content: string) => void;
@@ -497,7 +506,11 @@ export interface NativeEditorProps {
   toolbar?: NativeEditorToolbarItem[];
   validator?: NativeEditorValidator;
   /** Optional native image picker bridge. Return a URI or an object with URI/alt text. */
-  onImagePick?: () => Promise<string | { uri: string; alt?: string } | undefined>;
+  onImagePick?: () => Promise<string | NativeEditorImageAsset | undefined>;
+  /** 선택한 이미지를 외부 저장소에서 처리하고 본문에 넣을 공개 URI를 반환합니다. */
+  onImageUpload?: NativeEditorImageUploadHandler;
+  /** 외부 이미지 처리 실패 알림. 실패한 이미지는 본문에 삽입하지 않습니다. */
+  onImageUploadError?: (error: unknown, asset: NativeEditorImageAsset) => void;
   accessibilityLabel?: string;
   testID?: string;
 }
@@ -1103,9 +1116,12 @@ function nativeEncodeEditorUrlAttribute(value: string): string {
     );
   })
     .join("")
-    .replace(/&/g, "&amp;")
     .replace(/\u2028/g, "%E2%80%A8")
     .replace(/\u2029/g, "%E2%80%A9");
+}
+
+function nativeEscapeEditorUrlAttribute(value: string): string {
+  return nativeEncodeEditorUrlAttribute(value).replace(/&/g, "&amp;");
 }
 
 function nativeSafeEditorUrl(
@@ -1125,7 +1141,11 @@ function nativeSafeEditorUrl(
     kind === "image"
       ? /^(?:https?:\/\/|data:image\/(?:png|gif|jpeg|webp);base64,)/i
       : /^(?:https?:\/\/|mailto:|tel:|\/|#)/i;
-  return allowed.test(source) ? nativeEncodeEditorUrlAttribute(source) : undefined;
+  const hasControlCharacter = Array.from(source).some((character) => {
+    const codePoint = character.codePointAt(0) ?? 0;
+    return codePoint <= 0x1f || codePoint === 0x7f;
+  });
+  return allowed.test(source) && !hasControlCharacter ? source : undefined;
 }
 
 function nativePlainTextFromHtml(value: unknown): string {
@@ -1325,6 +1345,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
     const [mediaWidth, setMediaWidth] = useState("100%");
     const [mediaAlign, setMediaAlign] = useState("center");
     const [mediaAlt, setMediaAlt] = useState("");
+    const [isImageUploading, setIsImageUploading] = useState(false);
     const [tableColorOpen, setTableColorOpen] = useState(false);
     const [formatState, setFormatState] = useState({
       bold: false,
@@ -1413,14 +1434,15 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
         },
         nativeGlyph(theme, iconName, active ? semantic.foregroundPrimary : semantic.text, 18)
       );
-    const panelButton = (key: string, label: string, action: () => void) =>
+    const panelButton = (key: string, label: string, action: () => void, disabled = false) =>
       createElement(
         host.Pressable,
         {
           key,
           accessibilityRole: "button",
           accessibilityLabel: label,
-          onPress: action,
+          disabled,
+          onPress: disabled ? undefined : action,
           style: {
             alignItems: "center",
             backgroundColor: semantic.background,
@@ -1429,6 +1451,7 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             borderWidth: 1,
             justifyContent: "center",
             minHeight: 38,
+            opacity: disabled ? 0.55 : 1,
             paddingHorizontal: 12,
           },
         },
@@ -1856,18 +1879,47 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
           host.View,
           { style: { flexDirection: "row", flexWrap: "wrap", gap: 6, justifyContent: "flex-end" } },
           kind === "image" && editorProps.onImagePick
-            ? panelButton("picker", "사진 선택", async () => {
-                const picked = await editorProps.onImagePick?.();
-                const uri = typeof picked === "string" ? picked : picked?.uri;
-                const safeUrl = uri ? nativeSafeEditorUrl(uri, "image") : undefined;
-                if (safeUrl)
-                  command("image", undefined, {
-                    url: safeUrl,
-                    alt: typeof picked === "object" ? (picked.alt ?? "") : "",
-                    width: mediaWidth,
-                    align: mediaAlign,
-                  });
-              })
+            ? panelButton(
+                "picker",
+                isImageUploading ? "업로드 중…" : "사진 선택",
+                async () => {
+                  setIsImageUploading(true);
+                  try {
+                    const picked = await editorProps.onImagePick?.();
+                    if (!picked) return;
+                    const asset = typeof picked === "string" ? { uri: picked } : picked;
+                    let uploaded: string | NativeEditorImageAsset = asset;
+                    if (editorProps.onImageUpload) {
+                      try {
+                        uploaded = await editorProps.onImageUpload(asset);
+                      } catch (error) {
+                        try {
+                          editorProps.onImageUploadError?.(error, asset);
+                        } catch {
+                          // 오류 콜백이 실패해도 안전하지 않은/불완전한 URI는 삽입하지 않는다.
+                        }
+                        return;
+                      }
+                    }
+                    const uri = typeof uploaded === "string" ? uploaded : uploaded.uri;
+                    const safeUrl = nativeSafeEditorUrl(uri, "image");
+                    if (safeUrl)
+                      command("image", undefined, {
+                        url: safeUrl,
+                        alt:
+                          mediaAlt ||
+                          (typeof uploaded === "object" ? uploaded.alt : undefined) ||
+                          asset.alt ||
+                          "",
+                        width: mediaWidth,
+                        align: mediaAlign,
+                      });
+                  } finally {
+                    setIsImageUploading(false);
+                  }
+                },
+                isImageUploading
+              )
             : null,
           panelButton("cancel", "취소", dismissPanel),
           panelButton("insert", "삽입", () => {
@@ -4701,10 +4753,18 @@ export function createNativeComponents(host: NativeHost = defaultNativeHost): Na
             panelButton("삽입", () => {
               const safeUrl = nativeSafeEditorUrl(auxValue, panel as "link" | "image" | "youtube");
               if (!safeUrl) return;
-              if (panel === "link") replaceSelection(`<a href="${safeUrl}">`, "</a>", "링크");
-              if (panel === "image") insert(`<img src="${safeUrl}" alt="" />`);
+              if (panel === "link")
+                replaceSelection(
+                  `<a href="${nativeEscapeEditorUrlAttribute(safeUrl)}">`,
+                  "</a>",
+                  "링크"
+                );
+              if (panel === "image")
+                insert(`<img src="${nativeEscapeEditorUrlAttribute(safeUrl)}" alt="" />`);
               if (panel === "youtube")
-                insert(`<iframe src="${safeUrl}" title="YouTube video"></iframe>`);
+                insert(
+                  `<iframe src="${nativeEscapeEditorUrlAttribute(safeUrl)}" title="YouTube video"></iframe>`
+                );
               setPanel(null);
             })
           )

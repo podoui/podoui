@@ -1,11 +1,16 @@
-import { useState, useCallback, RefObject, useEffect } from "react";
+import { useState, useCallback, RefObject, useEffect, useRef } from "react";
 import { UseSelectionManagerReturn } from "./useSelectionManager.js";
+import type { EditorImageUploadHandler, EditorImageUploadResult } from "../types.js";
 
 export interface UseImageEditorProps {
   editorRef: RefObject<HTMLDivElement | null>;
   selectionManager: UseSelectionManagerReturn;
   onInput?: () => void;
   fileInputRef?: RefObject<HTMLInputElement | null>;
+  onImageUpload?: EditorImageUploadHandler;
+  onImageUploadError?: (error: unknown, file: File) => void;
+  /** Controlled HTML value used to invalidate stale async insertion ranges. */
+  contentVersion?: string;
 }
 
 export interface UseImageEditorReturn {
@@ -18,6 +23,7 @@ export interface UseImageEditorReturn {
   imageAlt: string;
   imageFile: File | null;
   imagePreview: string;
+  isImageUploading: boolean;
 
   // 편집 상태
   selectedImage: HTMLImageElement | null;
@@ -51,7 +57,30 @@ export interface UseImageEditorReturn {
   applyImageEdit: () => void;
   deleteImage: () => void;
   insertImageAtCursor: (src: string, alt?: string) => void;
+  insertImageFileAtCursor: (file: File, alt?: string) => Promise<void>;
 }
+
+const readImageFile = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () =>
+      typeof reader.result === "string"
+        ? resolve(reader.result)
+        : reject(new Error("이미지 파일을 읽을 수 없습니다."));
+    reader.onerror = () => reject(reader.error ?? new Error("이미지 파일을 읽을 수 없습니다."));
+    reader.readAsDataURL(file);
+  });
+
+const normalizeUploadResult = (
+  result: string | EditorImageUploadResult
+): EditorImageUploadResult => {
+  const normalized = typeof result === "string" ? { src: result } : result;
+  const src = normalized.src?.trim();
+  if (!src) {
+    throw new Error("onImageUpload은 비어 있지 않은 이미지 URL을 반환해야 합니다.");
+  }
+  return { ...normalized, src };
+};
 
 /**
  * 에디터 이미지 관리 Hook
@@ -67,6 +96,9 @@ export const useImageEditor = ({
   selectionManager,
   onInput,
   fileInputRef,
+  onImageUpload,
+  onImageUploadError,
+  contentVersion,
 }: UseImageEditorProps): UseImageEditorReturn => {
   // 드롭다운 상태
   const [isImageDropdownOpen, setIsImageDropdownOpen] = useState(false);
@@ -77,6 +109,21 @@ export const useImageEditor = ({
   const [imageAlt, setImageAlt] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
+  const [isImageUploading, setIsImageUploading] = useState(false);
+  const mountedRef = useRef(true);
+  const contentGenerationRef = useRef(0);
+  const previousContentVersionRef = useRef(contentVersion);
+  if (previousContentVersionRef.current !== contentVersion) {
+    previousContentVersionRef.current = contentVersion;
+    contentGenerationRef.current += 1;
+  }
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   // 편집 상태
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null);
@@ -98,10 +145,12 @@ export const useImageEditor = ({
    */
   const insertImageAtCursor = useCallback(
     (src: string, alt = "") => {
+      const editor = editorRef.current;
       const selection = window.getSelection();
-      if (!selection || selection.rangeCount === 0) return;
+      if (!editor?.isConnected || !selection || selection.rangeCount === 0) return;
 
       const range = selection.getRangeAt(0);
+      if (!editor.contains(range.startContainer) || !editor.contains(range.endContainer)) return;
       const img = document.createElement("img");
       img.src = src;
       img.alt = alt;
@@ -122,6 +171,63 @@ export const useImageEditor = ({
       }
     },
     [onInput]
+  );
+
+  const reportImageUploadError = useCallback(
+    (error: unknown, file: File) => {
+      if (mountedRef.current && onImageUploadError) {
+        try {
+          onImageUploadError(error, file);
+        } catch {
+          // 오류 알림 콜백이 실패해도 에디터의 삽입 흐름은 안전하게 중단한다.
+        }
+      }
+    },
+    [onImageUploadError]
+  );
+
+  const resolveImageFile = useCallback(
+    async (file: File): Promise<EditorImageUploadResult | undefined> => {
+      try {
+        if (onImageUpload) {
+          return normalizeUploadResult(await onImageUpload(file));
+        }
+        return { src: await readImageFile(file) };
+      } catch (error) {
+        reportImageUploadError(error, file);
+        return undefined;
+      }
+    },
+    [onImageUpload, reportImageUploadError]
+  );
+
+  const insertImageFileAtCursor = useCallback(
+    async (file: File, alt = file.name) => {
+      const savedRange = selectionManager.saveSelection();
+      const contentGeneration = contentGenerationRef.current;
+      setIsImageUploading(true);
+      try {
+        const uploaded = await resolveImageFile(file);
+        if (!uploaded) return;
+        const editor = editorRef.current;
+        if (
+          !mountedRef.current ||
+          !editor?.isConnected ||
+          contentGeneration !== contentGenerationRef.current ||
+          !savedRange ||
+          !editor.contains(savedRange.startContainer) ||
+          !editor.contains(savedRange.endContainer)
+        ) {
+          return;
+        }
+        editor.focus();
+        selectionManager.restoreSelection(savedRange);
+        insertImageAtCursor(uploaded.src, uploaded.alt ?? alt);
+      } finally {
+        if (mountedRef.current) setIsImageUploading(false);
+      }
+    },
+    [editorRef, insertImageAtCursor, resolveImageFile, selectionManager]
   );
 
   /**
@@ -175,10 +281,20 @@ export const useImageEditor = ({
    */
   const insertImage = useCallback(async () => {
     let imageSrc = "";
+    let uploadedAlt: string | undefined;
+    const contentGeneration = contentGenerationRef.current;
+    const savedRange = selectionManager.selection;
 
     // 파일이 업로드된 경우
-    if (imageFile && imagePreview) {
-      imageSrc = imagePreview;
+    if (imageFile) {
+      setIsImageUploading(true);
+      const uploaded = await resolveImageFile(imageFile);
+      if (!uploaded) {
+        if (mountedRef.current) setIsImageUploading(false);
+        return;
+      }
+      imageSrc = uploaded.src;
+      uploadedAlt = uploaded.alt;
     }
     // URL이 입력된 경우
     else if (imageUrl) {
@@ -214,11 +330,23 @@ export const useImageEditor = ({
     }
 
     if (!imageSrc) return;
+    const currentEditor = editorRef.current;
+    if (
+      !mountedRef.current ||
+      !currentEditor?.isConnected ||
+      contentGeneration !== contentGenerationRef.current ||
+      (savedRange &&
+        (!currentEditor.contains(savedRange.startContainer) ||
+          !currentEditor.contains(savedRange.endContainer)))
+    ) {
+      if (mountedRef.current) setIsImageUploading(false);
+      return;
+    }
 
     // 이미지 엘리먼트 생성
     const img = document.createElement("img");
     img.src = imageSrc;
-    img.alt = imageAlt || "";
+    img.alt = imageAlt || uploadedAlt || "";
     img.style.display = "inline-block";
     img.style.verticalAlign = "middle";
 
@@ -327,9 +455,9 @@ export const useImageEditor = ({
     if (onInput) {
       onInput();
     }
+    if (mountedRef.current) setIsImageUploading(false);
   }, [
     imageFile,
-    imagePreview,
     imageUrl,
     imageAlt,
     imageWidth,
@@ -338,6 +466,7 @@ export const useImageEditor = ({
     selectionManager,
     fileInputRef,
     onInput,
+    resolveImageFile,
   ]);
 
   /**
@@ -680,6 +809,7 @@ export const useImageEditor = ({
     imageAlt,
     imageFile,
     imagePreview,
+    isImageUploading,
 
     // 편집 상태
     selectedImage,
@@ -713,5 +843,6 @@ export const useImageEditor = ({
     applyImageEdit,
     deleteImage,
     insertImageAtCursor,
+    insertImageFileAtCursor,
   };
 };
