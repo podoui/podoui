@@ -613,6 +613,10 @@
 
 ### C. 컴포넌트·품질
 
+- [x] v1 레이아웃 유틸리티 이식과 문서화
+  - 완료 기준: Border, Radius, Shadow/Elevation, Display/Visibility 계약이 검증된 JSON을 원본으로 CSS/SCSS 산출된다.
+  - 완료 기준: `podo-ui/styles.css`가 실제 호환 클래스를 포함하고, 현재 테마 속성 및 v1 반응형 구간을 지원한다.
+  - 완료 기준: 예제 사이트에 실제 배포 클래스를 사용하는 유틸리티 문서와 전체 값·플랫폼 지원 범위가 추가된다.
 - [x] Editor 외부 이미지 처리와 DatePicker 문서 예제 오버레이 보정
   - 완료 기준: React/Next.js/Hono CSR의 파일 선택·붙여넣기·드롭과 React Native picker가 외부 업로드 콜백을 지원한다.
   - 완료 기준: 플랫폼별 사용 예제와 Hono SSR 경계를 문서화하고 DatePicker Usage 팝업이 예제 프레임에 잘리지 않는다.

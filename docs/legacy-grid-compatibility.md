@@ -4,7 +4,7 @@ Podo v2 keeps the v1 grid system as-is for compatibility. Do not redesign it as 
 
 ## Source Contract From v1
 
-The v1 grid source is `main:scss/layout/grid.scss`.
+The immutable v1 grid source is tag `v1.2.1`, path `scss/layout/grid.scss` (commit `d9efa8bdb6227d7a8a9c7e73ea76dfa2761686df`). A local audit may reference the fetched ref `refs/remotes/v1-source/v1.2.1`.
 
 Required behavior:
 

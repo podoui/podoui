@@ -1,16 +1,20 @@
 import type { ComponentType } from "react";
 import { BadgePage } from "./pages/BadgePage.js";
+import { BorderPage } from "./pages/BorderPage.js";
 import { ButtonPage } from "./pages/ButtonPage.js";
 import { CheckboxPage } from "./pages/CheckboxPage.js";
 import { ChipPage } from "./pages/ChipPage.js";
 import { ColorPage } from "./pages/ColorPage.js";
 import { DatepickerPage } from "./pages/DatepickerPage.js";
+import { DisplayPage } from "./pages/DisplayPage.js";
 import { EditorPage } from "./pages/EditorPage.js";
+import { ElevationPage } from "./pages/ElevationPage.js";
 import { FieldPage } from "./pages/FieldPage.js";
 import { GridPage } from "./pages/GridPage.js";
 import { IconPage } from "./pages/IconPage.js";
 import { InputPage } from "./pages/InputPage.js";
 import { RadioPage } from "./pages/RadioPage.js";
+import { RadiusPage } from "./pages/RadiusPage.js";
 import { SelectPage } from "./pages/SelectPage.js";
 import { SetupPage } from "./pages/SetupPage.js";
 import { SpacingPage } from "./pages/SpacingPage.js";
@@ -40,6 +44,10 @@ export const NAV: NavItem[] = [
   { slug: "spacing", title: "Spacing", group: "Foundation", page: SpacingPage },
   { slug: "grid", title: "Grid", group: "Foundation", page: GridPage },
   { slug: "icon", title: "Icon", group: "Foundation", page: IconPage },
+  { slug: "border", title: "Border", group: "Utilities", page: BorderPage },
+  { slug: "radius", title: "Radius", group: "Utilities", page: RadiusPage },
+  { slug: "elevation", title: "Elevation", group: "Utilities", page: ElevationPage },
+  { slug: "display", title: "Display", group: "Utilities", page: DisplayPage },
   { slug: "badge", title: "Badge", group: "Components", page: BadgePage },
   { slug: "button", title: "Button", group: "Components", page: ButtonPage },
   { slug: "checkbox", title: "Checkbox", group: "Components", page: CheckboxPage },

@@ -6,6 +6,10 @@ Figma 디자인 토큰과 컴포넌트를 React, Next.js, Hono SSR, React Native
 npm install podo-ui
 ```
 
+## v1 호환 유틸리티
+
+`podo-ui/styles.css`는 `border-0`–`border-4`, `r-0`–`r-6`/`r-full`, `shadow-1`–`shadow-5`, `bg-elevation[-1|-2|-3]`, `hide[-pc|-tb|-mo]`를 포함합니다. React·Next.js·Hono·일반 HTML에서 같은 클래스를 사용하며 React Native에서는 `style`과 토큰을 사용하세요. JSON 계약과 CSS/SCSS 생성기는 `podo-ui/tokens`에서 가져올 수 있습니다.
+
 ## React와 Next.js
 
 ```tsx
@@ -89,4 +93,4 @@ Figma 플러그인에서 보낸 디자인 시스템을 받으려면 먼저 `npx 
 
 전체 설치법, 컴포넌트별 import 포함 예제, DatePicker·Editor 기능표는 [podoui.com](https://podoui.com)에서 확인하세요.
 
-> v1(SCSS 기반)을 계속 사용해야 한다면 `podo-ui@1`로 고정하세요. v1과 v2는 호환되지 않습니다.
+> v1 컴포넌트 API를 계속 사용해야 한다면 `podo-ui@1`로 고정하세요. v1 컴포넌트와 v2는 호환되지 않으며, 위 레이아웃 유틸리티만 마이그레이션 호환 범위입니다.

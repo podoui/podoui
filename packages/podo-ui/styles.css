@@ -13,6 +13,155 @@
  * automatically once the tokens are present.
  */
 
+/* podo-legacy-utilities:start */
+.border-0 {
+  border: 0 solid;
+}
+.border-1 {
+  border: 1px solid;
+}
+.border-2 {
+  border: 2px solid;
+}
+.border-3 {
+  border: 3px solid;
+}
+.border-4 {
+  border: 4px solid;
+}
+.r-0 {
+  border-radius: 0;
+}
+.r-1 {
+  border-radius: 2px;
+}
+.r-2 {
+  border-radius: 4px;
+}
+.r-3 {
+  border-radius: 6px;
+}
+.r-4 {
+  border-radius: 8px;
+}
+.r-5 {
+  border-radius: 12px;
+}
+.r-6 {
+  border-radius: 20px;
+}
+.r-full {
+  border-radius: 9999px;
+}
+.shadow-1 {
+  box-shadow: 0px 6px 18px -3px rgba(50, 50, 50, 0.06);
+}
+.shadow-2 {
+  box-shadow: 0px 8px 23px -3px rgba(50, 50, 50, 0.1);
+}
+.shadow-3 {
+  box-shadow: 0px 9px 30px -3px rgba(50, 50, 50, 0.12);
+}
+.shadow-4 {
+  box-shadow: 0px 9.995px 46px -3px rgba(50, 50, 50, 0.12);
+}
+.shadow-5 {
+  box-shadow: 0px 13px 63px -3px rgba(50, 50, 50, 0.14);
+}
+:root {
+  --podo-legacy-bg-elevation-1: #ffffff;
+  --podo-legacy-bg-elevation-2: #ffffff;
+  --podo-legacy-bg-elevation-3: #ffffff;
+  --podo-legacy-bg-elevation: #fafafa;
+  --podo-legacy-shadow-1: 0px 6px 18px -3px rgba(50, 50, 50, 0.06);
+  --podo-legacy-shadow-2: 0px 8px 23px -3px rgba(50, 50, 50, 0.1);
+}
+[data-color-scheme="light"] {
+  --podo-legacy-bg-elevation-1: #ffffff;
+  --podo-legacy-bg-elevation-2: #ffffff;
+  --podo-legacy-bg-elevation-3: #ffffff;
+  --podo-legacy-bg-elevation: #fafafa;
+  --podo-legacy-shadow-1: 0px 6px 18px -3px rgba(50, 50, 50, 0.06);
+  --podo-legacy-shadow-2: 0px 8px 23px -3px rgba(50, 50, 50, 0.1);
+}
+[data-color-mode="light"] {
+  --podo-legacy-bg-elevation-1: #ffffff;
+  --podo-legacy-bg-elevation-2: #ffffff;
+  --podo-legacy-bg-elevation-3: #ffffff;
+  --podo-legacy-bg-elevation: #fafafa;
+  --podo-legacy-shadow-1: 0px 6px 18px -3px rgba(50, 50, 50, 0.06);
+  --podo-legacy-shadow-2: 0px 8px 23px -3px rgba(50, 50, 50, 0.1);
+}
+[data-color-scheme="dark"] {
+  --podo-legacy-bg-elevation-1: #18181b;
+  --podo-legacy-bg-elevation-2: #242429;
+  --podo-legacy-bg-elevation-3: #2c2c31;
+  --podo-legacy-bg-elevation: #09090b;
+  --podo-legacy-shadow-1: 0px 6px 18px -3px rgba(50, 50, 50, 0.06);
+  --podo-legacy-shadow-2: 0px 8px 23px -3px rgba(50, 50, 50, 0.1);
+}
+[data-color-mode="dark"] {
+  --podo-legacy-bg-elevation-1: #18181b;
+  --podo-legacy-bg-elevation-2: #242429;
+  --podo-legacy-bg-elevation-3: #2c2c31;
+  --podo-legacy-bg-elevation: #09090b;
+  --podo-legacy-shadow-1: 0px 6px 18px -3px rgba(50, 50, 50, 0.06);
+  --podo-legacy-shadow-2: 0px 8px 23px -3px rgba(50, 50, 50, 0.1);
+}
+.bg-elevation {
+  background-color: var(--podo-legacy-bg-elevation);
+}
+.bg-elevation-1 {
+  background-color: var(--podo-legacy-bg-elevation-1);
+}
+.bg-elevation-2 {
+  background-color: var(--podo-legacy-bg-elevation-2);
+  box-shadow: var(--podo-legacy-shadow-1);
+}
+.bg-elevation-3 {
+  background-color: var(--podo-legacy-bg-elevation-3);
+  box-shadow: var(--podo-legacy-shadow-2);
+}
+[data-color-scheme="dark"] .bg-elevation-2,
+[data-color-scheme="dark"] .bg-elevation-3,
+[data-color-mode="dark"] .bg-elevation-2,
+[data-color-mode="dark"] .bg-elevation-3 {
+  box-shadow: none;
+}
+.hide {
+  display: none !important;
+}
+@media screen and (min-width: 1280px) {
+  .hide-pc {
+    display: none !important;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  .hide-tb {
+    display: none !important;
+  }
+}
+@media screen and (max-width: 767px) {
+  .hide-mo {
+    display: none !important;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-color-scheme="light"]):not([data-color-mode="light"]) {
+    --podo-legacy-bg-elevation-1: #18181b;
+    --podo-legacy-bg-elevation-2: #242429;
+    --podo-legacy-bg-elevation-3: #2c2c31;
+    --podo-legacy-bg-elevation: #09090b;
+    --podo-legacy-shadow-1: 0px 6px 18px -3px rgba(50, 50, 50, 0.06);
+    --podo-legacy-shadow-2: 0px 8px 23px -3px rgba(50, 50, 50, 0.1);
+  }
+  :root:not([data-color-scheme="light"]):not([data-color-mode="light"]) .bg-elevation-2,
+  :root:not([data-color-scheme="light"]):not([data-color-mode="light"]) .bg-elevation-3 {
+    box-shadow: none;
+  }
+}
+/* podo-legacy-utilities:end */
+
 .podo-button {
   align-items: center;
   justify-content: center;

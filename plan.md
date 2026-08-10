@@ -1,7 +1,7 @@
 # Podo v2 Design System Plan
 
 작성일: 2026-06-11
-브랜치: `v2`
+운영 브랜치: `main` (`v2` 개발 브랜치는 2026-08-10 통합)
 
 ## 1. 목표
 
@@ -32,9 +32,9 @@ Podo v2는 JSON 스펙을 단일 원천으로 삼는 TypeScript 기반 디자인
 - Hono는 JSX 렌더링을 지원하지만 React DOM과 동일한 클라이언트 모델이 아니므로 Hono용 컴포넌트는 SSR/정적 렌더링을 1차 목표로 둔다.
 - React Native는 TypeScript가 기본 지원되는 방향이지만 DOM, CSS, slot이 없으므로 전용 렌더러가 필요하다.
 
-## 3. main 브랜치에서 가져올 점
+## 3. v1 소스에서 가져온 점
 
-`main` 브랜치의 기존 구조는 SCSS/React/Svelte/Vanilla 중심이지만 다음 자산은 v2 설계에 그대로 반영한다.
+통합 이전 v1 소스의 구조는 SCSS/React/Svelte/Vanilla 중심이지만 다음 자산은 v2 설계에 그대로 반영한다.
 
 - `package.json`의 npm `exports`, `files`, `bin`, `prepublishOnly`, MCP 포함 배포 패턴
 - `public/ai`의 컴포넌트/시스템 JSON 문서화 방향
@@ -80,7 +80,7 @@ v2에서는 SCSS-first 구조를 JSON-spec-first 구조로 바꾸고, 기존 JSO
 └── plan.md
 ```
 
-패키지 관리는 pnpm workspace를 기본으로 한다. 배포 버전 관리는 Changesets를 사용하고, npm package export는 `main`의 패턴을 계승한다.
+패키지 관리는 pnpm workspace를 기본으로 한다. 배포 버전 관리는 Changesets를 사용하고, npm package export는 legacy v1 소스의 패턴을 계승한다.
 
 ## 6. JSON 스펙
 
@@ -351,7 +351,7 @@ Phase 7의 기본 구현은 `@podoui/migration`을 공통 계층으로 두고 CL
 
 ## 13. MCP 설계
 
-MCP 서버는 npm package에 포함한다. 기존 `main`의 `podo-ui-mcp`처럼 `bin`으로 실행할 수 있어야 한다.
+MCP 서버는 npm package에 포함한다. legacy v1의 `podo-ui-mcp`처럼 `bin`으로 실행할 수 있어야 한다.
 
 ```bash
 claude mcp add podo -- npx podo mcp
@@ -373,7 +373,7 @@ claude mcp add podo -- npx podo mcp
 
 ## 14. 배포 전략
 
-- npm 패키지 배포는 `main` 브랜치의 `prepublishOnly`와 `exports` 설계를 참고한다.
+- npm 패키지 배포는 legacy v1 소스의 `prepublishOnly`와 `exports` 설계를 참고한다.
 - v2는 `@podoui/*` scoped package를 권장한다. (2026-07-20: 원래 계획이던 `@podo` 스코프는 npm에서 타인 소유 org로 확인되어 `@podoui`로 확정. GitHub org `podoui`, podoui.com, CLI 패키지 `podoui`와 일관.)
 - Changesets로 버전, changelog, publish를 관리한다.
 - `main` 브랜치 직접 설치는 canary 검증 용도로만 둔다.
@@ -401,7 +401,7 @@ claude mcp add podo -- npx podo mcp
 - pnpm workspace 기반 모노레포 초기화
 - root package, TypeScript, lint/format/test 설정
 - Changesets 초기화
-- main 브랜치 배포 구조 분석 결과 반영
+- legacy v1 배포 구조 분석 결과 반영
 - 패키지 네이밍 최종 결정
 
 완료 기준: `@podoui/*` 패키지 골격이 workspace에서 인식되고 `pnpm check`, `pnpm build`가 통과한다.
@@ -507,7 +507,7 @@ claude mcp add podo -- npx podo mcp
 3. Button과 Typography 샘플 스펙을 작성한다.
 4. `podo validate`의 최소 CLI를 만든다.
 5. token resolver와 CSS variables 출력을 먼저 구현한다.
-6. `main`의 MCP 구조를 참고해 v2 MCP skeleton을 만든다.
+6. legacy v1의 MCP 구조를 참고해 v2 MCP skeleton을 만든다.
 
 ## 18. Figma 가져오기 파이프라인 (Figma → 프로젝트)
 

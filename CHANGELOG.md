@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.3.8 (2026-08-10)
+
+- Utilities: v1의 Border, Radius, Shadow/Elevation, Display/Visibility 계약을
+  검증된 JSON 원본과 재현 가능한 CSS/SCSS 생성기로 이식하고
+  `podo-ui/styles.css`에 호환 클래스를 포함한다.
+- Docs: 실제 배포 클래스를 사용하는 네 유틸리티 페이지, 전체 값 표,
+  React·Next.js·Hono CSR/SSR·HTML 예제와 React Native 지원 경계를 추가한다.
+- Repo: Podo v2 개발 이력을 canonical `main` 브랜치로 통합하고 이후 작업과
+  배포 기준을 `main`으로 변경한다.
+
 ## 2.3.7 (2026-08-10)
 
 - Editor: React·Next.js·Hono CSR에서 파일 선택·붙여넣기·드롭 이미지를

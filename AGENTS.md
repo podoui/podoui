@@ -1,6 +1,6 @@
 # Agent Instructions
 
-This repository is the `v2` orphan branch for Podo UI. Follow these instructions when working in this repository.
+This repository contains Podo UI v2 on the canonical `main` branch. Follow these instructions when working in this repository.
 
 ## Mission
 
@@ -29,9 +29,9 @@ Use the Phase sections in `todo.md` as the default review gate. If a Phase is to
 
 ## Branch And Git Rules
 
-- Work on branch `v2`.
-- Do not merge from `main` unless the user asks.
-- You may inspect `main` with read-only commands such as `git show main:<path>`.
+- Work on branch `main`.
+- Do not merge legacy v1 branches unless the user asks.
+- You may inspect legacy refs with read-only commands such as `git show <ref>:<path>`.
 - Do not run destructive git commands.
 - Preserve user changes.
 

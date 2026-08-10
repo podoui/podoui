@@ -10,6 +10,11 @@ import {
 } from "@podoui/spec";
 
 export { emitLegacyGridCss, emitLegacyGridScss, legacyGridContract } from "./legacy-grid.js";
+export {
+  emitLegacyUtilitiesCss,
+  emitLegacyUtilitiesScss,
+  legacyUtilitiesContract,
+} from "./legacy-utilities.js";
 
 export type TokenSourceTier = "package" | "project";
 

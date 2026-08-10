@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "legacy-utilities",
+  "border": {
+    "style": "solid",
+    "widths": {
+      "0": "0",
+      "1": "1px",
+      "2": "2px",
+      "3": "3px",
+      "4": "4px"
+    }
+  },
+  "radius": {
+    "values": {
+      "0": "0",
+      "1": "2px",
+      "2": "4px",
+      "3": "6px",
+      "4": "8px",
+      "5": "12px",
+      "6": "20px",
+      "full": "9999px"
+    }
+  },
+  "shadow": {
+    "values": {
+      "1": "0px 6px 18px -3px rgba(50, 50, 50, 0.06)",
+      "2": "0px 8px 23px -3px rgba(50, 50, 50, 0.1)",
+      "3": "0px 9px 30px -3px rgba(50, 50, 50, 0.12)",
+      "4": "0px 9.995px 46px -3px rgba(50, 50, 50, 0.12)",
+      "5": "0px 13px 63px -3px rgba(50, 50, 50, 0.14)"
+    }
+  },
+  "elevation": {
+    "values": {
+      "base": { "light": "#fafafa", "dark": "#09090b" },
+      "1": { "light": "#ffffff", "dark": "#18181b" },
+      "2": { "light": "#ffffff", "dark": "#242429" },
+      "3": { "light": "#ffffff", "dark": "#2c2c31" }
+    }
+  },
+  "visibility": {
+    "breakpoints": {
+      "pc": { "minWidth": "1280px" },
+      "tablet": { "minWidth": "768px", "maxWidth": "1279px" },
+      "mobile": { "maxWidth": "767px" }
+    }
+  }
+}

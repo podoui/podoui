@@ -1,10 +1,10 @@
 # Release Strategy
 
-The v2 release flow keeps the useful parts of the existing `main` branch while switching the source of truth from SCSS and handwritten framework files to JSON specifications.
+The v2 release flow keeps the useful parts of the legacy v1 source while using the canonical `main` branch and switching the source of truth from SCSS and handwritten framework files to JSON specifications.
 
-## Main Branch Patterns To Keep
+## Legacy Patterns To Keep
 
-The existing `main` branch already demonstrates several release patterns that remain useful:
+The legacy v1 source demonstrates several release patterns that remain useful:
 
 - npm `exports` for framework-specific entry points
 - npm `files` allowlist to avoid publishing development files
@@ -27,7 +27,7 @@ Podo v2 replaces SCSS-first build inputs with JSON-first build inputs:
 
 The only published package is **`podo-ui`** (plus its bins `podo`, `podo-ui`, `podo-mcp`); `packages/podo-ui/build.mjs` assembles it from the private workspace-internal `@podoui/*` packages. The npm `@podo` scope is third-party-owned and the `podoui` name is blocked by npm's similarity rule, which is why nothing else publishes.
 
-Version bumps are manual edits to `packages/podo-ui/package.json` (internal packages may stay behind). Changesets remains for status/dry-run tooling with base branch `main`; **`changeset publish` is not used** because it does not rewrite `workspace:` protocol ranges — `pnpm publish` does, so `pnpm release` ends with `pnpm --filter podo-ui publish --access public`. The final publish step requires an npm 2FA OTP.
+Version bumps are manual edits to `packages/podo-ui/package.json` (internal packages may stay behind). Changesets remains for status/dry-run tooling with base branch `main`; **`changeset publish` is not used** because it does not rewrite `workspace:` protocol ranges. Releases are published by `.github/workflows/notify-publish.yml` through npm Trusted Publishing (GitHub Actions OIDC), triggered by a matching `v*` tag or manual dispatch; no stored npm token or interactive OTP is required.
 
 ## Release Verification
 

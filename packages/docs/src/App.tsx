@@ -15,6 +15,7 @@ const TOP_NAV: { label: string; href?: string }[] = [
   { label: "Doc", href: "/setup" },
   { label: "Foundation", href: "/color" },
   { label: "Component", href: "/button" },
+  { label: "Utilities", href: "/border" },
   // v1(SCSS 기반) 문서 — 외부 링크는 새 탭으로 연다.
   { label: "v1 Docs", href: "https://v1.podoui.com" },
 ];
@@ -86,6 +87,7 @@ export function App() {
                       aria-current={
                         (item.label === "Doc" && !isHome && active.group === "Guide") ||
                         (item.label === "Foundation" && !isHome && active.group === "Foundation") ||
+                        (item.label === "Utilities" && !isHome && active.group === "Utilities") ||
                         (item.label === "Component" && !isHome && active.group === "Components")
                           ? "page"
                           : undefined

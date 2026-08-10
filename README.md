@@ -2,7 +2,7 @@
 
 Podo UI는 Figma의 디자인 토큰과 컴포넌트를 React, Next.js, Hono SSR, React Native에서 같은 규칙으로 사용할 수 있게 해 주는 TypeScript 디자인 시스템입니다. 토큰·컴포넌트 명세·아이콘·테마·프로젝트 오버라이드의 원본은 검증된 JSON이며, 생성 결과는 언제든 같은 입력에서 다시 만들 수 있습니다.
 
-> v1(SCSS 기반)과 v2는 호환되지 않습니다. 기존 v1 프로젝트는 `podo-ui@1`로 고정하세요.
+> v1 컴포넌트 API와 v2는 호환되지 않습니다. 기존 v1 프로젝트는 `podo-ui@1`로 고정하세요. Border·Radius·Elevation·Display 유틸리티 클래스는 마이그레이션을 위해 v2에서도 호환 제공합니다.
 
 ## 가장 빠르게 시작하기
 
@@ -25,6 +25,17 @@ export function App() {
 ```
 
 패키지 기본 토큰과 아이콘으로 바로 사용할 수 있습니다. Figma 토큰이나 프로젝트 전용 테마가 필요한 경우에만 아래 CLI 흐름을 추가하면 됩니다.
+
+## v1 호환 유틸리티
+
+`podo-ui/styles.css`에는 v1의 실제 SCSS 계약에서 복원한 다음 클래스가 포함됩니다.
+
+- 테두리: `border-0`–`border-4`
+- 반경: `r-0`–`r-6`, `r-full`
+- 그림자·배경: `shadow-1`–`shadow-5`, `bg-elevation`, `bg-elevation-1`–`bg-elevation-3`
+- 반응형 숨김: `hide`, `hide-pc`, `hide-tb`, `hide-mo`
+
+React·Next.js·Hono CSR/SSR·일반 HTML은 동일한 CSS 클래스를 사용합니다. React Native는 CSS 클래스를 지원하지 않으므로 `style`과 Podo 토큰을 사용하세요. 계약 JSON과 재현 가능한 CSS/SCSS 생성기는 `podo-ui/tokens`의 `legacyUtilitiesContract`, `emitLegacyUtilitiesCss`, `emitLegacyUtilitiesScss`로도 제공합니다.
 
 ## 환경별 선택
 

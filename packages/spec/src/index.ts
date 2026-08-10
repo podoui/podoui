@@ -6,3 +6,4 @@ export * from "./pages.js";
 export * from "./icons.js";
 export * from "./podo-config.js";
 export * from "./podo-clone.js";
+export * from "./legacy-utilities.js";
