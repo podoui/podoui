@@ -5,7 +5,7 @@ import { realpathSync, type Dirent } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { stdin as nodeStdin, stdout as nodeStdout } from "node:process";
 import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
-import { dirname, join, resolve, sep } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   parseComponentDocument,
@@ -772,7 +772,9 @@ export async function loadBuildTokenSources(root: string): Promise<TokenSource[]
     projectTokensDir: projectThemesDir,
   });
   sources.push(
-    ...[...projectTokens, ...projectThemes].filter((source) => source.tier === "project")
+    ...[...projectTokens, ...projectThemes]
+      .filter((source) => source.tier === "project")
+      .map((source) => ({ ...source, filePath: relativePath(root, source.filePath) }))
   );
   return sources;
 }
@@ -1042,7 +1044,7 @@ function hashJson(value: unknown): string {
 }
 
 function relativePath(root: string, filePath: string): string {
-  return filePath.replace(resolve(root), "").replace(/^\/+/, "");
+  return relative(resolve(root), resolve(filePath)).split(sep).join("/");
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

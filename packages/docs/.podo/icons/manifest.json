@@ -1,0 +1,1413 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "icons",
+  "fontFamily": "PodoIcons",
+  "icons": {
+    "airplane": {
+      "source": "figma/airplane.svg",
+      "codepoint": "E200",
+      "tags": [
+        "figma"
+      ]
+    },
+    "alert-exclamation": {
+      "source": "figma/alert-exclamation.svg",
+      "codepoint": "E201",
+      "tags": [
+        "figma"
+      ]
+    },
+    "alert-question": {
+      "source": "figma/alert-question.svg",
+      "codepoint": "E202",
+      "tags": [
+        "figma"
+      ]
+    },
+    "align-center": {
+      "source": "compatibility/align-center.svg",
+      "codepoint": "E10A",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "align-gap-horizontal": {
+      "source": "figma/align-gap-horizontal.svg",
+      "codepoint": "E203",
+      "tags": [
+        "figma"
+      ]
+    },
+    "align-gap-vertical": {
+      "source": "figma/align-gap-vertical.svg",
+      "codepoint": "E204",
+      "tags": [
+        "figma"
+      ]
+    },
+    "align-horizontal-center": {
+      "source": "figma/align-horizontal-center.svg",
+      "codepoint": "E205",
+      "tags": [
+        "figma"
+      ]
+    },
+    "align-horizontal-left": {
+      "source": "figma/align-horizontal-left.svg",
+      "codepoint": "E206",
+      "tags": [
+        "figma"
+      ]
+    },
+    "align-horizontal-right": {
+      "source": "figma/align-horizontal-right.svg",
+      "codepoint": "E207",
+      "tags": [
+        "figma"
+      ]
+    },
+    "align-left": {
+      "source": "compatibility/align-left.svg",
+      "codepoint": "E109",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "align-right": {
+      "source": "compatibility/align-right.svg",
+      "codepoint": "E10B",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "align-vertical-bottom": {
+      "source": "figma/align-vertical-bottom.svg",
+      "codepoint": "E208",
+      "tags": [
+        "figma"
+      ]
+    },
+    "align-vertical-middle": {
+      "source": "figma/align-vertical-middle.svg",
+      "codepoint": "E209",
+      "tags": [
+        "figma"
+      ]
+    },
+    "align-vertical-top": {
+      "source": "figma/align-vertical-top.svg",
+      "codepoint": "E20A",
+      "tags": [
+        "figma"
+      ]
+    },
+    "arrow-down": {
+      "source": "figma/arrow-down.svg",
+      "codepoint": "E20B",
+      "tags": [
+        "figma"
+      ]
+    },
+    "arrow-left": {
+      "source": "figma/arrow-left.svg",
+      "codepoint": "E20C",
+      "tags": [
+        "figma"
+      ]
+    },
+    "arrow-return-backward": {
+      "source": "figma/arrow-return-backward.svg",
+      "codepoint": "E20D",
+      "tags": [
+        "figma"
+      ]
+    },
+    "arrow-return-forward": {
+      "source": "figma/arrow-return-forward.svg",
+      "codepoint": "E20E",
+      "tags": [
+        "figma"
+      ]
+    },
+    "arrow-right": {
+      "source": "figma/arrow-right.svg",
+      "codepoint": "E20F",
+      "tags": [
+        "figma"
+      ]
+    },
+    "arrow-up": {
+      "source": "figma/arrow-up.svg",
+      "codepoint": "E210",
+      "tags": [
+        "figma"
+      ]
+    },
+    "arrow-up-right": {
+      "source": "figma/arrow-up-right.svg",
+      "codepoint": "E211",
+      "tags": [
+        "figma"
+      ]
+    },
+    "bold": {
+      "source": "figma/bold.svg",
+      "codepoint": "E101",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "briefcase": {
+      "source": "figma/briefcase.svg",
+      "codepoint": "E212",
+      "tags": [
+        "figma"
+      ]
+    },
+    "building": {
+      "source": "figma/building.svg",
+      "codepoint": "E213",
+      "tags": [
+        "figma"
+      ]
+    },
+    "bullet-list": {
+      "source": "figma/bullet-list.svg",
+      "codepoint": "E214",
+      "tags": [
+        "figma"
+      ]
+    },
+    "calendar": {
+      "source": "figma/calendar.svg",
+      "codepoint": "E004",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "call": {
+      "source": "figma/call.svg",
+      "codepoint": "E215",
+      "tags": [
+        "figma"
+      ]
+    },
+    "camera": {
+      "source": "figma/camera.svg",
+      "codepoint": "E216",
+      "tags": [
+        "figma"
+      ]
+    },
+    "car": {
+      "source": "figma/car.svg",
+      "codepoint": "E217",
+      "tags": [
+        "figma"
+      ]
+    },
+    "card": {
+      "source": "figma/card.svg",
+      "codepoint": "E218",
+      "tags": [
+        "figma"
+      ]
+    },
+    "cart": {
+      "source": "figma/cart.svg",
+      "codepoint": "E219",
+      "tags": [
+        "figma"
+      ]
+    },
+    "check": {
+      "source": "figma/check.svg",
+      "codepoint": "E007",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "check-check-small": {
+      "source": "figma/check-check-small.svg",
+      "codepoint": "E21A",
+      "tags": [
+        "figma"
+      ]
+    },
+    "check-circle": {
+      "source": "figma/check-circle.svg",
+      "codepoint": "E21B",
+      "tags": [
+        "figma"
+      ]
+    },
+    "chevron-double-down": {
+      "source": "figma/chevron-double-down.svg",
+      "codepoint": "E21C",
+      "tags": [
+        "figma"
+      ]
+    },
+    "chevron-double-left": {
+      "source": "figma/chevron-double-left.svg",
+      "codepoint": "E21D",
+      "tags": [
+        "figma"
+      ]
+    },
+    "chevron-double-right": {
+      "source": "figma/chevron-double-right.svg",
+      "codepoint": "E21E",
+      "tags": [
+        "figma"
+      ]
+    },
+    "chevron-double-up": {
+      "source": "figma/chevron-double-up.svg",
+      "codepoint": "E21F",
+      "tags": [
+        "figma"
+      ]
+    },
+    "chevron-down": {
+      "source": "figma/chevron-down.svg",
+      "codepoint": "E220",
+      "tags": [
+        "figma"
+      ]
+    },
+    "chevron-left": {
+      "source": "figma/chevron-left.svg",
+      "codepoint": "E002",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "chevron-right": {
+      "source": "figma/chevron-right.svg",
+      "codepoint": "E003",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "chevron-up": {
+      "source": "figma/chevron-up.svg",
+      "codepoint": "E221",
+      "tags": [
+        "figma"
+      ]
+    },
+    "click": {
+      "source": "figma/click.svg",
+      "codepoint": "E222",
+      "tags": [
+        "figma"
+      ]
+    },
+    "clipboard": {
+      "source": "figma/clipboard.svg",
+      "codepoint": "E223",
+      "tags": [
+        "figma"
+      ]
+    },
+    "close": {
+      "source": "figma/close.svg",
+      "codepoint": "E008",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "code": {
+      "source": "figma/code.svg",
+      "codepoint": "E114",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "coffee": {
+      "source": "figma/coffee.svg",
+      "codepoint": "E224",
+      "tags": [
+        "figma"
+      ]
+    },
+    "compass": {
+      "source": "figma/compass.svg",
+      "codepoint": "E225",
+      "tags": [
+        "figma"
+      ]
+    },
+    "copy": {
+      "source": "figma/copy.svg",
+      "codepoint": "E226",
+      "tags": [
+        "figma"
+      ]
+    },
+    "dark": {
+      "source": "figma/dark.svg",
+      "codepoint": "E227",
+      "tags": [
+        "figma"
+      ]
+    },
+    "database": {
+      "source": "figma/database.svg",
+      "codepoint": "E228",
+      "tags": [
+        "figma"
+      ]
+    },
+    "double-arrow-arrow-right-left": {
+      "source": "figma/double-arrow-arrow-right-left.svg",
+      "codepoint": "E229",
+      "tags": [
+        "figma"
+      ]
+    },
+    "double-arrow-arrow-up-down": {
+      "source": "figma/double-arrow-arrow-up-down.svg",
+      "codepoint": "E22A",
+      "tags": [
+        "figma"
+      ]
+    },
+    "edit": {
+      "source": "figma/edit.svg",
+      "codepoint": "E22B",
+      "tags": [
+        "figma"
+      ]
+    },
+    "edit-home": {
+      "source": "figma/edit-home.svg",
+      "codepoint": "E22C",
+      "tags": [
+        "figma"
+      ]
+    },
+    "eraser": {
+      "source": "compatibility/eraser.svg",
+      "codepoint": "E113",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "external": {
+      "source": "figma/external.svg",
+      "codepoint": "E22D",
+      "tags": [
+        "figma"
+      ]
+    },
+    "eye": {
+      "source": "figma/eye.svg",
+      "codepoint": "E22E",
+      "tags": [
+        "figma"
+      ]
+    },
+    "eye-eye-closed": {
+      "source": "figma/eye-eye-closed.svg",
+      "codepoint": "E22F",
+      "tags": [
+        "figma"
+      ]
+    },
+    "eye-eye-off": {
+      "source": "figma/eye-eye-off.svg",
+      "codepoint": "E230",
+      "tags": [
+        "figma"
+      ]
+    },
+    "file": {
+      "source": "figma/file.svg",
+      "codepoint": "E231",
+      "tags": [
+        "figma"
+      ]
+    },
+    "file-file-none": {
+      "source": "figma/file-file-none.svg",
+      "codepoint": "E232",
+      "tags": [
+        "figma"
+      ]
+    },
+    "file-io-export": {
+      "source": "figma/file-io-export.svg",
+      "codepoint": "E233",
+      "tags": [
+        "figma"
+      ]
+    },
+    "file-io-import": {
+      "source": "figma/file-io-import.svg",
+      "codepoint": "E234",
+      "tags": [
+        "figma"
+      ]
+    },
+    "font-color": {
+      "source": "compatibility/font-color.svg",
+      "codepoint": "E107",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "forbid": {
+      "source": "figma/forbid.svg",
+      "codepoint": "E235",
+      "tags": [
+        "figma"
+      ]
+    },
+    "globe": {
+      "source": "figma/globe.svg",
+      "codepoint": "E236",
+      "tags": [
+        "figma"
+      ]
+    },
+    "gps": {
+      "source": "figma/gps.svg",
+      "codepoint": "E237",
+      "tags": [
+        "figma"
+      ]
+    },
+    "graph": {
+      "source": "figma/graph.svg",
+      "codepoint": "E238",
+      "tags": [
+        "figma"
+      ]
+    },
+    "grid-menu": {
+      "source": "figma/grid-menu.svg",
+      "codepoint": "E239",
+      "tags": [
+        "figma"
+      ]
+    },
+    "headphones": {
+      "source": "figma/headphones.svg",
+      "codepoint": "E23A",
+      "tags": [
+        "figma"
+      ]
+    },
+    "headphones-headphones-line": {
+      "source": "figma/headphones-headphones-line.svg",
+      "codepoint": "E23B",
+      "tags": [
+        "figma"
+      ]
+    },
+    "heart": {
+      "source": "figma/heart.svg",
+      "codepoint": "E23C",
+      "tags": [
+        "figma"
+      ]
+    },
+    "highlight": {
+      "source": "compatibility/highlight.svg",
+      "codepoint": "E108",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "hr": {
+      "source": "compatibility/hr.svg",
+      "codepoint": "E112",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "image": {
+      "source": "compatibility/image.svg",
+      "codepoint": "E110",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "img": {
+      "source": "figma/img.svg",
+      "codepoint": "E23D",
+      "tags": [
+        "figma"
+      ]
+    },
+    "inbox": {
+      "source": "figma/inbox.svg",
+      "codepoint": "E23E",
+      "tags": [
+        "figma"
+      ]
+    },
+    "indent": {
+      "source": "figma/indent.svg",
+      "codepoint": "E23F",
+      "tags": [
+        "figma"
+      ]
+    },
+    "indent-outdent": {
+      "source": "figma/indent-outdent.svg",
+      "codepoint": "E240",
+      "tags": [
+        "figma"
+      ]
+    },
+    "info": {
+      "source": "figma/info.svg",
+      "codepoint": "E241",
+      "tags": [
+        "figma"
+      ]
+    },
+    "italic": {
+      "source": "figma/italic.svg",
+      "codepoint": "E102",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "light": {
+      "source": "figma/light.svg",
+      "codepoint": "E242",
+      "tags": [
+        "figma"
+      ]
+    },
+    "line-hozion": {
+      "source": "figma/line-hozion.svg",
+      "codepoint": "E243",
+      "tags": [
+        "figma"
+      ]
+    },
+    "lineheight": {
+      "source": "figma/lineheight.svg",
+      "codepoint": "E244",
+      "tags": [
+        "figma"
+      ]
+    },
+    "link": {
+      "source": "figma/link.svg",
+      "codepoint": "E10F",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "link-unlink": {
+      "source": "figma/link-unlink.svg",
+      "codepoint": "E245",
+      "tags": [
+        "figma"
+      ]
+    },
+    "list-ol": {
+      "source": "compatibility/list-ol.svg",
+      "codepoint": "E10D",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "list-ul": {
+      "source": "compatibility/list-ul.svg",
+      "codepoint": "E10C",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "lock": {
+      "source": "figma/lock.svg",
+      "codepoint": "E246",
+      "tags": [
+        "figma"
+      ]
+    },
+    "lock-unlock": {
+      "source": "figma/lock-unlock.svg",
+      "codepoint": "E247",
+      "tags": [
+        "figma"
+      ]
+    },
+    "log-in": {
+      "source": "figma/log-in.svg",
+      "codepoint": "E248",
+      "tags": [
+        "figma"
+      ]
+    },
+    "log-out": {
+      "source": "figma/log-out.svg",
+      "codepoint": "E249",
+      "tags": [
+        "figma"
+      ]
+    },
+    "mail-receipt": {
+      "source": "figma/mail-receipt.svg",
+      "codepoint": "E24A",
+      "tags": [
+        "figma"
+      ]
+    },
+    "margin-horizontal": {
+      "source": "figma/margin-horizontal.svg",
+      "codepoint": "E24B",
+      "tags": [
+        "figma"
+      ]
+    },
+    "margin-vertical": {
+      "source": "figma/margin-vertical.svg",
+      "codepoint": "E24C",
+      "tags": [
+        "figma"
+      ]
+    },
+    "menu": {
+      "source": "compatibility/menu.svg",
+      "codepoint": "E001",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "paperclip": {
+      "source": "figma/paperclip.svg",
+      "codepoint": "E24D",
+      "tags": [
+        "figma"
+      ]
+    },
+    "pc": {
+      "source": "figma/pc.svg",
+      "codepoint": "E24E",
+      "tags": [
+        "figma"
+      ]
+    },
+    "pencil": {
+      "source": "figma/pencil.svg",
+      "codepoint": "E24F",
+      "tags": [
+        "figma"
+      ]
+    },
+    "pin": {
+      "source": "figma/pin.svg",
+      "codepoint": "E250",
+      "tags": [
+        "figma"
+      ]
+    },
+    "plus": {
+      "source": "figma/plus.svg",
+      "codepoint": "E251",
+      "tags": [
+        "figma"
+      ]
+    },
+    "printer": {
+      "source": "figma/printer.svg",
+      "codepoint": "E252",
+      "tags": [
+        "figma"
+      ]
+    },
+    "quote": {
+      "source": "figma/quote.svg",
+      "codepoint": "E253",
+      "tags": [
+        "figma"
+      ]
+    },
+    "receipt": {
+      "source": "figma/receipt.svg",
+      "codepoint": "E254",
+      "tags": [
+        "figma"
+      ]
+    },
+    "redo": {
+      "source": "compatibility/redo.svg",
+      "codepoint": "E116",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "refresh": {
+      "source": "figma/refresh.svg",
+      "codepoint": "E006",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "repeat": {
+      "source": "figma/repeat.svg",
+      "codepoint": "E255",
+      "tags": [
+        "figma"
+      ]
+    },
+    "reserve": {
+      "source": "figma/reserve.svg",
+      "codepoint": "E256",
+      "tags": [
+        "figma"
+      ]
+    },
+    "rss": {
+      "source": "figma/rss.svg",
+      "codepoint": "E257",
+      "tags": [
+        "figma"
+      ]
+    },
+    "save": {
+      "source": "figma/save.svg",
+      "codepoint": "E258",
+      "tags": [
+        "figma"
+      ]
+    },
+    "search": {
+      "source": "figma/search.svg",
+      "codepoint": "E009",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "section": {
+      "source": "figma/section.svg",
+      "codepoint": "E259",
+      "tags": [
+        "figma"
+      ]
+    },
+    "send": {
+      "source": "figma/send.svg",
+      "codepoint": "E25A",
+      "tags": [
+        "figma"
+      ]
+    },
+    "send-send-right": {
+      "source": "figma/send-send-right.svg",
+      "codepoint": "E25B",
+      "tags": [
+        "figma"
+      ]
+    },
+    "settings": {
+      "source": "figma/settings.svg",
+      "codepoint": "E25C",
+      "tags": [
+        "figma"
+      ]
+    },
+    "share": {
+      "source": "figma/share.svg",
+      "codepoint": "E25D",
+      "tags": [
+        "figma"
+      ]
+    },
+    "star": {
+      "source": "figma/star.svg",
+      "codepoint": "E25E",
+      "tags": [
+        "figma"
+      ]
+    },
+    "strikethrough": {
+      "source": "figma/strikethrough.svg",
+      "codepoint": "E106",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "table": {
+      "source": "figma/table.svg",
+      "codepoint": "E10E",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "temperature": {
+      "source": "figma/temperature.svg",
+      "codepoint": "E25F",
+      "tags": [
+        "figma"
+      ]
+    },
+    "text": {
+      "source": "figma/text.svg",
+      "codepoint": "E260",
+      "tags": [
+        "figma"
+      ]
+    },
+    "text-align-center": {
+      "source": "figma/text-align-center.svg",
+      "codepoint": "E261",
+      "tags": [
+        "figma"
+      ]
+    },
+    "text-align-left": {
+      "source": "figma/text-align-left.svg",
+      "codepoint": "E262",
+      "tags": [
+        "figma"
+      ]
+    },
+    "text-align-right": {
+      "source": "figma/text-align-right.svg",
+      "codepoint": "E263",
+      "tags": [
+        "figma"
+      ]
+    },
+    "threedots-threedots-horizontal": {
+      "source": "figma/threedots-threedots-horizontal.svg",
+      "codepoint": "E264",
+      "tags": [
+        "figma"
+      ]
+    },
+    "threedots-threedots-vertical": {
+      "source": "figma/threedots-threedots-vertical.svg",
+      "codepoint": "E265",
+      "tags": [
+        "figma"
+      ]
+    },
+    "time": {
+      "source": "figma/time.svg",
+      "codepoint": "E005",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "trash": {
+      "source": "figma/trash.svg",
+      "codepoint": "E266",
+      "tags": [
+        "figma"
+      ]
+    },
+    "trend-down": {
+      "source": "figma/trend-down.svg",
+      "codepoint": "E267",
+      "tags": [
+        "figma"
+      ]
+    },
+    "trend-up": {
+      "source": "figma/trend-up.svg",
+      "codepoint": "E268",
+      "tags": [
+        "figma"
+      ]
+    },
+    "triangle-arrow-down": {
+      "source": "figma/triangle-arrow-down.svg",
+      "codepoint": "E269",
+      "tags": [
+        "figma"
+      ]
+    },
+    "triangle-arrow-left": {
+      "source": "figma/triangle-arrow-left.svg",
+      "codepoint": "E26A",
+      "tags": [
+        "figma"
+      ]
+    },
+    "triangle-arrow-right": {
+      "source": "figma/triangle-arrow-right.svg",
+      "codepoint": "E26B",
+      "tags": [
+        "figma"
+      ]
+    },
+    "triangle-arrow-up": {
+      "source": "figma/triangle-arrow-up.svg",
+      "codepoint": "E26C",
+      "tags": [
+        "figma"
+      ]
+    },
+    "twinkle": {
+      "source": "figma/twinkle.svg",
+      "codepoint": "E26D",
+      "tags": [
+        "figma"
+      ]
+    },
+    "underline": {
+      "source": "figma/underline.svg",
+      "codepoint": "E105",
+      "tags": [
+        "figma",
+        "compatibility"
+      ]
+    },
+    "undo": {
+      "source": "compatibility/undo.svg",
+      "codepoint": "E115",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "unfold": {
+      "source": "figma/unfold.svg",
+      "codepoint": "E26E",
+      "tags": [
+        "figma"
+      ]
+    },
+    "upload": {
+      "source": "figma/upload.svg",
+      "codepoint": "E26F",
+      "tags": [
+        "figma"
+      ]
+    },
+    "upload-download": {
+      "source": "figma/upload-download.svg",
+      "codepoint": "E270",
+      "tags": [
+        "figma"
+      ]
+    },
+    "user": {
+      "source": "figma/user.svg",
+      "codepoint": "E271",
+      "tags": [
+        "figma"
+      ]
+    },
+    "user-user-minus": {
+      "source": "figma/user-user-minus.svg",
+      "codepoint": "E272",
+      "tags": [
+        "figma"
+      ]
+    },
+    "user-user-plus": {
+      "source": "figma/user-user-plus.svg",
+      "codepoint": "E273",
+      "tags": [
+        "figma"
+      ]
+    },
+    "user-users": {
+      "source": "figma/user-users.svg",
+      "codepoint": "E274",
+      "tags": [
+        "figma"
+      ]
+    },
+    "video": {
+      "source": "figma/video.svg",
+      "codepoint": "E275",
+      "tags": [
+        "figma"
+      ]
+    },
+    "volume-mute": {
+      "source": "figma/volume-mute.svg",
+      "codepoint": "E276",
+      "tags": [
+        "figma"
+      ]
+    },
+    "volume-sound": {
+      "source": "figma/volume-sound.svg",
+      "codepoint": "E277",
+      "tags": [
+        "figma"
+      ]
+    },
+    "wristwatch": {
+      "source": "figma/wristwatch.svg",
+      "codepoint": "E278",
+      "tags": [
+        "figma"
+      ]
+    },
+    "youtube": {
+      "source": "compatibility/youtube.svg",
+      "codepoint": "E111",
+      "tags": [
+        "compatibility"
+      ]
+    },
+    "zoom-in": {
+      "source": "figma/zoom-in.svg",
+      "codepoint": "E279",
+      "tags": [
+        "figma"
+      ]
+    },
+    "zoom-out": {
+      "source": "figma/zoom-out.svg",
+      "codepoint": "E27A",
+      "tags": [
+        "figma"
+      ]
+    }
+  },
+  "groups": {
+    "figma": [
+      "airplane",
+      "alert-exclamation",
+      "alert-question",
+      "align-gap-horizontal",
+      "align-gap-vertical",
+      "align-horizontal-center",
+      "align-horizontal-left",
+      "align-horizontal-right",
+      "align-vertical-bottom",
+      "align-vertical-middle",
+      "align-vertical-top",
+      "arrow-down",
+      "arrow-left",
+      "arrow-return-backward",
+      "arrow-return-forward",
+      "arrow-right",
+      "arrow-up",
+      "arrow-up-right",
+      "bold",
+      "briefcase",
+      "building",
+      "bullet-list",
+      "calendar",
+      "call",
+      "camera",
+      "car",
+      "card",
+      "cart",
+      "check",
+      "check-check-small",
+      "check-circle",
+      "chevron-double-down",
+      "chevron-double-left",
+      "chevron-double-right",
+      "chevron-double-up",
+      "chevron-down",
+      "chevron-left",
+      "chevron-right",
+      "chevron-up",
+      "click",
+      "clipboard",
+      "close",
+      "code",
+      "coffee",
+      "compass",
+      "copy",
+      "dark",
+      "database",
+      "double-arrow-arrow-right-left",
+      "double-arrow-arrow-up-down",
+      "edit",
+      "edit-home",
+      "external",
+      "eye",
+      "eye-eye-closed",
+      "eye-eye-off",
+      "file",
+      "file-file-none",
+      "file-io-export",
+      "file-io-import",
+      "forbid",
+      "globe",
+      "gps",
+      "graph",
+      "grid-menu",
+      "headphones",
+      "headphones-headphones-line",
+      "heart",
+      "img",
+      "inbox",
+      "indent",
+      "indent-outdent",
+      "info",
+      "italic",
+      "light",
+      "line-hozion",
+      "lineheight",
+      "link",
+      "link-unlink",
+      "lock",
+      "lock-unlock",
+      "log-in",
+      "log-out",
+      "mail-receipt",
+      "margin-horizontal",
+      "margin-vertical",
+      "paperclip",
+      "pc",
+      "pencil",
+      "pin",
+      "plus",
+      "printer",
+      "quote",
+      "receipt",
+      "refresh",
+      "repeat",
+      "reserve",
+      "rss",
+      "save",
+      "search",
+      "section",
+      "send",
+      "send-send-right",
+      "settings",
+      "share",
+      "star",
+      "strikethrough",
+      "table",
+      "temperature",
+      "text",
+      "text-align-center",
+      "text-align-left",
+      "text-align-right",
+      "threedots-threedots-horizontal",
+      "threedots-threedots-vertical",
+      "time",
+      "trash",
+      "trend-down",
+      "trend-up",
+      "triangle-arrow-down",
+      "triangle-arrow-left",
+      "triangle-arrow-right",
+      "triangle-arrow-up",
+      "twinkle",
+      "underline",
+      "unfold",
+      "upload",
+      "upload-download",
+      "user",
+      "user-user-minus",
+      "user-user-plus",
+      "user-users",
+      "video",
+      "volume-mute",
+      "volume-sound",
+      "wristwatch",
+      "zoom-in",
+      "zoom-out"
+    ],
+    "compatibility": [
+      "align-center",
+      "align-left",
+      "align-right",
+      "bold",
+      "calendar",
+      "check",
+      "chevron-left",
+      "chevron-right",
+      "close",
+      "code",
+      "eraser",
+      "font-color",
+      "highlight",
+      "hr",
+      "image",
+      "italic",
+      "link",
+      "list-ol",
+      "list-ul",
+      "menu",
+      "redo",
+      "refresh",
+      "search",
+      "strikethrough",
+      "table",
+      "time",
+      "underline",
+      "undo",
+      "youtube"
+    ]
+  },
+  "codepointLock": {
+    "airplane": "E200",
+    "alert-exclamation": "E201",
+    "alert-question": "E202",
+    "align-center": "E10A",
+    "align-gap-horizontal": "E203",
+    "align-gap-vertical": "E204",
+    "align-horizontal-center": "E205",
+    "align-horizontal-left": "E206",
+    "align-horizontal-right": "E207",
+    "align-left": "E109",
+    "align-right": "E10B",
+    "align-vertical-bottom": "E208",
+    "align-vertical-middle": "E209",
+    "align-vertical-top": "E20A",
+    "arrow-down": "E20B",
+    "arrow-left": "E20C",
+    "arrow-return-backward": "E20D",
+    "arrow-return-forward": "E20E",
+    "arrow-right": "E20F",
+    "arrow-up": "E210",
+    "arrow-up-right": "E211",
+    "bold": "E101",
+    "briefcase": "E212",
+    "building": "E213",
+    "bullet-list": "E214",
+    "calendar": "E004",
+    "call": "E215",
+    "camera": "E216",
+    "car": "E217",
+    "card": "E218",
+    "cart": "E219",
+    "check": "E007",
+    "check-check-small": "E21A",
+    "check-circle": "E21B",
+    "chevron-double-down": "E21C",
+    "chevron-double-left": "E21D",
+    "chevron-double-right": "E21E",
+    "chevron-double-up": "E21F",
+    "chevron-down": "E220",
+    "chevron-left": "E002",
+    "chevron-right": "E003",
+    "chevron-up": "E221",
+    "click": "E222",
+    "clipboard": "E223",
+    "close": "E008",
+    "code": "E114",
+    "coffee": "E224",
+    "compass": "E225",
+    "copy": "E226",
+    "dark": "E227",
+    "database": "E228",
+    "double-arrow-arrow-right-left": "E229",
+    "double-arrow-arrow-up-down": "E22A",
+    "edit": "E22B",
+    "edit-home": "E22C",
+    "eraser": "E113",
+    "external": "E22D",
+    "eye": "E22E",
+    "eye-eye-closed": "E22F",
+    "eye-eye-off": "E230",
+    "file": "E231",
+    "file-file-none": "E232",
+    "file-io-export": "E233",
+    "file-io-import": "E234",
+    "font-color": "E107",
+    "forbid": "E235",
+    "globe": "E236",
+    "gps": "E237",
+    "graph": "E238",
+    "grid-menu": "E239",
+    "headphones": "E23A",
+    "headphones-headphones-line": "E23B",
+    "heart": "E23C",
+    "highlight": "E108",
+    "hr": "E112",
+    "image": "E110",
+    "img": "E23D",
+    "inbox": "E23E",
+    "indent": "E23F",
+    "indent-outdent": "E240",
+    "info": "E241",
+    "italic": "E102",
+    "light": "E242",
+    "line-hozion": "E243",
+    "lineheight": "E244",
+    "link": "E10F",
+    "link-unlink": "E245",
+    "list-ol": "E10D",
+    "list-ul": "E10C",
+    "lock": "E246",
+    "lock-unlock": "E247",
+    "log-in": "E248",
+    "log-out": "E249",
+    "mail-receipt": "E24A",
+    "margin-horizontal": "E24B",
+    "margin-vertical": "E24C",
+    "menu": "E001",
+    "paperclip": "E24D",
+    "pc": "E24E",
+    "pencil": "E24F",
+    "pin": "E250",
+    "plus": "E251",
+    "printer": "E252",
+    "quote": "E253",
+    "receipt": "E254",
+    "redo": "E116",
+    "refresh": "E006",
+    "repeat": "E255",
+    "reserve": "E256",
+    "rss": "E257",
+    "save": "E258",
+    "search": "E009",
+    "section": "E259",
+    "send": "E25A",
+    "send-send-right": "E25B",
+    "settings": "E25C",
+    "share": "E25D",
+    "star": "E25E",
+    "strikethrough": "E106",
+    "table": "E10E",
+    "temperature": "E25F",
+    "text": "E260",
+    "text-align-center": "E261",
+    "text-align-left": "E262",
+    "text-align-right": "E263",
+    "threedots-threedots-horizontal": "E264",
+    "threedots-threedots-vertical": "E265",
+    "time": "E005",
+    "trash": "E266",
+    "trend-down": "E267",
+    "trend-up": "E268",
+    "triangle-arrow-down": "E269",
+    "triangle-arrow-left": "E26A",
+    "triangle-arrow-right": "E26B",
+    "triangle-arrow-up": "E26C",
+    "twinkle": "E26D",
+    "underline": "E105",
+    "undo": "E115",
+    "unfold": "E26E",
+    "upload": "E26F",
+    "upload-download": "E270",
+    "user": "E271",
+    "user-user-minus": "E272",
+    "user-user-plus": "E273",
+    "user-users": "E274",
+    "video": "E275",
+    "volume-mute": "E276",
+    "volume-sound": "E277",
+    "wristwatch": "E278",
+    "youtube": "E111",
+    "zoom-in": "E279",
+    "zoom-out": "E27A"
+  }
+}

@@ -33,6 +33,7 @@
     "test:watch": "vitest",
     "figma:check": "figma connect parse",
     "contributors:check": "node scripts/check-contributors.mjs",
+    "docs:sync-figma-foundations": "node scripts/sync-figma-foundations.mjs",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm format:check && pnpm figma:check && pnpm contributors:check",
     "release:verify": "node scripts/verify-release.mjs",
     "changeset:dry-run": "changeset status --verbose && pnpm --filter './packages/*' pack --dry-run",
@@ -54,10 +55,12 @@
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.1",
     "jsdom": "^29.1.1",
+    "openfig-core": "0.4.1",
     "prettier": "^3.7.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "typescript": "^5.9.3",
+    "svgpath": "2.6.0",
     "typescript-eslint": "^8.48.1",
     "vitest": "^4.0.15"
   }

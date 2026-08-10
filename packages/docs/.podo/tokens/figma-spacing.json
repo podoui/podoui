@@ -1,0 +1,273 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "tokens",
+  "category": "primitive",
+  "tokens": {
+    "spacing": {
+      "scale": {
+        "0": {
+          "$type": "spacing",
+          "$value": "0px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "1": {
+          "$type": "spacing",
+          "$value": "2px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "2": {
+          "$type": "spacing",
+          "$value": "4px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "3": {
+          "$type": "spacing",
+          "$value": "6px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "4": {
+          "$type": "spacing",
+          "$value": "8px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "5": {
+          "$type": "spacing",
+          "$value": "10px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "6": {
+          "$type": "spacing",
+          "$value": "12px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "7": {
+          "$type": "spacing",
+          "$value": "14px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "8": {
+          "$type": "spacing",
+          "$value": "16px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "9": {
+          "$type": "spacing",
+          "$value": "18px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "10": {
+          "$type": "spacing",
+          "$value": "20px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "11": {
+          "$type": "spacing",
+          "$value": "24px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "12": {
+          "$type": "spacing",
+          "$value": "36px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "13": {
+          "$type": "spacing",
+          "$value": "48px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "14": {
+          "$type": "spacing",
+          "$value": "64px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "15": {
+          "$type": "spacing",
+          "$value": "80px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "16": {
+          "$type": "spacing",
+          "$value": "96px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "17": {
+          "$type": "spacing",
+          "$value": "120px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        },
+        "18": {
+          "$type": "spacing",
+          "$value": "200px",
+          "$extensions": {
+            "podo": {
+              "scope": "primitive",
+              "roles": [
+                "spacing",
+                "scale"
+              ]
+            }
+          }
+        }
+      },
+      "component": {
+        "field-gap": {
+          "$type": "spacing",
+          "$value": "{spacing.scale.4}",
+          "$extensions": {
+            "podo": {
+              "scope": "component",
+              "roles": [
+                "field",
+                "gap"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

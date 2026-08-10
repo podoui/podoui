@@ -59,7 +59,7 @@ export function SpacingPage() {
       <DocSection
         index={0}
         title="기본 간격 토큰"
-        description="Figma 원본의 spacing 체계 중 현재 v2 JSON 스펙에 채택된 primitive scale이에요. 공개 토큰은 4px·8px이며, CSS 변수와 TypeScript 값이 같은 JSON 원본에서 생성돼요."
+        description="최신 Figma 원본의 spacing/0부터 spacing/18까지 19개 primitive 변수를 모두 사용해요. 0 · 2 · 4 · 6 · 8 · 10 · 12 · 14 · 16 · 18 · 20 · 24 · 36 · 48 · 64 · 80 · 96 · 120 · 200px 값이 JSON 원본에서 CSS 변수와 TypeScript 토큰으로 함께 생성돼요."
       >
         <Card>
           <SpacingScale items={PRIMITIVE_SPACING} />
@@ -96,7 +96,7 @@ export function SpacingPage() {
       <DocSection
         index={2}
         title="v1 그리드 호환 간격"
-        description="그리드의 16px·24px 간격은 새 spacing scale로 재해석하지 않고 v1 호환 계약으로 고정돼요. 자세한 반응형 동작은 Grid 문서에서 확인할 수 있습니다."
+        description="v1 그리드의 s(5) 16px와 s(6) 24px 계약은 각각 현재 spacing.scale.8과 spacing.scale.11 값에 대응해요. 기존 별칭은 호환성을 위해 유지하며, 자세한 반응형 동작은 Grid 문서에서 확인할 수 있습니다."
       >
         <Card>
           <SpacingScale items={GRID_COMPATIBILITY_SPACING} />

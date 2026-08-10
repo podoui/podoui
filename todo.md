@@ -462,8 +462,9 @@
   - 완료 기준: Editor 툴바가 light/dark scheme에서 올바른 elevation token을 사용한다.
   - 완료 기준: 기본 JSON manifest의 전체 아이콘이 생성 산출물 기반 갤러리에 빠짐없이 표시된다.
   - 완료 기준: 문서 라우팅 테스트, 전체 품질 검사, light/dark 브라우저 시각 검증이 통과한다.
-- [x] 최신 Figma 원본 기반 Foundation 설명 정합화
-  - 완료 기준: 다운로드된 `PODO Design System.fig`의 Icon 설명과 현재 spacing 변수를 확인해 문서에 반영한다.
+- [x] 최신 Figma 원본 기반 Foundation 전체 세트 정합화
+  - 완료 기준: 다운로드된 `PODO Design System.fig`의 `spacing/0`~`spacing/18` 변수 전체를 JSON 원본과 문서에 반영한다.
+  - 완료 기준: 비어 있지 않은 Figma 아이콘 컴포넌트 138개를 모두 생성하고, 기존 런타임 호환 아이콘을 유지한 전체 갤러리를 제공한다.
   - 완료 기준: Spacing·Grid·Icon 설명이 v2 JSON 토큰, 12/6/4 호환 그리드, 공개 Icon 크기 API와 충돌하지 않는다.
   - 완료 기준: 문서 라우팅 테스트, 전체 품질 검사, 브라우저 시각 검증 및 Codex strict review가 통과한다.
 

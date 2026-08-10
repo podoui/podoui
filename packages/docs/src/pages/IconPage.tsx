@@ -48,7 +48,7 @@ export function IconPage() {
       <DocSection
         index={1}
         title="아이콘 에셋 (icon)"
-        description={`아이콘은 24px 그리드를 기준으로 제작하고, 선형 스타일과 1.2px 스트로크로 형태·두께·시각적 무게를 일관되게 맞춰요. 아래에는 현재 기본 매니페스트가 생성하는 ${podoIconNames.length}개 아이콘을 모두 보여줘요. 프로젝트의 .podo/icons를 바꾸고 podo build를 실행하면 이 목록과 타입·CSS·폰트가 함께 갱신돼요.`}
+        description={`아이콘은 24px 그리드를 기준으로 제작하고, 선형 스타일과 1.2px 스트로크로 형태·두께·시각적 무게를 일관되게 맞춰요. 최신 Figma 원본의 비어 있지 않은 아이콘 138개를 모두 포함하고, 기존 런타임 호환 이름과 겹치는 15개는 같은 코드포인트로 합쳤어요. 아래 갤러리는 호환 전용 아이콘까지 포함한 매니페스트 ${podoIconNames.length}개 전체이며, .fig 동기화와 podo build를 실행하면 목록·타입·CSS·폰트가 함께 갱신돼요.`}
       >
         <Card>
           <ul className="icon-gallery" aria-label={`전체 아이콘 ${podoIconNames.length}개`}>

@@ -637,6 +637,7 @@ a {
 
 .spacing-scale__measure span {
   display: block;
+  max-width: 100%;
   min-width: 1px;
   height: 20px;
   border-radius: 2px;

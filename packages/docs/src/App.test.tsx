@@ -47,9 +47,14 @@ describe("docs introduction routing", () => {
 
     expect(screen.getByRole("heading", { name: "간격 (Spacing)" })).toBeTruthy();
     expect(screen.getByText(/관련된 요소는 가깝게, 다른 그룹은 충분히 떨어뜨려/)).toBeTruthy();
-    expect(screen.getByText(/현재 v2 JSON 스펙에 채택된 primitive scale/)).toBeTruthy();
-    expect(screen.getByText("--podo-spacing-scale-1")).toBeTruthy();
+    expect(screen.getByText(/spacing\/0부터 spacing\/18까지 19개 primitive 변수/)).toBeTruthy();
+    expect(screen.getByText("--podo-spacing-scale-0")).toBeTruthy();
+    expect(screen.getByText("--podo-spacing-scale-18")).toBeTruthy();
     expect(screen.getByText("--podo-spacing-component-field-gap")).toBeTruthy();
+    expect(screen.getByLabelText("0: 0px")).toBeTruthy();
+    expect(screen.getByLabelText("18: 200px")).toBeTruthy();
+    expect(screen.getByLabelText("field-gap: 8px")).toBeTruthy();
+    expect(screen.getAllByText(/^spacing\.scale\.\d+$/)).toHaveLength(19);
     expect(screen.getAllByText("s(6)")).toHaveLength(2);
   });
 
@@ -70,10 +75,14 @@ describe("docs introduction routing", () => {
     window.location.hash = "#/icon";
     render(<App />);
 
-    const gallery = screen.getByRole("list", { name: "전체 아이콘 29개" });
+    const gallery = screen.getByRole("list", { name: "전체 아이콘 152개" });
     expect(screen.getByText(/선형 스타일과 1.2px 스트로크/)).toBeTruthy();
+    expect(screen.getByText(/최신 Figma 원본의 비어 있지 않은 아이콘 138개/)).toBeTruthy();
     expect(screen.getByText(/12·16·20·24·32·40px 체계/)).toBeTruthy();
-    expect(within(gallery).getAllByRole("listitem")).toHaveLength(29);
+    expect(within(gallery).getAllByRole("listitem")).toHaveLength(152);
+    expect(within(gallery).getByText("arrow-up-right")).toBeTruthy();
+    expect(within(gallery).getByText("grid-menu")).toBeTruthy();
+    expect(within(gallery).getByText("zoom-in")).toBeTruthy();
     expect(within(gallery).getByText("undo")).toBeTruthy();
     expect(within(gallery).getByText("youtube")).toBeTruthy();
   });

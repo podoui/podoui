@@ -3,9 +3,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { computeIconsHash } from "@podoui/spec";
+import { emitTokenJsonBundle, mergeTokenDocuments, resolveTokenDocument } from "@podoui/tokens";
 import {
   buildProject,
   findProjectRoot,
+  loadBuildTokenSources,
   parseArgs,
   runCli,
   validateProject,
@@ -41,6 +43,45 @@ describe("@podoui/cli", () => {
 
     const report = await validateProject(parseArgs(["validate"]), io);
     expect(report.ok).toBe(true);
+  });
+
+  it("emits project-relative token origins identically across checkout roots", async () => {
+    const roots = await Promise.all([
+      createProject({ dependencies: { react: "^19.0.0" } }),
+      createProject({ dependencies: { react: "^19.0.0" } }),
+    ]);
+    const override = `${JSON.stringify(
+      {
+        schemaVersion: "2.0.0",
+        kind: "tokens",
+        category: "primitive",
+        tokens: {
+          spacing: {
+            scale: { "0": { $type: "spacing", $value: "0px" } },
+          },
+        },
+      },
+      null,
+      2
+    )}\n`;
+
+    for (const root of roots) {
+      await mkdir(join(root, ".podo/tokens"), { recursive: true });
+      await writeFile(join(root, ".podo/tokens/figma-spacing.json"), override);
+    }
+
+    const bundles = await Promise.all(
+      roots.map(async (root) =>
+        emitTokenJsonBundle(
+          resolveTokenDocument(mergeTokenDocuments(await loadBuildTokenSources(root)))
+        )
+      )
+    );
+
+    expect(bundles[0]).toBe(bundles[1]);
+    expect(bundles[0]).toContain('"filePath": ".podo/tokens/figma-spacing.json"');
+    expect(bundles[0]).not.toContain(roots[0]!);
+    expect(bundles[1]).not.toContain(roots[1]!);
   });
 
   // 기본 토큰 문서가 커지면서(테마 112변수 x light/dark) 전체 스위트 부하에선
