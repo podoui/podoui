@@ -44,3 +44,24 @@ Realtime/DebugView에서 최초 진입, 내부 이동, 뒤로 가기 각각의 �
 - [GA4 수동 페이지 조회](https://developers.google.com/analytics/devguides/collection/ga4/views)
 - [Search Console 소유권 인증](https://support.google.com/webmasters/answer/9008080)
 - [Cloudflare HTML 경로 처리](https://developers.cloudflare.com/workers/static-assets/routing/advanced/html-handling/)
+
+## 운영 연결 상태 (2026-09-07)
+
+- GA4: 기존 `podo-ui` 속성 `515245814`, `Podo UI` 웹 스트림 `13088211559`를 사용합니다.
+  측정 ID는 `G-KXLSHT5K82`입니다.
+- GitHub Actions의 `GOOGLE_ANALYTICS_ID`와 `GOOGLE_SITE_VERIFICATION`을 설정하고
+  [Deploy docs 실행 34095064802](https://github.com/podoui/podoui/actions/runs/34095064802)으로 배포했습니다.
+- Search Console URL 접두어 속성 `https://podoui.com/`의 소유권 인증을 완료했습니다.
+  HTML 태그와 Google Analytics 인증이 확인됐습니다.
+- `https://podoui.com/sitemap.xml` 제출 상태는 성공이며 발견된 페이지는 26개입니다.
+  이는 사이트맵 수신·발견 상태이며 검색 색인 완료를 의미하지 않습니다.
+- GA4의 Search Console 연결 목록에 위 속성과 `Podo UI` 스트림의 연결이 저장됐습니다.
+- GA4 향상된 측정의 브라우저 방문 기록 기반 페이지 변경 자동 측정은 껐고,
+  새로고침 후에도 설정이 유지됨을 확인했습니다.
+- 운영 사이트에서 `/` → `/button` → `/setup` → 뒤로 가기(`/button`)를 실행했습니다.
+  측정 ID가 일치하는 `page_view` 4개가 중복 없이 전송됐고 수집 서버가 모두 HTTP 204로 응답했습니다.
+  요청은 3개이며 마지막 요청의 POST 본문에 이벤트 2개가 묶여 있습니다.
+- GA4 실시간 보고서에서 활성 사용자 1명(지난 30분·5분)을 확인했습니다.
+  보고서에는 `모든 사용자`만 적용되어 있었고 추가 비교 필터는 없었습니다.
+- `home` Chrome의 추적 차단 확장은 해당 브라우저 방문의 전송을 억제했습니다.
+  확장 설정을 변경하지 않고, 차단 확장이 없는 별도 브라우저에서 전송·수신을 검증했습니다.

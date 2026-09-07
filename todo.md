@@ -645,5 +645,5 @@
   - 완료 기준: SPA 이동 시 메타데이터가 갱신되고 없는 문서는 HTTP 404 및 noindex를 반환한다.
   - 완료 기준: 검증된 GA4 ID와 Search Console 인증 토큰을 Actions variables로 주입할 수 있고 운영 origin의 수동 페이지 조회·중복 방지와 계정 연결 절차가 문서화된다.
   - 완료 기준: 로컬 품질 검사와 독립 Codex·Claude 리뷰를 통과한다.
-- [ ] 실제 Google 계정 연결 및 수집 확인
+- [x] 실제 Google 계정 연결 및 수집 확인
   - 완료 기준: 실측정 ID와 소유권 토큰 적용 후 Search Console 인증·사이트맵 제출, GA4 실시간 조회 및 Search Console 링크를 확인한다.
