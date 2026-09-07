@@ -22,6 +22,28 @@ describe("@podoui/cli", () => {
     expect(await findProjectRoot(join(root, "src"))).toBe(root);
   });
 
+  it("previews MCP roots without writes and rejects invalid root arguments", async () => {
+    const root = await mkdtemp(join(tmpdir(), "podo-mcp-root-"));
+    try {
+      const project = join(root, "project with spaces");
+      await mkdir(join(project, ".podo"), { recursive: true });
+      await mkdir(join(project, "src"));
+      const io = createIo(root);
+      expect(await runCli(["mcp", "--root", "project with spaces", "--dry-run"], io)).toBe(0);
+      expect(io.out.join("\n")).toContain(project);
+      const nestedIo = createIo(join(project, "src"));
+      expect(await runCli(["mcp", "--dry-run"], nestedIo)).toBe(0);
+      expect(nestedIo.out.join("\n")).toContain(`for ${project}.`);
+      for (const value of [[], [""], ["missing"]]) {
+        expect(await runCli(["mcp", "--root", ...value, "--dry-run"], io)).toBe(1);
+      }
+      await writeFile(join(root, "file"), "test");
+      expect(await runCli(["mcp", "--root", "file", "--dry-run"], io)).toBe(1);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   it("initializes .podo non-interactively and validates the project", async () => {
     const root = await createProject({ dependencies: { react: "^19.0.0" } });
     const io = createIo(root);

@@ -17,6 +17,7 @@ import { InputPage } from "./pages/InputPage.js";
 import { RadioPage } from "./pages/RadioPage.js";
 import { RadiusPage } from "./pages/RadiusPage.js";
 import { SelectPage } from "./pages/SelectPage.js";
+import { McpPage } from "./pages/McpPage.js";
 import { SetupPage } from "./pages/SetupPage.js";
 import { SpacingPage } from "./pages/SpacingPage.js";
 import { SwitchPage } from "./pages/SwitchPage.js";
@@ -40,6 +41,7 @@ export interface NavItem {
  */
 const pages: Record<string, ComponentType> = {
   setup: SetupPage,
+  mcp: McpPage,
   color: ColorPage,
   typography: TypographyPage,
   spacing: SpacingPage,

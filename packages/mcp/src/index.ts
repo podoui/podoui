@@ -3,6 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { fileURLToPath } from "node:url";
+import { realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import { loadMcpProject, mcpPackageVersion } from "./data-loader.js";
 import { registerPodoTools } from "./tools/index.js";
@@ -19,7 +20,9 @@ export function createPodoMcpServer(options: McpServerOptions = {}): McpServer {
     name: "podo-v2-mcp",
     version: mcpPackageVersion(),
   });
-  registerPodoTools(server, { load: () => loadMcpProject(root) });
+  registerPodoTools(server, {
+    load: () => loadMcpProject(root, { discoverRoot: options.root === undefined }),
+  });
   return server;
 }
 
@@ -29,10 +32,18 @@ export async function startMcpServer(options: McpServerOptions = {}): Promise<vo
   await server.connect(transport);
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === safeRealpath(process.argv[1])) {
   await startMcpServer();
 }
 
 export * from "./data-loader.js";
 export * from "./tools/index.js";
 export * from "./types.js";
+
+function safeRealpath(path: string): string | undefined {
+  try {
+    return realpathSync(path);
+  } catch {
+    return undefined;
+  }
+}

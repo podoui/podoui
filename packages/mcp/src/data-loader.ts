@@ -26,8 +26,11 @@ import {
 import { defaultMcpComponents, defaultMcpIconManifest, defaultMcpTokens } from "./defaults.js";
 import type { McpProjectContext, McpTokenMetadata } from "./types.js";
 
-export async function loadMcpProject(root = process.cwd()): Promise<McpProjectContext> {
-  const projectRoot = await findProjectRoot(root);
+export async function loadMcpProject(
+  root = process.cwd(),
+  options: { discoverRoot?: boolean } = {}
+): Promise<McpProjectContext> {
+  const projectRoot = options.discoverRoot === false ? resolve(root) : await findProjectRoot(root);
   const issues: ValidationIssue[] = [];
   const config = await readParsed(join(projectRoot, ".podo/config.json"), parsePodoConfig, issues);
   const lock = await readParsed(join(projectRoot, ".podo/lock.json"), parsePodoLock, issues);
@@ -88,7 +91,11 @@ function collectTokenMetadata(sources: TokenSource[]): Record<string, McpTokenMe
 export async function findProjectRoot(start: string): Promise<string> {
   let current = resolve(start);
   while (true) {
-    if ((await exists(join(current, "package.json"))) || (await exists(join(current, ".git")))) {
+    if (
+      (await exists(join(current, ".podo"))) ||
+      (await exists(join(current, "package.json"))) ||
+      (await exists(join(current, ".git")))
+    ) {
       return current;
     }
     const parent = dirname(current);

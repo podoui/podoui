@@ -647,3 +647,10 @@
   - 완료 기준: 로컬 품질 검사와 독립 Codex·Claude 리뷰를 통과한다.
 - [x] 실제 Google 계정 연결 및 수집 확인
   - 완료 기준: 실측정 ID와 소유권 토큰 적용 후 Search Console 인증·사이트맵 제출, GA4 실시간 조회 및 Search Console 링크를 확인한다.
+
+### E. 로컬 MCP 시작과 사이트 안내 (사용자 우선 요청, 2026-09-07)
+
+- [x] 명령어 하나로 MCP 실행 및 AI 도구 연결 안내
+  - 완료 기준: `npx -y podo-ui mcp`로 기본 스펙을 조회하고 `--root`로 프로젝트를 지정할 수 있으며 stdio 연결과 설치 bin 경로를 테스트한다.
+  - 완료 기준: 사이트 Guide에 복사 가능한 실행·Claude Code·Codex·JSON 설정, 사용 예시와 문제 해결을 제공하고 README/운영 문서를 일치시킨다.
+  - 완료 기준: 로컬 품질 검사와 독립 Codex·Claude 리뷰를 통과한다.

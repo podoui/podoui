@@ -191,3 +191,94 @@ describe("podo-ui assembled package", () => {
     expect(leaks).toEqual([]);
   });
 });
+
+describe("MCP consumer commands", () => {
+  it("can import MCP and CLI from a stdin Node script", () => {
+    const source = ["mcp", "cli"]
+      .map(
+        (name) =>
+          `await import(${JSON.stringify(pathToFileURL(join(dist, name, "index.js")).href)});`
+      )
+      .join("\n");
+    expect(execSync("node --input-type=module -", { input: source, encoding: "utf8" })).toBe("");
+  });
+  it(
+    "connects through the package command and a symlinked podo-mcp bin",
+    { timeout: 30_000 },
+    async () => {
+      const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
+      const { StdioClientTransport } = await import("@modelcontextprotocol/sdk/client/stdio.js");
+      const { mkdtemp, symlink, rm, mkdir, writeFile } = await import("node:fs/promises");
+      const { tmpdir } = await import("node:os");
+      const root = await mkdtemp(join(tmpdir(), "podo-mcp-consumer-"));
+      try {
+        const project = join(root, "project with spaces");
+        await mkdir(join(project, ".podo"), { recursive: true });
+        const bin = join(root, "podo-mcp");
+        await symlink(join(dist, "mcp/index.js"), bin);
+        for (const args of [[join(dist, "cli/menu.js"), "mcp", "--root", project], [bin]]) {
+          const client = new Client({ name: "consumer-test", version: "1.0.0" });
+          const transport = new StdioClientTransport({
+            command: process.execPath,
+            args,
+            cwd: project,
+            stderr: "pipe",
+          });
+          try {
+            await client.connect(transport);
+            const listed = await client.listTools();
+            expect(listed.tools.map((tool) => tool.name)).toContain("get_system_overview");
+            const result = await client.callTool({ name: "get_system_overview", arguments: {} });
+            expect(result.isError).not.toBe(true);
+            expect(JSON.stringify(result)).toContain("button");
+          } finally {
+            await client.close();
+            await transport.close();
+          }
+        }
+        // An explicit empty child must not inherit an ancestor's .podo.
+        await mkdir(join(root, ".podo"));
+        await writeFile(join(root, ".podo/config.json"), "{");
+        const child = join(root, "empty child");
+        await mkdir(child);
+        const isolatedClient = new Client({ name: "isolation-test", version: "1.0.0" });
+        const isolatedTransport = new StdioClientTransport({
+          command: process.execPath,
+          args: [join(dist, "cli/menu.js"), "mcp", "--root", child],
+          cwd: root,
+          stderr: "pipe",
+        });
+        try {
+          await isolatedClient.connect(isolatedTransport);
+          const validation = await isolatedClient.callTool({
+            name: "validate_podo_project",
+            arguments: {},
+          });
+          expect(JSON.stringify(validation)).not.toContain(".podo/config.json");
+        } finally {
+          await isolatedClient.close();
+          await isolatedTransport.close();
+        }
+        // A malformed project must be read from --root even when launched elsewhere.
+        await writeFile(join(project, ".podo/config.json"), "{");
+        const client = new Client({ name: "root-test", version: "1.0.0" });
+        const transport = new StdioClientTransport({
+          command: process.execPath,
+          args: [join(dist, "cli/menu.js"), "mcp", "--root", project],
+          cwd: root,
+          stderr: "pipe",
+        });
+        try {
+          await client.connect(transport);
+          const result = await client.callTool({ name: "validate_podo_project", arguments: {} });
+          expect(JSON.stringify(result)).toContain(".podo/config.json");
+        } finally {
+          await client.close();
+          await transport.close();
+        }
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    }
+  );
+});

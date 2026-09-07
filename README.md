@@ -166,3 +166,25 @@ pnpm release:verify
 
 MIT License · [공식 설명서](https://podoui.com) ·
 [문제 제보](https://github.com/podoui/podoui/issues)
+
+## AI 도구 연결 (로컬 MCP)
+
+Node.js 22 이상과 npm이 있으면 전역 설치 없이 실행할 수 있습니다.
+
+```sh
+npx -y podo-ui mcp
+```
+
+터미널에서는 출력 없이 stdio 연결을 기다립니다. 실제 사용은 아래 명령으로 AI 도구에 한 번 등록하세요. 프로젝트 절대 경로를 바꾼 뒤 도구를 다시 시작하면 서버가 자동 실행됩니다.
+
+```sh
+# Claude Code
+claude mcp add podo -- npx -y podo-ui mcp --root "/absolute/path/to/project"
+
+# Codex
+codex mcp add podo -- npx -y podo-ui mcp --root "/absolute/path/to/project"
+```
+
+기본 디자인 토큰과 컴포넌트 스펙을 조회하며, `.podo`가 있으면 프로젝트 설정도 읽습니다. MCP 도구는 파일을 수정하지 않습니다.
+
+[전체 연결 안내와 사용 예시](https://podoui.com/mcp)

@@ -4,29 +4,47 @@ Phase 6 adds `@podoui/mcp`, a Model Context Protocol stdio server for Podo v2 sp
 
 ## Start
 
-```sh
-podo mcp
-```
-
-The package also exposes:
+Requires Node.js 22+ and npm. No global install is needed:
 
 ```sh
-podo-mcp
+npx -y podo-ui mcp
 ```
 
-Claude Code registration:
+The server uses stdio, not HTTP. A silent terminal is normal: it is waiting for MCP messages. Ctrl+C stops a manually started server. AI clients launch their own process after registration; do not keep another terminal running. Initial execution downloads the package from npm.
+
+Register once, replacing the absolute project path, then restart the client:
 
 ```sh
-claude mcp add podo -- npx podo mcp
+claude mcp add podo -- npx -y podo-ui mcp --root "/absolute/path/to/project"
+codex mcp add podo -- npx -y podo-ui mcp --root "/absolute/path/to/project"
 ```
 
-Codex can use the MCP server when MCP configuration is available. Configure the command as `podo mcp` or `npx podo mcp` with the project root as the working directory. When MCP is not available, agents can fall back to reading `.podo/config.json`, `.podo/tokens`, `.podo/themes`, `.podo/components`, and `.podo/icons/manifest.json` directly.
+Claude Code defaults to local project scope; Codex uses user configuration. Use distinct names/roots for multiple projects. See [Codex MCP configuration](https://developers.openai.com/codex/mcp/).
 
-Smoke check:
+For clients accepting `mcpServers` JSON, merge this entry into their MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "podo": {
+      "command": "npx",
+      "args": ["-y", "podo-ui", "mcp", "--root", "/absolute/path/to/project"]
+    }
+  }
+}
+```
+
+On Windows, clients that cannot launch npx directly can use `"command": "cmd"` with args beginning `["/c", "npx", ...]`.
+
+Without `--root`, the CLI locates the project from its working directory. Projects without `.podo` use bundled defaults. Existing local specs are read on each tool call. Installed users can also run `podo mcp` or `podo-mcp` from their project directory.
+
+Check path selection without starting a server:
 
 ```sh
-podo mcp --dry-run
+npx -y podo-ui mcp --root "/absolute/path/to/project" --dry-run
 ```
+
+This is a launch preview, not a protocol or validation check. Verify connection by finding `get_system_overview` in the client and calling it. Use `validate_podo_project` for spec errors. For first-run timeouts, run the preview above to download the package, then reconnect.
 
 ## Read Tools
 

@@ -11,6 +11,12 @@
     "group": "Guide"
   },
   {
+    "slug": "mcp",
+    "title": "AI 도구 연결 (MCP) | Podo UI",
+    "description": "명령어 하나로 Podo 로컬 MCP 서버를 실행하고 Claude Code, Codex에 연결하세요. 디자인 토큰과 컴포넌트 스펙 조회, 프로젝트 설정과 문제 해결을 안내합니다.",
+    "group": "Guide"
+  },
+  {
     "slug": "color",
     "title": "Color | Podo UI",
     "description": "Podo UI Color 문서. Color의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",

@@ -1,3 +1,4 @@
+import { DocsLink } from "../routing.js";
 import { Button } from "@podoui/react";
 import { DocSection } from "../components/DocSection.js";
 import { PageHeader } from "../components/PageHeader.js";
@@ -199,6 +200,10 @@ export function SetupPage() {
           ]}
         />
       </DocSection>
+      <p>
+        AI와 함께 화면을 만들려면 <DocsLink to="/mcp">로컬 MCP 서버 연결 안내</DocsLink>를
+        확인하세요.
+      </p>
     </>
   );
 }

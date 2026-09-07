@@ -56,7 +56,7 @@ import {
   type MigrationManifest,
   type MigrationPlan,
 } from "@podoui/migration";
-import { startMcpServer } from "@podoui/mcp";
+import { findProjectRoot as findMcpProjectRoot, startMcpServer } from "@podoui/mcp";
 import { importProject } from "./figma-import.js";
 
 export const packageName = "@podoui/cli";
@@ -495,7 +495,14 @@ export async function validateProject(args: ParsedArgs, io: CliIO): Promise<Vali
 }
 
 export async function startMcp(args: ParsedArgs, io: CliIO): Promise<void> {
-  const root = await findProjectRoot(io.cwd);
+  const requestedRoot = stringOption(args, "root");
+  if (args.options.root !== undefined && !requestedRoot?.trim()) {
+    throw new Error("--root requires a project directory.");
+  }
+  const root = requestedRoot ? resolve(io.cwd, requestedRoot) : await findMcpProjectRoot(io.cwd);
+  if (!(await stat(root)).isDirectory()) {
+    throw new Error("--root must point to a directory.");
+  }
   if (args.options["dry-run"]) {
     io.stdout.log(formatInfo("mcp", `Would start Podo MCP stdio server for ${root}.`));
     return;
@@ -932,7 +939,7 @@ function helpText(): string {
     "  update     Plan package/schema migrations without writing files",
     "  migrate    Apply reviewed migrations to .podo specs and lockfile",
     "  import     Receive a Figma plugin export (or --file) and write .podo specs",
-    "  mcp        Start the Podo MCP stdio server",
+    "  mcp        Start the Podo MCP stdio server (--root <directory>, --dry-run)",
   ].join("\n");
 }
 
