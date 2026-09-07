@@ -8,27 +8,23 @@ interface Bindings {
   ASSETS: AssetsBinding;
 }
 
-function isDocumentRoute(request: Request): boolean {
-  if (request.method !== "GET" && request.method !== "HEAD") {
-    return false;
-  }
-
-  const pathname = new URL(request.url).pathname;
-  const lastSegment = pathname.split("/").at(-1) ?? "";
-  return !lastSegment.includes(".");
-}
-
 export const app = new Hono<{ Bindings: Bindings }>();
 
 app.all("*", async (context) => {
   const assetResponse = await context.env.ASSETS.fetch(context.req.raw);
-  if (assetResponse.status !== 404 || !isDocumentRoute(context.req.raw)) {
+  if (
+    assetResponse.status !== 404 ||
+    !["GET", "HEAD"].includes(context.req.method) ||
+    new URL(context.req.url).pathname.split("/").at(-1)?.includes(".")
+  ) {
     return assetResponse;
   }
-
-  const indexUrl = new URL(context.req.url);
-  indexUrl.pathname = "/";
-  return context.env.ASSETS.fetch(new Request(indexUrl, context.req.raw));
+  const notFoundUrl = new URL("/404", context.req.url);
+  const notFound = await context.env.ASSETS.fetch(new Request(notFoundUrl));
+  return new Response(context.req.method === "HEAD" ? null : await notFound.text(), {
+    status: 404,
+    headers: { "content-type": "text/html; charset=UTF-8", "x-robots-tag": "noindex" },
+  });
 });
 
 export default app;

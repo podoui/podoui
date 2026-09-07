@@ -637,3 +637,13 @@
 - [ ] 스펙 데이터화 (렌더러 하드코딩 제거)
   - size 수치(xs 32/sm 36/md 42/lg 52 등)가 스펙에 설명 문자열로만 있고 실값은 각 렌더러 CSS에 중복.
   - 완료 기준: 스펙 JSON이 수치를 데이터로 갖고 codegen이 렌더러 타입/CSS를 생성해 enum·수치 중복이 사라진다.
+
+### D. 문서 사이트 검색·분석 (사용자 우선 요청, 2026-09-07)
+
+- [x] SEO·GEO·AEO와 Google 연동 배포 기반
+  - 완료 기준: JSON 경로 원본에서 전체 문서 HTML, 페이지별 검색·소셜 메타데이터, 구조화 데이터, sitemap/robots/llms.txt가 재현 가능하게 생성된다.
+  - 완료 기준: SPA 이동 시 메타데이터가 갱신되고 없는 문서는 HTTP 404 및 noindex를 반환한다.
+  - 완료 기준: 검증된 GA4 ID와 Search Console 인증 토큰을 Actions variables로 주입할 수 있고 운영 origin의 수동 페이지 조회·중복 방지와 계정 연결 절차가 문서화된다.
+  - 완료 기준: 로컬 품질 검사와 독립 Codex·Claude 리뷰를 통과한다.
+- [ ] 실제 Google 계정 연결 및 수집 확인
+  - 완료 기준: 실측정 ID와 소유권 토큰 적용 후 Search Console 인증·사이트맵 제출, GA4 실시간 조회 및 Search Console 링크를 확인한다.

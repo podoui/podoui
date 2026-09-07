@@ -1,3 +1,4 @@
+import { updatePageMetadata } from "./seo.js";
 import { useEffect, useState } from "react";
 import { PodoThemeProvider } from "@podoui/react";
 import { NAV, findBySlug } from "./nav.js";
@@ -34,12 +35,13 @@ function groupedNav(): { name: string; items: typeof NAV }[] {
   return groups;
 }
 
-export function App() {
-  const [slug, setSlug] = useState(readCurrentSlug);
+export function App({ initialSlug }: { initialSlug?: string } = {}) {
+  const [slug, setSlug] = useState(() => initialSlug ?? readCurrentSlug());
   const [colorScheme, setColorScheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     migrateLegacyHashRoute();
+    setSlug(readCurrentSlug());
     const previousScrollRestoration = window.history.scrollRestoration;
     window.history.scrollRestoration = "manual";
     const onLocationChange = () => setSlug(readCurrentSlug());
@@ -52,6 +54,7 @@ export function App() {
 
   useEffect(() => {
     scrollDocumentToTop();
+    if (slug === readCurrentSlug()) updatePageMetadata(slug);
   }, [slug]);
 
   const isHome = slug === "";
@@ -123,7 +126,12 @@ export function App() {
         </div>
       </header>
 
-      {isHome ? (
+      {!isHome && !findBySlug(slug) ? (
+        <main>
+          <h1>페이지를 찾을 수 없습니다</h1>
+          <DocsLink to="/">홈으로 돌아가기</DocsLink>
+        </main>
+      ) : isHome ? (
         <main className="home-main">
           <HomePage />
         </main>

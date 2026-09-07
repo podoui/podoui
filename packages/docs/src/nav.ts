@@ -1,3 +1,4 @@
+import routes from "./data/routes.json" with { type: "json" };
 import type { ComponentType } from "react";
 import { BadgePage } from "./pages/BadgePage.js";
 import { BorderPage } from "./pages/BorderPage.js";
@@ -34,36 +35,55 @@ export interface NavItem {
 }
 
 /**
- * The site's single source of truth for routing + sidebar.
- * Add a component to the docs by adding one entry here.
+ * Route metadata lives in data/routes.json.
+ * Register each documented page here and add its metadata to that JSON file.
  */
-export const NAV: NavItem[] = [
-  { slug: "setup", title: "설치와 토큰 적용", group: "Guide", page: SetupPage },
-  { slug: "color", title: "Color", group: "Foundation", page: ColorPage },
-  { slug: "typography", title: "Typography", group: "Foundation", page: TypographyPage },
-  { slug: "spacing", title: "Spacing", group: "Foundation", page: SpacingPage },
-  { slug: "grid", title: "Grid", group: "Foundation", page: GridPage },
-  { slug: "icon", title: "Icon", group: "Foundation", page: IconPage },
-  { slug: "border", title: "Border", group: "Utilities", page: BorderPage },
-  { slug: "radius", title: "Radius", group: "Utilities", page: RadiusPage },
-  { slug: "elevation", title: "Elevation", group: "Utilities", page: ElevationPage },
-  { slug: "display", title: "Display", group: "Utilities", page: DisplayPage },
-  { slug: "badge", title: "Badge", group: "Components", page: BadgePage },
-  { slug: "button", title: "Button", group: "Components", page: ButtonPage },
-  { slug: "checkbox", title: "Checkbox", group: "Components", page: CheckboxPage },
-  { slug: "chip", title: "Chip", group: "Components", page: ChipPage },
-  { slug: "datepicker", title: "DatePicker", group: "Components", page: DatepickerPage },
-  { slug: "editor", title: "Editor", group: "Components", page: EditorPage },
-  { slug: "field", title: "Field", group: "Components", page: FieldPage },
-  { slug: "input", title: "Input", group: "Components", page: InputPage },
-  { slug: "radio", title: "Radio", group: "Components", page: RadioPage },
-  { slug: "select", title: "Select", group: "Components", page: SelectPage },
-  { slug: "switch", title: "Switch", group: "Components", page: SwitchPage },
-  { slug: "table", title: "Table", group: "Components", page: TablePage },
-  { slug: "textarea", title: "Textarea", group: "Components", page: TextareaPage },
-  { slug: "toast", title: "Toast", group: "Components", page: ToastPage },
-  { slug: "tooltip", title: "Tooltip", group: "Components", page: TooltipPage },
-];
+const pages: Record<string, ComponentType> = {
+  setup: SetupPage,
+  color: ColorPage,
+  typography: TypographyPage,
+  spacing: SpacingPage,
+  grid: GridPage,
+  icon: IconPage,
+  border: BorderPage,
+  radius: RadiusPage,
+  elevation: ElevationPage,
+  display: DisplayPage,
+  badge: BadgePage,
+  button: ButtonPage,
+  checkbox: CheckboxPage,
+  chip: ChipPage,
+  datepicker: DatepickerPage,
+  editor: EditorPage,
+  field: FieldPage,
+  input: InputPage,
+  radio: RadioPage,
+  select: SelectPage,
+  switch: SwitchPage,
+  table: TablePage,
+  textarea: TextareaPage,
+  toast: ToastPage,
+  tooltip: TooltipPage,
+};
+
+for (const slug of Object.keys(pages)) {
+  if (!routes.some((route) => route.slug === slug))
+    throw new Error(`Missing route metadata: ${slug}`);
+}
+
+export const NAV: NavItem[] = routes
+  .filter((route) => route.slug !== "")
+  .map((route) => {
+    const page = pages[route.slug];
+    if (!page) throw new Error(`Missing docs page: ${route.slug}`);
+    if (!route.group?.trim()) throw new Error(`Missing docs group: ${route.slug}`);
+    return {
+      slug: route.slug,
+      title: route.title.replace(/ \| Podo UI$/, ""),
+      group: route.group,
+      page,
+    };
+  });
 
 export function findBySlug(slug: string): NavItem | undefined {
   return NAV.find((item) => item.slug === slug);

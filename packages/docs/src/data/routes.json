@@ -1,0 +1,157 @@
+[
+  {
+    "slug": "",
+    "title": "Podo UI — 디자인과 코드를 하나의 스펙으로",
+    "description": "Podo UI는 검증된 JSON 스펙에서 디자인 토큰과 컴포넌트를 생성하는 오픈소스 디자인 시스템입니다. React, Next.js, Hono, React Native 설치와 사용 예제를 확인하세요."
+  },
+  {
+    "slug": "setup",
+    "title": "설치와 토큰 적용 | Podo UI",
+    "description": "Podo UI 설치와 토큰 적용 문서. 프레임워크별 설치부터 전역 테마와 JSON 디자인 토큰 적용까지 단계별 예제를 제공합니다.",
+    "group": "Guide"
+  },
+  {
+    "slug": "color",
+    "title": "Color | Podo UI",
+    "description": "Podo UI Color 문서. Color의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Foundation"
+  },
+  {
+    "slug": "typography",
+    "title": "Typography | Podo UI",
+    "description": "Podo UI Typography 문서. Typography의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Foundation"
+  },
+  {
+    "slug": "spacing",
+    "title": "Spacing | Podo UI",
+    "description": "Podo UI Spacing 문서. Spacing의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Foundation"
+  },
+  {
+    "slug": "grid",
+    "title": "Grid | Podo UI",
+    "description": "Podo UI Grid 문서. Grid의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Foundation"
+  },
+  {
+    "slug": "icon",
+    "title": "Icon | Podo UI",
+    "description": "Podo UI Icon 문서. Icon의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Foundation"
+  },
+  {
+    "slug": "border",
+    "title": "Border | Podo UI",
+    "description": "Podo UI Border 문서. Border의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Utilities"
+  },
+  {
+    "slug": "radius",
+    "title": "Radius | Podo UI",
+    "description": "Podo UI Radius 문서. Radius의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Utilities"
+  },
+  {
+    "slug": "elevation",
+    "title": "Elevation | Podo UI",
+    "description": "Podo UI Elevation 문서. Elevation의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Utilities"
+  },
+  {
+    "slug": "display",
+    "title": "Display | Podo UI",
+    "description": "Podo UI Display 문서. Display의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Utilities"
+  },
+  {
+    "slug": "badge",
+    "title": "Badge | Podo UI",
+    "description": "Podo UI Badge 문서. Badge의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "button",
+    "title": "Button | Podo UI",
+    "description": "Podo UI Button 문서. Button의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "checkbox",
+    "title": "Checkbox | Podo UI",
+    "description": "Podo UI Checkbox 문서. Checkbox의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "chip",
+    "title": "Chip | Podo UI",
+    "description": "Podo UI Chip 문서. Chip의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "datepicker",
+    "title": "DatePicker | Podo UI",
+    "description": "Podo UI DatePicker 문서. DatePicker의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "editor",
+    "title": "Editor | Podo UI",
+    "description": "Podo UI Editor 문서. Editor의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "field",
+    "title": "Field | Podo UI",
+    "description": "Podo UI Field 문서. Field의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "input",
+    "title": "Input | Podo UI",
+    "description": "Podo UI Input 문서. Input의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "radio",
+    "title": "Radio | Podo UI",
+    "description": "Podo UI Radio 문서. Radio의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "select",
+    "title": "Select | Podo UI",
+    "description": "Podo UI Select 문서. Select의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "switch",
+    "title": "Switch | Podo UI",
+    "description": "Podo UI Switch 문서. Switch의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "table",
+    "title": "Table | Podo UI",
+    "description": "Podo UI Table 문서. Table의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "textarea",
+    "title": "Textarea | Podo UI",
+    "description": "Podo UI Textarea 문서. Textarea의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "toast",
+    "title": "Toast | Podo UI",
+    "description": "Podo UI Toast 문서. Toast의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  },
+  {
+    "slug": "tooltip",
+    "title": "Tooltip | Podo UI",
+    "description": "Podo UI Tooltip 문서. Tooltip의 사용법, 속성 및 실제 예제를 확인하고 프로젝트에 적용하세요.",
+    "group": "Components"
+  }
+]

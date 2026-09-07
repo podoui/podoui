@@ -29,6 +29,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Build docs
+        env:
+          GOOGLE_ANALYTICS_ID: ${{ vars.GOOGLE_ANALYTICS_ID }}
+          GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
         run: pnpm --filter "@podoui/docs" build
 
       - name: Deploy to Cloudflare Workers

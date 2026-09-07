@@ -5,7 +5,7 @@ function createAssets(): AssetsBinding {
   return {
     async fetch(request) {
       const pathname = new URL(request.url).pathname;
-      if (pathname === "/") {
+      if (["/", "/button", "/404"].includes(pathname)) {
         return new Response('<!doctype html><div id="root"></div>', {
           headers: { "content-type": "text/html; charset=UTF-8" },
         });
@@ -32,7 +32,7 @@ describe("docs Hono worker", () => {
     expect(response.headers.get("content-type")).toContain("text/javascript");
   });
 
-  it("falls back clean document paths to the React app shell", async () => {
+  it("serves prerendered clean document paths", async () => {
     const response = await app.request("https://podoui.com/button", {}, { ASSETS: createAssets() });
 
     expect(response.status).toBe(200);
@@ -48,5 +48,19 @@ describe("docs Hono worker", () => {
     );
 
     expect(response.status).toBe(404);
+  });
+  it("returns a noindex 404 for unknown documents and an empty HEAD body", async () => {
+    for (const method of ["GET", "HEAD"]) {
+      const response = await app.request(
+        "https://podoui.com/missing",
+        { method },
+        { ASSETS: createAssets() }
+      );
+      expect(response.status).toBe(404);
+      expect(response.headers.get("x-robots-tag")).toBe("noindex");
+      expect(await response.text()).toBe(
+        method === "HEAD" ? "" : '<!doctype html><div id="root"></div>'
+      );
+    }
   });
 });

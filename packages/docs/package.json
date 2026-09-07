@@ -8,7 +8,7 @@
     "predev": "tsc -b ../core ../react ../tokens",
     "dev": "vite",
     "prebuild": "tsc -b ../core ../react ../tokens",
-    "build": "vite build",
+    "build": "vite build && vite build --ssr src/prerender.tsx --outDir dist/server && node scripts/prerender.mjs",
     "typecheck": "tsc -b tsconfig.json",
     "preview": "vite preview",
     "clean": "rm -rf dist *.tsbuildinfo"

@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { App } from "./App.js";
 // Pretendard 셀프호스팅 (CDN 미사용) — 동적 서브셋 CSS와 woff2가 번들에 포함된다.
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
@@ -15,8 +15,14 @@ if (!root) {
   throw new Error("Root element #root not found");
 }
 
-createRoot(root).render(
+const initialSlug = root.getAttribute("data-page-slug");
+const app = (
   <StrictMode>
-    <App />
+    <App {...(initialSlug === null ? {} : { initialSlug })} />
   </StrictMode>
 );
+if (initialSlug === null) {
+  createRoot(root).render(app);
+} else {
+  hydrateRoot(root, app);
+}
