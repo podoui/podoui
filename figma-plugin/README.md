@@ -90,7 +90,9 @@ npm run build   # dist/code.js, dist/ui.html 생성
 3. 플러그인 UI에 **내장 스냅샷 가져오기** 섹션이 나타납니다 (원본 파일명·내보낸 날짜 표시).
 
 원본 디자인 시스템이 바뀌면 내보내기를 다시 실행해 `snapshot.json`을 갱신하고
-rebuild 하면 됩니다. `snapshot.json`은 git에 커밋되지 않습니다(.gitignore).
+rebuild 하면 됩니다. `snapshot.json`은 git에 커밋해 관리합니다 — 클론 직후
+`npm run build`만으로 설치 버튼이 포함된 플러그인이 만들어지도록 하기 위해서입니다.
+스냅샷을 갱신했으면 함께 커밋하세요.
 
 ## 제약사항
 
