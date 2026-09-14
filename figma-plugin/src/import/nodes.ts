@@ -1015,7 +1015,19 @@ async function buildNode(
     try {
       parent.appendChild(node);
     } catch (e) {
-      ctx.warn(`'${data.name}' 부모 연결 실패: ${errMsg(e)}`);
+      ctx.warn(
+        `'${data.name}' (${node.type}) 부모 '${parent.name}' (${parent.type}) 연결 실패: ${errMsg(e)}`
+      );
+      if (data.type === 'SLOT') {
+        ctx.pendingSlots = ctx.pendingSlots.filter((entry) => entry.node !== node);
+      }
+      ctx.nodeIdMap.delete(data.id);
+      try {
+        node.remove();
+      } catch {
+        // best-effort cleanup of the unattached node
+      }
+      return null;
     }
   }
 
@@ -1124,11 +1136,12 @@ async function reconcileSlotDefs(
   // (특히 variant 세트에서) 여러 슬롯 노드가 하나의 정의를 slotContentId로
   // 공유하므로, 소스 참조가 같은 슬롯 노드들을 대표 정의 하나로 통합하고
   // 나머지 자동 정의는 제거한다.
-  const slots = ctx.pendingSlots.splice(0);
+  const slots = ctx.pendingSlots.splice(0).filter((slot) => !slot.node.removed);
   const wanted = defs.filter((d) => d.type === 'SLOT');
   if (!wanted.length && !slots.length) return;
 
   const readSlotRef = (node: SceneNode): string | null => {
+    if (node.removed) return null;
     try {
       const refs = (node as unknown as { componentPropertyReferences?: Record<string, string | undefined> })
         .componentPropertyReferences;
@@ -1139,13 +1152,16 @@ async function reconcileSlotDefs(
     }
   };
   const writeSlotRef = (node: SceneNode, name: string): boolean => {
+    if (node.removed) return false;
+    let nodeName = '<removed slot>';
     try {
+      nodeName = node.name;
       const target = node as unknown as { componentPropertyReferences?: Record<string, string> };
       const prev = target.componentPropertyReferences ?? {};
       target.componentPropertyReferences = { ...prev, slotContentId: name };
       return true;
     } catch (e) {
-      ctx.warnDedup(`슬롯 '${node.name}' 정의 연결 실패 ('${owner.name}'): ${errMsg(e)}`);
+      ctx.warnDedup(`슬롯 '${nodeName}' 정의 연결 실패 ('${owner.name}'): ${errMsg(e)}`);
       return false;
     }
   };

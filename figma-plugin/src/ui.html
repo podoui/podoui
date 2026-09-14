@@ -97,6 +97,16 @@
   td.num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
   details { margin-top: 4px; }
   summary { cursor: pointer; font-weight: 600; color: #b45309; }
+  .warning-copy-btn {
+    width: auto;
+    margin-left: 6px;
+    padding: 4px 8px;
+  }
+  .warning-copy-status {
+    margin-left: 6px;
+    color: #15803d;
+    font-size: 11px;
+  }
   details ul {
     margin: 6px 0 0 16px;
     color: #6f6f6f;
@@ -310,7 +320,55 @@
       var details = document.createElement('details');
       // 플랜 제한 등 치명적 경고(⚠ 접두)는 목록을 펼친 채로 보여준다.
       details.open = warnings.some(function (w) { return String(w).indexOf('⚠') === 0; });
-      details.appendChild(el('summary', '경고 ' + warnings.length + '건'));
+      var warningSummary = el('summary', '경고 ' + warnings.length + '건');
+      var copyButton = el('button', '경고 전체 복사');
+      copyButton.type = 'button';
+      copyButton.className = 'warning-copy-btn';
+      var copyStatus = el('span', '');
+      copyStatus.className = 'warning-copy-status';
+      var manualCopy = null;
+      copyButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        copyStatus.textContent = '';
+        if (manualCopy && manualCopy.parentNode) {
+          manualCopy.parentNode.removeChild(manualCopy);
+        }
+        manualCopy = null;
+
+        var textarea = document.createElement('textarea');
+        textarea.value = warnings.join('\n');
+        textarea.setAttribute('readonly', 'readonly');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        textarea.style.top = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+
+        var copied = false;
+        try {
+          copied = document.execCommand('copy');
+        } catch (e) {
+          copied = false;
+        }
+        if (copied) {
+          document.body.removeChild(textarea);
+          copyStatus.textContent = '복사됨';
+        } else {
+          manualCopy = textarea;
+          details.open = true;
+          details.appendChild(textarea);
+          textarea.style.position = 'static';
+          textarea.style.width = '100%';
+          textarea.style.marginTop = '6px';
+          textarea.rows = 10;
+          textarea.focus();
+          textarea.select();
+        }
+      });
+      warningSummary.appendChild(copyButton);
+      warningSummary.appendChild(copyStatus);
+      details.appendChild(warningSummary);
       var list = document.createElement('ul');
       for (var j = 0; j < warnings.length; j++) {
         list.appendChild(el('li', warnings[j]));
