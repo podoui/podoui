@@ -142,6 +142,50 @@
         }
       },
       "description": "Target-neutral activation event."
+    },
+    {
+      "name": "type",
+      "type": {
+        "kind": "enum",
+        "values": ["button", "submit", "reset"]
+      },
+      "default": "button",
+      "description": "네이티브 button type (react·hono). 이동형 「링크 버튼」은 <form method=\"get\"> + type=submit(또는 form/formAction)으로 만들어요 — <a>/href는 두지 않아요."
+    },
+    {
+      "name": "form",
+      "type": {
+        "kind": "string"
+      },
+      "description": "네이티브 button form 속성 — react·hono 그대로 전달 (native 미지원)."
+    },
+    {
+      "name": "formAction",
+      "type": {
+        "kind": "string"
+      },
+      "description": "네이티브 formaction — react·hono 그대로 전달 (native 미지원)."
+    },
+    {
+      "name": "formMethod",
+      "type": {
+        "kind": "string"
+      },
+      "description": "네이티브 formmethod — react·hono 그대로 전달 (native 미지원)."
+    },
+    {
+      "name": "name",
+      "type": {
+        "kind": "string"
+      },
+      "description": "네이티브 제출 이름 — react·hono 그대로 전달 (native 미지원)."
+    },
+    {
+      "name": "value",
+      "type": {
+        "kind": "string"
+      },
+      "description": "네이티브 제출 값 — react·hono 그대로 전달 (native 미지원)."
     }
   ],
   "variants": [
@@ -241,7 +285,9 @@
     },
     "hono": {
       "supported": true,
-      "limitations": ["Events render as attributes only in SSR output."]
+      "limitations": [
+        "onPress becomes a bubbling podo:press CustomEvent delegated by podo-ui/hono/client; native button attributes (form, formaction, formmethod, name, value…) pass through."
+      ]
     },
     "native": {
       "supported": true,

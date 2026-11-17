@@ -77,7 +77,9 @@
     "react": { "supported": true, "limitations": [] },
     "hono": {
       "supported": true,
-      "limitations": ["No checkbox prop: compose the selection column with Checkbox cells (SSR)."]
+      "limitations": [
+        "checkbox selection runs in the client island (podo-ui/hono/client); onSelectionChange becomes a podo:selection-change CustomEvent ({ selected }). Island tables must sit in a block context, not directly inside another table."
+      ]
     },
     "native": {
       "supported": false,

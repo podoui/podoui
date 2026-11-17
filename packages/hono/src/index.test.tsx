@@ -340,7 +340,7 @@ describe("@podoui/hono", () => {
     // suffixIcon이 없으면 기본 X 글리프가 유지돼요.
     const defaultClose = renderToString(<Toast closable>저장됨</Toast>);
     expect(defaultClose).toContain('class="podo-toast__close"');
-    expect(defaultClose).toContain("M6 6l12 12");
+    expect(defaultClose).toContain('<i class="podo-icon podo-icon-close" aria-hidden="true"></i>');
   });
 
   it("renders icon sizes and non-decorative naming per the icon spec", () => {

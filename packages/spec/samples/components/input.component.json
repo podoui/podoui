@@ -147,6 +147,14 @@
           "value": "string"
         }
       }
+    },
+    {
+      "name": "type",
+      "type": {
+        "kind": "string"
+      },
+      "default": "text",
+      "description": "네이티브 input type(date·datetime-local·number·email·file·password…). react·hono 모두 그 밖의 네이티브 input 속성(name·min·max·step·pattern·autocomplete·inputmode·accept·multiple…)을 그대로 전달해요."
     }
   ],
   "variants": [
@@ -190,7 +198,9 @@
     },
     "hono": {
       "supported": true,
-      "limitations": ["Value changes require client code."]
+      "limitations": [
+        "Native input attributes pass through; onValueChange becomes a podo:value-change CustomEvent ({ value, event }, fired on input) delegated by podo-ui/hono/client."
+      ]
     },
     "native": {
       "supported": true,

@@ -1,5 +1,6 @@
 // Generated from the v1 datepicker CSS module — class-name map for the ported global CSS.
-export const styles: Record<string, string> = {
+// React DatePicker와 Hono DatePicker SSR이 같은 클래스 이름을 쓰도록 core에 둬요.
+export const datePickerStyles: Record<string, string> = {
   actionButton: "podo-dp-actionButton",
   actionButtons: "podo-dp-actionButtons",
   active: "podo-dp-active",
@@ -79,3 +80,38 @@ export const styles: Record<string, string> = {
   yearMonthCell: "podo-dp-yearMonthCell",
   yearMonthGrid: "podo-dp-yearMonthGrid",
 };
+
+/** DatePicker 값 타입 (React `DatePickerType`과 같은 어휘). */
+export type PodoDatePickerType = "date" | "time" | "datetime" | "hour";
+
+export interface PodoDatePickerTime {
+  hour: number;
+  minute: number;
+}
+
+/**
+ * 폼 제출용 hidden 값 — date `YYYY-MM-DD`, time `HH:mm`, datetime
+ * `YYYY-MM-DDTHH:mm`(날짜·시간이 모두 있을 때만), hour `HH`. 값이 비었거나
+ * 불완전하면 빈 문자열(네이티브 date/time 입력과 같은 제출 규약).
+ */
+export function formatDatePickerFormValue(
+  type: PodoDatePickerType,
+  date: Date | undefined,
+  time: PodoDatePickerTime | undefined
+): string {
+  const pad = (value: number) => String(value).padStart(2, "0");
+  const day = date
+    ? `${String(date.getFullYear()).padStart(4, "0")}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+    : "";
+  const clock = time ? `${pad(time.hour)}:${pad(time.minute)}` : "";
+  switch (type) {
+    case "date":
+      return day;
+    case "time":
+      return clock;
+    case "hour":
+      return time ? pad(time.hour) : "";
+    case "datetime":
+      return day && clock ? `${day}T${clock}` : "";
+  }
+}

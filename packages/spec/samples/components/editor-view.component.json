@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "editor-view",
+  "name": "EditorView",
+  "category": "molecule",
+  "status": "experimental",
+  "description": "Read-only renderer for Editor HTML with the shared .podo-ed-* content classes.",
+  "anatomy": [
+    {
+      "name": "root"
+    }
+  ],
+  "slots": [],
+  "props": [
+    {
+      "name": "value",
+      "type": {
+        "kind": "string"
+      },
+      "description": "표시할 HTML.",
+      "required": true
+    },
+    {
+      "name": "className",
+      "type": {
+        "kind": "string"
+      },
+      "description": "추가 클래스 (hono: class)."
+    }
+  ],
+  "variants": [],
+  "states": [],
+  "tokens": {},
+  "targets": {
+    "web": {
+      "supported": false,
+      "limitations": ["No web component."]
+    },
+    "react": {
+      "supported": true,
+      "limitations": []
+    },
+    "hono": {
+      "supported": true,
+      "limitations": ["Static SSR markup (no client code needed)."]
+    },
+    "native": {
+      "supported": true,
+      "limitations": ["Native EditorView renders through the native host."]
+    }
+  },
+  "accessibility": {
+    "aria": ["content keeps the authored HTML semantics"]
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Rendered body",
+      "code": "<EditorView value={html} />"
+    }
+  ]
+}

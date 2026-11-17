@@ -563,6 +563,24 @@
   cursor: not-allowed;
 }
 
+/* 컴포넌트 내부 아이콘(PODO 아이콘 폰트 글리프, podo-ui/icons.css)의 크기 —
+   Figma 아이콘 슬롯 크기 그대로: 칩·모두 해제 X 16, 체브론 24, 셀 체크 16,
+   다중 선택 체크박스 체크 12, 토스트 닫기 24. */
+.podo-chip__remove .podo-icon,
+.podo-select__clear .podo-icon,
+.podo-select__cell-check .podo-icon {
+  font-size: 16px;
+}
+
+.podo-select__chevron .podo-icon,
+.podo-toast__close .podo-icon {
+  font-size: 24px;
+}
+
+.podo-select__checkbox .podo-icon {
+  font-size: 12px;
+}
+
 /* Table (Figma 474:1795) — mirrors the canonical @podoui/web table CSS. */
 .podo-table {
   background: var(--podo-table-table-bg, #ffffff);
@@ -722,6 +740,11 @@
   flex-shrink: 0;
 }
 
+/* Figma: 체브론 gray.80 (아이콘 기본색). */
+.podo-select__chevron {
+  color: var(--podo-icon-basic, #27272a);
+}
+
 /* Multi-select clear-all: an X ahead of the chevron, shown while values
    exist (no design spec yet — logged for a check). */
 .podo-select__clear {
@@ -873,6 +896,7 @@
 
 .podo-select__cell-check {
   align-items: center;
+  color: var(--podo-icon-primary, #426ced);
   display: inline-flex;
   flex-shrink: 0;
 }
@@ -1329,14 +1353,35 @@
   padding: 6px 8px;
 }
 
+/* 화살표는 Figma 4×16 포인터 좌표를 clip-path로 그려요 (아이콘이 아닌 모양). */
 .podo-tooltip__arrow {
-  color: var(--podo-tooltip-background);
-  display: flex;
+  background: var(--podo-tooltip-background);
+  display: block;
   flex: none;
 }
 
-.podo-tooltip__arrow svg {
-  display: block;
+.podo-tooltip[data-position="right"] .podo-tooltip__arrow {
+  clip-path: polygon(100% 25%, 0 50%, 100% 75%);
+  height: 16px;
+  width: 4px;
+}
+
+.podo-tooltip[data-position="left"] .podo-tooltip__arrow {
+  clip-path: polygon(0 25%, 100% 50%, 0 75%);
+  height: 16px;
+  width: 4px;
+}
+
+.podo-tooltip[data-position="bottom"] .podo-tooltip__arrow {
+  clip-path: polygon(25% 100%, 50% 0, 75% 100%);
+  height: 4px;
+  width: 16px;
+}
+
+.podo-tooltip[data-position="top"] .podo-tooltip__arrow {
+  clip-path: polygon(25% 0, 50% 100%, 75% 0);
+  height: 4px;
+  width: 16px;
 }
 
 .podo-tooltip[data-ordinal="first"] .podo-tooltip__arrow {

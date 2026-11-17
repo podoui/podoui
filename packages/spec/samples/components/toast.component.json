@@ -94,7 +94,9 @@
     "react": { "supported": true, "limitations": [] },
     "hono": {
       "supported": true,
-      "limitations": ["Static card only; dismissal and the toaster queue need client code."]
+      "limitations": [
+        "Server-rendered card: closable X and data-duration auto-dismiss are delegated by podo-ui/hono/client (podo:close). The stacked queue is the Toaster component + window.podo.toast."
+      ]
     },
     "native": {
       "supported": true,

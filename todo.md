@@ -654,3 +654,30 @@
   - 완료 기준: `npx -y podo-ui mcp`로 기본 스펙을 조회하고 `--root`로 프로젝트를 지정할 수 있으며 stdio 연결과 설치 bin 경로를 테스트한다.
   - 완료 기준: 사이트 Guide에 복사 가능한 실행·Claude Code·Codex·JSON 설정, 사용 예시와 문제 해결을 제공하고 README/운영 문서를 일치시킨다.
   - 완료 기준: 로컬 품질 검사와 독립 Codex·Claude 리뷰를 통과한다.
+
+### F. Hono React 완전 패리티 + podo-ui 2.3.11 (사용자 우선 요청, 2026-11-17)
+
+계획 원문: 하네스 `podoui-hono-parity-plan-v8`(승인 sha c3ff360f). 클라이언트 동작은 `packages/react/src` TSX 를 `hono/jsx/dom` 별칭으로 번들한 단일 엔트리 `podo-ui/hono/client`(island), 서버 SSR 은 `packages/hono` 확장. 패리티 정본 `docs/hono-parity.md`.
+
+- [x] T1 준비 — 패리티 표·아이콘 폰트·React 선행 수정·spec·core·DOM→vnode 스파이크
+  - 완료 기준: `docs/hono-parity.md` 가 React 공개 export 전수(행 수 = export 수)를 담고 모든 행에 전달 규칙·이벤트명·detail·island 여부·마운트 후 승인 차이·테스트 ID 가 있으며 비island 콜백 표가 완성돼 있다.
+  - 완료 기준: React·Hono 컴포넌트 소스의 인라인 `<svg` 가 0이고, 컴포넌트 내부 아이콘은 PODO 아이콘 폰트(`podo-icon`) 마크업을 쓰며 `chevron-down` 이 기본 아이콘 폰트·CSS·문서 `/icon`·MCP 프로젝트 목록에 존재한다.
+  - 완료 기준: React 소스의 ARIA 불리언 직렬화·모듈 레벨 JSX 상수 grep 0, Select·DatePicker·Editor 의 폼 제출 `name`(+Editor `defaultValue`) 추가 후 기존 React 테스트 통과(아이콘·`name`·`defaultValue` 외 스냅샷 변화 0).
+  - 완료 기준: spec·`parity.test.ts`·core(`serializeProps`/`reviveProps` 왕복) 테스트와 `domToVNode` 스파이크(Table 행 선택·Tooltip hover·Chip 라벨·Select prefix, jsdom) 가 통과한다.
+- [ ] T2 정적 pass-through — Hono Input·Textarea·Button 네이티브 속성 전달, 비island `data-podo-*`, EditorView SSR, 샘플 앱 골격
+  - 완료 기준: 새 prop 미지정 시 기존 스냅샷 불변, EditorView SSR 이 React `renderToStaticMarkup` 과 정규화 동일.
+- [ ] T3 단일 클라이언트 엔트리 + Select + Chip — `dist/hono/client.js`, island 프로토콜(래퍼·id·슬롯·defer 집계), 패리티 테스트 A·B·C
+  - 완료 기준: 계획 §4 T3 행의 jsdom 동작·패리티·중복 로드·`release:verify` 가 통과한다.
+  - T1 결정 반영(`docs/hono-parity.md` §1.4·§7): configure 키는 래퍼 `data-podo-id`·`id` 는 React 위치 유지(D-1), Switch island(D-2), Field 카운트 위임 갱신(D-3).
+  - T1 에서 넘어온 정리: `packages/hono/src/client/dom-to-vnode.ts` 초안이 지금도 `tsc` 로 `dist/hono/client/` 에 빌드돼 `podo-ui` 패키지에 들어가요(공개 export 없음). T3 에서 실제 클라이언트 구현으로 이어 쓰거나, 폐기하면 소스·생성물 제외를 함께 처리.
+- [ ] T4 DatePicker — Hono SSR + island, 조합별 패리티·제출값·configure
+- [ ] T5 Toaster·Toast·Tooltip·Table + 중첩 island(중첩 Chip 제거·중첩 defer)
+- [ ] T6 Editor — 같은 `client.js` 번들, `uploadUrl`·`validator` configure, 표 셀 안 Editor
+- [ ] T7 실브라우저 QA(ego-browser) — 샘플 앱, 아이콘 전후 스크린샷
+- [ ] T8 릴리스 2.3.11 — version·CHANGELOG(2.3.10 복원 포함)·SetupPage·README·AGENTS.md, 태그·Actions·npm·소비자 설치 확인
+- [ ] (범위 밖 기록, 2026-11-17 D-7) `packages/spec/samples/components/select.component.json` 이 스키마 위반 — `states[2].name = "completed"` 가 상태 enum 밖이라 `parseComponentDocument` 가 실패해요(HEAD `c866cae6` 부터). 지금은 이 파일을 파싱하는 테스트가 없어요.
+  - 완료 기준: 상태 이름을 스키마 어휘로 바꾸거나 스키마에 추가하고, 샘플 컴포넌트 전체를 파싱하는 테스트가 통과한다.
+- 시안 확인 요청(Figma, 코드는 아래로 결정):
+  - Select 펼침 체브론·Chip/Toast 닫기·Select 체크 아이콘을 인라인 SVG 에서 PODO 아이콘 폰트(`chevron-down`·`close`·`check`)로 교체 — `chevron-down` 은 Figma 원본 글리프, `close`·`check` 는 기존 기본 폰트 글리프 그대로(Figma 1.2px 선보다 굵음, 2026-11-17 결정 D-6). 선 두께·크기 차이는 T7 스크린샷으로 확인 요청
+  - Tooltip 화살표(4×16 포인터)는 아이콘이 아닌 모양이라 아이콘 폰트 대신 CSS `clip-path` 로 같은 좌표를 그림 — 시안 확인 요청
+  - Hono 전용 확장(시안 없음): 폼 제출 `name`(Select hidden·DatePicker hidden·Editor textarea), Editor `uploadUrl`, island 래퍼(`display: contents`) — 시안 영향 없음 확인 요청

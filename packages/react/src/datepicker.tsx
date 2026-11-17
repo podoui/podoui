@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { styles } from "./datepicker-styles.js";
+import { datePickerStyles as styles, formatDatePickerFormValue } from "@podoui/core";
 
 // Types
 export type DatePickerMode = "instant" | "period";
@@ -143,6 +143,15 @@ export interface DatePickerProps {
   direction?: "down" | "up" | "auto";
   /** 초기화 버튼 클릭 콜백 */
   onReset?: () => void;
+  /**
+   * 폼 제출 이름 (instant) — 확정된 값을 `<input type="hidden">`으로 렌더해요.
+   * 값 포맷: date `YYYY-MM-DD` · time `HH:mm` · datetime `YYYY-MM-DDTHH:mm` · hour `HH`.
+   */
+  name?: string;
+  /** period 모드 시작 값의 폼 제출 이름 (포맷은 name과 같음). */
+  fromName?: string;
+  /** period 모드 종료 값의 폼 제출 이름 (포맷은 name과 같음). */
+  toName?: string;
 }
 
 // Helper functions
@@ -869,7 +878,7 @@ const Calendar: React.FC<CalendarProps> = ({
           type="button"
           role="gridcell"
           aria-label={formatDayAriaLabel(prevDate)}
-          aria-selected={false}
+          aria-selected="false"
           className={`${styles.calendarCell} ${styles.other} ${isDisabled ? styles.disabled : ""}`}
           onClick={() => !isDisabled && onSelect(prevDate)}
           onKeyDown={(e) => handleDayKeyDown(e, prevDate)}
@@ -910,7 +919,7 @@ const Calendar: React.FC<CalendarProps> = ({
           type="button"
           role="gridcell"
           aria-label={formatDayAriaLabel(date)}
-          aria-selected={isSelectedCell}
+          aria-selected={isSelectedCell ? "true" : "false"}
           className={cellClass}
           onClick={() => !isDisabled && onSelect(date)}
           onKeyDown={(e) => handleDayKeyDown(e, date)}
@@ -935,7 +944,7 @@ const Calendar: React.FC<CalendarProps> = ({
           type="button"
           role="gridcell"
           aria-label={formatDayAriaLabel(nextDate)}
-          aria-selected={false}
+          aria-selected="false"
           className={`${styles.calendarCell} ${styles.other} ${isDisabled ? styles.disabled : ""}`}
           onClick={() => !isDisabled && onSelect(nextDate)}
           onKeyDown={(e) => handleDayKeyDown(e, nextDate)}
@@ -1180,6 +1189,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
   hideNavArrow = false,
   direction = "down",
   onReset,
+  name,
+  fromName,
+  toName,
 }) => {
   const [selectingPart, setSelectingPart] = useState<SelectingPart>(null);
   // Uncontrolled fallback — value prop이 있으면 controlled (Select의
@@ -1782,7 +1794,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           className={`${styles.inputPart} ${isActive ? styles.active : ""} ${styles.placeholder}`}
           onClick={onClick}
           disabled={disabled}
-          aria-disabled={disabled}
+          aria-disabled={disabled === undefined ? undefined : disabled ? "true" : "false"}
         >
           {placeholderText}
         </button>
@@ -1800,7 +1812,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
         className={`${styles.inputPart} ${isActive ? styles.active : ""}`}
         onClick={onClick}
         disabled={disabled}
-        aria-disabled={disabled}
+        aria-disabled={disabled === undefined ? undefined : disabled ? "true" : "false"}
       >
         {displayText}
       </button>
@@ -1990,7 +2002,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           onClick={() => handlePartClick(part)}
           disabled={disabled}
           aria-label={isEnd ? "종료 시 선택 열기" : "시 선택 열기"}
-          aria-expanded={selectingPart === part}
+          aria-expanded={selectingPart === part ? "true" : "false"}
         >
           {isHourOnly ? formatHourLabel(displayHour) : String(displayHour).padStart(2, "0")}
         </button>
@@ -2043,7 +2055,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           onClick={() => handlePartClick(part)}
           disabled={disabled}
           aria-label={isEnd ? "종료 분 선택 열기" : "분 선택 열기"}
-          aria-expanded={selectingPart === part}
+          aria-expanded={selectingPart === part ? "true" : "false"}
         >
           {String(minute).padStart(2, "0")}
         </button>
@@ -2146,7 +2158,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
                   type="button"
                   role="option"
                   className={`${styles.timeItem} ${optionSelected ? styles.selected : ""}`}
-                  aria-selected={optionSelected}
+                  aria-selected={optionSelected ? "true" : "false"}
                   tabIndex={value === focusableValue ? 0 : -1}
                   disabled={optionDisabled}
                   data-time-selected={optionSelected ? "true" : undefined}
@@ -2363,7 +2375,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
                       className={`${styles.quickSelectItem} ${active ? styles.active : ""}`}
                       onClick={() => handleQuickSelect(preset.key)}
                       disabled={presetDisabled}
-                      aria-pressed={active}
+                      aria-pressed={active ? "true" : "false"}
                     >
                       {preset.label}
                     </button>
@@ -2528,6 +2540,27 @@ const DatePicker: React.FC<DatePickerProps> = ({
         )}
       </div>
 
+      {mode === "instant" && name !== undefined ? (
+        <input
+          type="hidden"
+          name={name}
+          value={formatDatePickerFormValue(type, committedValue.date, committedValue.time)}
+        />
+      ) : null}
+      {mode === "period" && fromName !== undefined ? (
+        <input
+          type="hidden"
+          name={fromName}
+          value={formatDatePickerFormValue(type, committedValue.date, committedValue.time)}
+        />
+      ) : null}
+      {mode === "period" && toName !== undefined ? (
+        <input
+          type="hidden"
+          name={toName}
+          value={formatDatePickerFormValue(type, committedValue.endDate, committedValue.endTime)}
+        />
+      ) : null}
       {isDropdownOpen && renderDropdown()}
     </div>
   );

@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "editor",
+  "name": "Editor",
+  "category": "organism",
+  "status": "experimental",
+  "description": "WYSIWYG rich-text editor ported from v1 (.podo-ed-* classes): undo/redo, paragraph, text style, colors, align, lists, table, link, image, YouTube, hr, clear format, and code view toolbar groups; optional zod validator; external image upload handler.",
+  "anatomy": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "toolbar",
+      "parent": "root"
+    },
+    {
+      "name": "content",
+      "parent": "root"
+    },
+    {
+      "name": "code-view",
+      "parent": "root"
+    }
+  ],
+  "slots": [],
+  "props": [
+    {
+      "name": "value",
+      "type": {
+        "kind": "string"
+      },
+      "description": "Controlled 본문 HTML."
+    },
+    {
+      "name": "defaultValue",
+      "type": {
+        "kind": "string"
+      },
+      "description": "비제어 초기 본문 HTML."
+    },
+    {
+      "name": "name",
+      "type": {
+        "kind": "string"
+      },
+      "description": "폼 제출 이름 — 본문 HTML을 숨은 textarea에 동기화해요. react·hono 같은 마크업."
+    },
+    {
+      "name": "onChange",
+      "type": {
+        "kind": "event",
+        "payload": {
+          "content": "string"
+        }
+      },
+      "description": "본문이 바뀔 때 — hono: podo:change { content }."
+    },
+    {
+      "name": "width",
+      "type": {
+        "kind": "string"
+      },
+      "description": "너비.",
+      "default": "100%"
+    },
+    {
+      "name": "height",
+      "type": {
+        "kind": "string"
+      },
+      "description": "높이 또는 contents.",
+      "default": "400px"
+    },
+    {
+      "name": "minHeight",
+      "type": {
+        "kind": "string"
+      },
+      "description": "최소 높이."
+    },
+    {
+      "name": "maxHeight",
+      "type": {
+        "kind": "string"
+      },
+      "description": "최대 높이."
+    },
+    {
+      "name": "resizable",
+      "type": {
+        "kind": "boolean"
+      },
+      "description": "크기 조절 핸들.",
+      "default": false
+    },
+    {
+      "name": "validator",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "z.ZodType"
+        }
+      },
+      "description": "zod 스키마 검증. hono: 클래스 인스턴스라 configure로만 받아요."
+    },
+    {
+      "name": "placeholder",
+      "type": {
+        "kind": "string"
+      },
+      "description": "빈 본문 안내."
+    },
+    {
+      "name": "toolbar",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "ToolbarItem[]"
+        }
+      },
+      "description": "사용할 툴바 항목(없으면 전부)."
+    },
+    {
+      "name": "onImageUpload",
+      "type": {
+        "kind": "event",
+        "payload": {
+          "file": "File"
+        }
+      },
+      "description": "외부 이미지 업로드 처리(Promise<string | { src, alt }>). hono: configure로 함수를 넘기거나 hono 전용 uploadUrl을 써요."
+    },
+    {
+      "name": "uploadUrl",
+      "type": {
+        "kind": "string"
+      },
+      "description": "hono 전용: 이미지를 FormData(file)로 POST하고 { url }을 받는 업로드 주소."
+    },
+    {
+      "name": "onImageUploadError",
+      "type": {
+        "kind": "event",
+        "payload": {
+          "error": "unknown",
+          "file": "File"
+        }
+      },
+      "description": "외부 업로드 실패 — hono: podo:image-upload-error."
+    },
+    {
+      "name": "ariaLabel",
+      "type": {
+        "kind": "string"
+      },
+      "description": "편집 영역 접근성 이름.",
+      "default": "리치 텍스트 편집기"
+    }
+  ],
+  "variants": [],
+  "states": [],
+  "tokens": {},
+  "targets": {
+    "web": {
+      "supported": false,
+      "limitations": ["No web component; use the react or hono target."]
+    },
+    "react": {
+      "supported": true,
+      "limitations": []
+    },
+    "hono": {
+      "supported": true,
+      "limitations": [
+        "SSR renders a shell (initial HTML + hidden textarea); editing runs in the client island (podo-ui/hono/client) from the same React source. uploadUrl is hono-only; validator/onImageUpload arrive through configure."
+      ]
+    },
+    "native": {
+      "supported": true,
+      "limitations": [
+        "Native Editor in podo-ui/native has its own props; form names and uploadUrl are web-only."
+      ]
+    }
+  },
+  "accessibility": {
+    "role": "textbox",
+    "aria": ["content role=textbox aria-multiline with aria-label"],
+    "keyboard": ["Ctrl/Cmd+Z undo, Ctrl/Cmd+Shift+Z redo inside the editor"]
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Form editor",
+      "code": "<Editor name=\"body\" defaultValue=\"<p>안녕하세요</p>\" />"
+    }
+  ]
+}

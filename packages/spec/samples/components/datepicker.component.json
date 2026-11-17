@@ -1,0 +1,333 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "datepicker",
+  "name": "DatePicker",
+  "category": "molecule",
+  "status": "experimental",
+  "description": "Date/time picker ported from v1 (.podo-dp-* classes, styles shared from @podoui/core): instant(single) or period(range) × date/time/datetime/hour, calendar dropdown with optional portal, min/max and disable/enable conditions, quick-select presets for periods. Form submission uses hidden inputs (name, or fromName/toName for period) with date YYYY-MM-DD · time HH:mm · datetime YYYY-MM-DDTHH:mm · hour HH.",
+  "anatomy": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "input",
+      "parent": "root"
+    },
+    {
+      "name": "input-part",
+      "parent": "input"
+    },
+    {
+      "name": "input-icon",
+      "parent": "input"
+    },
+    {
+      "name": "dropdown",
+      "parent": "root"
+    },
+    {
+      "name": "calendar",
+      "parent": "dropdown"
+    },
+    {
+      "name": "time-panel",
+      "parent": "dropdown"
+    },
+    {
+      "name": "actions",
+      "parent": "dropdown"
+    }
+  ],
+  "slots": [],
+  "props": [
+    {
+      "name": "mode",
+      "type": {
+        "kind": "enum",
+        "values": ["instant", "period"]
+      },
+      "description": "선택 모드: instant(단일) | period(기간).",
+      "default": "instant"
+    },
+    {
+      "name": "type",
+      "type": {
+        "kind": "enum",
+        "values": ["date", "time", "datetime", "hour"]
+      },
+      "description": "값 타입.",
+      "default": "date"
+    },
+    {
+      "name": "value",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "DatePickerValue"
+        }
+      },
+      "description": "Controlled 값 { date, time, endDate, endTime }. hono: SSR 초기값은 defaultValue로 싣고, 제어는 configure로만."
+    },
+    {
+      "name": "defaultValue",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "DatePickerValue"
+        }
+      },
+      "description": "비제어 초기값."
+    },
+    {
+      "name": "onChange",
+      "type": {
+        "kind": "event",
+        "payload": {
+          "value": "DatePickerValue"
+        }
+      },
+      "description": "확정된 값이 바뀔 때 — hono: podo:change { value }."
+    },
+    {
+      "name": "placeholder",
+      "type": {
+        "kind": "string"
+      },
+      "description": "값이 없을 때 표시."
+    },
+    {
+      "name": "disabled",
+      "type": {
+        "kind": "boolean"
+      },
+      "description": "비활성화.",
+      "default": false
+    },
+    {
+      "name": "showActions",
+      "type": {
+        "kind": "boolean"
+      },
+      "description": "하단 적용/초기화 버튼 (period 기본 true)."
+    },
+    {
+      "name": "align",
+      "type": {
+        "kind": "enum",
+        "values": ["left", "right"]
+      },
+      "description": "드롭다운 정렬.",
+      "default": "left"
+    },
+    {
+      "name": "disable",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "DateCondition[]"
+        }
+      },
+      "description": "선택 불가 조건(Date·{from,to}·함수). hono: 함수·Date 조건이 섞이면 SSR이 생략하고 클라이언트 configure(id, { prop })로 받아요."
+    },
+    {
+      "name": "enable",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "DateCondition[]"
+        }
+      },
+      "description": "선택 가능 조건(지정 날짜만). hono: 함수·Date 조건이 섞이면 SSR이 생략하고 클라이언트 configure(id, { prop })로 받아요."
+    },
+    {
+      "name": "minDate",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "Date | DateTimeLimit"
+        }
+      },
+      "description": "최소 날짜(Date 또는 { date, time })."
+    },
+    {
+      "name": "maxDate",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "Date | DateTimeLimit"
+        }
+      },
+      "description": "최대 날짜(Date 또는 { date, time })."
+    },
+    {
+      "name": "minuteStep",
+      "type": {
+        "kind": "number"
+      },
+      "description": "분 선택 간격 — 1·5·10·15·20·30 중 하나(React MinuteStep). hour 타입에서는 무시돼요.",
+      "default": 1
+    },
+    {
+      "name": "hourFormat",
+      "type": {
+        "kind": "enum",
+        "values": ["24", "12"]
+      },
+      "description": "hour 타입 표시 방식.",
+      "default": "24"
+    },
+    {
+      "name": "disabledHours",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "number[]"
+        }
+      },
+      "description": "hour 타입에서 고를 수 없는 시(0~23)."
+    },
+    {
+      "name": "hourStep",
+      "type": {
+        "kind": "number"
+      },
+      "description": "hour 타입의 시간 선택 간격 — 1·2·3·4·6·12 중 하나(React HourStep).",
+      "default": 1
+    },
+    {
+      "name": "format",
+      "type": {
+        "kind": "string"
+      },
+      "description": "표시 포맷 (y·m·d·h·i)."
+    },
+    {
+      "name": "initialCalendar",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "InitialCalendar"
+        }
+      },
+      "description": "period 초기 달력 월 { start, end }."
+    },
+    {
+      "name": "yearRange",
+      "type": {
+        "kind": "object",
+        "schema": {
+          "type": "YearRange"
+        }
+      },
+      "description": "연도 선택 범위 { min, max }."
+    },
+    {
+      "name": "portal",
+      "type": {
+        "kind": "boolean"
+      },
+      "description": "드롭다운을 document.body로 포탈.",
+      "default": false
+    },
+    {
+      "name": "quickSelect",
+      "type": {
+        "kind": "boolean"
+      },
+      "description": "period 빠른 기간 선택 패널.",
+      "default": false
+    },
+    {
+      "name": "hideNavArrow",
+      "type": {
+        "kind": "boolean"
+      },
+      "description": "quickSelect 기간 이동 화살표 숨김.",
+      "default": false
+    },
+    {
+      "name": "direction",
+      "type": {
+        "kind": "enum",
+        "values": ["down", "up", "auto"]
+      },
+      "description": "드롭다운 열림 방향.",
+      "default": "down"
+    },
+    {
+      "name": "onReset",
+      "type": {
+        "kind": "event"
+      },
+      "description": "초기화 버튼 — hono: podo:reset."
+    },
+    {
+      "name": "name",
+      "type": {
+        "kind": "string"
+      },
+      "description": "instant 폼 제출 이름(hidden). react·hono 같은 마크업."
+    },
+    {
+      "name": "fromName",
+      "type": {
+        "kind": "string"
+      },
+      "description": "period 시작 값 폼 제출 이름(hidden)."
+    },
+    {
+      "name": "toName",
+      "type": {
+        "kind": "string"
+      },
+      "description": "period 종료 값 폼 제출 이름(hidden)."
+    }
+  ],
+  "variants": [],
+  "states": [],
+  "tokens": {},
+  "targets": {
+    "web": {
+      "supported": false,
+      "limitations": ["No web component; use the react or hono target."]
+    },
+    "react": {
+      "supported": true,
+      "limitations": []
+    },
+    "hono": {
+      "supported": true,
+      "limitations": [
+        "SSR renders the closed input with hidden form values; the calendar runs in the client island (podo-ui/hono/client) from the same React source. Function conditions in disable/enable arrive through configure; Dates travel as local wall-clock values."
+      ]
+    },
+    "native": {
+      "supported": true,
+      "limitations": [
+        "Native DatePicker in podo-ui/native has its own props; form names are web-only."
+      ]
+    }
+  },
+  "accessibility": {
+    "role": "dialog",
+    "aria": [
+      "dropdown role=dialog with aria-label",
+      "calendar role=grid with gridcell aria-selected"
+    ],
+    "keyboard": ["Arrow keys move between days", "Escape closes without committing"],
+    "focusManagement": "Focus returns to the input part when the dropdown closes."
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Date field",
+      "code": "<DatePicker name=\"day\" defaultValue={{ date: new Date() }} />"
+    },
+    {
+      "target": "hono",
+      "title": "Period form field",
+      "code": "<DatePicker mode=\"period\" fromName=\"from\" toName=\"to\" />"
+    }
+  ]
+}

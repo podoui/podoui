@@ -45,7 +45,9 @@ import { useTableEditor } from "./hooks/useTableEditor.js";
  * ```
  */
 const Editor = ({
-  value = "",
+  value: valueProp,
+  defaultValue,
+  name,
   width = "100%",
   height = "400px",
   minHeight,
@@ -60,6 +62,21 @@ const Editor = ({
   ariaLabel = "리치 텍스트 편집기",
 }: EditorProps) => {
   // ========== State ==========
+  // value가 없으면 defaultValue를 첫 렌더에 고정한 비제어 모드 — 편집 내용은
+  // DOM이 들고 있고 value 동기화 effect가 다시 덮어쓰지 않아요.
+  const [initialValue] = useState(defaultValue ?? "");
+  const value = valueProp ?? initialValue;
+  // 폼 제출용 숨은 textarea 값 — onChange가 불리는 시점에 함께 갱신돼요.
+  const [formValue, setFormValue] = useState(value);
+  const emitChange = useCallback(
+    (content: string) => {
+      if (name !== undefined) {
+        setFormValue(content);
+      }
+      onChange?.(content);
+    },
+    [name, onChange]
+  );
   const [message, setMessage] = useState("");
   const [statusClass, setStatusClass] = useState("");
 
@@ -151,7 +168,7 @@ const Editor = ({
 
   const history = useEditorHistory({
     editorRef,
-    onChange,
+    onChange: emitChange,
     getCleanHTML,
     initialValue: value,
   });
@@ -160,7 +177,7 @@ const Editor = ({
     editorRef,
     codeEditorRef,
     value,
-    onChange,
+    onChange: emitChange,
     formatHtml,
     getCleanHTML,
     height,
@@ -305,7 +322,7 @@ const Editor = ({
       const content = editorRef.current.innerHTML;
       const cleanContent = getCleanHTML(content);
 
-      onChange(cleanContent);
+      emitChange(cleanContent);
       validateHandler(cleanContent);
       textStyle.detectCurrentParagraphStyle();
       textStyle.detectCurrentAlign();
@@ -315,7 +332,7 @@ const Editor = ({
         history.addToHistory(content);
       }
     }
-  }, [onChange, validateHandler, textStyle, history]);
+  }, [emitChange, validateHandler, textStyle, history]);
 
   // handleInputRef 업데이트
   handleInputRef.current = handleInput;
@@ -542,6 +559,7 @@ const Editor = ({
     if (editorRef.current && editorRef.current.innerHTML !== value) {
       editorRef.current.innerHTML = value;
     }
+    setFormValue(value);
   }, [value]);
 
   // ========== 키보드 단축키 ==========
@@ -1448,7 +1466,7 @@ const Editor = ({
             className={styles.codeEditor}
             value={codeView.codeContent}
             onChange={codeView.handleCodeChange}
-            spellCheck={false}
+            spellCheck="false"
             aria-label={ariaLabel}
             style={{
               flex: height === "contents" ? "0 0 auto" : 1,
@@ -1467,7 +1485,7 @@ const Editor = ({
             ref={editorRef}
             id={editorID}
             className={styles.editorContent}
-            contentEditable
+            contentEditable="true"
             suppressContentEditableWarning
             role="textbox"
             aria-multiline="true"
@@ -1970,6 +1988,7 @@ const Editor = ({
         onChange={imageEditor.handleImageFileChange}
         style={{ display: "none" }}
       />
+      {name !== undefined ? <textarea hidden name={name} value={formValue} readOnly /> : null}
     </div>
   );
 };

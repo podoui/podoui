@@ -25,13 +25,18 @@ export interface EditorImageUploadResult {
 export type EditorImageUploadHandler = (file: File) => Promise<string | EditorImageUploadResult>;
 
 export interface EditorProps {
-  value: string;
+  /** 본문 HTML (controlled — 주어지면 내부 편집 내용보다 우선) */
+  value?: string;
+  /** 초기 본문 HTML (uncontrolled — value가 없을 때만 사용) */
+  defaultValue?: string;
+  /** 폼 제출 이름 — 지정하면 본문 HTML을 담은 숨은 textarea를 함께 렌더해요. */
+  name?: string;
   width?: string;
   height?: string | "contents";
   minHeight?: string;
   maxHeight?: string;
   resizable?: boolean;
-  onChange: (content: string) => void;
+  onChange?: (content: string) => void;
   validator?: z.ZodType<unknown>;
   placeholder?: string;
   toolbar?: ToolbarItem[]; // 사용할 툴바 아이템 (없으면 전부)

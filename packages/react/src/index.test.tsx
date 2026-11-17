@@ -1891,6 +1891,159 @@ describe("@podoui/react", () => {
   });
 });
 
+describe("form submission names and icon glyphs (Hono parity)", () => {
+  const fruit = [
+    { value: "strawberry", label: "딸기" },
+    { value: "banana", label: "바나나" },
+  ];
+  const hiddenValues = (root: Element, name: string) =>
+    [...root.querySelectorAll<HTMLInputElement>(`input[type="hidden"][name="${name}"]`)].map(
+      (input) => input.value
+    );
+
+  it("submits single and multi Select values through hidden inputs", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <form>
+        <Select name="fruit" portal={false} options={fruit} defaultValue="banana" />
+        <Select name="fruits" multiple portal={false} options={fruit} />
+      </form>
+    );
+    const form = container.querySelector("form")!;
+    const [single, multi] = within(container).getAllByRole("combobox");
+    expect(container.querySelector('[data-name="fruit"]')).not.toBeNull();
+    expect(hiddenValues(form, "fruit")).toEqual(["banana"]);
+    // 빈 다중 선택은 hidden이 없지만 루트 data-name으로 이름이 남아요.
+    expect(hiddenValues(form, "fruits")).toEqual([]);
+    expect(container.querySelector('[data-name="fruits"]')).not.toBeNull();
+
+    await user.click(single!);
+    await user.click(within(container).getByRole("option", { name: "딸기" }));
+    expect(hiddenValues(form, "fruit")).toEqual(["strawberry"]);
+
+    await user.click(multi!);
+    await user.click(within(container).getByRole("option", { name: "딸기" }));
+    await user.click(within(container).getByRole("option", { name: "바나나" }));
+    expect(hiddenValues(form, "fruits")).toEqual(["strawberry", "banana"]);
+    expect([...new FormData(form).getAll("fruits")]).toEqual(["strawberry", "banana"]);
+  });
+
+  it("renders no hidden inputs or data-name when name is omitted", () => {
+    const { container } = render(<Select portal={false} options={fruit} defaultValue="banana" />);
+    expect(container.querySelector('input[type="hidden"]')).toBeNull();
+    expect(container.querySelector("[data-name]")).toBeNull();
+  });
+
+  it("submits committed DatePicker values in native formats", () => {
+    const { container } = render(
+      <form>
+        <DatePicker name="day" defaultValue={{ date: new Date(2026, 10, 17) }} />
+        <DatePicker
+          type="datetime"
+          name="at"
+          defaultValue={{ date: new Date(2026, 10, 17), time: { hour: 9, minute: 5 } }}
+        />
+        <DatePicker
+          mode="period"
+          fromName="from"
+          toName="to"
+          defaultValue={{ date: new Date(2026, 10, 1), endDate: new Date(2026, 10, 30) }}
+        />
+        <DatePicker type="time" name="empty" />
+      </form>
+    );
+    const data = new FormData(container.querySelector("form")!);
+    expect(Object.fromEntries(data)).toEqual({
+      day: "2026-11-17",
+      at: "2026-11-17T09:05",
+      from: "2026-11-01",
+      to: "2026-11-30",
+      empty: "",
+    });
+  });
+
+  it("keeps the submitted DatePicker value until a change is committed", () => {
+    const { container } = render(
+      <form>
+        <DatePicker
+          type="datetime"
+          name="partial"
+          defaultValue={{ date: new Date(2026, 10, 17) }}
+        />
+        <DatePicker
+          mode="period"
+          fromName="from"
+          toName="to"
+          defaultValue={{ date: new Date(2026, 10, 1), endDate: new Date(2026, 10, 30) }}
+        />
+      </form>
+    );
+    const form = container.querySelector("form")!;
+    // 날짜만 있고 시간이 없는 datetime은 불완전 값이라 빈 문자열이에요.
+    expect(new FormData(form).get("partial")).toBe("");
+
+    // period는 적용 버튼으로 커밋해요 — 날짜를 눌러도 Escape로 닫으면 제출값 그대로.
+    const periodInput = container.querySelectorAll(".podo-dp-input")[1]!;
+    fireEvent.click(periodInput.querySelector(".podo-dp-inputPart")!);
+    const day = document.querySelector<HTMLButtonElement>(".podo-dp-calendarCell:not(:disabled)");
+    fireEvent.click(day!);
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(new FormData(form).get("from")).toBe("2026-11-01");
+    expect(new FormData(form).get("to")).toBe("2026-11-30");
+  });
+
+  it("serializes boolean aria-invalid/aria-required on the Select combobox", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Select searchable portal={false} options={fruit} aria-invalid={true} aria-required={false} />
+    );
+    const trigger = within(container).getByRole("combobox");
+    expect(trigger.getAttribute("aria-invalid")).toBe("true");
+    expect(trigger.getAttribute("aria-required")).toBe("false");
+    await user.click(trigger);
+    const search = container.querySelector(".podo-select__search")!;
+    expect(search.getAttribute("aria-invalid")).toBe("true");
+    expect(search.getAttribute("aria-required")).toBe("false");
+  });
+
+  it("uses PODO icon font glyphs instead of inline SVG", () => {
+    const { container } = render(
+      <div>
+        <Chip onRemove={() => {}}>필터</Chip>
+        <Select
+          multiple
+          clearable
+          defaultOpen
+          portal={false}
+          options={fruit}
+          defaultValues={["banana"]}
+        />
+        <Select defaultOpen portal={false} options={fruit} defaultValue="banana" />
+        <Toast onClose={() => {}}>저장됨</Toast>
+        <Tooltip label="도움말" open portal={false}>
+          <button type="button">?</button>
+        </Tooltip>
+      </div>
+    );
+    expect(container.querySelector("svg")).toBeNull();
+    const glyphs = [...container.querySelectorAll("i.podo-icon")].map((icon) => [
+      icon.className,
+      icon.getAttribute("aria-hidden"),
+    ]);
+    expect(glyphs).toEqual(
+      expect.arrayContaining([
+        ["podo-icon podo-icon-close", "true"],
+        ["podo-icon podo-icon-chevron-down", "true"],
+        ["podo-icon podo-icon-check", "true"],
+      ])
+    );
+    expect(container.querySelector(".podo-select__checkbox .podo-icon-check")).not.toBeNull();
+    expect(container.querySelector(".podo-select__cell-check .podo-icon-check")).not.toBeNull();
+    expect(container.querySelector(".podo-toast__close .podo-icon-close")).not.toBeNull();
+    expect(container.querySelector(".podo-tooltip__arrow")?.childNodes.length).toBe(0);
+  });
+});
+
 describe("ported v1 components", () => {
   it("renders DatePicker input and opens the calendar dropdown", () => {
     const { container } = render(

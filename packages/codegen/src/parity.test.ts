@@ -26,6 +26,12 @@ describe("cross-target component parity", () => {
       "disabled",
       "fill",
       "onPress",
+      "type",
+      "form",
+      "formAction",
+      "formMethod",
+      "name",
+      "value",
     ]);
     expect(button.slots.map((slot) => slot.name)).toEqual(["prefix", "children", "suffix"]);
     expect(button.tokens).toMatchObject({
@@ -37,6 +43,43 @@ describe("cross-target component parity", () => {
       "root.background": "{component.button.background}",
       "label.color": "{component.button.text}",
     });
+  });
+});
+
+describe("Hono parity spec additions", () => {
+  it("declares the ported DatePicker, Toaster, Editor, and EditorView per target", () => {
+    const support = (name: string) => {
+      const spec = loadComponent(name);
+      return Object.fromEntries(targets.map((target) => [target, spec.targets[target].supported]));
+    };
+    expect(support("datepicker")).toEqual({ web: false, react: true, hono: true, native: true });
+    expect(support("toaster")).toEqual({ web: false, react: true, hono: true, native: false });
+    expect(support("editor")).toEqual({ web: false, react: true, hono: true, native: true });
+    expect(support("editor-view")).toEqual({ web: false, react: true, hono: true, native: true });
+  });
+
+  it("documents the form submission names and Hono-only props", () => {
+    const propNames = (name: string) => loadComponent(name).props.map((prop) => prop.name);
+    expect(propNames("datepicker")).toEqual(expect.arrayContaining(["name", "fromName", "toName"]));
+    // React MinuteStep·HourStep은 숫자 리터럴이라 spec도 숫자 타입·숫자 기본값이에요.
+    const datepicker = loadComponent("datepicker");
+    for (const name of ["minuteStep", "hourStep"]) {
+      const prop = datepicker.props.find((item) => item.name === name);
+      expect(prop?.type).toEqual({ kind: "number" });
+      expect(prop?.default).toBe(1);
+    }
+    expect(propNames("editor")).toEqual(
+      expect.arrayContaining(["name", "defaultValue", "uploadUrl", "validator"])
+    );
+    expect(propNames("input")).toContain("type");
+    expect(propNames("textarea")).toContain("rows");
+    expect(loadComponent("tooltip").slots.map((slot) => slot.name)).toContain("trigger");
+    // select.component.json은 기존 state 이름("completed")이 스키마 enum 밖이라
+    // 파서를 거치지 않고 원본 JSON에서 prop만 확인해요.
+    const select = JSON.parse(
+      readFileSync(resolve(componentRoot, "select.component.json"), "utf8")
+    ) as { props: Array<{ name: string }> };
+    expect(select.props.map((prop) => prop.name)).toContain("name");
   });
 });
 

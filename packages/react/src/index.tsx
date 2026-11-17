@@ -271,6 +271,12 @@ export interface SelectProps extends Omit<
   disabled?: boolean;
   /** 값 앞에 붙는 아이콘 (Figma prefix-icon). */
   prefix?: ReactNode;
+  /**
+   * 폼 제출 이름 — 선택 값마다 `<input type="hidden" name value>`를 렌더해요
+   * (다중은 값 수만큼 반복, 값이 없으면 hidden 없음). 루트에도 data-name으로
+   * 남아 빈 다중 선택에서도 이름을 알 수 있어요.
+   */
+  name?: string;
 }
 
 export interface TextareaProps extends Omit<
@@ -497,13 +503,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   );
 });
 
-// Close glyph for removable chips (Figma suffix-icon=close, 16px, follows the
-// label color).
-const CHIP_CLOSE = (
-  <svg aria-hidden width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-  </svg>
-);
+// 컴포넌트 내부 장식 아이콘은 PODO 아이콘 폰트 글리프예요(DatePicker와 같은
+// 마크업). 크기·색은 감싸는 요소의 CSS가 정해요. 렌더마다 새 요소를 만들어요 —
+// 모듈 상수로 공유하면 hono/jsx/dom 재렌더에서 같은 vnode가 재사용돼 깨져요.
+function glyph(name: string): React.ReactElement {
+  return <i className={`podo-icon podo-icon-${name}`} aria-hidden="true" />;
+}
 
 /**
  * The forwarded ref receives the chip's root element, which depends on the
@@ -581,7 +586,7 @@ export const Chip = forwardRef<HTMLButtonElement | HTMLSpanElement, ChipProps>(f
             onRemove(event);
           }}
         >
-          {CHIP_CLOSE}
+          {glyph("close")}
         </button>
       </span>
     );
@@ -596,7 +601,7 @@ export const Chip = forwardRef<HTMLButtonElement | HTMLSpanElement, ChipProps>(f
       disabled={behavior.root.disabled}
       aria-disabled={behavior.root.ariaDisabled}
       tabIndex={behavior.root.tabIndex}
-      aria-pressed={isSelected}
+      aria-pressed={isSelected ? "true" : "false"}
       data-state={isSelected ? "selected" : undefined}
       className={joinClass("podo-chip", className)}
       data-size={size}
@@ -919,44 +924,6 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   );
 });
 
-// Select icons (Figma: chevron gray.80, single-selected check primary.50,
-// checkbox check + chip close inherit their surface colors).
-const SELECT_CHEVRON = (
-  <svg aria-hidden width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <path
-      d="M6 9l6 6 6-6"
-      stroke="#27272A"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const SELECT_CHECK = (
-  <svg aria-hidden width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path
-      d="M3.5 8.5l3 3 6-6.5"
-      stroke="#426CED"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const SELECT_BOX_CHECK = (
-  <svg aria-hidden width="12" height="12" viewBox="0 0 12 12" fill="none">
-    <path
-      d="M2.5 6.5l2.5 2.5 4.5-5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 // Portal menu placement constants — 6px matches the menu-list's padding-top
 // gap in CSS, 474px mirrors the menu's CSS max-height (ten 42px cells + nine
 // 4px gaps + 16px padding + 2px border), 8px keeps it off the viewport edge.
@@ -990,6 +957,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     invalid,
     disabled,
     prefix,
+    name,
     className,
     onClick,
     onKeyDown,
@@ -1346,7 +1314,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
   const searching = Boolean(isOpen && searchable);
   const searchComboProps = {
     role: "combobox",
-    "aria-expanded": menuRendered,
+    "aria-expanded": menuRendered ? "true" : "false",
     "aria-haspopup": "listbox",
     "aria-autocomplete": "list",
     "aria-controls": menuRendered ? menuId : undefined,
@@ -1361,8 +1329,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
     "aria-describedby": ariaDescribedBy,
-    "aria-invalid": ariaInvalid ?? (invalid || undefined),
-    "aria-required": ariaRequired,
+    "aria-invalid": ariaString(ariaInvalid) ?? (invalid ? "true" : undefined),
+    "aria-required": ariaString(ariaRequired),
   };
 
   return (
@@ -1380,19 +1348,20 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
       data-size={size}
       data-state={invalid ? "invalid" : disabled ? "disabled" : readOnly ? "read-only" : undefined}
       data-open={isOpen ? "true" : undefined}
+      data-name={name}
     >
       <div
         {...(searching ? undefined : comboAria)}
         ref={triggerRef}
         role={searching ? undefined : "combobox"}
-        aria-expanded={searching ? undefined : menuRendered}
+        aria-expanded={searching ? undefined : menuRendered ? "true" : "false"}
         aria-haspopup={searching ? undefined : "listbox"}
         aria-controls={menuRendered && !searching ? menuId : undefined}
         aria-activedescendant={
           menuRendered && !searching && activeIndex >= 0 ? `${menuId}-${activeIndex}` : undefined
         }
-        aria-disabled={disabled || undefined}
-        aria-readonly={readOnly || undefined}
+        aria-disabled={disabled ? "true" : undefined}
+        aria-readonly={readOnly ? "true" : undefined}
         tabIndex={disabled || searching ? -1 : 0}
         className="podo-select__trigger"
         onKeyDown={handleKeyDown}
@@ -1476,12 +1445,17 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
               onValuesChange?.([]);
             }}
           >
-            {CHIP_CLOSE}
+            {glyph("close")}
           </button>
         ) : null}
         {/* read-only는 열 수 없으니 체브론도 없어요 (Figma read-only). */}
-        {readOnly ? null : <span className="podo-select__chevron">{SELECT_CHEVRON}</span>}
+        {readOnly ? null : <span className="podo-select__chevron">{glyph("chevron-down")}</span>}
       </div>
+      {name !== undefined
+        ? (multiple ? selectedValues : hasValue ? [selectedValue as string] : []).map((v) => (
+            <input key={v} type="hidden" name={name} value={v} />
+          ))
+        : null}
       {menuRendered
         ? renderSelectMenu(
             portal,
@@ -1539,7 +1513,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
                   className="podo-select__listbox"
                   role="listbox"
                   id={menuId}
-                  aria-multiselectable={multiple || undefined}
+                  aria-multiselectable={multiple ? "true" : undefined}
                 >
                   {visible.map((option, index) => {
                     const selected = multiple
@@ -1550,7 +1524,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
                         key={option.value}
                         id={`${menuId}-${index}`}
                         role="option"
-                        aria-selected={selected}
+                        aria-selected={selected ? "true" : "false"}
                         className="podo-select__cell"
                         data-state={selected ? "selected" : undefined}
                         data-active={index === activeIndex ? "true" : undefined}
@@ -1561,12 +1535,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
                             className="podo-select__checkbox"
                             data-checked={selected ? "true" : undefined}
                           >
-                            {selected ? SELECT_BOX_CHECK : null}
+                            {selected ? glyph("check") : null}
                           </span>
                         ) : null}
                         <span className="podo-select__cell-label">{option.label}</span>
                         {!multiple && selected ? (
-                          <span className="podo-select__cell-check">{SELECT_CHECK}</span>
+                          <span className="podo-select__cell-check">{glyph("check")}</span>
                         ) : null}
                       </div>
                     );
@@ -1584,31 +1558,6 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
 function renderSelectMenu(portal: boolean, menu: React.ReactElement): React.ReactNode {
   return portal ? createPortal(menu, document.body) : menu;
 }
-
-// Arrowheads per position, pointing at the target (Figma 4x16 rounded vector,
-// drawn straight — the 2px rounding is invisible at this size).
-const TOOLTIP_ARROWS: Record<TooltipPosition, React.ReactElement> = {
-  right: (
-    <svg aria-hidden width="4" height="16" viewBox="0 0 4 16">
-      <path d="M4 0v4L0 8l4 4v4z" fill="currentColor" />
-    </svg>
-  ),
-  left: (
-    <svg aria-hidden width="4" height="16" viewBox="0 0 4 16">
-      <path d="M0 0v4l4 4-4 4v4z" fill="currentColor" />
-    </svg>
-  ),
-  bottom: (
-    <svg aria-hidden width="16" height="4" viewBox="0 0 16 4">
-      <path d="M0 4h4l4-4 4 4h4z" fill="currentColor" />
-    </svg>
-  ),
-  top: (
-    <svg aria-hidden width="16" height="4" viewBox="0 0 16 4">
-      <path d="M0 0h4l4 4 4-4h4z" fill="currentColor" />
-    </svg>
-  ),
-};
 
 // Distance from the bubble's start edge to the arrowhead center while
 // ordinal=first/third (Figma: 4px inset + half the 16px arrow).
@@ -1751,7 +1700,8 @@ export function Tooltip({
           : undefined
       }
     >
-      <span className="podo-tooltip__arrow">{TOOLTIP_ARROWS[position]}</span>
+      {/* 화살표 모양(Figma 4×16 포인터)은 CSS clip-path가 data-position별로 그려요. */}
+      <span className="podo-tooltip__arrow" />
       <span className="podo-tooltip__bubble">{label}</span>
     </div>
   ) : null;
@@ -1763,12 +1713,6 @@ export function Tooltip({
     </>
   );
 }
-
-const TOAST_CLOSE_GLYPH = (
-  <svg aria-hidden viewBox="0 0 24 24" width="24" height="24" fill="none">
-    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-  </svg>
-);
 
 export const Toast = forwardRef<HTMLDivElement, ToastProps>(function Toast(
   {
@@ -1809,7 +1753,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastProps>(function Toast(
                   aria-label="닫기"
                   onClick={onClose}
                 >
-                  {suffixIcon ?? TOAST_CLOSE_GLYPH}
+                  {suffixIcon ?? glyph("close")}
                 </button>
               ) : suffixIcon != null ? (
                 <span className="podo-toast__suffix-icon">{suffixIcon}</span>
@@ -2378,6 +2322,17 @@ export function Typography({
     ...props,
     className: joinClass("podo-text", `podo-text--${variant}`, className),
   });
+}
+
+/**
+ * 불리언 ARIA 값을 "true"/"false" 문자열로 — React는 불리언을 문자열로 내지만
+ * hono/jsx/dom은 true를 빈 값, false를 속성 삭제로 내요(Hono island가 같은
+ * 소스를 써요). 문자열·undefined는 그대로예요.
+ */
+function ariaString<T extends string>(
+  value: T | boolean | undefined
+): T | "true" | "false" | undefined {
+  return typeof value === "boolean" ? (value ? "true" : "false") : value;
 }
 
 function joinClass(...classes: Array<string | false | null | undefined>): string {

@@ -31,7 +31,15 @@
     { "name": "invalid", "type": { "kind": "boolean" }, "default": false },
     { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
     { "name": "required", "type": { "kind": "boolean" }, "default": false },
-    { "name": "onValueChange", "type": { "kind": "event", "payload": { "value": "string" } } }
+    { "name": "onValueChange", "type": { "kind": "event", "payload": { "value": "string" } } },
+    {
+      "name": "rows",
+      "type": {
+        "kind": "number",
+        "min": 1
+      },
+      "description": "네이티브 rows. react·hono 모두 그 밖의 네이티브 textarea 속성(name·maxlength·autocomplete…)을 그대로 전달해요."
+    }
   ],
   "variants": [],
   "states": [
@@ -48,7 +56,12 @@
   "targets": {
     "web": { "supported": true, "limitations": [] },
     "react": { "supported": true, "limitations": [] },
-    "hono": { "supported": true, "limitations": ["Value changes require client code."] },
+    "hono": {
+      "supported": true,
+      "limitations": [
+        "Native textarea attributes pass through; onValueChange becomes a podo:value-change CustomEvent ({ value, event }, fired on input) delegated by podo-ui/hono/client."
+      ]
+    },
     "native": {
       "supported": true,
       "limitations": ["Renders a multiline TextInput; resize is a web-only affordance."]

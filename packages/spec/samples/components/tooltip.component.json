@@ -21,6 +21,20 @@
         "hono": { "name": "label" },
         "native": { "name": "label" }
       }
+    },
+    {
+      "name": "trigger",
+      "required": true,
+      "description": "툴팁을 여는 대상 요소 하나 — hover/focus 핸들러와 aria-describedby가 주입돼요.",
+      "targets": {
+        "react": {
+          "name": "children"
+        },
+        "hono": {
+          "name": "children",
+          "notes": "SSR이 트리거 마크업을 data-podo-slot 영역에 내고 클라이언트 island가 같은 React 소스로 감싸요."
+        }
+      }
     }
   ],
   "props": [
@@ -28,12 +42,12 @@
       "name": "portal",
       "type": { "kind": "boolean" },
       "default": true,
-      "description": "react only: portal the bubble to document.body and pin it to the trigger (false renders in place)."
+      "description": "react·hono(client island): portal the bubble to document.body and pin it to the trigger (false renders in place)."
     },
     {
       "name": "open",
       "type": { "kind": "boolean" },
-      "description": "react only: controlled visibility; omitted, hover/focus manage it."
+      "description": "react·hono(client island): controlled visibility; omitted, hover/focus manage it."
     }
   ],
   "variants": [
@@ -68,7 +82,9 @@
     "react": { "supported": true, "limitations": [] },
     "hono": {
       "supported": true,
-      "limitations": ["Static bubble only; triggering needs client code."]
+      "limitations": [
+        "Hover/focus triggering, aria-describedby wiring, and portal placement come from the client island (podo-ui/hono/client); without it only the static bubble/trigger render."
+      ]
     },
     "native": {
       "supported": true,

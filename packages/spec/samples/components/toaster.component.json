@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "2.0.0",
+  "kind": "component",
+  "id": "toaster",
+  "name": "Toaster",
+  "category": "organism",
+  "status": "experimental",
+  "description": "Stack host for the imperative toast() API (toast(title, options) plus normal/success/danger/info/warning shortcuts and dismiss(id?)). Renders the newest card in front, evicts the oldest past max, pauses auto-dismiss while hovered or focused, and plays the exit animation before removal.",
+  "anatomy": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "toast",
+      "parent": "root"
+    }
+  ],
+  "slots": [],
+  "props": [
+    {
+      "name": "position",
+      "type": {
+        "kind": "enum",
+        "values": [
+          "top-left",
+          "top-center",
+          "top-right",
+          "bottom-left",
+          "bottom-center",
+          "bottom-right"
+        ]
+      },
+      "description": "스택 기준 화면 가장자리.",
+      "default": "top-center"
+    },
+    {
+      "name": "duration",
+      "type": {
+        "kind": "number"
+      },
+      "description": "자체 duration이 없는 토스트의 자동 닫힘(ms).",
+      "default": 3000
+    },
+    {
+      "name": "max",
+      "type": {
+        "kind": "number"
+      },
+      "description": "동시에 보이는 최대 개수 — 넘치면 가장 오래된 것이 닫혀요.",
+      "default": 3
+    }
+  ],
+  "variants": [],
+  "states": [],
+  "tokens": {},
+  "targets": {
+    "web": {
+      "supported": false,
+      "limitations": ["No toaster queue; place podo-toast cards yourself."]
+    },
+    "react": {
+      "supported": true,
+      "limitations": []
+    },
+    "hono": {
+      "supported": true,
+      "limitations": [
+        "SSR renders the empty stack; the client island (podo-ui/hono/client) mounts the same React Toaster and exposes window.podo.toast."
+      ]
+    },
+    "native": {
+      "supported": false,
+      "limitations": ["Apps place Toast cards in their own overlay."]
+    }
+  },
+  "accessibility": {
+    "aria": ["each toast keeps its own live region (status, or alert for danger)"],
+    "keyboard": ["Focus inside the stack pauses auto-dismiss"]
+  },
+  "examples": [
+    {
+      "target": "react",
+      "title": "Toaster + toast()",
+      "code": "<Toaster />\n\ntoast.success(\"저장됐어요\");"
+    }
+  ]
+}

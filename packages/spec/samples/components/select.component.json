@@ -126,7 +126,14 @@
       "description": "값은 보이지만 변경 불가 — 박스·체브론 없이 값만 렌더 (Figma read-only, Input과 동일 규약). 열리지 않고 칩의 X도 사라져요."
     },
     { "name": "invalid", "type": { "kind": "boolean" }, "default": false },
-    { "name": "disabled", "type": { "kind": "boolean" }, "default": false }
+    { "name": "disabled", "type": { "kind": "boolean" }, "default": false },
+    {
+      "name": "name",
+      "type": {
+        "kind": "string"
+      },
+      "description": "폼 제출 이름 — 선택 값마다 <input type=\"hidden\" name value>를 렌더해요(다중은 값 수만큼, 값이 없으면 없음). 루트 data-name으로 빈 다중 선택에서도 이름이 남아요. react·hono 같은 마크업 — hono는 JS 없이도 초기값이 제출돼요."
+    }
   ],
   "variants": [
     {
@@ -183,7 +190,10 @@
     "react": { "supported": true, "limitations": [] },
     "hono": {
       "supported": true,
-      "limitations": ["Static render (open menu via the open prop); interactions are client code."]
+      "limitations": [
+        "SSR markup plus a client island (podo-ui/hono/client) running the same React component source; without the script only the static trigger renders (form names still submit their initial values).",
+        "Callbacks become bubbling CustomEvents (podo:value-change { value }, podo:values-change { values }, podo:option-add { option }); value/values set through client configure switch to controlled."
+      ]
     },
     "native": {
       "supported": true,

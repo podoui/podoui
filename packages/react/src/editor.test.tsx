@@ -893,4 +893,30 @@ describe("Editor", () => {
     expect(content.querySelector(".youtube-container")).toBeTruthy();
     expect(onChange).toHaveBeenCalled();
   });
+  it("starts uncontrolled from defaultValue and mirrors edits into the named hidden textarea", () => {
+    const changes: string[] = [];
+    const { container } = render(
+      <form>
+        <Editor defaultValue="<p>처음</p>" name="body" onChange={(next) => changes.push(next)} />
+      </form>
+    );
+    const content = container.querySelector<HTMLElement>(".podo-ed-editorContent")!;
+    const hidden = container.querySelector<HTMLTextAreaElement>('textarea[name="body"]')!;
+    expect(content.innerHTML).toBe("<p>처음</p>");
+    expect(hidden.hidden).toBe(true);
+    expect(hidden.value).toBe("<p>처음</p>");
+
+    content.innerHTML = "<p>바뀜</p>";
+    fireEvent.input(content);
+    expect(changes.at(-1)).toBe("<p>바뀜</p>");
+    expect(hidden.value).toBe("<p>바뀜</p>");
+    // 비제어라 다시 렌더돼도 편집 내용을 초기값으로 되돌리지 않아요.
+    expect(content.innerHTML).toBe("<p>바뀜</p>");
+    expect(new FormData(container.querySelector("form")!).get("body")).toBe("<p>바뀜</p>");
+  });
+
+  it("renders no hidden textarea without a name", () => {
+    const { container } = render(<Editor defaultValue="<p>x</p>" />);
+    expect(container.querySelector("textarea[hidden]")).toBeNull();
+  });
 });

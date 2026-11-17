@@ -1890,8 +1890,8 @@ const defaultComponentDocuments: unknown[] = [
   },
 ];
 
-// chevron-right/calendar/time/refresh는 podo-ui/react DatePicker가 참조하는
-// 글리프(podo-icon-*)라 기본 빌드에서 빠지면 소비 프로젝트에서 빈 아이콘이 된다.
+// chevron-right/calendar/time/refresh는 podo-ui/react DatePicker가, chevron-down/check/close는
+// Select·Chip·Toast가 참조하는 글리프(podo-icon-*)라 기본 빌드에서 빠지면 소비 프로젝트에서 빈 아이콘이 된다.
 export const defaultIconManifest: IconManifest = {
   schemaVersion: PODO_SCHEMA_VERSION,
   kind: "icons",
@@ -1910,6 +1910,13 @@ export const defaultIconManifest: IconManifest = {
     "chevron-right": {
       codepoint: "E003",
       source: "navigation/chevron-right.svg",
+      tags: ["navigation"],
+    },
+    // Select 펼침 표시 — podo-ui/react·hono Select가 참조해요. 코드포인트는
+    // 문서 프로젝트(Figma 원본 아이콘 세트)의 chevron-down과 같아요.
+    "chevron-down": {
+      codepoint: "E220",
+      source: "navigation/chevron-down.svg",
       tags: ["navigation"],
     },
     calendar: {
@@ -2044,7 +2051,7 @@ export const defaultIconManifest: IconManifest = {
     },
   },
   groups: {
-    navigation: ["menu", "chevron-left", "chevron-right"],
+    navigation: ["menu", "chevron-left", "chevron-right", "chevron-down"],
     datetime: ["calendar", "time"],
     action: ["refresh", "check", "close", "search"],
     editor: [
@@ -2074,6 +2081,7 @@ export const defaultIconManifest: IconManifest = {
     menu: "E001",
     "chevron-left": "E002",
     "chevron-right": "E003",
+    "chevron-down": "E220",
     calendar: "E004",
     time: "E005",
     refresh: "E006",
@@ -2150,6 +2158,8 @@ export const defaultIconSvgs = {
     '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 5 8.5 12l7 7-1.5 1.5L5.5 12 14 3.5 15.5 5z"/></svg>',
   "navigation/chevron-right.svg":
     '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M8.5 5 15.5 12l-7 7 1.5 1.5L18.5 12 10 3.5 8.5 5z"/></svg>',
+  "navigation/chevron-down.svg":
+    '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M6.42 8.58C6.19 8.34 5.81 8.34 5.58 8.58 5.34 8.81 5.34 9.19 5.58 9.42L6 9 6.42 8.58ZM12 15L11.58 15.42C11.69 15.54 11.84 15.6 12 15.6 12.16 15.6 12.31 15.54 12.42 15.42L12 15ZM18.42 9.42C18.66 9.19 18.66 8.81 18.42 8.58 18.19 8.34 17.81 8.34 17.58 8.58L18 9 18.42 9.42ZM6 9L5.58 9.42 11.58 15.42 12 15 12.42 14.58 6.42 8.58 6 9ZM12 15L12.42 15.42 18.42 9.42 18 9 17.58 8.58 11.58 14.58 12 15Z"/></svg>',
   "datetime/calendar.svg":
     '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 8v10H5V10h14z"/></svg>',
   "datetime/time.svg":

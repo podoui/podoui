@@ -240,53 +240,11 @@ export interface HonoSelectProps {
   class?: string;
 }
 
-const HONO_SELECT_CHEVRON = (
-  <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <path
-      d="M6 9l6 6 6-6"
-      stroke="#27272A"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </svg>
-);
-
-const HONO_SELECT_CHECK = (
-  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path
-      d="M3.5 8.5l3 3 6-6.5"
-      stroke="#426CED"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </svg>
-);
-
-const HONO_SELECT_BOX_CHECK = (
-  <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none">
-    <path
-      d="M2.5 6.5l2.5 2.5 4.5-5"
-      stroke="currentColor"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </svg>
-);
-
-const HONO_CHIP_CLOSE = (
-  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-  </svg>
-);
-
-// raw 문자열로 유지 — JSX로 쓰면 <path/>가 <path></path>로 직렬화돼
-// 스냅샷이 의미 없이 바뀌어요.
-const HONO_TOAST_CLOSE = raw(
-  '<svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
-);
+// 컴포넌트 내부 장식 아이콘은 PODO 아이콘 폰트 글리프 — React 렌더러와 같은
+// 마크업이고, 크기·색은 감싸는 요소의 CSS가 정해요.
+function glyph(name: string): JSX.Element {
+  return <i class={`podo-icon podo-icon-${name}`} aria-hidden="true" />;
+}
 
 export function Select({
   id,
@@ -386,10 +344,10 @@ export function Select({
         </span>
         {clearable && multiple && hasValue && !disabled && !readOnly ? (
           <button type="button" class="podo-select__clear" aria-label="모두 해제">
-            {HONO_CHIP_CLOSE}
+            {glyph("close")}
           </button>
         ) : null}
-        {readOnly ? null : <span class="podo-select__chevron">{HONO_SELECT_CHEVRON}</span>}
+        {readOnly ? null : <span class="podo-select__chevron">{glyph("chevron-down")}</span>}
       </div>
       {isOpen ? (
         <div class="podo-select__menu-list">
@@ -427,12 +385,12 @@ export function Select({
                         class="podo-select__checkbox"
                         data-checked={isSelected ? "true" : undefined}
                       >
-                        {isSelected ? HONO_SELECT_BOX_CHECK : null}
+                        {isSelected ? glyph("check") : null}
                       </span>
                     ) : null}
                     <span class="podo-select__cell-label">{option.label}</span>
                     {!multiple && isSelected ? (
-                      <span class="podo-select__cell-check">{HONO_SELECT_CHECK}</span>
+                      <span class="podo-select__cell-check">{glyph("check")}</span>
                     ) : null}
                   </div>
                 );
@@ -444,15 +402,6 @@ export function Select({
     </div>
   );
 }
-
-const HONO_TOOLTIP_ARROWS: Record<string, string> = {
-  right:
-    '<svg aria-hidden="true" width="4" height="16" viewBox="0 0 4 16"><path d="M4 0v4L0 8l4 4v4z" fill="currentColor"/></svg>',
-  left: '<svg aria-hidden="true" width="4" height="16" viewBox="0 0 4 16"><path d="M0 0v4l4 4-4 4v4z" fill="currentColor"/></svg>',
-  bottom:
-    '<svg aria-hidden="true" width="16" height="4" viewBox="0 0 16 4"><path d="M0 4h4l4-4 4 4h4z" fill="currentColor"/></svg>',
-  top: '<svg aria-hidden="true" width="16" height="4" viewBox="0 0 16 4"><path d="M0 0h4l4 4 4-4h4z" fill="currentColor"/></svg>',
-};
 
 export interface HonoTooltipProps {
   /** 말풍선 내용 (Figma label). */
@@ -491,9 +440,8 @@ export function Tooltip({
       data-position={position}
       data-ordinal={ordinal}
     >
-      <span class="podo-tooltip__arrow">
-        {raw(HONO_TOOLTIP_ARROWS[position] ?? HONO_TOOLTIP_ARROWS.right)}
-      </span>
+      {/* 화살표 모양(Figma 4×16 포인터)은 CSS clip-path가 data-position별로 그려요. */}
+      <span class="podo-tooltip__arrow" />
       <span class="podo-tooltip__bubble">{label}</span>
     </div>
   );
@@ -536,7 +484,7 @@ export function Toast({
           // React 렌더러와 동일: closable이면 suffixIcon이 기본 X 글리프를
           // 대체해 닫기 버튼의 아이콘이 돼요.
           <button class="podo-toast__close" type="button" aria-label="닫기">
-            {suffixIcon ?? HONO_TOAST_CLOSE}
+            {suffixIcon ?? glyph("close")}
           </button>
         ) : suffixIcon != null ? (
           <span class="podo-toast__suffix-icon">{suffixIcon}</span>
@@ -687,7 +635,7 @@ export function Chip({
           disabled={behavior.root.disabled}
           aria-disabled={behavior.root.ariaDisabled}
         >
-          {HONO_CHIP_CLOSE}
+          {glyph("close")}
         </button>
       </span>
     );
