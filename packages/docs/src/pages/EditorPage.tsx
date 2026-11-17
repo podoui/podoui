@@ -25,9 +25,16 @@ const USAGE_TABS: CodeTab[] = [
     target: "hono",
     label: "Hono",
     code:
-      `import { EditorView } from "podo-ui/hono";\n\n` +
+      `import { Editor, EditorView } from "podo-ui/hono";\n\n` +
+      `<form method="post">\n` +
+      `  {/* 편집은 같은 React Editor가 client.js에서 마운트돼요. name → 숨은 textarea 제출 */}\n` +
+      `  <Editor id="body" name="body" value={html} height="320px" uploadUrl="/api/images" />\n` +
+      `</form>\n` +
+      `<script defer src="/assets/podo-ui/hono/client.js"></script>\n\n` +
       `{/* 저장된 Editor HTML을 서버에서 그대로 표시해요(신뢰할 수 있는 HTML만). */}\n` +
-      `<EditorView value={html} />`,
+      `<EditorView value={html} />\n\n` +
+      `// document.addEventListener("podo:change", (e) => e.detail.content);\n` +
+      `// 검증: window.podo.client.configure("body", { validator: z.string().min(10) });`,
   },
   {
     target: "native",
@@ -92,30 +99,26 @@ export function EditorClient() {
 }`,
   },
   {
-    target: "hono-csr-upload",
-    label: "Hono CSR",
-    code: `// src/server.ts
+    target: "hono-upload",
+    label: "Hono",
+    code: `// src/server.tsx — uploadUrl은 FormData "file"을 POST하고 JSON { url }을 받아요.
+// url은 http(s)·상대 경로·data:image/* 만 넣고, 그 밖은 업로드 실패로 처리돼요.
+import { Editor } from "podo-ui/hono";
+
 app.post("/api/images", async (c) => {
-  const file = (await c.req.parseBody()).image;
+  const file = (await c.req.parseBody()).file;
   if (!(file instanceof File)) return c.json({ error: "invalid" }, 400);
-  const src = await storage.upload(file); // R2, S3 등
-  return c.json({ src });
+  const url = await storage.upload(file); // R2, S3 등
+  return c.json({ url });
 });
 
-// src/editor-island.tsx
-import { createRoot } from "react-dom/client";
-import { Editor } from "podo-ui/react";
+app.get("/write", (c) =>
+  c.html(<Editor id="body" name="body" uploadUrl="/api/images" />)
+);
 
-const uploadImage = async (file: File) => {
-  const body = new FormData(); body.append("image", file);
-  const response = await fetch("/api/images", { method: "POST", body });
-  if (!response.ok) throw new Error("이미지 업로드 실패");
-  return response.json() as Promise<{ src: string }>;
-};
-
-createRoot(document.getElementById("podo-root")!).render(
-  <Editor value="" onChange={console.log} onImageUpload={uploadImage} />
-);`,
+// 함수가 필요하면 클라이언트에서 configure — uploadUrl보다 우선해요.
+// window.podo.client.configure("body", { onImageUpload: async (file) => ({ src, alt }) });
+// 실패는 document 의 "podo:image-upload-error" { error, file } 로 와요.`,
   },
   {
     target: "native-upload",
@@ -205,7 +208,7 @@ export function EditorPage() {
       <DocSection
         index={2}
         title="외부 이미지 업로드 처리"
-        description="onImageUpload을 지정하면 파일 선택·클립보드 붙여넣기·드롭이 모두 같은 비동기 콜백을 거쳐요. 업로드가 끝난 공개 URL만 HTML에 들어가며, 콜백을 생략하면 하위 호환을 위해 data URL을 사용합니다. Hono SSR은 상호작용 에디터를 직접 렌더하지 않으므로 업로드 API와 React client island를 조합하세요."
+        description="onImageUpload을 지정하면 파일 선택·클립보드 붙여넣기·드롭이 모두 같은 비동기 콜백을 거쳐요. 업로드가 끝난 공개 URL만 HTML에 들어가며, 콜백을 생략하면 하위 호환을 위해 data URL을 사용합니다. Hono는 uploadUrl(FormData file → JSON { url })을 주거나 configure로 onImageUpload 함수를 넘겨요."
       >
         <Preview tabs={IMAGE_UPLOAD_TABS}>
           <div className="stage-col">
@@ -241,12 +244,17 @@ export function EditorPage() {
       <DocSection
         index={5}
         title="지원 범위"
-        description="React Native는 react-native-webview의 contenteditable 문서로 실제 WYSIWYG 편집을 제공해요. 네이티브 picker 결과도 onImageUpload에서 외부 저장소 URL로 바꾼 뒤 삽입할 수 있습니다. Provider의 webViewComponent 또는 createNativeComponents의 WebView host를 설정하세요. Hono에서는 서버 업로드 endpoint와 React client island의 Editor를 함께 사용하며, 상호작용이 없는 SSR만으로는 Editor를 제공하지 않아요."
+        description="React Native는 react-native-webview의 contenteditable 문서로 실제 WYSIWYG 편집을 제공해요. 네이티브 picker 결과도 onImageUpload에서 외부 저장소 URL로 바꾼 뒤 삽입할 수 있습니다. Provider의 webViewComponent 또는 createNativeComponents의 WebView host를 설정하세요. Hono는 SSR 셸(초기 HTML·숨은 textarea)을 내고 podo-ui/hono/client가 같은 React Editor를 마운트해요(client.js는 Editor를 포함한 단일 파일)."
       >
         <SpecTable
           columns={["React", "Next.js", "Hono", "React Native"]}
           rows={[
-            ["전체 지원", "전체 지원 (use client)", "React island에서 지원", "Native UI 지원"],
+            [
+              "전체 지원",
+              "전체 지원 (use client)",
+              "전체 지원 (client.js island)",
+              "Native UI 지원",
+            ],
           ]}
         />
       </DocSection>

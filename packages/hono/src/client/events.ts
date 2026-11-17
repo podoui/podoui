@@ -56,6 +56,17 @@ export const islandCallbacks: Record<string, Record<string, IslandCallback>> = {
       detail: (selected: number[]) => ({ selected }),
     },
   },
+  Editor: {
+    onChange: {
+      event: "podo:change",
+      detail: (content: string) => ({ content }),
+      controlled: "value",
+    },
+    onImageUploadError: {
+      event: "podo:image-upload-error",
+      detail: (error: unknown, file: File) => ({ error, file }),
+    },
+  },
   Switch: {
     onCheckedChange: {
       event: "podo:checked-change",

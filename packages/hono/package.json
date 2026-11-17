@@ -37,6 +37,7 @@
     "url": "https://github.com/podoui/podoui/issues"
   },
   "devDependencies": {
-    "@podoui/react": "workspace:*"
+    "@podoui/react": "workspace:*",
+    "zod": "^4.4.3"
   }
 }

@@ -35,11 +35,33 @@ describe("hono-ssr sample app", () => {
       ["/select-chip", "Select"],
       ["/datepicker", "DatePicker"],
       ["/overlays", "Table"],
+      ["/editor", "Editor"],
     ] as const) {
       const response = await app.request(path);
       expect(response.status, path).toBe(200);
       expect(await response.text()).toContain(`data-podo-island="${island}"`);
     }
+  });
+
+  it("echoes an image upload as { url } and rejects non-images (Editor uploadUrl)", async () => {
+    const image = new FormData();
+    image.append(
+      "file",
+      new File([new Uint8Array([137, 80, 78, 71])], "a.png", { type: "image/png" })
+    );
+    const ok = await app.request("/upload", { method: "POST", body: image });
+    expect(ok.status).toBe(200);
+    expect(await ok.json()).toEqual({ url: "data:image/png;base64,iVBORw==" });
+
+    const text = new FormData();
+    text.append("file", new File(["x"], "a.txt", { type: "text/plain" }));
+    const bad = await app.request("/upload", { method: "POST", body: text });
+    expect(bad.status).toBe(400);
+  });
+
+  it("puts an Editor inside the overlays table cell", async () => {
+    const html = await (await app.request("/overlays")).text();
+    expect(html).toMatch(/<td colspan="2"><span class="podo-island" data-podo-island="Editor"/);
   });
 
   it("echoes submitted GET form values", async () => {

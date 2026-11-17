@@ -12,7 +12,8 @@ export type IslandName =
   | "DatePicker"
   | "Tooltip"
   | "Table"
-  | "Toaster";
+  | "Toaster"
+  | "Editor";
 
 export interface IslandProps {
   name: IslandName;

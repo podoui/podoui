@@ -11,6 +11,7 @@ import {
   Button,
   Chip,
   DatePicker,
+  Editor,
   EditorView,
   Field,
   Input,
@@ -114,6 +115,7 @@ const pages: Array<[path: string, title: string]> = [
   ["/select-chip", "Select · Chip · Switch"],
   ["/datepicker", "DatePicker"],
   ["/overlays", "Toast · Tooltip · Table(중첩)"],
+  ["/editor", "Editor · 이미지 업로드"],
   ["/editor-view", "EditorView"],
 ];
 
@@ -313,6 +315,12 @@ app.get("/overlays", (c) =>
                 </td>
                 <td>-</td>
               </tr>
+              <tr>
+                <td>메모</td>
+                <td colspan={2}>
+                  <Editor id="cell-ed" name="memo" height="contents" toolbar={["text-style"]} />
+                </td>
+              </tr>
               <tr data-disabled="true">
                 <td>포도(품절)</td>
                 <td>-</td>
@@ -321,6 +329,38 @@ app.get("/overlays", (c) =>
             </tbody>,
           ]}
         </Table>
+        <Button type="submit">제출</Button>
+      </form>
+    </Page>
+  )
+);
+
+// 업로드 에코 — Editor uploadUrl 계약(FormData "file" → JSON { url }). 저장소 없이 data URL로
+// 돌려줘요(CSP img-src data:). 검사는 본문을 다 파싱한 뒤의 파일 크기(2MB)와 클라이언트가
+// 선언한 MIME(image/*)뿐이에요 — 요청 크기 제한·실제 이미지 판별은 하지 않는 검증용 샘플이에요.
+// 운영에서는 파싱 전 요청 크기 제한(예: hono/body-limit)과 내용 검사를 두세요.
+const UPLOAD_LIMIT = 2 * 1024 * 1024;
+
+app.post("/upload", async (c) => {
+  const file = (await c.req.parseBody()).file;
+  if (!(file instanceof File) || !file.type.startsWith("image/") || file.size > UPLOAD_LIMIT) {
+    return c.json({ error: "image up to 2MB" }, 400);
+  }
+  const base64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+  return c.json({ url: `data:${file.type};base64,${base64}` });
+});
+
+app.get("/editor", (c) =>
+  c.html(
+    <Page title="Editor · 이미지 업로드">
+      <form method="get" action="/echo">
+        <Editor
+          id="body"
+          name="body"
+          value='<p class="podo-ed-p1">본문을 고치고 <strong>굵게</strong>도 해 보세요.</p>'
+          height="320px"
+          uploadUrl="/upload"
+        />
         <Button type="submit">제출</Button>
       </form>
     </Page>

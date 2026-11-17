@@ -673,7 +673,7 @@
   - T1 에서 넘어온 정리: `packages/hono/src/client/dom-to-vnode.ts` 초안이 지금도 `tsc` 로 `dist/hono/client/` 에 빌드돼 `podo-ui` 패키지에 들어가요(공개 export 없음). T3 에서 실제 클라이언트 구현으로 이어 쓰거나, 폐기하면 소스·생성물 제외를 함께 처리.
 - [x] T4 DatePicker — Hono SSR + island, 조합별 패리티·제출값·configure
 - [x] T5 Toaster·Toast·Tooltip·Table + 중첩 island(중첩 Chip 제거·중첩 defer)
-- [ ] T6 Editor — 같은 `client.js` 번들, `uploadUrl`·`validator` configure, 표 셀 안 Editor
+- [x] T6 Editor — 같은 `client.js` 번들, `uploadUrl`·`validator` configure, 표 셀 안 Editor
 - [ ] T7 실브라우저 QA(ego-browser) — 샘플 앱, 아이콘 전후 스크린샷
 - [ ] T8 릴리스 2.3.11 — version·CHANGELOG(2.3.10 복원 포함)·SetupPage·README·AGENTS.md, 태그·Actions·npm·소비자 설치 확인
 - [ ] (범위 밖 기록, 2026-11-17 D-7) `packages/spec/samples/components/select.component.json` 이 스키마 위반 — `states[2].name = "completed"` 가 상태 enum 밖이라 `parseComponentDocument` 가 실패해요(HEAD `c866cae6` 부터). 지금은 이 파일을 파싱하는 테스트가 없어요.

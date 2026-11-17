@@ -45,6 +45,17 @@ export function readState(
         : root.querySelector('[role="switch"]');
       return control ? { defaultChecked: control.getAttribute("aria-checked") === "true" } : {};
     }
+    case "Editor": {
+      // 폼 이름이 있으면 숨은 textarea가 제출값이에요 — 없으면 JSON 초기값을 둬요.
+      if (typeof props.name !== "string") {
+        return {};
+      }
+      const textarea = Array.from(root.children).find(
+        (child): child is HTMLTextAreaElement =>
+          child instanceof HTMLTextAreaElement && child.name === props.name
+      );
+      return textarea ? { defaultValue: textarea.value } : {};
+    }
     default:
       return {};
   }

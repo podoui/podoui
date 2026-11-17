@@ -2107,10 +2107,15 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
                 dragMovedRef.current = false;
                 return;
               }
-              // Interactive content (the checkbox, buttons, inputs...) handles
-              // itself, and a text-selection drag isn't a row click.
+              // Interactive content (the checkbox, buttons, inputs, editable
+              // regions like an Editor body...) handles itself, and a
+              // text-selection drag isn't a row click.
               const target = event.target as Element;
-              if (target.closest("input, button, a, select, textarea, label")) {
+              if (
+                target.closest(
+                  'input, button, a, select, textarea, label, [contenteditable]:not([contenteditable="false"])'
+                )
+              ) {
                 return;
               }
               if (window.getSelection()?.toString()) {

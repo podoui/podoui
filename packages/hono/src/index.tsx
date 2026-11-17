@@ -19,6 +19,7 @@ export {
   type HonoTimeValue,
 } from "./datepicker.js";
 export { Tooltip, type HonoTooltipProps } from "./tooltip.js";
+export { Editor, type HonoEditorProps, type HonoEditorToolbarItem } from "./editor.js";
 export { Table, type HonoTableProps } from "./table.js";
 export { Toaster, type HonoToasterPosition, type HonoToasterProps } from "./toaster.js";
 import {

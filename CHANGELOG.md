@@ -28,12 +28,20 @@
   범위 선택(`podo:selection-change`). 셀 안 Chip·Tooltip·DatePicker 등 중첩 island는 바깥
   Table이 함께 마운트하고(중첩 Chip 제거는 표에서만 빠짐, 안쪽 함수 조건은 Table 마운트를
   configure까지 미룸), 안쪽 이벤트는 `detail.id`로 구분한다.
+- React: Table 행 클릭 선택이 편집 가능한 영역(`contenteditable`, 예: 셀 안 Editor 본문) 클릭은
+  무시한다 — 입력·버튼 등 기존 제외 대상과 같다.
 - React: Toaster의 CSS 변수(`--podo-toast-count`·`--podo-toast-index`)를 단위 없는 문자열로
   넘긴다(출력 동일, hono/jsx/dom 호환).
 - Hono: `DatePicker`를 추가한다. SSR은 React DatePicker의 닫힌 입력 칸과 같은 마크업과 폼 hidden
   (`name` 또는 `fromName`/`toName`)을 내고, 달력·시간 패널은 `podo-ui/hono/client`가 같은 React
   코드로 마운트한다(확정 시 `podo:change`, 초기화 `podo:reset`). `Date` 값은 로컬 벽시계로 옮기고,
   함수 조건이 섞인 `disable`/`enable`은 `id`와 함께 `configure`로 넘긴다.
+- Hono: `Editor`를 추가한다. SSR은 루트·툴바 자리·편집 영역(초기 HTML, 마운트 전엔 편집 불가)·
+  숨은 textarea(`name`) 셸을 내고, 같은 `podo-ui/hono/client`(단일 파일, Editor 포함)가 React Editor를 마운트한다
+  (`podo:change { content }`·`podo:image-upload-error { error, file }`). Hono 전용 `uploadUrl`은
+  이미지를 FormData `file`로 POST하고 JSON `{ url }`(http(s)·상대 경로·`data:image/*`만)을 넣으며, `configure(id, { onImageUpload })`
+  함수가 있으면 그쪽이 우선한다. `validator`(zod 등)는 `configure`로 넘기고 그때까지 마운트를
+  미룬다. 표 셀 안 Editor도 다른 중첩 island처럼 Table과 함께 마운트된다.
 - Hono: Select·Chip·Switch SSR이 island 래퍼로 감싸지고 React 첫 렌더와 같은 마크업을 낸다
   (Select 값 영역 `.podo-select__value-content`, 인라인 메뉴의 리스트박스·셀 id, Switch
   `data-disabled`, 제거 버튼 `tabindex`). Select는 `searchable`·`portal`(기본 true)·`name`

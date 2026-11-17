@@ -5,6 +5,7 @@ import { ID_REF_PROPS, domToVNode, type VChild } from "./dom-to-vnode.js";
 import { emitEvent, islandCallbacks, syncStaticState } from "./events.js";
 import { readState } from "./read-state.js";
 import { slotElements, type SlotSource } from "./slots.js";
+import { uploadImage } from "./upload.js";
 
 /** island 래퍼 하나(바깥이든 안쪽이든)의 파싱 결과. */
 interface IslandNode {
@@ -222,6 +223,9 @@ function buildVNode(node: IslandNode): VChild {
   if (node.name === "Chip") {
     adaptRemovableChip(node, props);
   }
+  if (node.name === "Editor") {
+    adaptEditorUpload(props);
+  }
   return jsx(Component as never, { ...props, key: node.key });
 }
 
@@ -266,6 +270,15 @@ function attachCallbacks(node: IslandNode, props: Record<string, unknown>): void
         node.outer.refresh();
       }
     };
+  }
+}
+
+/** Hono 전용 `uploadUrl` → React onImageUpload. configure로 받은 함수가 있으면 그쪽이 우선해요. */
+function adaptEditorUpload(props: Record<string, unknown>): void {
+  const uploadUrl = props.uploadUrl;
+  delete props.uploadUrl;
+  if (typeof uploadUrl === "string" && typeof props.onImageUpload !== "function") {
+    props.onImageUpload = (file: File) => uploadImage(uploadUrl, file);
   }
 }
 

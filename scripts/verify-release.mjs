@@ -5,6 +5,7 @@ import { spawnSync } from "node:child_process";
 import { dirname, join, relative, resolve } from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { gzipSync } from "node:zlib";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const packagesRoot = join(root, "packages");
@@ -238,8 +239,19 @@ async function verifyPublishedEntry(directory, manifest) {
  * podo-ui/hono/client is a self-contained IIFE: the React component sources are
  * bundled against hono/jsx/dom, so it must not load or define React itself.
  */
+// 단일 엔트리(Editor 포함) gzip 상한 — T1 실측 105.4KB(계획 D8) + 여유. 넘으면 무엇이 늘었는지
+// 먼저 보고, 분리 여부는 계획 결정(분리는 후속)으로 다뤄요.
+const HONO_CLIENT_GZIP_LIMIT = 128 * 1024;
+
 async function verifyHonoClient(path) {
   const contents = await readFile(path, "utf8").catch(() => "");
+  const gzipBytes = gzipSync(contents).length;
+  if (gzipBytes > HONO_CLIENT_GZIP_LIMIT) {
+    fail(`podo-ui/hono/client is ${gzipBytes} bytes gzipped (limit ${HONO_CLIENT_GZIP_LIMIT}).`);
+  }
+  if (!/podo-ed-editorContent/.test(contents)) {
+    fail("podo-ui/hono/client must include the Editor island (single entry).");
+  }
   if (
     /(?:\bfrom|\bimport|\brequire)\s*\(?\s*["'](?:react|react-dom)(?:\/[^"']*)?["']/.test(contents)
   ) {

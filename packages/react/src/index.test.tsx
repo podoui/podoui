@@ -1375,6 +1375,36 @@ describe("@podoui/react", () => {
     expect(selections.at(-1)).toEqual([1]);
   });
 
+  it("ignores clicks inside editable regions but still selects on plain cells", () => {
+    const selections: number[][] = [];
+    render(
+      <Table checkbox onSelectionChange={(next) => selections.push(next)} aria-label="편집 표">
+        <thead>
+          <tr>
+            <th>메모</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div contentEditable suppressContentEditableWarning data-testid="editable">
+                <p>본문</p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>일반 셀</td>
+          </tr>
+        </tbody>
+      </Table>
+    );
+    fireEvent.click(screen.getByText("본문"));
+    expect(selections).toEqual([]);
+    expect(screen.getByText("본문").closest("tr")?.getAttribute("data-selected")).toBeNull();
+    fireEvent.click(screen.getByText("일반 셀"));
+    expect(selections.at(-1)).toEqual([1]);
+  });
+
   it("drops disabled rows from defaultSelected at initialization", () => {
     render(
       <Table checkbox defaultSelected={[0, 2]} aria-label="기본 선택 표">

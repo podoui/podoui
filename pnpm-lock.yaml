@@ -215,6 +215,9 @@ importers:
       '@podoui/react':
         specifier: workspace:*
         version: link:../react
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/icon-build:
     dependencies:
