@@ -93,7 +93,12 @@
       ]
     },
     "react": { "supported": true, "limitations": [] },
-    "hono": { "supported": true, "limitations": ["Selection requires client code."] },
+    "hono": {
+      "supported": true,
+      "limitations": [
+        "Native radio selection works without script; onCheckedChange becomes a podo:checked-change CustomEvent delegated by podo-ui/hono/client."
+      ]
+    },
     "native": {
       "supported": true,
       "limitations": ["No native group: the consumer keeps exactly one checked."]

@@ -98,8 +98,7 @@
     "hono": {
       "supported": true,
       "limitations": [
-        "Toggling requires client code.",
-        "indeterminate renders the dash via data-state; the DOM mixed property needs client code."
+        "The native checkbox toggles without script; onCheckedChange becomes a podo:checked-change CustomEvent delegated by podo-ui/hono/client, which also sets the DOM mixed (indeterminate) property."
       ]
     },
     "native": { "supported": true, "limitations": [] }

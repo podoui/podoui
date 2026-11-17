@@ -84,6 +84,17 @@ Strictly review the current Podo v2 repository scope. Do not edit files. Inspect
 
 The implementing agent must not self-approve. If no independent Codex reviewer is available, stop before checking `todo.md`, committing, or pushing and report the review blocker.
 
+## Hono Renderer Parity
+
+Hono (`podo-ui/hono`) mirrors every React export. Keep these contracts when touching `packages/hono`, `packages/react`, or the sample:
+
+- **One client entry.** `podo-ui/hono/client` (`dist/hono/client.js`) is a single classic IIFE bundling the React component sources with `react` aliased to `hono/jsx/dom` (Editor included). Do not add a second entry or a global `React`; `pnpm release:verify` enforces no react import, no `window.React`, no ESM syntax, Editor present, and a gzip cap.
+- **Island protocol.** SSR wraps stateful components in `span.podo-island` (`div` only for Table) with `data-podo-island`, `data-podo-props` (JSON via `@podoui/core` `serializeProps`), and the configure key `data-podo-id`; the component `id` stays where React renders it. ReactNode props travel as `data-podo-slot` markup (or `<template data-podo-slot>`), never HTML strings. SSR-only markup carries `data-podo-generated`.
+- **Nested islands and defer.** Only the outermost island mounts; inner islands become vnodes of the same React source. Non-serializable props (functions, class instances) are omitted with `data-podo-defer`, and the outer island waits until every deferred inner island receives `window.podo.client.configure(id, props)`.
+- **Events.** React callbacks become bubbling `podo:*` CustomEvents (`detail` keys = React argument names; nested islands add `detail.id`). Initial values are uncontrolled `default*`; controlled values only through `configure`.
+- **Source of truth.** `docs/hono-parity.md` lists every export, prop transfer rule, event, approved post-mount difference, and decision (D-1…). Update it with any behavior change.
+- **Verification.** Parity tests: `packages/hono/src/parity.test.tsx` (A: Hono SSR vs React `renderToStaticMarkup`), `client*.test.tsx` (B: jsdom mount with the real bundle, C: wrapper parsing). Real-browser QA runs on `examples/hono-ssr` (strict CSP; `/overlays`, `/select-chip`, `/datepicker`, `/editor`, `/long`) with the Mac ego-browser, recording revision, exit codes, `ego_space_name`, `finish_ok`, and `spaces_remaining=0`.
+
 ## Package Publishing
 
 - Publish `podo-ui` through `.github/workflows/notify-publish.yml`, which is registered as the npm Trusted Publisher for `podoui/podoui`.

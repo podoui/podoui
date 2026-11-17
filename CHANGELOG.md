@@ -1,7 +1,13 @@
 # Changelog
 
-## Unreleased
+## 2.3.11 (2026-11-17)
 
+- Hono: 클라이언트 스크립트가 React `autoFocus`를 마운트 뒤 포커스로 반영한다(검색형 Select
+  입력·Editor 팝업 입력). 마운트 때 되돌린 사용자 포커스가 우선이다. 표 셀 안 Chip을
+  제거해도 그 행 선택이 바뀌지 않는다.
+- Styles: Toaster 카드가 전역 `box-sizing` 리셋 없는 앱에서도 스택 폭을 넘지 않는다
+  (`.podo-toaster .podo-toast { box-sizing: border-box }`). Hono Editor SSR 셸의 툴바 자리는
+  마운트 전에도 실제 툴바 높이(49px)를 잡아 본문이 밀리지 않는다.
 - Icons: Select·Chip·Toast 내부 아이콘을 인라인 SVG 대신 PODO 아이콘 폰트(`close`·`check`,
   신규 `chevron-down`)로 렌더한다. 이제 이 컴포넌트들도 `podo-ui/icons.css`가 필요하다.
   Tooltip 화살표는 CSS `clip-path`로 그린다.
@@ -48,6 +54,13 @@
   (hidden input, `data-name`)을 받는다 — 기본 portal에서는 `open` 메뉴가 클라이언트 마운트 뒤
   body에 나타나므로 SSR에 펼친 메뉴가 필요하면 `portal={false}`를 준다. 기존 prop은 그대로이고, `value`·`values`·`selected`·`checked`는 클라이언트에서 비제어
   초기값이 된다. Field 자동 글자 수는 컨트롤 초기값 길이에서 시작하고 입력에 따라 갱신된다.
+
+## 2.3.10 (2026-09-07)
+
+- MCP: 로컬 실행을 단순화한다 — 프로젝트 루트를 명시적으로 지정할 수 있고, 설치된 MCP
+  bin이 바로 시작된다. AI 클라이언트 등록과 문제 해결을 담은 사이트 안내(`/mcp`)를 추가한다.
+- Docs: 문서 페이지를 미리 렌더링해 검색·공유 메타데이터와 sitemap을 제공하고, 없는 경로는
+  HTTP 404를 돌려준다. Google Analytics·Search Console 연결을 설정값으로 켤 수 있다.
 
 ## 2.3.9 (2026-08-11)
 

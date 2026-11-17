@@ -675,7 +675,7 @@
 - [x] T5 Toaster·Toast·Tooltip·Table + 중첩 island(중첩 Chip 제거·중첩 defer)
 - [x] T6 Editor — 같은 `client.js` 번들, `uploadUrl`·`validator` configure, 표 셀 안 Editor
 - [x] T7 실브라우저 QA(ego-browser) — 샘플 앱, 아이콘 전후 스크린샷
-- [ ] T8 릴리스 2.3.11 — version·CHANGELOG(2.3.10 복원 포함)·SetupPage·README·AGENTS.md, 태그·Actions·npm·소비자 설치 확인
+- [x] T8 릴리스 2.3.11 — version·CHANGELOG(2.3.10 복원 포함)·SetupPage·README·AGENTS.md, 태그·Actions·npm·소비자 설치 확인
 - [ ] (범위 밖 기록, 2026-11-17 D-7) `packages/spec/samples/components/select.component.json` 이 스키마 위반 — `states[2].name = "completed"` 가 상태 enum 밖이라 `parseComponentDocument` 가 실패해요(HEAD `c866cae6` 부터). 지금은 이 파일을 파싱하는 테스트가 없어요.
   - 완료 기준: 상태 이름을 스키마 어휘로 바꾸거나 스키마에 추가하고, 샘플 컴포넌트 전체를 파싱하는 테스트가 통과한다.
 - 시안 확인 요청(Figma, 코드는 아래로 결정):

@@ -24,9 +24,12 @@ export function App() {
 }
 ```
 
-Next.js는 같은 React API를 사용합니다. Hono는 정적 UI를 `podo-ui/hono`에서
-서버 렌더링하고, DatePicker나 Editor처럼 상태가 필요한 부분만 React island로
-붙일 수 있습니다. 환경별 전체 예제는 [설치 안내](https://podoui.com/setup)에서
+Next.js는 같은 React API를 사용합니다. Hono는 `podo-ui/hono`의 19개 컴포넌트를
+서버에서 렌더링하고(JS 없이도 폼 제출, 아이콘은 `dist/icons-assets/` 폴더의
+`PodoIcons.css`와 폰트를 함께 정적 서빙해 링크), Select·DatePicker·Tooltip·Table 선택·
+Toaster/toast·Chip·Editor의 동작은 정적 스크립트 `podo-ui/hono/client` 하나가 같은
+React 소스로 붙입니다. 이 파일은 Editor를 포함한 단일 파일(gzip 약 110KB)이라
+Editor를 쓰지 않아도 같은 크기이며, 분리는 필요해지면 후속으로 다룹니다. 환경별 전체 예제는 [설치 안내](https://podoui.com/setup)에서
 바로 복사할 수 있습니다.
 
 ## 앱 전체에서 디자인 토큰 쓰기
@@ -92,13 +95,13 @@ Hono CSR은 `--target react`, Hono SSR은 `--target hono`, React Native는
 
 ## 어떤 경로를 가져오면 되나요?
 
-| 목적                       | import                                            |
-| -------------------------- | ------------------------------------------------- |
-| React · Next.js · Hono CSR | `podo-ui/react`                                   |
-| Hono SSR                   | `podo-ui/hono`                                    |
-| React Native               | `podo-ui/native`                                  |
-| JSON 계약과 생성기         | `podo-ui/spec`, `podo-ui/tokens`, `podo-ui/icons` |
-| CLI와 MCP                  | `podo-ui/cli`, `podo-ui/mcp`                      |
+| 목적                       | import                                               |
+| -------------------------- | ---------------------------------------------------- |
+| React · Next.js · Hono CSR | `podo-ui/react`                                      |
+| Hono SSR                   | `podo-ui/hono` + 정적 스크립트 `podo-ui/hono/client` |
+| React Native               | `podo-ui/native`                                     |
+| JSON 계약과 생성기         | `podo-ui/spec`, `podo-ui/tokens`, `podo-ui/icons`    |
+| CLI와 MCP                  | `podo-ui/cli`, `podo-ui/mcp`                         |
 
 v1 컴포넌트가 필요한 프로젝트는 `podo-ui@1`로 고정하세요. v2의
 `styles.css`에는 단계적 이전을 위한 `border-*`, `r-*`, `shadow-*`,

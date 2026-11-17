@@ -186,7 +186,9 @@
     },
     "hono": {
       "supported": true,
-      "limitations": ["Press handling requires client code."]
+      "limitations": [
+        "Toggle and remove run in the client island (podo-ui/hono/client) from the same React source; onPress/onSelectedChange/onRemove become podo:press, podo:selected-change, and cancelable podo:remove CustomEvents."
+      ]
     },
     "native": {
       "supported": true,

@@ -122,7 +122,9 @@
     },
     "hono": {
       "supported": true,
-      "limitations": ["Toggling requires client code."]
+      "limitations": [
+        "Toggling runs in the client island (podo-ui/hono/client) from the same React source; onCheckedChange becomes a podo:checked-change CustomEvent ({ checked })."
+      ]
     },
     "native": {
       "supported": true,

@@ -125,14 +125,29 @@ React Native는 `--target native`를 사용하세요.
 
 ## 환경별 선택 기준
 
-| 환경          | 시작 import         | 알아둘 점                                                                  |
-| ------------- | ------------------- | -------------------------------------------------------------------------- |
-| React         | `podo-ui/react`     | Provider에서 전역 테마를 적용합니다.                                       |
-| Next.js       | `podo-ui/react`     | 루트 HTML에 초기 테마를 넣고 상호작용 UI만 Client Component로 둡니다.      |
-| Hono SSR      | `podo-ui/hono`      | 기본 UI는 서버 HTML로, DatePicker와 Editor는 React island로 렌더합니다.    |
-| Hono CSR      | `podo-ui/react`     | Hono가 내려 준 HTML 셸에 React island를 마운트합니다.                      |
-| React Native  | `podo-ui/native`    | 네이티브 Provider에 생성 토큰을 전달합니다. Editor는 WebView를 사용합니다. |
-| 일반 HTML/CSS | 생성된 `tokens.css` | 루트 테마 속성과 `--podo-*` 변수를 사용합니다.                             |
+| 환경          | 시작 import         | 알아둘 점                                                                              |
+| ------------- | ------------------- | -------------------------------------------------------------------------------------- |
+| React         | `podo-ui/react`     | Provider에서 전역 테마를 적용합니다.                                                   |
+| Next.js       | `podo-ui/react`     | 루트 HTML에 초기 테마를 넣고 상호작용 UI만 Client Component로 둡니다.                  |
+| Hono SSR      | `podo-ui/hono`      | 19개 컴포넌트를 서버 HTML로 렌더하고, 동작은 `podo-ui/hono/client` 한 파일이 붙입니다. |
+| Hono CSR      | `podo-ui/react`     | Hono가 내려 준 HTML 셸에 React island를 마운트합니다.                                  |
+| React Native  | `podo-ui/native`    | 네이티브 Provider에 생성 토큰을 전달합니다. Editor는 WebView를 사용합니다.             |
+| 일반 HTML/CSS | 생성된 `tokens.css` | 루트 테마 속성과 `--podo-*` 변수를 사용합니다.                                         |
+
+### Hono SSR에서 동작 붙이기
+
+`podo-ui/hono` 컴포넌트는 JS 없이도 폼을 제출할 수 있는 서버 HTML을 냅니다.
+Select·Chip·Toast 등의 아이콘은 아이콘 폰트라, `node_modules/podo-ui/dist/icons-assets/`
+폴더(`PodoIcons.css`와 같은 폴더의 폰트 파일, export `podo-ui/icons.css`)를 그대로 정적
+서빙하고 `<link rel="stylesheet" href="…/PodoIcons.css">`로 불러 주세요.
+Select·DatePicker·Tooltip·Table 선택·Toaster/`toast`·Chip·Editor의 동작은
+`node_modules/podo-ui/dist/hono/client.js`(export `podo-ui/hono/client`)를 정적
+파일로 서빙해 `<script defer src="…/client.js">` 한 줄로 붙입니다. 같은 React
+컴포넌트 소스를 묶은 단일 파일(Editor 포함, gzip 약 110KB)이라 CSP
+`script-src 'self'`에서도 동작하고, 콜백은 `podo:*` CustomEvent로, 함수 값은
+`window.podo.client.configure(id, props)`로 넘깁니다. Editor를 쓰지 않아도 같은
+파일을 받으며, 분리는 필요해지면 후속으로 다룹니다. 계약 전체는
+[`docs/hono-parity.md`](docs/hono-parity.md)에 있습니다.
 
 ## v1에서 옮겨오는 중이라면
 

@@ -51,7 +51,8 @@ export const SETUP_TABS: CodeTab[] = [
       `// client.tsx — Hono가 내려 준 #podo-root에 React를 붙입니다.\n` +
       `import { createRoot } from "react-dom/client";\n` +
       `import { Button, PodoThemeProvider } from "podo-ui/react";\n` +
-      `import "podo-ui/styles.css";\n\n` +
+      `import "podo-ui/styles.css";\n` +
+      `import "podo-ui/icons.css";\n\n` +
       `const root = document.getElementById("podo-root");\n` +
       `if (!root) throw new Error("#podo-root를 찾을 수 없습니다.");\n` +
       `createRoot(root).render(\n` +
@@ -73,6 +74,12 @@ export const SETUP_TABS: CodeTab[] = [
       `  <html lang="ko" data-podo-theme="landing" data-color-scheme="light">\n` +
       `    <head>\n` +
       `      {renderCriticalCss({ theme: "landing", colorScheme: "light", css: podoCss })}\n` +
+      `      {/* 아이콘 폰트: node_modules/podo-ui/dist/icons-assets/ 폴더(PodoIcons.css + 폰트 파일)를\n` +
+      `          그대로 정적 서빙해요 — CSS가 같은 폴더의 폰트를 상대 경로로 불러요. */}\n` +
+      `      <link rel="stylesheet" href="/assets/podo-ui/icons/PodoIcons.css" />\n` +
+      `      {/* Select·DatePicker·Tooltip·Table 선택·Toaster·Chip·Editor 동작: podo-ui/hono/client\n` +
+      `          (node_modules/podo-ui/dist/hono/client.js)를 정적 파일로 서빙해 한 번 불러요. */}\n` +
+      `      <script defer src="/assets/podo-ui/hono/client.js"></script>\n` +
       `    </head>\n` +
       `    <body><Button>서버에서 렌더링</Button></body>\n` +
       `  </html>\n` +
@@ -188,14 +195,14 @@ export function SetupPage() {
       <DocSection
         index={5}
         title="환경마다 어디까지 쓸 수 있나요?"
-        description="React와 Next.js는 같은 컴포넌트를 사용합니다. Hono의 기본 UI는 서버에서 바로 만들 수 있고, DatePicker와 Editor처럼 브라우저 상태가 필요한 화면만 React island로 붙입니다. React Native는 네이티브 UI와 WebView 기반 Editor를 제공합니다. 전역 토큰은 아래 모든 환경과 일반 HTML/CSS에서 사용할 수 있습니다."
+        description="React와 Next.js는 같은 컴포넌트를 사용합니다. Hono는 19개 컴포넌트(DatePicker·Toaster·Editor·EditorView 포함)를 서버 HTML로 렌더하고, Select·DatePicker·Tooltip·Table 선택·Toaster/toast·Chip·Editor의 동작과 podo:* 이벤트는 정적 스크립트 podo-ui/hono/client 하나(Editor 포함 단일 파일, gzip 약 110KB)가 같은 React 소스로 붙입니다. React Native는 네이티브 UI와 WebView 기반 Editor를 제공합니다. 전역 토큰은 아래 모든 환경과 일반 HTML/CSS에서 사용할 수 있습니다."
       >
         <SpecTable
           columns={["환경", "기본 컴포넌트", "DatePicker", "Editor"]}
           rows={[
             ["React", "전체", "전체", "전체"],
             ["Next.js", "전체 (SSR/Client)", "use client", "use client"],
-            ["Hono", "15개 정적 SSR", "React island", "React island"],
+            ["Hono", "19개 SSR + hono/client", "SSR + hono/client", "SSR 셸 + hono/client"],
             ["React Native", "Native UI", "Native modal", "react-native-webview"],
           ]}
         />
