@@ -1,3 +1,5 @@
+import { forgetSource } from "./dom-to-vnode.js";
+
 /**
  * 이벤트 계약(계획 D4, docs/hono-parity.md §2·§4) — React 콜백을 bubbling CustomEvent로.
  */
@@ -48,6 +50,12 @@ export const islandCallbacks: Record<string, Record<string, IslandCallback>> = {
     },
     onReset: { event: "podo:reset", detail: () => ({}) },
   },
+  Table: {
+    onSelectionChange: {
+      event: "podo:selection-change",
+      detail: (selected: number[]) => ({ selected }),
+    },
+  },
   Switch: {
     onCheckedChange: {
       event: "podo:checked-change",
@@ -70,6 +78,13 @@ export function emitEvent(
  * 비island 위임(계획 R5 표) — 네이티브 이벤트는 그대로 두고 의미 이벤트를 하나 더 내요.
  */
 export function installDelegation(doc: Document): void {
+  doc.addEventListener("click", (event) => {
+    const close = (event.target as Element | null)?.closest?.(".podo-toast__close");
+    const card = close?.closest("[data-podo-toast]");
+    if (card && !event.defaultPrevented) {
+      closeToast(card);
+    }
+  });
   doc.addEventListener("click", (event) => {
     const button = (event.target as Element | null)?.closest?.("button[data-podo-button]");
     if (button instanceof HTMLButtonElement && !button.disabled && !event.defaultPrevented) {
@@ -101,8 +116,30 @@ export function installDelegation(doc: Document): void {
   });
 }
 
-/** 위임 대상의 DOM 상태를 React와 맞춰요 — 혼합 체크박스·자동 글자 수(T1 D-3). */
+const timedToasts = new WeakSet<Element>();
+
+/**
+ * 서버 flash Toast 닫기(T1 D-4) — 취소 가능한 podo:close를 내고, 취소하지 않으면 카드를
+ * 지워요(React Toast는 onClose 콜백만 부르므로 이 기본 동작은 Hono 편의예요).
+ */
+function closeToast(card: Element): void {
+  if (card.isConnected && emitEvent(card, "podo:close", {}, true)) {
+    forgetSource(card);
+    card.remove();
+  }
+}
+
+/** 위임 대상의 DOM 상태를 React와 맞춰요 — 혼합 체크박스·자동 글자 수(T1 D-3)·Toast 자동 닫힘. */
 export function syncStaticState(root: ParentNode): void {
+  for (const card of Array.from(root.querySelectorAll("[data-podo-toast][data-duration]"))) {
+    const duration = Number(card.getAttribute("data-duration"));
+    // 타이머 상태는 DOM 표식 대신 WeakSet — island 마운트가 카드를 새 노드로 바꾸면 새
+    // 노드에 다시 걸려요(옛 노드 타이머는 isConnected 검사로 아무 일도 안 해요, T5 F5).
+    if (Number.isFinite(duration) && duration >= 0 && !timedToasts.has(card)) {
+      timedToasts.add(card);
+      setTimeout(() => closeToast(card), duration);
+    }
+  }
   for (const box of Array.from(
     root.querySelectorAll<HTMLInputElement>('input[data-podo-checkbox][aria-checked="mixed"]')
   )) {

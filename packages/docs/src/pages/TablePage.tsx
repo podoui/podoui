@@ -27,8 +27,9 @@ const USAGE_TABS: CodeTab[] = [
     label: "Hono",
     code:
       `import { Table } from "podo-ui/hono";\n\n` +
-      `{/* 선택 열은 셀에 Checkbox를 직접 조합해요 (SSR) */}\n` +
-      `<Table>\n  <thead>...</thead>\n  <tbody>...</tbody>\n</Table>`,
+      `{/* checkbox 선택 열·전체 선택·행 클릭·드래그 범위 선택(podo:selection-change) */}\n` +
+      `<Table checkbox id="orders" defaultSelected={[0]}>\n  <thead>...</thead>\n  <tbody>...</tbody>\n</Table>\n` +
+      `<script defer src="/assets/podo-ui/hono/client.js"></script>`,
   },
 ];
 

@@ -91,3 +91,51 @@ export function fixClock(win: Win, now: number): void {
     globalThis.Date = FixedDate;
   })();`);
 }
+
+/**
+ * jsdom 창의 setTimeout·clearTimeout을 가짜 시계로 바꿔요(Node 쪽 vi 가짜 타이머는 창
+ * 영역에 닿지 않아요). advance(ms)는 그 사이 만기된 콜백을 시각 순서대로 돌리고, 콜백마다
+ * 진짜 시간을 한 프레임 흘려 렌더·effect가 끝나게 해요.
+ */
+export function fakeTimers(win: Win): { advance: (ms: number) => Promise<void> } {
+  const realSetTimeout = win.setTimeout.bind(win);
+  // useEffect는 requestAnimationFrame(진짜 시계)에서 돌아 한 프레임 넘게 기다려요.
+  const flush = () => new Promise((resolve) => realSetTimeout(resolve, 20));
+  let now = 0;
+  let nextId = 1;
+  const queue = new Map<number, { at: number; run: () => void }>();
+  const target = win as unknown as {
+    setTimeout: (callback: (...args: unknown[]) => void, ms?: number, ...args: unknown[]) => number;
+    clearTimeout: (id?: number) => void;
+  };
+  target.setTimeout = (callback, ms = 0, ...args) => {
+    const id = nextId++;
+    queue.set(id, { at: now + Math.max(0, Number(ms) || 0), run: () => callback(...args) });
+    return id;
+  };
+  target.clearTimeout = (id) => {
+    if (id !== undefined) {
+      queue.delete(id);
+    }
+  };
+  return {
+    async advance(ms) {
+      const end = now + ms;
+      await flush();
+      for (;;) {
+        const due = [...queue.entries()]
+          .filter(([, timer]) => timer.at <= end)
+          .sort((a, b) => a[1].at - b[1].at || a[0] - b[0])[0];
+        if (!due) {
+          break;
+        }
+        queue.delete(due[0]);
+        now = due[1].at;
+        due[1].run();
+        await flush();
+      }
+      now = end;
+      await flush();
+    },
+  };
+}

@@ -1,14 +1,16 @@
 import { jsx, render, useState } from "hono/jsx/dom";
 import { reviveProps } from "@podoui/core";
 import { islandComponents } from "./components.js";
-import { domToVNode, type VChild } from "./dom-to-vnode.js";
-import { emitEvent, islandCallbacks } from "./events.js";
+import { ID_REF_PROPS, domToVNode, type VChild } from "./dom-to-vnode.js";
+import { emitEvent, islandCallbacks, syncStaticState } from "./events.js";
 import { readState } from "./read-state.js";
-import { slotElements } from "./slots.js";
+import { slotElements, type SlotSource } from "./slots.js";
 
 /** island 래퍼 하나(바깥이든 안쪽이든)의 파싱 결과. */
 interface IslandNode {
   element: Element;
+  /** 재렌더·형제 제거 사이에도 같은 컴포넌트 상태를 잇는 vnode key(T5 F1). */
+  key: string;
   name: string;
   id: string | undefined;
   /** data-podo-props 복원값. */
@@ -17,7 +19,7 @@ interface IslandNode {
   defaults: Record<string, unknown>;
   /** configure로 받은 값(가장 우선). */
   configured: Record<string, unknown>;
-  slots: Map<string, Element>;
+  slots: Map<string, SlotSource>;
   /** 중첩 Chip이 제거됐으면 부모 렌더에서 빠져요(V7-1). */
   removed: boolean;
   outer: OuterIsland;
@@ -28,6 +30,8 @@ interface OuterIsland {
   node: IslandNode;
   /** 이 바깥 island가 소유한 모든 노드(자기 + 안쪽). */
   members: IslandNode[];
+  /** SSR이 만든 요소(data-podo-generated)의 id — 마운트 뒤엔 없으니 참조에서 빼요(T5 F4). */
+  generatedIds: Set<string>;
   /** 아직 configure 안 된 defer id(V7-2) — 비어야 마운트해요. */
   pending: Set<string>;
   /** id 없는 defer가 있으면 영원히 마운트하지 않아요. */
@@ -37,6 +41,8 @@ interface OuterIsland {
 }
 
 const ISLAND = "[data-podo-island]";
+const GENERATED = '[data-podo-generated=""]';
+let keySequence = 0;
 const nodes = new WeakMap<Element, IslandNode>();
 const byId = new Map<string, IslandNode>();
 
@@ -81,14 +87,13 @@ function prepare(wrapper: Element): OuterIsland | undefined {
   outer.refresh = () => undefined;
   let parsed: IslandNode[];
   try {
-    parsed = [wrapper, ...Array.from(wrapper.querySelectorAll(ISLAND))].map((element) =>
-      parseNode(element, outer)
-    );
+    parsed = [wrapper, ...ownedIslands(wrapper)].map((element) => parseNode(element, outer));
   } catch {
     return undefined;
   }
   outer.node = parsed[0]!;
   outer.members = parsed;
+  outer.generatedIds = generatedIds(wrapper);
   for (const node of parsed) {
     nodes.set(node.element, node);
     // 같은 id는 먼저 등록된 살아 있는 island가 가져요 — 제거돼 문서에서 빠진
@@ -108,6 +113,41 @@ function prepare(wrapper: Element): OuterIsland | undefined {
   return outer;
 }
 
+/**
+ * 바깥 island가 실제로 렌더에 쓰는 범위 — 자기 DOM과 슬롯 정의 <template data-podo-slot>
+ * (닫힌 Tooltip의 리치 label)의 content예요. 사용자 <template>과 SSR이 만든 요소(열린 말풍선
+ * 등) 안 복제본은 들어가지 않아요(T5 F3·R1).
+ */
+function slotScopes(root: ParentNode): ParentNode[] {
+  const scopes = [root];
+  for (const template of Array.from(root.querySelectorAll("template[data-podo-slot]"))) {
+    if (!template.closest(GENERATED)) {
+      scopes.push(...slotScopes((template as HTMLTemplateElement).content));
+    }
+  }
+  return scopes;
+}
+
+const outsideGenerated = (element: Element) => !element.closest(GENERATED);
+
+function ownedIslands(root: ParentNode): Element[] {
+  return slotScopes(root).flatMap((scope) =>
+    Array.from(scope.querySelectorAll(ISLAND)).filter(outsideGenerated)
+  );
+}
+
+/**
+ * SSR 생성 요소 자신의 id(예: 열린 Tooltip 말풍선 id) — island 등록과 같은 슬롯 범위에서
+ * 모아요(T5 F4·R2). 그 안 자손의 id는 사용자 콘텐츠 복제본이라 빼지 않아요(R3).
+ */
+function generatedIds(root: ParentNode): Set<string> {
+  return new Set(
+    slotScopes(root).flatMap((scope) =>
+      Array.from(scope.querySelectorAll(`${GENERATED}[id]`)).map((element) => element.id)
+    )
+  );
+}
+
 function parseNode(element: Element, outer: OuterIsland): IslandNode {
   const name = element.getAttribute("data-podo-island") ?? "";
   if (!islandComponents[name] || !element.firstElementChild) {
@@ -116,6 +156,7 @@ function parseNode(element: Element, outer: OuterIsland): IslandNode {
   const props = reviveProps(element.getAttribute("data-podo-props") ?? "{}");
   return {
     element,
+    key: `podo-island-${(keySequence += 1)}`,
     name,
     id: element.getAttribute("data-podo-id") ?? undefined,
     props,
@@ -146,6 +187,8 @@ function tryMount(outer: OuterIsland): void {
   }
   outer.mounted = true;
   wrapper.setAttribute("data-podo-mounted", "");
+  // 마운트로 바뀐 살아 있는 DOM에 정적 동기화(Toast 자동 닫힘 등)를 다시 걸어요(T5 F5).
+  syncStaticState(wrapper);
   if (focusId) {
     (wrapper.ownerDocument.getElementById(focusId) as HTMLElement | null)?.focus();
   }
@@ -160,9 +203,14 @@ function IslandRoot({ outer }: { outer: OuterIsland }) {
 
 function buildVNode(node: IslandNode): VChild {
   const Component = islandComponents[node.name]!;
-  const props: Record<string, unknown> = { ...node.props, ...node.defaults, ...node.configured };
+  const props: Record<string, unknown> = {
+    ...dropIdRefs(node.props, node.outer.generatedIds),
+    ...node.defaults,
+    ...node.configured,
+  };
   for (const [slot, element] of node.slots) {
-    const children = domToVNode(element.childNodes, {
+    const children = domToVNode(Array.isArray(element) ? element : element.childNodes, {
+      dropIds: node.outer.generatedIds,
       island: (nested) => {
         const child = nodes.get(nested);
         return child && !child.removed ? buildVNode(child) : null;
@@ -174,7 +222,30 @@ function buildVNode(node: IslandNode): VChild {
   if (node.name === "Chip") {
     adaptRemovableChip(node, props);
   }
-  return jsx(Component as never, props);
+  return jsx(Component as never, { ...props, key: node.key });
+}
+
+/** island props의 id 참조 속성에서 SSR 생성 id를 빼요(예: 열린 Tooltip 트리거가 Chip일 때). */
+function dropIdRefs(props: Record<string, unknown>, ids: Set<string>): Record<string, unknown> {
+  if (ids.size === 0) {
+    return props;
+  }
+  const next = { ...props };
+  for (const name of ID_REF_PROPS) {
+    const value = next[name];
+    if (typeof value === "string") {
+      const kept = value
+        .split(/\s+/)
+        .filter((token) => token && !ids.has(token))
+        .join(" ");
+      if (kept) {
+        next[name] = kept;
+      } else {
+        delete next[name];
+      }
+    }
+  }
+  return next;
 }
 
 function attachCallbacks(node: IslandNode, props: Record<string, unknown>): void {

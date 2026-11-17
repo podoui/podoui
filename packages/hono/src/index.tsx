@@ -18,6 +18,9 @@ export {
   type HonoQuickSelectKey,
   type HonoTimeValue,
 } from "./datepicker.js";
+export { Tooltip, type HonoTooltipProps } from "./tooltip.js";
+export { Table, type HonoTableProps } from "./table.js";
+export { Toaster, type HonoToasterPosition, type HonoToasterProps } from "./toaster.js";
 import {
   createButtonBehavior,
   createCheckboxBehavior,
@@ -77,6 +80,8 @@ export interface HonoChipProps {
   children: Child;
   /** 루트 요소 id(React와 같은 위치) — island configure 키(래퍼 `data-podo-id`)이기도 해요. */
   id?: string;
+  /** 칩을 설명하는 요소 id — React Chip처럼 루트에 달려요(Tooltip 트리거일 때 등). */
+  "aria-describedby"?: string;
   /** Background contrast (Figma: solid, outline-strong, outline-weak). */
   theme?: "solid" | "outline-strong" | "outline-weak";
   /** Label/icon scale (Figma: md 14px — base, lg 16px). */
@@ -515,50 +520,6 @@ export function Select({
   );
 }
 
-export interface HonoTooltipProps {
-  /** 말풍선 내용 (Figma label). */
-  label: Child;
-  /**
-   * 말풍선(role="tooltip") 요소의 id. hono는 SSR 말풍선만 제공하고 트리거는
-   * 배포하지 않으므로 (honoRendererScope), 스펙의 aria-describedby 계약은
-   * 소비자가 자신의 트리거에 `aria-describedby={id}`를 달아 이 id를
-   * 가리키는 방식으로 완성돼요.
-   */
-  id?: string;
-  /** 대상 기준 표시 방향 — 화살표가 대상을 가리켜요 (Figma position). */
-  position?: "right" | "left" | "bottom" | "top";
-  /** 화살표가 말풍선의 시작/가운데/끝 어디에 붙는지 (Figma ordinal). */
-  ordinal?: "first" | "second" | "third";
-  /** 밝은 배경(default) 또는 어두운 배경(reverse) (Figma theme). */
-  theme?: "default" | "reverse";
-  class?: string;
-}
-
-// Static bubble: hover triggering and portal positioning need client code.
-export function Tooltip({
-  label,
-  id,
-  position = "right",
-  ordinal = "first",
-  theme = "default",
-  class: className,
-}: HonoTooltipProps): JSX.Element {
-  return (
-    <div
-      id={id}
-      class={joinClass("podo-tooltip", className)}
-      role="tooltip"
-      data-theme={theme}
-      data-position={position}
-      data-ordinal={ordinal}
-    >
-      {/* 화살표 모양(Figma 4×16 포인터)은 CSS clip-path가 data-position별로 그려요. */}
-      <span class="podo-tooltip__arrow" />
-      <span class="podo-tooltip__bubble">{label}</span>
-    </div>
-  );
-}
-
 export type HonoToastState = "normal" | "success" | "danger" | "info" | "warning";
 
 export interface HonoToastProps {
@@ -573,8 +534,12 @@ export interface HonoToastProps {
   suffixIcon?: Child;
   /** Extra line under the title (Figma caption). */
   caption?: Child;
-  /** Renders the close X; dismissing needs client code. */
+  /**
+   * 닫기 X — podo-ui/hono/client가 누르면 취소 가능한 `podo:close`를 내고 카드를 지워요.
+   */
   closable?: boolean;
+  /** 자동 닫힘(ms) — 클라이언트가 이 시간 뒤 `podo:close`를 내고 카드를 지워요. */
+  duration?: number;
   class?: string;
 }
 
@@ -586,6 +551,7 @@ export function Toast({
   suffixIcon,
   caption,
   closable,
+  duration,
   class: className,
 }: HonoToastProps): JSX.Element {
   const suffix =
@@ -610,6 +576,7 @@ export function Toast({
       role={state === "danger" ? "alert" : "status"}
       data-state={state}
       data-podo-toast=""
+      data-duration={duration}
     >
       {prefix != null ? <span class="podo-toast__prefix">{prefix}</span> : null}
       <div class="podo-toast__contents">
@@ -620,25 +587,6 @@ export function Toast({
         {caption != null ? <span class="podo-toast__caption">{caption}</span> : null}
       </div>
     </div>
-  );
-}
-
-export interface HonoTableProps {
-  children: Child;
-  /** grid: bordered frame with per-cell rules; horizon: row rules only. */
-  type?: "grid" | "horizon";
-  class?: string;
-}
-
-export function Table({
-  children,
-  type = "horizon",
-  class: className,
-}: HonoTableProps): JSX.Element {
-  return (
-    <table class={joinClass("podo-table", className)} data-type={type}>
-      {children}
-    </table>
   );
 }
 
@@ -728,6 +676,7 @@ export function Button({
 
 export function Chip(props: HonoChipProps): JSX.Element {
   const { id, theme, size, selected, disabled, removable, removeLabel, type } = props;
+  const describedBy = props["aria-describedby"];
   return (
     <Island
       name="Chip"
@@ -742,6 +691,7 @@ export function Chip(props: HonoChipProps): JSX.Element {
         removeLabel,
         type,
         className: props.class,
+        "aria-describedby": describedBy,
       }}
     >
       {chipMarkup({ ...props, slots: true })}
@@ -770,6 +720,7 @@ function chipMarkup({
   type,
   class: className,
   slots,
+  "aria-describedby": describedBy,
 }: ChipMarkupProps): JSX.Element {
   const behavior = createButtonBehavior({ disabled, type });
   const slot = (name: string) => (slots ? name : undefined);
@@ -781,6 +732,7 @@ function chipMarkup({
     return (
       <span
         id={id}
+        aria-describedby={describedBy}
         class={joinClass("podo-chip", className)}
         data-theme={theme}
         data-size={size}
@@ -813,6 +765,7 @@ function chipMarkup({
   return (
     <button
       id={id}
+      aria-describedby={describedBy}
       class={joinClass("podo-chip", className)}
       type={behavior.root.type}
       disabled={behavior.root.disabled}

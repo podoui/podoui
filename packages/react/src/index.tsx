@@ -1916,7 +1916,9 @@ export function Toaster({
       className="podo-toaster"
       data-position={position}
       data-expanded={expanded ? "true" : undefined}
-      style={{ "--podo-toast-count": ordered.length } as React.CSSProperties}
+      // CSS 변수는 단위 없는 문자열로 — hono/jsx/dom(Hono island)은 숫자에 px를 붙여
+      // calc 안의 개수·순번을 깨뜨려요. React 출력은 같아요.
+      style={{ "--podo-toast-count": String(ordered.length) } as React.CSSProperties}
       onPointerEnter={() => setExpanded(true)}
       onPointerLeave={() => setExpanded(false)}
       onFocusCapture={() => setExpanded(true)}
@@ -1934,7 +1936,7 @@ export function Toaster({
           data-leaving={item.leaving ? "true" : undefined}
           // 0 = front (newest); back cards read it to shrink and offset.
           data-stack={index}
-          style={{ "--podo-toast-index": index } as React.CSSProperties}
+          style={{ "--podo-toast-index": String(index) } as React.CSSProperties}
           onClose={() => toast.dismiss(item.id)}
         >
           {item.title}

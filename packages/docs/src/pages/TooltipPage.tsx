@@ -25,8 +25,12 @@ const USAGE_TABS: CodeTab[] = [
     target: "hono",
     label: "Hono",
     code:
-      `import { Tooltip } from "podo-ui/hono";\n\n` +
-      `<Tooltip label="임시 저장돼요" position="top" ordinal="second" />`,
+      `import { Button, Tooltip } from "podo-ui/hono";\n\n` +
+      `{/* 트리거를 children으로 주면 podo-ui/hono/client가 hover·focus·포탈 배치를 붙여요. */}\n` +
+      `<Tooltip label="임시 저장돼요" position="top" ordinal="second">\n` +
+      `  <Button size="sm">저장</Button>\n` +
+      `</Tooltip>\n` +
+      `<script defer src="/assets/podo-ui/hono/client.js"></script>`,
   },
   {
     target: "native",

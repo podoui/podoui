@@ -8,6 +8,8 @@ describe("hono-ssr sample app", () => {
     const csp = response.headers.get("content-security-policy") ?? "";
     expect(csp).toContain("script-src 'self'");
     expect(csp).toContain("style-src 'self'");
+    expect(csp).toContain("style-src-attr 'unsafe-inline'");
+    expect(csp).not.toMatch(/script-src[^;]*unsafe/);
     const html = await response.text();
     expect(html).not.toMatch(/<script(?![^>]*\bsrc=)/);
     expect(html).not.toContain("<style");
@@ -17,10 +19,22 @@ describe("hono-ssr sample app", () => {
     expect(html).toContain('<script defer="" src="/assets/client.js"></script>');
   });
 
+  it("keeps inline style attributes within style-src-attr (T5 F7)", async () => {
+    // 인라인 style 속성은 style-src-attr로만 허용돼요 — <style> 요소·인라인 스크립트는 없어요.
+    const response = await app.request("/overlays");
+    const csp = response.headers.get("content-security-policy") ?? "";
+    const html = await response.text();
+    expect(html).toContain('class="podo-toaster" data-position="top-right" style=');
+    expect(csp).toContain("style-src-attr 'unsafe-inline'");
+    expect(html).not.toContain("<style");
+    expect(html).not.toMatch(/<script(?![^>]*\bsrc=)/);
+  });
+
   it("renders the island pages", async () => {
     for (const [path, island] of [
       ["/select-chip", "Select"],
       ["/datepicker", "DatePicker"],
+      ["/overlays", "Table"],
     ] as const) {
       const response = await app.request(path);
       expect(response.status, path).toBe(200);

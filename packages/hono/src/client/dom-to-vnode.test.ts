@@ -251,4 +251,18 @@ describe("domToVNode → shared React source on hono/jsx/dom (spike)", () => {
     expect(seen).toEqual(["Chip"]);
     expect(host.textContent).toBe("앞 [chip] 뒤");
   });
+
+  it("strips SSR-only id tokens from id reference attributes (T5 F4)", () => {
+    const source = document.createElement("div");
+    source.innerHTML =
+      '<button aria-describedby="hint podo-tip-1">a</button><button aria-describedby="podo-tip-1">b</button>';
+    const host = document.createElement("div");
+    render(
+      jsx("div", {}, ...domToVNode(source.childNodes, { dropIds: new Set(["podo-tip-1"]) })),
+      host
+    );
+    const [first, second] = Array.from(host.querySelectorAll("button"));
+    expect(first!.getAttribute("aria-describedby")).toBe("hint");
+    expect(second!.hasAttribute("aria-describedby")).toBe(false);
+  });
 });

@@ -10,8 +10,8 @@ import { renderToString } from "hono/jsx/dom/server";
 import type { JSX } from "hono/jsx/jsx-runtime";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import * as React from "../../react/src/index.js";
-import { Chip, DatePicker, Select, Switch } from "./index.js";
-import { canonical, islandRoot, parseHtml } from "./test-utils/markup.js";
+import { Chip, DatePicker, Select, Switch, Table, Toaster, Tooltip } from "./index.js";
+import { canonical, islandContent, islandRoot, parseHtml } from "./test-utils/markup.js";
 
 // quickSelect 프리셋 라벨이 「오늘」을 읽어요 — 픽스처와 양쪽 렌더가 같은 날을 보게 고정해요.
 beforeAll(() => {
@@ -369,5 +369,167 @@ describe("parity A — Hono SSR == React server render", () => {
     expect(props.enable).toEqual([
       { from: { $date: "2026-11-17T00:00:00" }, to: { $date: "2026-11-20T00:00:00" } },
     ]);
+  });
+
+  it("Toaster — empty stack", () =>
+    expectParity(
+      <Toaster position="bottom-right" max={2} />,
+      createElement(React.Toaster, { position: "bottom-right", max: 2 })
+    ));
+
+  const tooltipCases: Array<[string, JSX.Element, ReactElement]> = [
+    [
+      "closed with a text label",
+      <Tooltip label="도움말" position="top">
+        <button type="button" aria-describedby="hint">
+          ?
+        </button>
+      </Tooltip>,
+      createElement(
+        React.Tooltip,
+        { label: "도움말", position: "top" },
+        createElement("button", { type: "button", "aria-describedby": "hint" }, "?")
+      ),
+    ],
+    [
+      "closed with a rich label",
+      <Tooltip label={<b>굵게</b>}>
+        <button type="button">?</button>
+      </Tooltip>,
+      createElement(
+        React.Tooltip,
+        { label: createElement("b", null, "굵게") },
+        createElement("button", { type: "button" }, "?")
+      ),
+    ],
+    [
+      "open inline (portal false)",
+      <Tooltip label="열림" open portal={false} theme="reverse" ordinal="second">
+        <button type="button" aria-describedby="hint">
+          ?
+        </button>
+      </Tooltip>,
+      createElement(
+        React.Tooltip,
+        { label: "열림", open: true, portal: false, theme: "reverse", ordinal: "second" },
+        createElement("button", { type: "button", "aria-describedby": "hint" }, "?")
+      ),
+    ],
+    [
+      "open with portal (before mount)",
+      <Tooltip label="열림" open>
+        <button type="button">?</button>
+      </Tooltip>,
+      createElement(
+        React.Tooltip,
+        { label: "열림", open: true },
+        createElement("button", { type: "button" }, "?")
+      ),
+    ],
+    [
+      "open inline on a Chip trigger (T5 F4)",
+      <Tooltip label="칩 설명" open portal={false}>
+        <Chip aria-describedby="hint">칩</Chip>
+      </Tooltip>,
+      createElement(
+        React.Tooltip,
+        { label: "칩 설명", open: true, portal: false },
+        createElement(React.Chip, { "aria-describedby": "hint" }, "칩")
+      ),
+    ],
+  ];
+  for (const [name, hono, react] of tooltipCases) {
+    it(`Tooltip — ${name}`, () => {
+      const wrapper = parseHtml(renderToString(hono)).querySelector("[data-podo-island]")!;
+      expect(canonical(islandContent(wrapper))).toBe(
+        canonical(parseHtml(renderToStaticMarkup(react)))
+      );
+    });
+  }
+
+  const tableCases: Array<[string, { defaultSelected?: number[]; type?: "grid"; id?: string }]> = [
+    ["nothing selected", {}],
+    ["some selected (header indeterminate)", { defaultSelected: [0] }],
+    [
+      "all selectable selected (disabled row ignored)",
+      { defaultSelected: [0, 1, 2], type: "grid", id: "t" },
+    ],
+  ];
+  for (const [name, options] of tableCases) {
+    it(`Table checkbox — ${name}`, () => {
+      const hono = (
+        <Table checkbox {...options}>
+          <thead>
+            <tr>
+              <th>이름</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>가</td>
+            </tr>
+            <tr>
+              <td>나</td>
+            </tr>
+            <tr data-disabled="true">
+              <td>다</td>
+            </tr>
+          </tbody>
+        </Table>
+      );
+      const react = createElement(
+        React.Table,
+        { checkbox: true, ...options },
+        createElement("thead", null, createElement("tr", null, createElement("th", null, "이름"))),
+        createElement(
+          "tbody",
+          null,
+          createElement("tr", null, createElement("td", null, "가")),
+          createElement("tr", null, createElement("td", null, "나")),
+          createElement("tr", { "data-disabled": "true" }, createElement("td", null, "다"))
+        )
+      );
+      expectParity(hono, react);
+    });
+  }
+
+  // data-disabled 원본값 — boolean false·생략은 선택 가능, true·문자열은 비활성(T5 F2).
+  it("Table checkbox — data-disabled false/true/string/omitted", () => {
+    const rows: Array<[string, Record<string, unknown>]> = [
+      ["가", { "data-disabled": false }],
+      ["나", { "data-disabled": true }],
+      ["다", { "data-disabled": "true" }],
+      ["라", {}],
+    ];
+    expectParity(
+      <Table checkbox defaultSelected={[0, 1, 2, 3]}>
+        {[
+          <thead>
+            <tr>
+              <th>이름</th>
+            </tr>
+          </thead>,
+          <tbody>
+            {rows.map(([label, attrs]) => (
+              <tr {...attrs}>
+                <td>{label}</td>
+              </tr>
+            ))}
+          </tbody>,
+        ]}
+      </Table>,
+      createElement(
+        React.Table,
+        { checkbox: true, defaultSelected: [0, 1, 2, 3] },
+        createElement("thead", null, createElement("tr", null, createElement("th", null, "이름"))),
+        createElement(
+          "tbody",
+          null,
+          ...rows.map(([label, attrs]) =>
+            createElement("tr", { key: label, ...attrs }, createElement("td", null, label))
+          )
+        )
+      )
+    );
   });
 });

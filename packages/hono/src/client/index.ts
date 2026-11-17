@@ -1,6 +1,7 @@
 // podo-ui/hono/client — Hono SSR 페이지에 한 번 싣는 정적 스크립트(계획 D8).
 // <script defer src="/…/podo-ui/hono/client.js"></script>
 import { configure, mount } from "./bridge.js";
+import { toast } from "./components.js";
 import { installDelegation, syncStaticState } from "./events.js";
 
 declare const __PODO_CLIENT_VERSION__: string | undefined;
@@ -14,6 +15,7 @@ interface PodoClient {
 
 interface PodoGlobal {
   client?: PodoClient;
+  toast?: typeof toast;
   [key: string]: unknown;
 }
 
@@ -32,6 +34,8 @@ if (!podo.client?.installed) {
     configure,
     mount: mountAll,
   };
+  // Toaster island와 같은 번들의 React toast 스토어 — 같은 함수예요(계획 D7).
+  podo.toast = toast;
   installDelegation(document);
   const start = () => {
     mountAll(document);

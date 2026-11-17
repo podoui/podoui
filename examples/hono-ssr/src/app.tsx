@@ -16,7 +16,11 @@ import {
   Input,
   Select,
   Switch,
+  Table,
   Textarea,
+  Toast,
+  Toaster,
+  Tooltip,
 } from "@podoui/hono";
 
 export const app = new Hono();
@@ -28,6 +32,9 @@ app.use(
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
       styleSrc: ["'self'"],
+      // style 속성만 허용 — Toaster 스택처럼 컴포넌트가 CSS 변수를 style 속성으로 내요
+      // (React와 같은 마크업). <style>·스크립트는 여전히 'self'만이에요(T5 F7).
+      styleSrcAttr: ["'unsafe-inline'"],
       fontSrc: ["'self'"],
       imgSrc: ["'self'", "data:"],
       formAction: ["'self'"],
@@ -49,6 +56,23 @@ const contentTypes: Record<string, string> = {
   woff2: "font/woff2",
   ttf: "font/ttf",
 };
+
+// 샘플 동작 스크립트(외부 파일이라 CSP 'self' 그대로) — 함수 조건 configure·토스트 버튼.
+const sampleScript = `(() => {
+  const run = () => {
+    window.podo.client.configure("cell-dp", { disable: [(date) => date.getDay() === 0] });
+    document.getElementById("toast-btn")?.addEventListener("click", () => {
+      window.podo.toast.success("저장됐어요");
+    });
+  };
+  if (window.podo && window.podo.client) run();
+  else document.addEventListener("podo:ready", run, { once: true });
+})();
+`;
+
+app.get("/assets/sample.js", (c) =>
+  c.body(sampleScript, 200, { "content-type": contentTypes.js! })
+);
 
 app.get("/assets/:file", async (c) => {
   const file = c.req.param("file");
@@ -89,6 +113,7 @@ const pages: Array<[path: string, title: string]> = [
   ["/form", "폼 · 네이티브 속성"],
   ["/select-chip", "Select · Chip · Switch"],
   ["/datepicker", "DatePicker"],
+  ["/overlays", "Toast · Tooltip · Table(중첩)"],
   ["/editor-view", "EditorView"],
 ];
 
@@ -229,6 +254,78 @@ app.get("/datepicker", (c) => {
     </Page>
   );
 });
+
+app.get("/overlays", (c) =>
+  c.html(
+    <Page title="Toast · Tooltip · Table(중첩)">
+      <script defer src="/assets/sample.js"></script>
+      <Toaster position="top-right" />
+      <Toast state="info" closable>
+        닫을 수 있는 서버 flash 토스트
+      </Toast>
+      <Toast state="success" duration={4000}>
+        4초 뒤 사라지는 토스트
+      </Toast>
+      <p>
+        <Button id="toast-btn" type="button">
+          토스트 띄우기
+        </Button>{" "}
+        <Tooltip label="도움말이에요" position="top">
+          <Button type="button" theme="outline-primary">
+            도움말
+          </Button>
+        </Tooltip>
+      </p>
+      <form method="get" action="/echo">
+        <Table checkbox id="orders" defaultSelected={[0]}>
+          {[
+            <thead>
+              <tr>
+                <th>상품</th>
+                <th>태그</th>
+                <th>배송일</th>
+              </tr>
+            </thead>,
+            <tbody>
+              <tr>
+                <td>사과</td>
+                <td>
+                  <Chip id="tag-apple" removable>
+                    과일
+                  </Chip>{" "}
+                  <Tooltip label="셀 안 툴팁">
+                    <button type="button">?</button>
+                  </Tooltip>
+                </td>
+                <td>
+                  <DatePicker
+                    id="cell-dp"
+                    name="ship"
+                    portal
+                    disable={[(date: Date) => date.getDay() === 0]}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>배</td>
+                <td>
+                  <Chip>과일</Chip>
+                </td>
+                <td>-</td>
+              </tr>
+              <tr data-disabled="true">
+                <td>포도(품절)</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            </tbody>,
+          ]}
+        </Table>
+        <Button type="submit">제출</Button>
+      </form>
+    </Page>
+  )
+);
 
 app.get("/editor-view", (c) =>
   c.html(

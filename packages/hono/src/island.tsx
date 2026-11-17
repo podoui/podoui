@@ -5,7 +5,14 @@ import type { JSX } from "hono/jsx/jsx-runtime";
 import { serializeProps } from "@podoui/core";
 
 /** island로 마운트되는 컴포넌트 이름 — 클라이언트 `components.ts` 등록 이름과 같아요. */
-export type IslandName = "Select" | "Chip" | "Switch" | "DatePicker";
+export type IslandName =
+  | "Select"
+  | "Chip"
+  | "Switch"
+  | "DatePicker"
+  | "Tooltip"
+  | "Table"
+  | "Toaster";
 
 export interface IslandProps {
   name: IslandName;
@@ -13,6 +20,10 @@ export interface IslandProps {
   props: Record<string, unknown>;
   /** configure 키 — 래퍼 `data-podo-id`(T1 결정 D-1). */
   id?: string | undefined;
+  /** Table만 true — `<table>`을 감싸는 래퍼는 div여야 파서가 옮기지 않아요(계획 R6). */
+  block?: boolean;
+  /** 래퍼 자신의 SSR 자식이 이 이름의 prop이에요(Tooltip 트리거 = children). */
+  slot?: string;
   children: Child;
 }
 
@@ -21,18 +32,20 @@ export interface IslandProps {
  * props JSON을 실어요. 클라이언트(`podo-ui/hono/client`)가 이 자리에 같은 React
  * 소스를 마운트해요. span은 `<td>`·`<label>` 안에서도 파서가 옮기지 않아요.
  */
-export function Island({ name, props, id, children }: IslandProps): JSX.Element {
+export function Island({ name, props, id, block, slot, children }: IslandProps): JSX.Element {
   const { json, deferred } = serializeProps(props);
+  const Wrapper = block ? "div" : "span";
   return (
-    <span
+    <Wrapper
       class="podo-island"
       data-podo-island={name}
       data-podo-props={json}
       data-podo-id={id}
       data-podo-defer={deferred.length > 0 ? "" : undefined}
+      data-podo-slot={slot}
     >
       {children}
-    </span>
+    </Wrapper>
   );
 }
 

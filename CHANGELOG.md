@@ -19,6 +19,17 @@
   코드로 마운트하고 콜백을 `podo:*` CustomEvent로 낸다(`podo:value-change`·`podo:values-change`·
   `podo:selected-change`·`podo:remove`·`podo:checked-change`·`podo:press`). 함수 등은
   `window.podo.client.configure(id, props)`로 넘기고, 설치가 끝나면 `podo:ready`가 한 번 온다.
+- Hono: `Toaster`를 추가하고 `window.podo.toast`(React `toast`와 같은 함수·스토어:
+  `normal/success/danger/info/warning`·`dismiss`)를 내보낸다. 서버 flash `Toast`는
+  `closable` X·`duration` 자동 닫힘을 클라이언트가 처리하고 취소 가능한 `podo:close`를 낸다.
+- Hono: `Tooltip`에 트리거 `children`·`open`·`portal`을 받아 island로 동작한다(hover/focus,
+  aria-describedby, body 포탈). children 없는 기존 정적 말풍선은 그대로다.
+- Hono: `Table`에 `checkbox`·`defaultSelected`·`id`를 추가한다 — 선택 열·전체 선택·행 클릭·드래그
+  범위 선택(`podo:selection-change`). 셀 안 Chip·Tooltip·DatePicker 등 중첩 island는 바깥
+  Table이 함께 마운트하고(중첩 Chip 제거는 표에서만 빠짐, 안쪽 함수 조건은 Table 마운트를
+  configure까지 미룸), 안쪽 이벤트는 `detail.id`로 구분한다.
+- React: Toaster의 CSS 변수(`--podo-toast-count`·`--podo-toast-index`)를 단위 없는 문자열로
+  넘긴다(출력 동일, hono/jsx/dom 호환).
 - Hono: `DatePicker`를 추가한다. SSR은 React DatePicker의 닫힌 입력 칸과 같은 마크업과 폼 hidden
   (`name` 또는 `fromName`/`toName`)을 내고, 달력·시간 패널은 `podo-ui/hono/client`가 같은 React
   코드로 마운트한다(확정 시 `podo:change`, 초기화 `podo:reset`). `Date` 값은 로컬 벽시계로 옮기고,

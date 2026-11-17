@@ -53,6 +53,14 @@ export function canonical(node: Node): string {
           // 클래스는 토큰 집합으로 비교해요(React 템플릿 문자열의 빈 토큰·공백 차이 무시).
           return `class="${attribute.value.split(/\s+/).filter(Boolean).sort().join(" ")}"`;
         }
+        if (attribute.name === "style") {
+          // 선언 표기(콜론 뒤 공백·끝 세미콜론)만 다른 경우는 같은 스타일이에요.
+          const declarations = attribute.value
+            .split(";")
+            .map((declaration) => declaration.trim().replace(/\s*:\s*/, ":"))
+            .filter(Boolean);
+          return `style="${declarations.join(";")}"`;
+        }
         if (attribute.name === "id") {
           return `id="${token(attribute.value)}"`;
         }
@@ -75,4 +83,22 @@ export function canonical(node: Node): string {
   };
   const children = (parent: Node) => Array.from(parent.childNodes).map(walk).join("");
   return walk(node);
+}
+
+/**
+ * island 래퍼의 SSR 내용(슬롯 정의 <template> 제외)을 조각으로 — Tooltip처럼 루트가
+ * 여럿(트리거 + 말풍선)인 island를 React 출력 조각과 비교할 때 써요.
+ */
+export function islandContent(wrapper: Element): DocumentFragment {
+  const fragment = wrapper.ownerDocument.createDocumentFragment();
+  for (const node of Array.from(wrapper.childNodes)) {
+    if (node.nodeName !== "TEMPLATE") {
+      fragment.append(node.cloneNode(true));
+    }
+  }
+  // 안쪽 island 래퍼도 승인된 차이(래퍼 마크업)라 내용만 남겨요.
+  for (const nested of Array.from(fragment.querySelectorAll("[data-podo-island]"))) {
+    nested.replaceWith(...Array.from(nested.childNodes).filter((n) => n.nodeName !== "TEMPLATE"));
+  }
+  return fragment;
 }

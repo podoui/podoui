@@ -33,8 +33,13 @@ const USAGE_TABS: CodeTab[] = [
     target: "hono",
     label: "Hono",
     code:
-      `import { Toast } from "podo-ui/hono";\n\n` +
-      `<Toast state="success" closable>저장됐어요</Toast>`,
+      `import { Toast, Toaster } from "podo-ui/hono";\n\n` +
+      `{/* 서버 flash: 닫기 X·자동 닫힘(podo:close) */}\n` +
+      `<Toast state="success" closable duration={3000}>저장됐어요</Toast>\n\n` +
+      `{/* 명령형 스택: Toaster 한 번 + window.podo.toast */}\n` +
+      `<Toaster position="top-center" />\n` +
+      `<script defer src="/assets/podo-ui/hono/client.js"></script>\n\n` +
+      `// window.podo.toast.success("저장됐어요");`,
   },
   {
     target: "native",

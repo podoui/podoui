@@ -672,7 +672,7 @@
   - 계획 완료 조건의 Select `Home`/`End`·옵션 그룹은 **React 계약에 없음**이라 제외(2026-11-17 결정 D-9, 구현 안 함).
   - T1 에서 넘어온 정리: `packages/hono/src/client/dom-to-vnode.ts` 초안이 지금도 `tsc` 로 `dist/hono/client/` 에 빌드돼 `podo-ui` 패키지에 들어가요(공개 export 없음). T3 에서 실제 클라이언트 구현으로 이어 쓰거나, 폐기하면 소스·생성물 제외를 함께 처리.
 - [x] T4 DatePicker — Hono SSR + island, 조합별 패리티·제출값·configure
-- [ ] T5 Toaster·Toast·Tooltip·Table + 중첩 island(중첩 Chip 제거·중첩 defer)
+- [x] T5 Toaster·Toast·Tooltip·Table + 중첩 island(중첩 Chip 제거·중첩 defer)
 - [ ] T6 Editor — 같은 `client.js` 번들, `uploadUrl`·`validator` configure, 표 셀 안 Editor
 - [ ] T7 실브라우저 QA(ego-browser) — 샘플 앱, 아이콘 전후 스크린샷
 - [ ] T8 릴리스 2.3.11 — version·CHANGELOG(2.3.10 복원 포함)·SetupPage·README·AGENTS.md, 태그·Actions·npm·소비자 설치 확인
