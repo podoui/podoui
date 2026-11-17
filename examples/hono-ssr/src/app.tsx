@@ -116,6 +116,7 @@ const pages: Array<[path: string, title: string]> = [
   ["/datepicker", "DatePicker"],
   ["/overlays", "Toast · Tooltip · Table(중첩)"],
   ["/editor", "Editor · 이미지 업로드"],
+  ["/long", "긴 페이지 · 스크롤 뒤 portal"],
   ["/editor-view", "EditorView"],
 ];
 
@@ -363,6 +364,34 @@ app.get("/editor", (c) =>
         />
         <Button type="submit">제출</Button>
       </form>
+    </Page>
+  )
+);
+
+// 스크롤이 필요한 긴 페이지 — portal island(Select·DatePicker·Tooltip)가 스크롤 뒤에도
+// 트리거 옆에 붙는지 확인해요(계획 §D10 샘플).
+app.get("/long", (c) =>
+  c.html(
+    <Page title="긴 페이지 · 스크롤 뒤 portal">
+      <p>아래로 스크롤하세요.</p>
+      <div style="height:1600px" aria-hidden="true" />
+      <form method="get" action="/echo">
+        <Field id="long-select" label="스크롤 뒤 Select">
+          <Select name="fruit" options={fruit} placeholder="과일 선택" />
+        </Field>
+        <Field id="long-day" label="스크롤 뒤 DatePicker">
+          <DatePicker name="day" portal />
+        </Field>
+        <p>
+          <Tooltip label="스크롤 뒤 툴팁" position="top">
+            <Button type="button" theme="outline-primary">
+              도움말
+            </Button>
+          </Tooltip>
+        </p>
+        <Button type="submit">제출</Button>
+      </form>
+      <div style="height:1200px" aria-hidden="true" />
     </Page>
   )
 );

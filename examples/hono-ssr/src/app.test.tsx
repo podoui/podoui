@@ -36,6 +36,9 @@ describe("hono-ssr sample app", () => {
       ["/datepicker", "DatePicker"],
       ["/overlays", "Table"],
       ["/editor", "Editor"],
+      ["/long", "Select"],
+      ["/long", "DatePicker"],
+      ["/long", "Tooltip"],
     ] as const) {
       const response = await app.request(path);
       expect(response.status, path).toBe(200);

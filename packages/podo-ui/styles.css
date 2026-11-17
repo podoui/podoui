@@ -1572,6 +1572,8 @@
 
 .podo-toaster .podo-toast {
   animation: podo-toast-in 0.18s ease;
+  /* width 100% + 패딩이 스택 폭(480px)을 넘지 않게 — 전역 리셋 없는 앱에서도 같아요(T7 D-15). */
+  box-sizing: border-box;
   grid-area: 1 / 1;
   opacity: 1;
   transition:
@@ -1851,6 +1853,12 @@
 /* Hono island 래퍼(podo-ui/hono/client 마운트 자리) — 레이아웃에 끼지 않아요. */
 .podo-island {
   display: contents;
+}
+
+/* Hono Editor SSR 셸: 마운트 전 빈 툴바 자리를 실제 툴바 한 줄 높이(49px)로 잡아
+   마운트 때 본문이 밀리지 않게 해요(T7 D-17). */
+.podo-island[data-podo-island="Editor"]:not([data-podo-mounted]) .podo-ed-toolbar {
+  min-height: 49px;
 }
 
 /* Icon 베이스 — 글리프 폰트/코드포인트는 생성된 PodoIcons.css가 담당. */

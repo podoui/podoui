@@ -2,6 +2,7 @@
 // <script defer src="/…/podo-ui/hono/client.js"></script>
 import { configure, mount } from "./bridge.js";
 import { toast } from "./components.js";
+import { installAutofocus } from "./autofocus.js";
 import { installDelegation, syncStaticState } from "./events.js";
 
 declare const __PODO_CLIENT_VERSION__: string | undefined;
@@ -37,6 +38,7 @@ if (!podo.client?.installed) {
   // Toaster island와 같은 번들의 React toast 스토어 — 같은 함수예요(계획 D7).
   podo.toast = toast;
   installDelegation(document);
+  installAutofocus(document);
   const start = () => {
     mountAll(document);
     document.dispatchEvent(new CustomEvent("podo:ready", { detail: { entry: "client" } }));

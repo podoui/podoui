@@ -4,12 +4,13 @@
 import { renderToString } from "hono/jsx/dom/server";
 import { JSDOM } from "jsdom";
 import { describe, expect, it } from "vitest";
-import { Chip, DatePicker, Table, Toast, Toaster, Tooltip } from "./index.js";
+import { Chip, DatePicker, Select, Table, Toast, Toaster, Tooltip } from "./index.js";
 import { canonical, islandContent } from "./test-utils/markup.js";
 import {
   clientOf,
   collect,
   fakeTimers,
+  fruit,
   install,
   page,
   tick,
@@ -700,5 +701,174 @@ describe("T5 review regressions (F1·F2·F5)", () => {
     const input = win.document.querySelector<HTMLInputElement>("[role='tooltip'] input")!;
     expect(input.getAttribute("aria-labelledby")).toBe("name");
     expect(win.document.getElementById("name")?.textContent).toBe("이름");
+  });
+});
+
+describe("T7 real-browser findings", () => {
+  it("removes a nested Chip after the click finishes so the row click still sees the button", async () => {
+    const win = page(
+      <Table checkbox id="tbl">
+        {[
+          <thead>
+            <tr>
+              <th>칩</th>
+            </tr>
+          </thead>,
+          <tbody>
+            <tr>
+              <td>
+                <Chip id="c" removable>
+                  칩
+                </Chip>
+              </td>
+            </tr>
+          </tbody>,
+        ]}
+      </Table>
+    );
+    const changes = collect(win, "podo:selection-change");
+    install(win);
+    await tick(win);
+    const icon = win.document.querySelector("#c .podo-chip__remove i")!;
+    let parentAtRow: string | undefined;
+    win.document.querySelector("tbody tr")!.addEventListener("click", (event) => {
+      parentAtRow = (event.target as Element).parentElement?.className;
+    });
+    icon.dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
+    // 전파 중에는 칩 DOM이 그대로예요(브라우저에선 여기서 떼면 행이 토글됐어요).
+    expect(parentAtRow).toBe("podo-chip__remove");
+    expect(win.document.getElementById("c")).not.toBeNull();
+    await tick(win);
+    expect(win.document.getElementById("c")).toBeNull();
+    expect(changes).toEqual([]);
+  });
+
+  it("focuses an autoFocus input that a mounted island renders (searchable Select)", async () => {
+    const win = page(<Select id="s" name="s" searchable options={fruit} />);
+    install(win);
+    await tick(win);
+    win.document.getElementById("s")!.click();
+    await tick(win);
+    const active = win.document.activeElement as HTMLInputElement;
+    expect(active.classList.contains("podo-select__search")).toBe(true);
+    active.value = "포";
+    active.dispatchEvent(new win.Event("input", { bubbles: true }));
+    await tick(win);
+    expect(
+      Array.from(win.document.querySelectorAll('[role="option"]')).map(
+        (option) => option.textContent
+      )
+    ).toEqual(["포도"]);
+  });
+});
+
+describe("T7 review regressions (autofocus priority, chip removal combos)", () => {
+  const cellInputs = (
+    <Table checkbox id="tbl">
+      {[
+        <thead>
+          <tr>
+            <th>입력</th>
+          </tr>
+        </thead>,
+        <tbody>
+          <tr>
+            <td>
+              <input id="a" autofocus />
+              <input id="b" />
+            </td>
+          </tr>
+        </tbody>,
+      ]}
+    </Table>
+  );
+
+  it("keeps the focus the bridge restored at mount over a rendered autofocus (F1)", async () => {
+    const win = page(cellInputs);
+    win.document.getElementById("b")!.focus();
+    install(win);
+    await tick(win);
+    expect(win.document.querySelector("[data-podo-mounted]")).not.toBeNull();
+    expect(win.document.activeElement?.id).toBe("b");
+  });
+
+  it("still applies autofocus on a first mount with no focus to restore (F1)", async () => {
+    const win = page(cellInputs);
+    install(win);
+    await tick(win);
+    expect(win.document.activeElement?.id).toBe("a");
+  });
+
+  it("does not refocus an already handled autofocus element when it moves (F2)", async () => {
+    const win = page(cellInputs);
+    install(win);
+    await tick(win);
+    expect(win.document.activeElement?.id).toBe("a");
+    win.document.getElementById("b")!.focus();
+    // 포커스된 B는 그대로 두고 처리한 A만 옮겨요(포커스된 요소를 옮기면 브라우저가 blur 해요).
+    const input = win.document.getElementById("a")!;
+    input.parentElement!.append(input);
+    await tick(win);
+    expect(win.document.activeElement?.id).toBe("b");
+  });
+
+  it("handles consecutive removals, a cancelled removal, and configure during removal", async () => {
+    const win = page(
+      <Table checkbox id="tbl">
+        {[
+          <thead>
+            <tr>
+              <th>칩</th>
+            </tr>
+          </thead>,
+          <tbody>
+            <tr>
+              <td>
+                <Chip id="c1" removable>
+                  하나
+                </Chip>
+                <Chip id="c2" removable>
+                  둘
+                </Chip>
+                <Chip id="c3" removable>
+                  셋
+                </Chip>
+                <Chip id="c4">넷</Chip>
+              </td>
+            </tr>
+          </tbody>,
+        ]}
+      </Table>
+    );
+    const changes = collect(win, "podo:selection-change");
+    win.document.addEventListener("podo:remove", (event) => {
+      const id = (event as CustomEvent<{ id?: string }>).detail.id;
+      if (id === "c2") {
+        event.preventDefault();
+      }
+      if (id === "c3") {
+        clientOf(win).configure("tbl", { type: "grid" });
+      }
+    });
+    install(win);
+    await tick(win);
+    win.document.getElementById("c4")!.click();
+    await tick(win);
+    const remove = (id: string) =>
+      win.document
+        .querySelector(`#${id} .podo-chip__remove i`)!
+        .dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
+    // 같은 틱에 두 번 연속 제거 — 예약된 재렌더가 서로 덮지 않아요.
+    remove("c1");
+    remove("c2");
+    await tick(win);
+    expect(win.document.getElementById("c1")).toBeNull();
+    expect(win.document.getElementById("c2")).not.toBeNull();
+    remove("c3");
+    await tick(win);
+    expect(win.document.getElementById("c3")).toBeNull();
+    expect(win.document.querySelector("table")!.getAttribute("data-type")).toBe("grid");
+    expect(win.document.getElementById("c4")!.getAttribute("aria-pressed")).toBe("true");
+    expect(changes).toEqual([]);
   });
 });

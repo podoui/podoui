@@ -39,6 +39,8 @@ island = React 컴포넌트가 **상태·포털·효과(hooks)** 를 갖는 것 
 - 제어 모드(`configure(id, { value })` 등)에서 사용자가 값을 바꾸면 브리지가 저장 값을 먼저 갱신하고, 그다음 소비자 콜백·`podo:*` 이벤트가 불려요 — 그 안에서 다시 `configure` 한 값이 최종값이에요.
 - SSR 이 만든 요소(`data-podo-generated=""` — 열린 Tooltip 의 인라인 말풍선 등)는 마운트 때 공유 컴포넌트가 다시 그려요. 그 요소의 `id` 는 트리거의 id 참조 속성(`aria-describedby`·`aria-labelledby` 등, Chip 트리거의 props 포함)에서 빠지고 기존 설명 `id` 는 남아요. 생성 요소 안의 island 복제본은 등록하지 않고, 슬롯 정의 `<template data-podo-slot>` 안 island(Tooltip 리치 `label`)와 생성 요소 id 는 바깥 island 의 구성원으로 등록·defer 집계·configure·id 정리 대상이에요. 사용자 `<template>` 안은 쓰이지 않는 마크업이라 등록하지 않고(defer 도 막지 않음) 마운트 때 옮기지도 않아요.
 - Table 의 `thead`·`tbody` 는 직접 자식(또는 배열)로 넘겨요. Fragment 로 감싸면 React Table 은 선택 열을 만들지 않지만 Hono 는 마운트 때 DOM 에서 Fragment 경계가 사라져 선택 열이 생길 수 있어요 — Fragment 감싸기는 지원 범위 밖이에요.
+- hono/jsx/dom 은 React `autoFocus` 를 속성으로만 달아요 — 클라이언트가 마운트된 island 안에 새로 붙은 `[autofocus]` 요소를 포커스해요(검색형 Select 입력·Editor 팝업 입력, T7 실브라우저 발견). 포커스 우선순위: ① 최초 마운트 때 브리지가 같은 `id` 로 복구한 사용자 포커스(그때 렌더된 `[autofocus]` 는 처리한 것으로 보고 포커스하지 않아요) ② 그 밖에 새로 렌더된 `[autofocus]`(복구할 포커스가 없는 최초 마운트 포함, 이후 검색 Select·Editor 팝업). 한 번 처리한 요소는 DOM 에서 옮겨 다시 붙어도 포커스하지 않아요(T7 리뷰 F1·F2).
+- 중첩 Chip 제거의 재렌더는 클릭 전파가 끝난 뒤(`setTimeout 0`) 예약해요 — hono/jsx/dom 은 요소마다 리스너를 달고 즉시 렌더해서, 전파 중에 칩 DOM 을 떼면 바깥 Table 행 클릭이 떨어진 대상을 보고 행을 토글했어요(T7 실브라우저 발견, React 는 이벤트 뒤 커밋). 단, 제거 전파 중(`podo:remove` 리스너 안 등) 다른 `configure()` 를 부르면 그 재렌더는 즉시 일어나요 — 「전파가 끝날 때까지 DOM 이 항상 유지된다」 는 보장은 아니에요.
 - 래퍼 위치(계획 R6): 래퍼는 `span`(Table 만 `div`)이라 `<td>`·`<label>` 안에서 파서가 옮기지 않아요(`client.test.tsx` 「wrapper parsing」). island 를 `<table>`·`<tr>`·`<thead>` 의 직접 자식으로 두지 마세요. Select 의 SSR 루트는 React 처럼 `div` 라 `<p>` 안에 두면(래퍼와 무관하게) 파서가 `<p>` 를 닫아요 — Select 는 `<p>` 밖에 두세요.
 
 ### 1.3 테스트 ID
@@ -242,6 +244,10 @@ Switch 는 island 라 이 표가 아니라 브리지가 `podo:checked-change` �
 | D-12 | Table 행의 `data-disabled={false}`(또는 `0`·`""`)는 SSR 에서 문자열(`"false"`)이 되어, 마운트 때 DOM 값을 그대로 넘기면 React Table 의 `Boolean(...)` 판정이 비활성으로 뒤집혀요(T5 리뷰 F2). | Hono Table SSR 이 거짓 원본값인 행의 `data-disabled` 를 생성 표식(`data-podo-generated="data-disabled"`)으로 달아 클라이언트가 옮기지 않아요 — 판정값(거짓)은 보존, 문자열·`true` 는 그대로. 마운트 뒤 그 행의 `data-disabled="false"` 속성은 사라져요(hono/jsx/dom 은 `false` 속성을 빼요 — React 는 `"false"` 를 남겨 `tr[data-disabled]` 스타일이 걸려요) |
 | D-13 | 샘플 CSP `style-src 'self'` 가 Toaster SSR 의 `style="--podo-toast-count:0"`(React 와 같은 마크업)을 막아요(T5 리뷰 F7). | 샘플에 `style-src-attr 'unsafe-inline'` 만 추가 — 스크립트·`<style>` 요소는 계속 `'self'`. 실제 브라우저 콘솔 위반 0 은 T7 에서 확인 |
 | D-14 | 표 셀 안 Editor 본문을 클릭(커서 배치)하면 React Table 행 클릭 선택이 함께 토글돼요 — 클릭 제외 목록(`input, button, a, select, textarea, label`)에 편집 가능한 영역이 없었어요(T6 리뷰 F2). | React Table 클릭 제외에 `[contenteditable]:not([contenteditable="false"])` 추가 — React·Hono 같은 소스, React 회귀 테스트 포함. 공유 React 변경(총괄 지시로 반영) |
+| D-15 | Toaster 카드가 스택 폭 밖으로 34px 넘쳐요 — `.podo-toast` 가 content-box 에 `width: 100%` + 패딩이라, 전역 `box-sizing` 리셋 없는 앱(React 포함)에서 보여요(T7 실브라우저). | `styles.css` `.podo-toaster .podo-toast` 에 `box-sizing: border-box`(공용 결함 수정). `packages/web` 웹컴포넌트 CSS(`podoWebComponentCss`)의 같은 규칙 사본은 이번 Hono↔React 범위 밖이라 **고치지 않았어요**(후속) |
+| D-16 | 다중 Select 에서 옵션을 클릭하면 포커스가 `body` 로 가서 Escape 로 닫히지 않아요(옵션이 포커스를 받지 않는 요소, T7). | React 동작 그대로 유지 — 같은 소스라 Hono 도 같아요. 바깥 클릭으로 닫혀요 |
+| D-17 | Editor SSR 셸의 빈 툴바 자리(44px)가 마운트 뒤 실제 툴바(49px)보다 낮아 본문이 5px 밀려요(T7). | 마운트 전 Editor island 의 툴바 자리 `min-height: 49px`(CSS, 데스크톱 한 줄 기준 — 600px 이하에서 툴바가 여러 줄로 흐르면 그 높이까지는 맞추지 않아요) |
+| D-18 | 샘플에 계획의 「스크롤이 필요한 긴 페이지에 portal island」 가 없었어요(T7). | 샘플 `/long`(스크롤 뒤 Select·DatePicker(portal)·Tooltip) 추가. 그 페이지의 DatePicker 는 기본 `direction="down"` 이라 뷰포트 아래로 넘칠 수 있어요 — React 와 같은 동작이고 범위 밖이에요(DatePicker 는 `direction="auto"` 일 때 위쪽 배치를 해요) |
 
 ## 8. T1 선행 확인·게이트 증거
 

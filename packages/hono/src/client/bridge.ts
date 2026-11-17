@@ -2,6 +2,7 @@ import { jsx, render, useState } from "hono/jsx/dom";
 import { reviveProps } from "@podoui/core";
 import { islandComponents } from "./components.js";
 import { ID_REF_PROPS, domToVNode, type VChild } from "./dom-to-vnode.js";
+import { skipAutofocus } from "./autofocus.js";
 import { emitEvent, islandCallbacks, syncStaticState } from "./events.js";
 import { readState } from "./read-state.js";
 import { slotElements, type SlotSource } from "./slots.js";
@@ -192,6 +193,8 @@ function tryMount(outer: OuterIsland): void {
   syncStaticState(wrapper);
   if (focusId) {
     (wrapper.ownerDocument.getElementById(focusId) as HTMLElement | null)?.focus();
+    // 복구한 사용자 포커스가 이 렌더의 autofocus보다 우선이에요(T7 리뷰 F1).
+    skipAutofocus(wrapper);
   }
 }
 
@@ -305,7 +308,10 @@ function adaptRemovableChip(node: IslandNode, props: Record<string, unknown>): v
       releaseIds(node.outer);
     } else {
       node.removed = true;
-      node.outer.refresh();
+      // 클릭 전파가 끝난 뒤 다시 그려요 — hono/jsx/dom은 요소마다 리스너를 달고 즉시
+      // 렌더해서, 전파 중에 칩 DOM을 떼면 바깥 Table 행 클릭이 떨어진 대상의
+      // closest("button")을 못 찾아 행을 토글해요(React는 이벤트 뒤에 커밋해요, T7).
+      setTimeout(() => node.outer.refresh(), 0);
     }
   };
 }
