@@ -21,6 +21,21 @@ const USAGE_TABS: CodeTab[] = [
       `}`,
   },
   {
+    target: "hono",
+    label: "Hono",
+    code:
+      `import { DatePicker } from "podo-ui/hono";\n\n` +
+      `<form method="get">\n` +
+      `  <DatePicker name="day" value={{ date: new Date() }} />\n` +
+      `  <DatePicker mode="period" fromName="from" toName="to" quickSelect />\n` +
+      `  {/* 함수 조건은 id와 함께 — 클라이언트에서 configure로 넘겨요. */}\n` +
+      `  <DatePicker id="booking" name="booking" disable={[(date) => date.getDay() === 0]} />\n` +
+      `</form>\n` +
+      `<script defer src="/assets/podo-ui/hono/client.js"></script>\n\n` +
+      `// window.podo.client.configure("booking", { disable: [(date) => date.getDay() === 0] });\n` +
+      `// document.addEventListener("podo:change", (e) => e.detail.value);`,
+  },
+  {
     target: "native",
     label: "React Native",
     code: nativeComponentUsage(

@@ -115,3 +115,49 @@ export function formatDatePickerFormValue(
       return day && clock ? `${day}T${clock}` : "";
   }
 }
+
+/**
+ * formatDatePickerFormValue의 역함수 — 폼 hidden 값을 DatePicker 값 조각으로 읽어요
+ * (Hono 클라이언트가 마운트 직전 상태를 읽을 때). 빈 문자열은 빈 값(`{}`), 형식이
+ * 틀렸거나 달력·시계에 없는 값(2월 31일, 24시, 60분…)은 `undefined`로 돌려줘요 —
+ * 다른 날짜로 정규화해 받아들이지 않아요.
+ */
+export function parseDatePickerFormValue(
+  type: PodoDatePickerType,
+  text: string
+): { date?: Date; time?: PodoDatePickerTime } | undefined {
+  if (text === "") {
+    return {};
+  }
+  const patterns: Record<PodoDatePickerType, RegExp> = {
+    date: /^(\d{4})-(\d{2})-(\d{2})$/,
+    time: /^()()()(\d{2}):(\d{2})$/,
+    datetime: /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/,
+    hour: /^()()()(\d{2})()$/,
+  };
+  const match = patterns[type].exec(text);
+  if (!match) {
+    return undefined;
+  }
+  const [year, month, day, hour, minute] = match
+    .slice(1)
+    .map((part) => (part === undefined || part === "" ? undefined : Number(part)));
+  const result: { date?: Date; time?: PodoDatePickerTime } = {};
+  if (year !== undefined && month !== undefined && day !== undefined) {
+    const date = new Date(0);
+    date.setFullYear(year, month - 1, day);
+    date.setHours(0, 0, 0, 0);
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+      return undefined;
+    }
+    result.date = date;
+  }
+  if (hour !== undefined) {
+    const minutes = minute ?? 0;
+    if (hour > 23 || minutes > 59) {
+      return undefined;
+    }
+    result.time = { hour, minute: minutes };
+  }
+  return result;
+}

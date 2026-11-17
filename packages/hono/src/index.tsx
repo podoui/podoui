@@ -5,6 +5,19 @@ import type { Child } from "hono/jsx";
 import type { JSX } from "hono/jsx/jsx-runtime";
 import { raw } from "hono/html";
 import { Island, autoId } from "./island.js";
+
+export {
+  DatePicker,
+  type HonoDatePickerMode,
+  type HonoDatePickerProps,
+  type HonoDatePickerType,
+  type HonoDatePickerValue,
+  type HonoDateCondition,
+  type HonoDateRange,
+  type HonoDateTimeLimit,
+  type HonoQuickSelectKey,
+  type HonoTimeValue,
+} from "./datepicker.js";
 import {
   createButtonBehavior,
   createCheckboxBehavior,

@@ -40,6 +40,14 @@ export const islandCallbacks: Record<string, Record<string, IslandCallback>> = {
       controlled: "selected",
     },
   },
+  DatePicker: {
+    onChange: {
+      event: "podo:change",
+      detail: (value: Record<string, unknown>) => ({ value }),
+      controlled: "value",
+    },
+    onReset: { event: "podo:reset", detail: () => ({}) },
+  },
   Switch: {
     onCheckedChange: {
       event: "podo:checked-change",

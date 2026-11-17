@@ -7,7 +7,17 @@ import { readFile } from "node:fs/promises";
 import { Hono } from "hono";
 import type { Child } from "hono/jsx";
 import { secureHeaders } from "hono/secure-headers";
-import { Button, Chip, EditorView, Field, Input, Select, Switch, Textarea } from "@podoui/hono";
+import {
+  Button,
+  Chip,
+  DatePicker,
+  EditorView,
+  Field,
+  Input,
+  Select,
+  Switch,
+  Textarea,
+} from "@podoui/hono";
 
 export const app = new Hono();
 
@@ -78,6 +88,7 @@ function Page({ title, children }: { title: string; children: Child }) {
 const pages: Array<[path: string, title: string]> = [
   ["/form", "폼 · 네이티브 속성"],
   ["/select-chip", "Select · Chip · Switch"],
+  ["/datepicker", "DatePicker"],
   ["/editor-view", "EditorView"],
 ];
 
@@ -177,6 +188,47 @@ app.get("/select-chip", (c) =>
     </Page>
   )
 );
+
+app.get("/datepicker", (c) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const week = new Date(today);
+  week.setDate(week.getDate() + 6);
+  return c.html(
+    <Page title="DatePicker">
+      <form method="get" action="/echo">
+        <Field id="day" label="날짜">
+          <DatePicker name="day" value={{ date: today }} />
+        </Field>
+        <Field id="range" label="기간">
+          <DatePicker
+            mode="period"
+            fromName="from"
+            toName="to"
+            quickSelect
+            value={{ date: today, endDate: week }}
+          />
+        </Field>
+        <Field id="at" label="일시">
+          <DatePicker type="datetime" name="at" portal />
+        </Field>
+        <Field id="time" label="시간">
+          <DatePicker
+            type="time"
+            mode="period"
+            fromName="timeFrom"
+            toName="timeTo"
+            minuteStep={10}
+          />
+        </Field>
+        <Field id="hour" label="시">
+          <DatePicker type="hour" name="hour" hourFormat="12" />
+        </Field>
+        <Button type="submit">제출</Button>
+      </form>
+    </Page>
+  );
+});
 
 app.get("/editor-view", (c) =>
   c.html(

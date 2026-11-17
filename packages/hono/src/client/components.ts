@@ -1,5 +1,5 @@
 import type { FC } from "hono/jsx";
-import { Chip, Select, Switch } from "@podoui/react";
+import { Chip, DatePicker, Select, Switch } from "@podoui/react";
 
 /**
  * 타입 경계 파일(계획 D12) — React 컴포넌트 소스를 hono FC로 단언하는 유일한 곳이에요.
@@ -12,5 +12,6 @@ export const islandComponents: Record<string, IslandComponent> = {
   Select: Select as unknown as IslandComponent,
   Chip: Chip as unknown as IslandComponent,
   Switch: Switch as unknown as IslandComponent,
-  // T4 DatePicker · T5 Tooltip·Table·Toaster · T6 Editor
+  DatePicker: DatePicker as unknown as IslandComponent,
+  // T5 Tooltip·Table·Toaster · T6 Editor
 };

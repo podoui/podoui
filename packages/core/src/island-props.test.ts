@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { formatDatePickerFormValue, reviveProps, serializeProps } from "./index.js";
+import {
+  formatDatePickerFormValue,
+  parseDatePickerFormValue,
+  reviveProps,
+  serializeProps,
+} from "./index.js";
 
 describe("island props serialization", () => {
   it("round-trips JSON values and local wall-clock Dates, including nested ones", () => {
@@ -93,5 +98,41 @@ describe("formatDatePickerFormValue", () => {
     expect(formatDatePickerFormValue("date", undefined, undefined)).toBe("");
     expect(formatDatePickerFormValue("datetime", date, undefined)).toBe("");
     expect(formatDatePickerFormValue("hour", undefined, undefined)).toBe("");
+  });
+});
+
+describe("parseDatePickerFormValue", () => {
+  it("round-trips every DatePicker type", () => {
+    const date = new Date(2026, 1, 3);
+    const time = { hour: 7, minute: 30 };
+    for (const type of ["date", "time", "datetime", "hour"] as const) {
+      const text = formatDatePickerFormValue(type, date, time);
+      const parsed = parseDatePickerFormValue(type, text)!;
+      expect(formatDatePickerFormValue(type, parsed.date, parsed.time)).toBe(text);
+    }
+  });
+
+  it("reads empty text as an empty value and rejects malformed or impossible values", () => {
+    expect(parseDatePickerFormValue("date", "")).toEqual({});
+    for (const [type, text] of [
+      ["datetime", "2026-02-03"],
+      ["hour", "7"],
+      ["date", "2026-02-31"],
+      ["date", "2026-13-01"],
+      ["date", "2025-02-29"],
+      ["time", "24:00"],
+      ["time", "12:60"],
+      ["datetime", "2026-02-03T24:99"],
+      ["hour", "99"],
+    ] as const) {
+      expect(parseDatePickerFormValue(type, text), `${type} ${text}`).toBeUndefined();
+    }
+    // 윤년 2월 29일·월말·시계 경계는 그대로 읽어요.
+    expect(parseDatePickerFormValue("date", "2028-02-29")?.date?.getDate()).toBe(29);
+    expect(parseDatePickerFormValue("datetime", "2026-12-31T23:59")?.time).toEqual({
+      hour: 23,
+      minute: 59,
+    });
+    expect(parseDatePickerFormValue("hour", "00")?.time).toEqual({ hour: 0, minute: 0 });
   });
 });

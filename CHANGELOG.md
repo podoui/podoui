@@ -19,6 +19,10 @@
   코드로 마운트하고 콜백을 `podo:*` CustomEvent로 낸다(`podo:value-change`·`podo:values-change`·
   `podo:selected-change`·`podo:remove`·`podo:checked-change`·`podo:press`). 함수 등은
   `window.podo.client.configure(id, props)`로 넘기고, 설치가 끝나면 `podo:ready`가 한 번 온다.
+- Hono: `DatePicker`를 추가한다. SSR은 React DatePicker의 닫힌 입력 칸과 같은 마크업과 폼 hidden
+  (`name` 또는 `fromName`/`toName`)을 내고, 달력·시간 패널은 `podo-ui/hono/client`가 같은 React
+  코드로 마운트한다(확정 시 `podo:change`, 초기화 `podo:reset`). `Date` 값은 로컬 벽시계로 옮기고,
+  함수 조건이 섞인 `disable`/`enable`은 `id`와 함께 `configure`로 넘긴다.
 - Hono: Select·Chip·Switch SSR이 island 래퍼로 감싸지고 React 첫 렌더와 같은 마크업을 낸다
   (Select 값 영역 `.podo-select__value-content`, 인라인 메뉴의 리스트박스·셀 id, Switch
   `data-disabled`, 제거 버튼 `tabindex`). Select는 `searchable`·`portal`(기본 true)·`name`

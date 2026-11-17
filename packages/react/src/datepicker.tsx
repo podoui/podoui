@@ -2,7 +2,29 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { datePickerStyles as styles, formatDatePickerFormValue } from "@podoui/core";
+import {
+  datePickerStyles as styles,
+  formatDatePickerFormValue,
+  QUICK_SELECT_PRESETS,
+  calculateNavigationStep,
+  clampPresetRange,
+  datePickerDateText,
+  datePickerHourLabel,
+  datePickerHourOptions,
+  extractDateTimeLimit,
+  formatWithPattern,
+  getActivePresetLabel,
+  getNavigationStepForPreset,
+  getPresetRange,
+  isDatePickerHourDisabled,
+  isDatePickerMinuteDisabled,
+  isDatePickerNavDisabled,
+  isPresetActive,
+  isPresetDisabled,
+  isSameDay,
+  shiftDateRange,
+  type NavigationStep,
+} from "@podoui/core";
 
 // Types
 export type DatePickerMode = "instant" | "period";
@@ -174,33 +196,6 @@ const resolveCalendarInitial = (initial: CalendarInitial | undefined, fallback: 
   }
 };
 
-/**
- * 커스텀 포맷으로 날짜/시간 포맷팅
- * y: 년(4자리), m: 월(2자리), d: 일(2자리), h: 시(2자리), i: 분(2자리)
- */
-const formatWithPattern = (
-  date: Date | undefined,
-  time: TimeValue | undefined,
-  pattern: string
-): string => {
-  if (!date && !time) return "";
-
-  let result = pattern;
-
-  if (date) {
-    result = result.replace(/y/g, String(date.getFullYear()));
-    result = result.replace(/m/g, String(date.getMonth() + 1).padStart(2, "0"));
-    result = result.replace(/d/g, String(date.getDate()).padStart(2, "0"));
-  }
-
-  if (time) {
-    result = result.replace(/h/g, String(time.hour).padStart(2, "0"));
-    result = result.replace(/i/g, String(time.minute).padStart(2, "0"));
-  }
-
-  return result;
-};
-
 const formatDate = (date: Date): string => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -221,164 +216,6 @@ const formatDateTime = (date: Date): string => {
 /** 달력 날짜 셀의 접근성 이름 (년-월-일 전체 포함) */
 const formatDayAriaLabel = (date: Date): string =>
   `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
-
-const isSameDay = (date1: Date, date2: Date): boolean => {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  );
-};
-
-type NavigationStep = { type: "days"; count: number } | { type: "month"; count: number };
-
-const getNavigationStepForPreset = (key: QuickSelectKey): NavigationStep => {
-  switch (key) {
-    case "today":
-    case "yesterday":
-      return { type: "days", count: 1 };
-    case "thisWeek":
-    case "lastWeek":
-    case "last7Days":
-      return { type: "days", count: 7 };
-    case "last30Days":
-      return { type: "days", count: 30 };
-    case "thisMonth":
-    case "lastMonth":
-      return { type: "month", count: 1 };
-  }
-};
-
-const calculateNavigationStep = (start: Date, end: Date): NavigationStep => {
-  const diffMs =
-    new Date(end.getFullYear(), end.getMonth(), end.getDate()).getTime() -
-    new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
-  return { type: "days", count: Math.round(diffMs / 86_400_000) + 1 };
-};
-
-const shiftDateRange = (start: Date, step: NavigationStep, direction: 1 | -1) => {
-  if (step.type === "month") {
-    const shiftedMonth = start.getMonth() + step.count * direction;
-    const nextStart = new Date(start.getFullYear(), shiftedMonth, 1);
-    return {
-      start: nextStart,
-      end: new Date(nextStart.getFullYear(), nextStart.getMonth() + 1, 0),
-    };
-  }
-
-  const nextStart = new Date(start);
-  nextStart.setDate(nextStart.getDate() + step.count * direction);
-  const nextEnd = new Date(nextStart);
-  nextEnd.setDate(nextEnd.getDate() + step.count - 1);
-  return { start: nextStart, end: nextEnd };
-};
-
-interface QuickSelectPreset {
-  key: QuickSelectKey;
-  label: string;
-}
-
-const QUICK_SELECT_PRESETS: QuickSelectPreset[] = [
-  { key: "today", label: "오늘" },
-  { key: "yesterday", label: "어제" },
-  { key: "thisWeek", label: "이번 주" },
-  { key: "lastWeek", label: "지난 주" },
-  { key: "last7Days", label: "최근 7일" },
-  { key: "last30Days", label: "최근 30일" },
-  { key: "thisMonth", label: "이번 달" },
-  { key: "lastMonth", label: "지난 달" },
-];
-
-const getPresetRange = (key: QuickSelectKey): { start: Date; end: Date } => {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  switch (key) {
-    case "today":
-      return { start: new Date(today), end: new Date(today) };
-    case "yesterday": {
-      const date = new Date(today);
-      date.setDate(date.getDate() - 1);
-      return { start: date, end: new Date(date) };
-    }
-    case "thisWeek": {
-      const start = new Date(today);
-      start.setDate(start.getDate() - start.getDay());
-      const end = new Date(start);
-      end.setDate(end.getDate() + 6);
-      return { start, end };
-    }
-    case "lastWeek": {
-      const start = new Date(today);
-      start.setDate(start.getDate() - start.getDay() - 7);
-      const end = new Date(start);
-      end.setDate(end.getDate() + 6);
-      return { start, end };
-    }
-    case "last7Days": {
-      const start = new Date(today);
-      start.setDate(start.getDate() - 6);
-      return { start, end: new Date(today) };
-    }
-    case "last30Days": {
-      const start = new Date(today);
-      start.setDate(start.getDate() - 29);
-      return { start, end: new Date(today) };
-    }
-    case "thisMonth":
-      return {
-        start: new Date(today.getFullYear(), today.getMonth(), 1),
-        end: new Date(today.getFullYear(), today.getMonth() + 1, 0),
-      };
-    case "lastMonth":
-      return {
-        start: new Date(today.getFullYear(), today.getMonth() - 1, 1),
-        end: new Date(today.getFullYear(), today.getMonth(), 0),
-      };
-  }
-};
-
-const dayOnly = (date: Date): Date => new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-const limitDate = (limit: Date | DateTimeLimit): Date =>
-  dayOnly(limit instanceof Date ? limit : limit.date);
-
-const clampPresetRange = (
-  range: { start: Date; end: Date },
-  minDate?: Date | DateTimeLimit,
-  maxDate?: Date | DateTimeLimit
-) => ({
-  start: minDate && range.start < limitDate(minDate) ? limitDate(minDate) : range.start,
-  end: maxDate && range.end > limitDate(maxDate) ? limitDate(maxDate) : range.end,
-});
-
-const isPresetDisabled = (
-  key: QuickSelectKey,
-  minDate?: Date | DateTimeLimit,
-  maxDate?: Date | DateTimeLimit
-): boolean => {
-  const { start, end } = getPresetRange(key);
-  return Boolean((minDate && end < limitDate(minDate)) || (maxDate && start > limitDate(maxDate)));
-};
-
-const isPresetActive = (
-  key: QuickSelectKey,
-  value: DatePickerValue | undefined,
-  minDate?: Date | DateTimeLimit,
-  maxDate?: Date | DateTimeLimit
-): boolean => {
-  if (!value?.date || !value.endDate) return false;
-  const { start, end } = clampPresetRange(getPresetRange(key), minDate, maxDate);
-  return isSameDay(value.date, start) && isSameDay(value.endDate, end);
-};
-
-const getActivePresetLabel = (
-  value: DatePickerValue | undefined,
-  minDate?: Date | DateTimeLimit,
-  maxDate?: Date | DateTimeLimit
-): string | null =>
-  QUICK_SELECT_PRESETS.find((preset) => isPresetActive(preset.key, value, minDate, maxDate))
-    ?.label ?? null;
 
 const isInRange = (date: Date, start: Date, end: Date): boolean => {
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -437,19 +274,6 @@ const isDateDisabled = (
   }
 
   return false;
-};
-
-/** DateTimeLimit 타입 가드 */
-const isDateTimeLimit = (value: Date | DateTimeLimit): value is DateTimeLimit => {
-  return typeof value === "object" && "date" in value && !(value instanceof Date);
-};
-
-/** DateTimeLimit에서 Date와 TimeValue 추출 */
-const extractDateTimeLimit = (limit: Date | DateTimeLimit): { date: Date; time?: TimeValue } => {
-  if (isDateTimeLimit(limit)) {
-    return { date: limit.date, time: limit.time };
-  }
-  return { date: limit };
 };
 
 /**
@@ -1714,13 +1538,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
     return shiftDateRange(navigationAnchor ?? current.date, navigationStep, stepDirection);
   };
 
-  const isNavDisabled = (stepDirection: 1 | -1): boolean => {
-    const range = getShiftedRange(stepDirection);
-    if (!range) return true;
-    if (stepDirection < 0 && minDate) return range.end < limitDate(minDate);
-    if (stepDirection > 0 && maxDate) return range.start > limitDate(maxDate);
-    return false;
-  };
+  const isNavDisabled = (stepDirection: 1 | -1): boolean =>
+    isDatePickerNavDisabled(getShiftedRange(stepDirection), stepDirection, { minDate, maxDate });
 
   const handleNavigate = (stepDirection: 1 | -1) => {
     if (disabled) return;
@@ -1761,16 +1580,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
   const hasStartValue = !!displayValue?.date;
   const hasEndValue = !!displayValue?.endDate;
 
-  // 날짜만 표시하는 포맷 (시간 제외)
-  const getDateOnlyFormat = (): string | undefined => {
-    if (!format) return undefined;
-    // 시간 관련 부분 제거 (h, i 및 그 주변 문자들)
-    return format
-      .replace(/\s*h[:\s]*i[분]?/g, "")
-      .replace(/\s*h시\s*i분/g, "")
-      .trim();
-  };
-
   // Helper to render date button
   const renderDateButton = (
     date: Date | undefined,
@@ -1778,15 +1587,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
     onClick: () => void,
     isPlaceholder: boolean
   ) => {
-    const dateFormat = getDateOnlyFormat();
-
     if (isPlaceholder || !date) {
       // placeholder prop이 있으면 우선 사용, 없으면 포맷 템플릿으로 표시
-      const placeholderText =
-        placeholder ??
-        (dateFormat
-          ? dateFormat.replace(/y/g, "YYYY").replace(/m/g, "MM").replace(/d/g, "DD")
-          : "YYYY - MM - DD");
+      const placeholderText = datePickerDateText(undefined, format, placeholder);
 
       return (
         <button
@@ -1802,9 +1605,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
     }
 
     // format prop이 있으면 사용 (날짜만)
-    const displayText = dateFormat
-      ? formatWithPattern(date, undefined, dateFormat)
-      : `${date.getFullYear()} - ${String(date.getMonth() + 1).padStart(2, "0")} - ${String(date.getDate()).padStart(2, "0")}`;
+    const displayText = datePickerDateText(date, format, placeholder);
 
     return (
       <button
@@ -1819,14 +1620,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
     );
   };
 
-  const formatHourLabel = (hour: number): string => {
-    if (hourFormat === "24") return `${hour}시`;
-    return `${hour < 12 ? "오전" : "오후"} ${hour % 12 || 12}시`;
-  };
+  const formatHourLabel = (hour: number): string => datePickerHourLabel(hour, hourFormat);
 
-  const hourOptions = Array.from({ length: Math.ceil(24 / hourStep) }, (_, index) =>
-    Math.min(index * hourStep, 23)
-  ).filter((hour, index, hours) => index === 0 || hour !== hours[index - 1]);
+  const hourOptions = datePickerHourOptions(hourStep);
 
   const isEndTimePart = (part: SelectingPart) => part === "endHour" || part === "endMinute";
 
@@ -1836,45 +1632,24 @@ const DatePicker: React.FC<DatePickerProps> = ({
   const getDateForPart = (part: SelectingPart) =>
     isEndTimePart(part) ? tempValue.endDate : tempValue.date;
 
-  const isHourOptionDisabled = (part: SelectingPart, hour: number): boolean => {
-    if (type === "hour" && disabledHours?.includes(hour)) return true;
-    const currentDate = getDateForPart(part);
-    if (!currentDate) return false;
-    const minLimit = minDate ? extractDateTimeLimit(minDate) : null;
-    const maxLimit = maxDate ? extractDateTimeLimit(maxDate) : null;
-    if (minLimit?.time && isSameDay(currentDate, minLimit.date) && hour < minLimit.time.hour) {
-      return true;
-    }
-    if (maxLimit?.time && isSameDay(currentDate, maxLimit.date) && hour > maxLimit.time.hour) {
-      return true;
-    }
-    return false;
-  };
+  const isHourOptionDisabled = (part: SelectingPart, hour: number): boolean =>
+    isDatePickerHourDisabled({
+      hour,
+      type,
+      disabledHours,
+      date: getDateForPart(part),
+      minDate,
+      maxDate,
+    });
 
-  const isMinuteOptionDisabled = (part: SelectingPart, minute: number): boolean => {
-    const currentDate = getDateForPart(part);
-    const currentTime = getTimeForPart(part);
-    if (!currentDate || !currentTime) return false;
-    const minLimit = minDate ? extractDateTimeLimit(minDate) : null;
-    const maxLimit = maxDate ? extractDateTimeLimit(maxDate) : null;
-    if (
-      minLimit?.time &&
-      isSameDay(currentDate, minLimit.date) &&
-      currentTime.hour === minLimit.time.hour &&
-      minute < minLimit.time.minute
-    ) {
-      return true;
-    }
-    if (
-      maxLimit?.time &&
-      isSameDay(currentDate, maxLimit.date) &&
-      currentTime.hour === maxLimit.time.hour &&
-      minute > maxLimit.time.minute
-    ) {
-      return true;
-    }
-    return false;
-  };
+  const isMinuteOptionDisabled = (part: SelectingPart, minute: number): boolean =>
+    isDatePickerMinuteDisabled({
+      minute,
+      date: getDateForPart(part),
+      time: getTimeForPart(part),
+      minDate,
+      maxDate,
+    });
 
   const calculateTimeChange = (
     part: SelectingPart,

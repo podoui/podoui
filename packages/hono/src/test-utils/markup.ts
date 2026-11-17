@@ -46,7 +46,13 @@ export function canonical(node: Node): string {
     const element = current as Element;
     const attributes = Array.from(element.attributes)
       .filter((attribute) => !attribute.name.startsWith("data-podo-"))
+      // 옵션 선택은 SSR에선 selected 속성, 마운트 후엔 select.value(속성)라 상태로 비교해요.
+      .filter((attribute) => !(element.localName === "option" && attribute.name === "selected"))
       .map((attribute) => {
+        if (attribute.name === "class") {
+          // 클래스는 토큰 집합으로 비교해요(React 템플릿 문자열의 빈 토큰·공백 차이 무시).
+          return `class="${attribute.value.split(/\s+/).filter(Boolean).sort().join(" ")}"`;
+        }
         if (attribute.name === "id") {
           return `id="${token(attribute.value)}"`;
         }
@@ -59,6 +65,11 @@ export function canonical(node: Node): string {
         }
         return `${attribute.name}="${attribute.value}"`;
       })
+      .concat(
+        element.localName === "option"
+          ? [`:selected="${String((element as HTMLOptionElement).selected)}"`]
+          : []
+      )
       .sort();
     return `<${element.localName}${attributes.map((a) => ` ${a}`).join("")}>${children(element)}</${element.localName}>`;
   };

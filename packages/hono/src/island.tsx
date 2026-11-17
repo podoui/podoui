@@ -5,7 +5,7 @@ import type { JSX } from "hono/jsx/jsx-runtime";
 import { serializeProps } from "@podoui/core";
 
 /** island로 마운트되는 컴포넌트 이름 — 클라이언트 `components.ts` 등록 이름과 같아요. */
-export type IslandName = "Select" | "Chip" | "Switch";
+export type IslandName = "Select" | "Chip" | "Switch" | "DatePicker";
 
 export interface IslandProps {
   name: IslandName;

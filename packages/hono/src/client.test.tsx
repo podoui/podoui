@@ -3,64 +3,24 @@
 // T3 — podo-ui/hono/client(배포와 같은 번들 설정)를 매 테스트 새 jsdom 창에 설치해
 // SSR 마크업 위에서 동작을 확인해요(계획 §3.6 B·C, §4 T3).
 import { renderToString } from "hono/jsx/dom/server";
-import type { JSX } from "hono/jsx/jsx-runtime";
 import { JSDOM } from "jsdom";
-import { beforeAll, describe, expect, it } from "vitest";
-// @ts-expect-error — 빌드 스크립트(.mjs)는 타입 선언이 없어요.
-import { bundleHonoClient } from "../scripts/bundle-client.mjs";
+import { describe, expect, it } from "vitest";
 import { Button, Checkbox, Chip, Field, Input, Select, Switch, Textarea } from "./index.js";
 import { Island } from "./island.js";
 import { canonical } from "./test-utils/markup.js";
+import {
+  clientOf,
+  collect,
+  fruit,
+  hidden,
+  install,
+  key,
+  page,
+  tick,
+  useClientBundle,
+} from "./test-utils/client-harness.js";
 
-let clientCode = "";
-
-beforeAll(async () => {
-  clientCode = (await bundleHonoClient()) as string;
-}, 60_000);
-
-const fruit = [
-  { value: "apple", label: "사과" },
-  { value: "pear", label: "배" },
-  { value: "grape", label: "포도" },
-];
-
-type Win = JSDOM["window"];
-
-type Configure = (id: string, props: Record<string, unknown>) => void;
-const clientOf = (win: Win) =>
-  (win as unknown as { podo: { client: { configure: Configure; mount: (root: Element) => void } } })
-    .podo.client;
-
-function page(markup: JSX.Element | string): Win {
-  const html = typeof markup === "string" ? markup : renderToString(markup);
-  const dom = new JSDOM(`<!doctype html><html><body><form id="f">${html}</form></body></html>`, {
-    runScripts: "outside-only",
-    pretendToBeVisual: true,
-  });
-  return dom.window;
-}
-
-function install(win: Win): void {
-  win.eval(clientCode);
-}
-
-const tick = (win: Win, ms = 30) => new Promise((resolve) => win.setTimeout(resolve, ms));
-
-function collect(win: Win, name: string): Array<Record<string, unknown>> {
-  const seen: Array<Record<string, unknown>> = [];
-  win.document.addEventListener(name, (event) => {
-    seen.push((event as CustomEvent<Record<string, unknown>>).detail);
-  });
-  return seen;
-}
-
-const hidden = (win: Win, name: string) =>
-  Array.from(
-    win.document.querySelectorAll<HTMLInputElement>(`input[type="hidden"][name="${name}"]`)
-  ).map((input) => input.value);
-
-const key = (win: Win, target: Element, keyName: string) =>
-  target.dispatchEvent(new win.KeyboardEvent("keydown", { key: keyName, bubbles: true }));
+useClientBundle();
 
 describe("podo-ui/hono/client — install", () => {
   it("mounts outermost islands, fires podo:ready once, and ignores a second load", async () => {

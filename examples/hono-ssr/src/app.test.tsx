@@ -17,6 +17,17 @@ describe("hono-ssr sample app", () => {
     expect(html).toContain('<script defer="" src="/assets/client.js"></script>');
   });
 
+  it("renders the island pages", async () => {
+    for (const [path, island] of [
+      ["/select-chip", "Select"],
+      ["/datepicker", "DatePicker"],
+    ] as const) {
+      const response = await app.request(path);
+      expect(response.status, path).toBe(200);
+      expect(await response.text()).toContain(`data-podo-island="${island}"`);
+    }
+  });
+
   it("echoes submitted GET form values", async () => {
     const response = await app.request("/echo?title=a&day=2026-11-17&action=link");
     const html = await response.text();

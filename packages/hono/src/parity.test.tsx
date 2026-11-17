@@ -8,10 +8,19 @@ import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { renderToString } from "hono/jsx/dom/server";
 import type { JSX } from "hono/jsx/jsx-runtime";
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import * as React from "../../react/src/index.js";
-import { Chip, Select, Switch } from "./index.js";
+import { Chip, DatePicker, Select, Switch } from "./index.js";
 import { canonical, islandRoot, parseHtml } from "./test-utils/markup.js";
+
+// quickSelect 프리셋 라벨이 「오늘」을 읽어요 — 픽스처와 양쪽 렌더가 같은 날을 보게 고정해요.
+beforeAll(() => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date(2026, 10, 17, 10, 0, 0));
+});
+afterAll(() => {
+  vi.useRealTimers();
+});
 
 const fruit = [
   { value: "apple", label: "사과" },
@@ -238,4 +247,127 @@ describe("parity A — Hono SSR == React server render", () => {
   for (const [name, hono, react] of switchCases) {
     it(`Switch — ${name}`, () => expectParity(hono, react));
   }
+
+  const d = new Date(2026, 10, 17);
+  const e = new Date(2026, 10, 20);
+  const datePickerCases: Array<[string, Record<string, unknown>]> = [
+    ["instant date empty", {}],
+    ["instant date with value, name, class", { value: { date: d }, name: "day", class: "wide" }],
+    ["placeholder prop", { placeholder: "날짜 선택" }],
+    [
+      "period date disabled with fromName/toName",
+      {
+        mode: "period",
+        value: { date: d, endDate: e },
+        disabled: true,
+        fromName: "a",
+        toName: "b",
+      },
+    ],
+    [
+      "time with unaligned minute (step 15)",
+      { type: "time", value: { time: { hour: 9, minute: 5 } }, minuteStep: 15 },
+    ],
+    ["time period empty", { type: "time", mode: "period" }],
+    [
+      "hour 12h step 3 with disabled hours",
+      { type: "hour", hourFormat: "12", hourStep: 3, disabledHours: [0] },
+    ],
+    [
+      "hour period with value",
+      {
+        type: "hour",
+        mode: "period",
+        value: { time: { hour: 13, minute: 0 }, endTime: { hour: 18, minute: 0 } },
+      },
+    ],
+    [
+      "datetime period with min/max times",
+      {
+        type: "datetime",
+        mode: "period",
+        value: {
+          date: d,
+          time: { hour: 1, minute: 2 },
+          endDate: e,
+          endTime: { hour: 22, minute: 50 },
+        },
+        minDate: { date: d, time: { hour: 1, minute: 0 } },
+        maxDate: { date: e, time: { hour: 22, minute: 30 } },
+        name: "ignored-in-period",
+        fromName: "from",
+        toName: "to",
+      },
+    ],
+    [
+      "datetime instant with format",
+      {
+        type: "datetime",
+        value: { date: d, time: { hour: 7, minute: 30 } },
+        format: "y.m.d h:i",
+        name: "at",
+      },
+    ],
+    [
+      "quickSelect period with format",
+      { mode: "period", quickSelect: true, value: { date: d, endDate: e }, format: "y.m.d" },
+    ],
+    [
+      "quickSelect preset label + nav limits",
+      {
+        mode: "period",
+        quickSelect: true,
+        // 시계를 2026-11-17로 고정해 「최근 7일」 프리셋과 같은 범위예요.
+        value: { date: new Date(2026, 10, 11), endDate: d },
+        maxDate: d,
+        minDate: new Date(2026, 10, 11),
+      },
+    ],
+    ["quickSelect hideNavArrow", { mode: "period", quickSelect: true, hideNavArrow: true }],
+  ];
+  for (const [name, props] of datePickerCases) {
+    it(`DatePicker — ${name}`, () => {
+      const {
+        value,
+        class: className,
+        ...rest
+      } = props as Record<string, unknown> & {
+        value?: unknown;
+        class?: string;
+      };
+      expectParity(
+        <DatePicker {...(props as Record<string, never>)} />,
+        createElement(React.DatePicker, {
+          ...(rest as Record<string, never>),
+          ...(value ? { defaultValue: value } : {}),
+          ...(className ? { className } : {}),
+        })
+      );
+    });
+  }
+
+  it("DatePicker — the fixed clock really yields the preset label", () => {
+    const html = renderToString(
+      <DatePicker mode="period" quickSelect value={{ date: new Date(2026, 10, 11), endDate: d }} />
+    );
+    expect(html).toContain('<span class="podo-dp-presetLabel">최근 7일:</span>');
+  });
+
+  it("DatePicker — function conditions are left to configure (defer) without changing markup", () => {
+    const html = renderToString(
+      <DatePicker
+        id="dp"
+        disable={[(date: Date) => date.getDay() === 0, d]}
+        enable={[{ from: d, to: e }]}
+      />
+    );
+    const wrapper = parseHtml(html).querySelector("[data-podo-island]")!;
+    expect(wrapper.hasAttribute("data-podo-defer")).toBe(true);
+    expect(wrapper.getAttribute("data-podo-id")).toBe("dp");
+    const props = JSON.parse(wrapper.getAttribute("data-podo-props")!);
+    expect(props.disable).toBeUndefined();
+    expect(props.enable).toEqual([
+      { from: { $date: "2026-11-17T00:00:00" }, to: { $date: "2026-11-20T00:00:00" } },
+    ]);
+  });
 });
