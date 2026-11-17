@@ -16,7 +16,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Textarea } from "podo-ui/hono";\n\n<Textarea name="memo" placeholder="플레이스홀더" />`,
+    code: `import { Textarea } from "podo-ui/hono";\n\n<Textarea name="memo" rows={5} placeholder="플레이스홀더" />`,
   },
   {
     target: "native",

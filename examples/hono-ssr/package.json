@@ -1,0 +1,17 @@
+{
+  "name": "@podoui/example-hono-ssr",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Hono SSR verification app for podo-ui/hono + podo-ui/hono/client (not published).",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@podoui/hono": "workspace:*",
+    "hono": "^4.12.25",
+    "podo-ui": "workspace:*"
+  }
+}

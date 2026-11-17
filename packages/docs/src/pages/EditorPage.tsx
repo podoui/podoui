@@ -22,6 +22,14 @@ const USAGE_TABS: CodeTab[] = [
       `}`,
   },
   {
+    target: "hono",
+    label: "Hono",
+    code:
+      `import { EditorView } from "podo-ui/hono";\n\n` +
+      `{/* 저장된 Editor HTML을 서버에서 그대로 표시해요(신뢰할 수 있는 HTML만). */}\n` +
+      `<EditorView value={html} />`,
+  },
+  {
     target: "native",
     label: "React Native",
     code:

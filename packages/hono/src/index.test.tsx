@@ -1,12 +1,16 @@
 /** @jsxImportSource hono/jsx */
 
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { renderToString } from "hono/jsx/dom/server";
 import { describe, expect, it } from "vitest";
+import ReactEditorView from "../../react/src/editor/view.js";
 import {
   Badge,
   Button,
   Checkbox,
   Chip,
+  EditorView,
   Field,
   Icon,
   Input,
@@ -514,5 +518,112 @@ describe("@podoui/hono", () => {
     expect(html).toMatch(/<div id="save-hint"[^>]*role="tooltip"/);
     // Without the prop the bubble renders without an id, as before.
     expect(renderToString(<Tooltip label="힌트" />)).not.toMatch(/<div id=/);
+  });
+  // T2 — 네이티브 속성 전달과 비island 위임 표식 (docs/hono-parity.md §4)
+  it("passes native button attributes through for GET-form link buttons (button-attrs)", () => {
+    const html = renderToString(
+      <Button type="submit" form="search" formaction="/list" formmethod="get" name="page" value="2">
+        다음
+      </Button>
+    );
+    expect(html).toContain('form="search"');
+    expect(html).toContain('formaction="/list"');
+    expect(html).toContain('formmethod="get"');
+    expect(html).toContain('name="page"');
+    expect(html).toContain('value="2"');
+    expect(html).toContain('type="submit"');
+    expect(html).toContain('data-podo-button=""');
+
+    const plain = renderToString(<Button>저장</Button>);
+    expect(plain).toBe(
+      '<button class="podo-button" type="button" data-theme="solid-primary" data-size="md" data-podo-button=""><span class="podo-button__label">저장</span></button>'
+    );
+  });
+
+  it("passes native input attributes through (input-attrs)", () => {
+    const date = renderToString(
+      <Input name="day" type="date" min="2026-01-01" max="2026-12-31" inputmode="numeric" />
+    );
+    expect(date).toContain('type="date"');
+    expect(date).toContain('min="2026-01-01"');
+    expect(date).toContain('max="2026-12-31"');
+    expect(date).toContain('inputmode="numeric"');
+    expect(date).toContain('<div class="podo-input" data-size="md" data-podo-input="">');
+
+    const file = renderToString(<Input name="files" type="file" accept="image/*" multiple />);
+    expect(file).toContain('type="file"');
+    expect(file).toContain('accept="image/*"');
+    expect(file).toMatch(/multiple(=""|\s|\/|>)/);
+
+    // 새 속성을 안 주면 input 마크업은 그대로예요(루트 표식만 추가).
+    expect(renderToString(<Input name="title" />)).toBe(
+      '<div class="podo-input" data-size="md" data-podo-input=""><input class="podo-input__control" name="title"/></div>'
+    );
+  });
+
+  it("passes native textarea attributes through (textarea-attrs)", () => {
+    const html = renderToString(
+      <Textarea name="memo" rows={5} maxLength={200} autocomplete="off" wrap="hard" />
+    );
+    expect(html).toContain('rows="5"');
+    expect(html).toContain('maxlength="200"');
+    expect(html).toContain('autocomplete="off"');
+    expect(html).toContain('wrap="hard"');
+    expect(html).toContain('data-podo-textarea=""');
+  });
+
+  it("accepts native maxlength/readonly spellings; camelCase wins a conflict (incl. false/0)", () => {
+    const area = renderToString(<Textarea name="memo" maxlength={200} readonly />);
+    expect(area).toContain('maxlength="200"');
+    expect(area).toMatch(/readonly(=""|\s|>)/);
+    expect(area).toContain('data-state="read-only"');
+
+    const input = renderToString(<Input name="code" maxlength={20} readonly />);
+    expect(input).toContain('maxlength="20"');
+    expect(input).toMatch(/readonly(=""|\s|\/)/);
+    expect(input).toContain('<div class="podo-input" data-size="md" data-state="read-only"');
+
+    const conflict = renderToString(
+      <Input name="code" maxLength={10} maxlength={20} readOnly={false} readonly />
+    );
+    expect(conflict).toContain('maxlength="10"');
+    expect(conflict).not.toContain('maxlength="20"');
+    expect(conflict).not.toContain("readonly");
+    expect(conflict).not.toContain("read-only");
+
+    const zero = renderToString(<Textarea name="memo" maxLength={0} maxlength={5} />);
+    expect(zero).toContain('maxlength="0"');
+  });
+
+  it("marks delegated non-island components for the client entry", () => {
+    expect(renderToString(<Checkbox name="agree" />)).toContain('data-podo-checkbox=""');
+    expect(renderToString(<Radio name="plan" value="a" />)).toContain('data-podo-radio=""');
+    expect(renderToString(<Toast closable>저장됨</Toast>)).toContain('data-podo-toast=""');
+    // Field는 count 없이 countMax만 있을 때(자동 카운트)만 표식을 달아요.
+    const counting = renderToString(
+      <Field id="memo" label="메모" countMax={100}>
+        <Textarea />
+      </Field>
+    );
+    expect(counting).toContain('data-podo-field=""');
+    const controlled = renderToString(
+      <Field id="memo" label="메모" count={3} countMax={100}>
+        <Textarea />
+      </Field>
+    );
+    expect(controlled).not.toContain("data-podo-field");
+  });
+
+  it("renders EditorView exactly like React's static markup (editor-view)", () => {
+    const value = '<p class="podo-ed-p1">본문 <strong>굵게</strong></p>';
+    for (const className of [undefined, "article"]) {
+      const hono = renderToString(
+        className ? <EditorView value={value} class={className} /> : <EditorView value={value} />
+      );
+      const react = renderToStaticMarkup(
+        createElement(ReactEditorView, className ? { value, className } : { value })
+      );
+      expect(hono).toBe(react);
+    }
   });
 });

@@ -664,7 +664,7 @@
   - 완료 기준: React·Hono 컴포넌트 소스의 인라인 `<svg` 가 0이고, 컴포넌트 내부 아이콘은 PODO 아이콘 폰트(`podo-icon`) 마크업을 쓰며 `chevron-down` 이 기본 아이콘 폰트·CSS·문서 `/icon`·MCP 프로젝트 목록에 존재한다.
   - 완료 기준: React 소스의 ARIA 불리언 직렬화·모듈 레벨 JSX 상수 grep 0, Select·DatePicker·Editor 의 폼 제출 `name`(+Editor `defaultValue`) 추가 후 기존 React 테스트 통과(아이콘·`name`·`defaultValue` 외 스냅샷 변화 0).
   - 완료 기준: spec·`parity.test.ts`·core(`serializeProps`/`reviveProps` 왕복) 테스트와 `domToVNode` 스파이크(Table 행 선택·Tooltip hover·Chip 라벨·Select prefix, jsdom) 가 통과한다.
-- [ ] T2 정적 pass-through — Hono Input·Textarea·Button 네이티브 속성 전달, 비island `data-podo-*`, EditorView SSR, 샘플 앱 골격
+- [x] T2 정적 pass-through — Hono Input·Textarea·Button 네이티브 속성 전달, 비island `data-podo-*`, EditorView SSR, 샘플 앱 골격
   - 완료 기준: 새 prop 미지정 시 기존 스냅샷 불변, EditorView SSR 이 React `renderToStaticMarkup` 과 정규화 동일.
 - [ ] T3 단일 클라이언트 엔트리 + Select + Chip — `dist/hono/client.js`, island 프로토콜(래퍼·id·슬롯·defer 집계), 패리티 테스트 A·B·C
   - 완료 기준: 계획 §4 T3 행의 jsdom 동작·패리티·중복 로드·`release:verify` 가 통과한다.

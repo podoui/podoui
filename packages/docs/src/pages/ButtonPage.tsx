@@ -30,7 +30,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Button } from "podo-ui/hono";\n\n<Button theme="solid-primary">Save</Button>`,
+    code: `import { Button } from "podo-ui/hono";\n\n<Button theme="solid-primary">Save</Button>\n\n{/* 링크 이동도 실제 버튼으로 — GET 폼 제출 (네이티브 button 속성 그대로 전달) */}\n<form method="get" action="/orders">\n  <Button type="submit" name="status" value="paid" theme="outline-primary">결제 완료 보기</Button>\n</form>`,
   },
   {
     target: "native",

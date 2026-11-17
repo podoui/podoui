@@ -18,7 +18,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Input } from "podo-ui/hono";\n\n<Input name="title" placeholder="플레이스홀더" />`,
+    code: `import { Input } from "podo-ui/hono";\n\n<Input name="title" placeholder="플레이스홀더" />\n\n{/* 네이티브 input 속성은 그대로 전달돼요. */}\n<Input name="day" type="date" min="2026-01-01" />\n<Input name="files" type="file" accept="image/*" multiple />`,
   },
   {
     target: "native",

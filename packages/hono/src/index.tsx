@@ -23,7 +23,26 @@ export type HonoButtonTheme =
   | "outline-white"
   | "outline-danger";
 
-export interface HonoButtonProps {
+/**
+ * 네이티브 요소 속성 — hono JSX 속성 타입에서 Podo가 다르게 쓰는 키만 빼요.
+ * (`Omit`은 hono 속성 타입의 문자열 인덱스 시그니처에 맞서 알려진 키를 모두
+ * 지워 버려서, 키 재매핑으로 알려진 키만 걸러요.)
+ */
+type NativeAttributes<Tag extends keyof JSX.IntrinsicElements, Keys extends PropertyKey> = {
+  [Key in keyof JSX.IntrinsicElements[Tag] as Key extends Keys
+    ? never
+    : Key]: JSX.IntrinsicElements[Tag][Key];
+};
+
+/**
+ * 네이티브 button 속성(`form`·`formaction`·`formmethod`·`name`·`value` 등)을
+ * 그대로 전달해요 — React Button의 ButtonHTMLAttributes 전달과 같아요.
+ * 「링크 버튼」은 `<form method="get">` + `type="submit"`(또는 `form`/`formaction`)으로.
+ */
+export interface HonoButtonProps extends NativeAttributes<
+  "button",
+  "children" | "prefix" | "class"
+> {
   children: Child;
   /** Field의 컨트롤 슬롯에 놓일 때 label[for]가 가리킬 id — Field가 주입해요. */
   id?: string;
@@ -91,7 +110,8 @@ export interface HonoBadgeProps {
   "aria-label"?: string;
 }
 
-export interface HonoInputProps {
+/** 네이티브 input 속성(`type`·`min`·`max`·`step`·`pattern`·`autocomplete`·`inputmode`·`accept`·`multiple` 등)을 그대로 전달해요. */
+export interface HonoInputProps extends NativeAttributes<"input", "size" | "prefix" | "class"> {
   id?: string;
   name?: string;
   value?: string;
@@ -119,7 +139,8 @@ export interface HonoInputProps {
   "aria-required"?: string;
 }
 
-export interface HonoTextareaProps {
+/** 네이티브 textarea 속성(`rows`·`cols`·`autocomplete`·`wrap` 등)을 그대로 전달해요. */
+export interface HonoTextareaProps extends NativeAttributes<"textarea", "class"> {
   id?: string;
   name?: string;
   value?: string;
@@ -147,9 +168,9 @@ export function Textarea({
   value,
   defaultValue,
   placeholder,
-  maxLength,
+  maxLength: maxLengthProp,
   resize = true,
-  readOnly,
+  readOnly: readOnlyProp,
   invalid,
   disabled,
   required,
@@ -158,7 +179,13 @@ export function Textarea({
   "aria-describedby": ariaDescribedBy,
   "aria-invalid": ariaInvalid,
   "aria-required": ariaRequired,
+  // 네이티브 표기(maxlength·readonly)도 받아요 — 둘 다 오면 camelCase가 이겨요.
+  maxlength: nativeMaxLength,
+  readonly: nativeReadOnly,
+  ...rest
 }: HonoTextareaProps): JSX.Element {
+  const maxLength = maxLengthProp ?? nativeMaxLength;
+  const readOnly = readOnlyProp ?? nativeReadOnly;
   const behavior = createInputBehavior({ value, defaultValue, invalid, disabled, required });
   const state = behavior.invalid
     ? "invalid"
@@ -170,6 +197,7 @@ export function Textarea({
 
   return (
     <textarea
+      {...rest}
       id={id}
       class={joinClass("podo-textarea", className)}
       name={name}
@@ -184,6 +212,7 @@ export function Textarea({
       aria-required={ariaRequired ?? (behavior.required ? "true" : undefined)}
       data-state={state}
       data-resize={resize ? undefined : "false"}
+      data-podo-textarea=""
     >
       {value ?? defaultValue ?? ""}
     </textarea>
@@ -497,6 +526,7 @@ export function Toast({
       class={joinClass("podo-toast", className)}
       role={state === "danger" ? "alert" : "status"}
       data-state={state}
+      data-podo-toast=""
     >
       {prefix != null ? <span class="podo-toast__prefix">{prefix}</span> : null}
       <div class="podo-toast__contents">
@@ -556,6 +586,18 @@ export interface HonoFieldProps {
   disabled?: boolean;
 }
 
+export interface HonoEditorViewProps {
+  /** 표시할 Editor HTML — React EditorView처럼 그대로 넣어요(신뢰할 수 있는 HTML만). */
+  value: string;
+  class?: string;
+}
+
+/** Editor HTML 표시 — React `EditorView`와 같은 마크업(`.podo-ed-editorView` + 공유 콘텐츠 클래스). */
+export function EditorView({ value, class: className }: HonoEditorViewProps): JSX.Element {
+  // React와 같은 클래스 문자열(빈 className이면 끝 공백까지 동일)이에요.
+  return <div class={`podo-ed-editorView ${className || ""}`}>{raw(value)}</div>;
+}
+
 export interface HonoCriticalCssOptions {
   theme?: string;
   colorScheme?: "light" | "dark";
@@ -574,11 +616,13 @@ export function Button({
   type,
   class: className,
   "aria-describedby": ariaDescribedBy,
+  ...rest
 }: HonoButtonProps): JSX.Element {
   const behavior = createButtonBehavior({ disabled, type });
 
   return (
     <button
+      {...rest}
       id={id}
       class={joinClass("podo-button", className)}
       type={behavior.root.type}
@@ -590,6 +634,7 @@ export function Button({
       data-size={size}
       data-fill={fill ? "true" : undefined}
       data-disabled={disabled ? "true" : undefined}
+      data-podo-button=""
     >
       {prefix ? <span class="podo-button__icon">{prefix}</span> : null}
       <span class="podo-button__label">{children}</span>
@@ -825,6 +870,7 @@ export function Checkbox({
       // core-computed aria attribute until client JS sets .indeterminate.
       aria-checked={behavior.indeterminate ? "mixed" : undefined}
       data-state={behavior.dataState["data-state"]}
+      data-podo-checkbox=""
     />
   );
 
@@ -903,6 +949,7 @@ export function Radio({
       aria-describedby={ariaDescribedBy}
       aria-invalid={ariaInvalid}
       aria-required={ariaRequired ?? (required ? "true" : undefined)}
+      data-podo-radio=""
     />
   );
 
@@ -930,8 +977,8 @@ export function Input({
   value,
   defaultValue,
   placeholder,
-  maxLength,
-  readOnly,
+  maxLength: maxLengthProp,
+  readOnly: readOnlyProp,
   size = "md",
   prefix,
   suffixText,
@@ -944,7 +991,13 @@ export function Input({
   "aria-describedby": ariaDescribedBy,
   "aria-invalid": ariaInvalid,
   "aria-required": ariaRequired,
+  // 네이티브 표기(maxlength·readonly)도 받아요 — 둘 다 오면 camelCase가 이겨요.
+  maxlength: nativeMaxLength,
+  readonly: nativeReadOnly,
+  ...rest
 }: HonoInputProps): JSX.Element {
+  const maxLength = maxLengthProp ?? nativeMaxLength;
+  const readOnly = readOnlyProp ?? nativeReadOnly;
   const behavior = createInputBehavior({ value, defaultValue, invalid, disabled, required });
   const state = behavior.invalid
     ? "invalid"
@@ -957,9 +1010,15 @@ export function Input({
   // Root wrapper carries the visual state so prefix/suffix content can live
   // inside the box (Figma 538:6693); the inner input keeps the aria wiring.
   return (
-    <div class={joinClass("podo-input", className)} data-size={size} data-state={state}>
+    <div
+      class={joinClass("podo-input", className)}
+      data-size={size}
+      data-state={state}
+      data-podo-input=""
+    >
       {prefix ? <span class="podo-input__prefix">{prefix}</span> : null}
       <input
+        {...rest}
         id={id}
         class="podo-input__control"
         name={name}
@@ -1016,6 +1075,8 @@ export function Field({
       data-invalid={invalid ? "true" : undefined}
       data-disabled={disabled ? "true" : undefined}
       data-required={required ? "true" : undefined}
+      // 글자 수 자동 카운트(count 없이 countMax만) — 클라이언트 위임이 숫자를 갱신해요.
+      data-podo-field={countMax != null && count == null ? "" : undefined}
     >
       <div class="podo-field__heading">
         <label class="podo-field__label" id={a11y.ids.labelId} for={controlId}>

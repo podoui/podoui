@@ -78,6 +78,18 @@ importers:
         specifier: ^4.12.25
         version: 4.12.25
 
+  examples/hono-ssr:
+    dependencies:
+      '@podoui/hono':
+        specifier: workspace:*
+        version: link:../../packages/hono
+      hono:
+        specifier: ^4.12.25
+        version: 4.12.25
+      podo-ui:
+        specifier: workspace:*
+        version: link:../../packages/podo-ui
+
   examples/native:
     dependencies:
       '@podoui/native':

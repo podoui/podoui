@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- Icons: Select·Chip·Toast 내부 아이콘을 인라인 SVG 대신 PODO 아이콘 폰트(`close`·`check`,
+  신규 `chevron-down`)로 렌더한다. 이제 이 컴포넌트들도 `podo-ui/icons.css`가 필요하다.
+  Tooltip 화살표는 CSS `clip-path`로 그린다.
+- React: Select `name`(선택 값마다 hidden input, 루트 `data-name`), DatePicker
+  `name`·`fromName`·`toName`(hidden, `YYYY-MM-DD`·`HH:mm`·`YYYY-MM-DDTHH:mm`·`HH`),
+  Editor `defaultValue`·`name`(숨은 textarea)을 추가한다. 지정하지 않으면 출력은 그대로다.
+- Hono: Button·Input·Textarea가 네이티브 속성(`form`·`formaction`·`type`·`min`·`accept`·
+  `rows` 등)을 그대로 전달한다. 클라이언트 위임용 `data-podo-button`·`data-podo-input`·
+  `data-podo-textarea`·`data-podo-checkbox`·`data-podo-radio`·`data-podo-toast`
+  (Field는 자동 글자 수 카운트일 때 `data-podo-field`) 표식을 추가한다.
+- Hono: React `EditorView`와 같은 마크업의 `EditorView`를 추가한다.
+
 ## 2.3.9 (2026-08-11)
 
 - Native: 생성 토큰의 정확한 타입을 유지하며 앱 어디서나 Provider 토큰을 읽는
