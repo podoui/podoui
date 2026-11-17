@@ -21,7 +21,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Switch } from "podo-ui/hono";\n\n<Switch checked label="알림 받기" />`,
+    code: `import { Switch } from "podo-ui/hono";\n\n<Switch checked label="알림 받기" />\n\n{/* podo-ui/hono/client가 토글을 맡아요(podo:checked-change). */}\n<script defer src="/assets/podo-ui/hono/client.js"></script>`,
   },
   {
     target: "native",

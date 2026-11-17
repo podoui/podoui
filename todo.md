@@ -666,9 +666,10 @@
   - 완료 기준: spec·`parity.test.ts`·core(`serializeProps`/`reviveProps` 왕복) 테스트와 `domToVNode` 스파이크(Table 행 선택·Tooltip hover·Chip 라벨·Select prefix, jsdom) 가 통과한다.
 - [x] T2 정적 pass-through — Hono Input·Textarea·Button 네이티브 속성 전달, 비island `data-podo-*`, EditorView SSR, 샘플 앱 골격
   - 완료 기준: 새 prop 미지정 시 기존 스냅샷 불변, EditorView SSR 이 React `renderToStaticMarkup` 과 정규화 동일.
-- [ ] T3 단일 클라이언트 엔트리 + Select + Chip — `dist/hono/client.js`, island 프로토콜(래퍼·id·슬롯·defer 집계), 패리티 테스트 A·B·C
+- [x] T3 단일 클라이언트 엔트리 + Select + Chip — `dist/hono/client.js`, island 프로토콜(래퍼·id·슬롯·defer 집계), 패리티 테스트 A·B·C
   - 완료 기준: 계획 §4 T3 행의 jsdom 동작·패리티·중복 로드·`release:verify` 가 통과한다.
   - T1 결정 반영(`docs/hono-parity.md` §1.4·§7): configure 키는 래퍼 `data-podo-id`·`id` 는 React 위치 유지(D-1), Switch island(D-2), Field 카운트 위임 갱신(D-3).
+  - 계획 완료 조건의 Select `Home`/`End`·옵션 그룹은 **React 계약에 없음**이라 제외(2026-11-17 결정 D-9, 구현 안 함).
   - T1 에서 넘어온 정리: `packages/hono/src/client/dom-to-vnode.ts` 초안이 지금도 `tsc` 로 `dist/hono/client/` 에 빌드돼 `podo-ui` 패키지에 들어가요(공개 export 없음). T3 에서 실제 클라이언트 구현으로 이어 쓰거나, 폐기하면 소스·생성물 제외를 함께 처리.
 - [ ] T4 DatePicker — Hono SSR + island, 조합별 패리티·제출값·configure
 - [ ] T5 Toaster·Toast·Tooltip·Table + 중첩 island(중첩 Chip 제거·중첩 defer)

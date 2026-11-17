@@ -221,6 +221,9 @@ async function verifyPublishedEntry(directory, manifest) {
       }
     }
   }
+  if (manifest.exports?.["./hono/client"]) {
+    await verifyHonoClient(join(packagesRoot, directory, manifest.exports["./hono/client"]));
+  }
   // Workspace-internal specifiers must never leak into the published files.
   const distRoot = join(packagesRoot, directory, "dist");
   if (await exists(distRoot)) {
@@ -228,6 +231,25 @@ async function verifyPublishedEntry(directory, manifest) {
     if (leaks.length > 0) {
       fail(`${manifest.name} dist still references @podoui/*: ${leaks.slice(0, 3).join(", ")}`);
     }
+  }
+}
+
+/**
+ * podo-ui/hono/client is a self-contained IIFE: the React component sources are
+ * bundled against hono/jsx/dom, so it must not load or define React itself.
+ */
+async function verifyHonoClient(path) {
+  const contents = await readFile(path, "utf8").catch(() => "");
+  if (
+    /(?:\bfrom|\bimport|\brequire)\s*\(?\s*["'](?:react|react-dom)(?:\/[^"']*)?["']/.test(contents)
+  ) {
+    fail("podo-ui/hono/client must not import react or react-dom.");
+  }
+  if (/\b(?:window|globalThis|self)\.React\s*=/.test(contents)) {
+    fail("podo-ui/hono/client must not define a global React.");
+  }
+  if (/^\s*(?:import|export)\s/m.test(contents)) {
+    fail("podo-ui/hono/client must be a classic script (no ES module syntax).");
   }
 }
 

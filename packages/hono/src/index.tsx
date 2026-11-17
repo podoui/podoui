@@ -4,6 +4,7 @@ import { cloneElement, isValidElement } from "hono/jsx";
 import type { Child } from "hono/jsx";
 import type { JSX } from "hono/jsx/jsx-runtime";
 import { raw } from "hono/html";
+import { Island, autoId } from "./island.js";
 import {
   createButtonBehavior,
   createCheckboxBehavior,
@@ -61,11 +62,13 @@ export interface HonoButtonProps extends NativeAttributes<
 
 export interface HonoChipProps {
   children: Child;
+  /** 루트 요소 id(React와 같은 위치) — island configure 키(래퍼 `data-podo-id`)이기도 해요. */
+  id?: string;
   /** Background contrast (Figma: solid, outline-strong, outline-weak). */
   theme?: "solid" | "outline-strong" | "outline-weak";
   /** Label/icon scale (Figma: md 14px — base, lg 16px). */
   size?: "md" | "lg";
-  /** 선택 여부 (Figma state) — 비선택이 기본 모습. 토글은 클라이언트 코드 몫이에요. */
+  /** 선택 초기값 (Figma state) — 클라이언트에선 비제어 초기값(React defaultSelected)이 돼요. */
   selected?: boolean;
   disabled?: boolean;
   /** Category/status icon before the label (Figma prefix-icon). */
@@ -73,8 +76,9 @@ export interface HonoChipProps {
   /** Removal/action icon after the label, e.g. close (Figma suffix-icon). */
   suffix?: Child;
   /**
-   * 제거형 칩 — 선택된 모습으로 고정되고 X 버튼 마크업이 붙어요 (동작은
-   * 클라이언트 코드). 루트는 button 대신 span으로 렌더돼요.
+   * 제거형 칩 — 선택된 모습으로 고정되고 X 버튼이 붙어요. 루트는 button 대신
+   * span이에요. X를 누르면 클라이언트가 `podo:remove`(취소 가능)를 내고, 취소하지
+   * 않으면 칩을 지워요.
    */
   removable?: boolean;
   /** 제거 버튼의 접근성 이름 (기본 "제거"). */
@@ -226,8 +230,9 @@ export interface HonoSelectOption {
 
 export interface HonoSelectProps {
   /**
-   * 콤보박스 트리거의 id이자 리스트박스 id(`{id}-listbox`)의 시드 —
-   * aria-controls 연결에 쓰여요. SSR이라 자동 생성이 없어요.
+   * 콤보박스 트리거의 id — Field의 label[for]가 가리켜요(React와 같은 위치). island
+   * configure 키(래퍼 `data-podo-id`)이기도 해요. 인라인으로 펼친 메뉴의 리스트박스
+   * id는 `{id}-listbox`(없으면 렌더 순서 자동 id — 요청마다 같은 마크업이 필요하면 id를 주세요)예요.
    */
   id?: string;
   /** 시각적 라벨이 없을 때 콤보박스의 접근성 이름. */
@@ -247,23 +252,35 @@ export interface HonoSelectProps {
   size?: "md" | "lg";
   /** 다중 선택 (Figma theme=slot) — 칩 나열 + 체크박스 셀. */
   multiple?: boolean;
-  /** 단일 선택 값. */
+  /** 단일 선택 초기값 — 클라이언트에선 비제어 초기값(React defaultValue)이 돼요. */
   value?: string;
-  /** 다중 선택 값. */
+  /** 다중 선택 초기값 — 클라이언트에선 React defaultValues가 돼요. */
   values?: string[];
   /** 트리거에 보여줄 최대 칩 수 — 넘치는 값은 "+N"으로 축약돼요. */
   maxChips?: number;
-  /** 정적 렌더에서 메뉴를 펼쳐 보여줄지 (Figma focused). 동작은 클라이언트 코드. */
+  /**
+   * 처음부터 펼친 상태(React defaultOpen). portal(기본)이면 메뉴는 클라이언트가
+   * 마운트한 뒤 document.body에 나타나요 — SSR 마크업에 메뉴를 그리려면 portal={false}.
+   */
   open?: boolean;
-  /** 메뉴 상단 추가 입력줄 마크업 (Figma multi-select-input). */
+  /** 열리면 트리거가 검색 입력이 돼요(클라이언트). */
+  searchable?: boolean;
+  /** 메뉴 상단 추가 입력줄 (Figma multi-select-input). */
   addable?: boolean;
   addPlaceholder?: string;
-  /** 다중 선택에서 값이 있을 때 "모두 해제" ✕ 마크업 표시 (동작은 클라이언트 코드). */
+  /** 다중 선택에서 값이 있을 때 "모두 해제" ✕ 표시. */
   clearable?: boolean;
+  /** 메뉴를 document.body로 포탈 렌더(기본 true, React와 같음). */
+  portal?: boolean;
   /** 값은 보이지만 변경 불가 — 박스·체브론 없이 값만 렌더 (Figma read-only). */
   readOnly?: boolean;
   invalid?: boolean;
   disabled?: boolean;
+  /**
+   * 폼 제출 이름 — 선택 값마다 hidden input(다중은 반복), 루트 data-name.
+   * JS 없이도 초기값이 제출돼요.
+   */
+  name?: string;
   /** 값 앞에 붙는 아이콘 (Figma prefix-icon). */
   prefix?: Child;
   class?: string;
@@ -290,37 +307,65 @@ export function Select({
   values,
   maxChips = 3,
   open,
+  searchable,
   addable,
   addPlaceholder,
   clearable,
+  portal = true,
   readOnly,
   invalid,
   disabled,
+  name,
   prefix,
   class: className,
 }: HonoSelectProps): JSX.Element {
+  // React Select의 첫 렌더(마운트 전·검색 전·활성 셀 없음)와 같은 마크업이에요.
   const selectedValues = values ?? [];
-  const selected = options.find((o) => o.value === value);
-  const hasValue = multiple ? selectedValues.length > 0 : Boolean(selected);
+  const hasValue = multiple ? selectedValues.length > 0 : value != null && value !== "";
+  const selectedOption = options.find((o) => o.value === value);
   const state = invalid ? "invalid" : disabled ? "disabled" : readOnly ? "read-only" : undefined;
-  // read-only/disabled는 열리지 않아요 (spec: "열리지 않고 칩의 X도 사라져요").
+  // read-only/disabled는 열리지 않고, portal 메뉴는 마운트 전엔 렌더되지 않아요.
   const isOpen = Boolean(open) && !readOnly && !disabled;
-  const listboxId = id ? `${id}-listbox` : undefined;
+  const menuRendered = isOpen && !portal;
+  // 인라인으로 펼친 메뉴의 리스트박스·셀 id(React useId 자리) — id가 없으면 자동 id.
+  const listboxId = id ? `${id}-listbox` : menuRendered ? autoId("podo-select") : "";
+  const submitted = multiple ? selectedValues : hasValue ? [value as string] : [];
 
-  return (
+  const chips = selectedValues.slice(0, maxChips).map((v) => {
+    const label = options.find((o) => o.value === v)?.label ?? v;
+    // read-only/disabled의 값은 지울 수 없으니 X 없는 정적 칩이에요.
+    if (readOnly || disabled) {
+      return (
+        <span
+          class="podo-chip"
+          data-theme="solid"
+          data-size="md"
+          data-state="selected"
+          data-removable="true"
+          data-disabled={disabled ? "true" : undefined}
+        >
+          <span class="podo-chip__label">{label}</span>
+        </span>
+      );
+    }
+    return chipMarkup({ removable: true, removeLabel: `${label} 제거`, children: label });
+  });
+
+  const root = (
     <div
       class={joinClass("podo-select", className)}
       data-size={size}
       data-state={state}
       data-open={isOpen ? "true" : undefined}
+      data-name={name}
     >
       <div
         id={id}
         class="podo-select__trigger"
         role="combobox"
         aria-haspopup="listbox"
-        aria-expanded={isOpen ? "true" : "false"}
-        aria-controls={isOpen ? listboxId : undefined}
+        aria-expanded={menuRendered ? "true" : "false"}
+        aria-controls={menuRendered ? listboxId : undefined}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
@@ -330,46 +375,33 @@ export function Select({
         aria-required={ariaRequired}
         tabindex={disabled ? -1 : 0}
       >
-        {prefix ? <span class="podo-select__prefix">{prefix}</span> : null}
+        {prefix ? (
+          <span class="podo-select__prefix" data-podo-slot="prefix">
+            {prefix}
+          </span>
+        ) : null}
         <span class="podo-select__value" data-placeholder={hasValue ? undefined : "true"}>
-          {multiple && hasValue ? (
-            <>
-              {selectedValues.slice(0, maxChips).map((v) => {
-                const label = options.find((o) => o.value === v)?.label ?? v;
-                // 선택 값 칩은 Chip의 제거형 모드를 그대로 재사용해요.
-                // read-only/disabled는 지울 수 없으니 X 없는 정적 칩으로 렌더해요.
-                if (readOnly || disabled) {
-                  return (
+          <span class="podo-select__value-content">
+            {multiple ? (
+              hasValue ? (
+                <>
+                  {chips}
+                  {selectedValues.length > maxChips ? (
                     <span
-                      class="podo-chip"
-                      data-theme="solid"
-                      data-size="md"
-                      data-state="selected"
-                      data-removable="true"
-                      data-disabled={disabled ? "true" : undefined}
+                      class="podo-select__chip-more"
+                      aria-label={`외 ${selectedValues.length - maxChips}개 선택됨`}
                     >
-                      <span class="podo-chip__label">{label}</span>
+                      +{selectedValues.length - maxChips}
                     </span>
-                  );
-                }
-                return (
-                  <Chip removable removeLabel={`${label} 제거`}>
-                    {label}
-                  </Chip>
-                );
-              })}
-              {selectedValues.length > maxChips ? (
-                <span
-                  class="podo-select__chip-more"
-                  aria-label={`외 ${selectedValues.length - maxChips}개 선택됨`}
-                >
-                  +{selectedValues.length - maxChips}
-                </span>
-              ) : null}
-            </>
-          ) : (
-            ((multiple ? placeholder : (selected?.label ?? placeholder)) ?? "")
-          )}
+                  ) : null}
+                </>
+              ) : (
+                placeholder
+              )
+            ) : (
+              (selectedOption?.label ?? placeholder)
+            )}
+          </span>
         </span>
         {clearable && multiple && hasValue && !disabled && !readOnly ? (
           <button type="button" class="podo-select__clear" aria-label="모두 해제">
@@ -378,35 +410,38 @@ export function Select({
         ) : null}
         {readOnly ? null : <span class="podo-select__chevron">{glyph("chevron-down")}</span>}
       </div>
-      {isOpen ? (
+      {name !== undefined
+        ? submitted.map((v) => <input type="hidden" name={name} value={v} />)
+        : null}
+      {menuRendered ? (
         <div class="podo-select__menu-list">
           {/* 박스(.podo-select__menu)와 리스트박스를 분리해요 — role="listbox"의
-              자식은 option/group만 허용되므로 추가 입력줄은 리스트박스 밖,
-              같은 박스 안 위쪽에 렌더해요. */}
+              자식은 option/group만 허용되므로 추가 입력줄은 리스트박스 밖이에요. */}
           <div class="podo-select__menu">
             {addable ? (
               <div class="podo-select__add">
-                <input class="podo-select__add-input" placeholder={addPlaceholder} />
+                <input class="podo-select__add-input" value="" placeholder={addPlaceholder} />
                 <button type="button" class="podo-select__add-button">
                   추가
                 </button>
               </div>
             ) : null}
             <div
-              id={listboxId}
               class="podo-select__listbox"
               role="listbox"
+              id={listboxId}
               aria-multiselectable={multiple ? "true" : undefined}
             >
-              {options.map((option) => {
+              {options.map((option, index) => {
                 const isSelected = multiple
                   ? selectedValues.includes(option.value)
                   : option.value === value;
                 return (
                   <div
-                    class="podo-select__cell"
+                    id={`${listboxId}-${index}`}
                     role="option"
                     aria-selected={isSelected ? "true" : "false"}
+                    class="podo-select__cell"
                     data-state={isSelected ? "selected" : undefined}
                   >
                     {multiple ? (
@@ -429,6 +464,41 @@ export function Select({
         </div>
       ) : null}
     </div>
+  );
+
+  return (
+    <Island
+      name="Select"
+      id={id}
+      props={{
+        id,
+        "aria-label": ariaLabel,
+        "aria-labelledby": ariaLabelledBy,
+        "aria-describedby": ariaDescribedBy,
+        "aria-invalid": ariaInvalid,
+        "aria-required": ariaRequired,
+        options,
+        placeholder,
+        size,
+        multiple,
+        defaultValue: multiple ? undefined : value,
+        defaultValues: multiple ? values : undefined,
+        maxChips,
+        defaultOpen: open,
+        searchable,
+        addable,
+        addPlaceholder,
+        clearable,
+        portal,
+        readOnly,
+        invalid,
+        disabled,
+        name,
+        className,
+      }}
+    >
+      {root}
+    </Island>
   );
 }
 
@@ -643,8 +713,39 @@ export function Button({
   );
 }
 
-export function Chip({
+export function Chip(props: HonoChipProps): JSX.Element {
+  const { id, theme, size, selected, disabled, removable, removeLabel, type } = props;
+  return (
+    <Island
+      name="Chip"
+      id={id}
+      props={{
+        id,
+        theme,
+        size,
+        defaultSelected: selected,
+        disabled,
+        removable,
+        removeLabel,
+        type,
+        className: props.class,
+      }}
+    >
+      {chipMarkup({ ...props, slots: true })}
+    </Island>
+  );
+}
+
+interface ChipMarkupProps extends Omit<HonoChipProps, "children"> {
+  children: Child;
+  /** island 단독 Chip이면 라벨·prefix·suffix에 슬롯 표식을 달아요(Select 내부 칩은 아님). */
+  slots?: boolean;
+}
+
+/** React Chip 첫 렌더와 같은 마크업 — Chip island와 Select 내부 칩이 함께 써요. */
+function chipMarkup({
   children,
+  id,
   theme = "solid",
   size = "md",
   selected,
@@ -655,8 +756,10 @@ export function Chip({
   removeLabel = "제거",
   type,
   class: className,
-}: HonoChipProps): JSX.Element {
+  slots,
+}: ChipMarkupProps): JSX.Element {
   const behavior = createButtonBehavior({ disabled, type });
+  const slot = (name: string) => (slots ? name : undefined);
 
   if (removable) {
     // Removable chip: selected look, no toggle — the X is the only control.
@@ -664,6 +767,7 @@ export function Chip({
     // 표시하고 제거 버튼도 실제로 비활성화해요.
     return (
       <span
+        id={id}
         class={joinClass("podo-chip", className)}
         data-theme={theme}
         data-size={size}
@@ -671,14 +775,21 @@ export function Chip({
         data-removable="true"
         data-disabled={disabled ? "true" : undefined}
       >
-        {prefix ? <span class="podo-chip__prefix">{prefix}</span> : null}
-        <span class="podo-chip__label">{children}</span>
+        {prefix ? (
+          <span class="podo-chip__prefix" data-podo-slot={slot("prefix")}>
+            {prefix}
+          </span>
+        ) : null}
+        <span class="podo-chip__label" data-podo-slot={slot("children")}>
+          {children}
+        </span>
         <button
           type="button"
           class="podo-chip__remove"
           aria-label={removeLabel}
           disabled={behavior.root.disabled}
           aria-disabled={behavior.root.ariaDisabled}
+          tabindex={behavior.root.tabIndex}
         >
           {glyph("close")}
         </button>
@@ -688,6 +799,7 @@ export function Chip({
 
   return (
     <button
+      id={id}
       class={joinClass("podo-chip", className)}
       type={behavior.root.type}
       disabled={behavior.root.disabled}
@@ -699,9 +811,19 @@ export function Chip({
       data-size={size}
       data-disabled={disabled ? "true" : undefined}
     >
-      {prefix ? <span class="podo-chip__prefix">{prefix}</span> : null}
-      <span class="podo-chip__label">{children}</span>
-      {suffix ? <span class="podo-chip__suffix">{suffix}</span> : null}
+      {prefix ? (
+        <span class="podo-chip__prefix" data-podo-slot={slot("prefix")}>
+          {prefix}
+        </span>
+      ) : null}
+      <span class="podo-chip__label" data-podo-slot={slot("children")}>
+        {children}
+      </span>
+      {suffix ? (
+        <span class="podo-chip__suffix" data-podo-slot={slot("suffix")}>
+          {suffix}
+        </span>
+      ) : null}
     </button>
   );
 }
@@ -782,26 +904,51 @@ export function Switch({
       aria-disabled={behavior.disabled ? "true" : undefined}
       data-size={size}
       data-state={behavior.checked ? "on" : "off"}
+      data-disabled={behavior.disabled ? "true" : undefined}
     >
       <span class="podo-switch__handle" />
     </button>
   );
 
-  if (label == null) {
-    return control;
-  }
-
   // Figma 566:12693: track + 6px gap + size-matched text (sm 14/md 16/lg 18).
+  const markup =
+    label == null ? (
+      control
+    ) : (
+      <label
+        class="podo-switch-wrap"
+        data-size={size}
+        data-bold={bold ? "true" : undefined}
+        data-disabled={disabled ? "true" : undefined}
+      >
+        {control}
+        <span class="podo-switch__text" data-podo-slot="label">
+          {label}
+        </span>
+      </label>
+    );
+
+  // 클릭 토글(React 내부 상태)은 island 클라이언트가 같은 React 소스로 처리해요(T1 D-2).
   return (
-    <label
-      class="podo-switch-wrap"
-      data-size={size}
-      data-bold={bold ? "true" : undefined}
-      data-disabled={disabled ? "true" : undefined}
+    <Island
+      name="Switch"
+      id={id}
+      props={{
+        id,
+        size,
+        bold,
+        defaultChecked: checked,
+        disabled,
+        "aria-label": ariaLabel,
+        "aria-labelledby": ariaLabelledBy,
+        "aria-describedby": ariaDescribedBy,
+        "aria-invalid": ariaInvalid,
+        "aria-required": ariaRequired,
+        className,
+      }}
     >
-      {control}
-      <span class="podo-switch__text">{label}</span>
-    </label>
+      {markup}
+    </Island>
   );
 }
 
@@ -1112,7 +1259,7 @@ export function Field({
           ) : null}
           {countMax != null ? (
             <span class="podo-field__count">
-              {count ?? 0}/{countMax}
+              {count ?? controlValueLength(children)}/{countMax}
             </span>
           ) : null}
         </div>
@@ -1204,7 +1351,7 @@ function styleCss(value: string): string {
 }
 
 export const honoRendererScope =
-  "Hono components render static SSR HTML. Interactive behavior is emitted as attributes and delegated to a future client entry.";
+  "Hono components render SSR HTML that submits forms without JavaScript. The podo-ui/hono/client script mounts the same React component sources on island wrappers (Select, Chip, Switch, …) and turns callbacks into bubbling podo:* CustomEvents.";
 
 function joinClass(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(" ");
@@ -1244,6 +1391,22 @@ function explicitControlId(child: Child): string | undefined {
   }
   const id = (child.props as Record<string, unknown>).id;
   return typeof id === "string" && id ? id : undefined;
+}
+
+/**
+ * 자동 글자 수의 첫 값 — React Field처럼 감싼 컨트롤의 value(없으면 defaultValue)
+ * 길이예요. 이후 입력은 podo-ui/hono/client 위임이 갱신해요(T1 결정 D-3).
+ */
+function controlValueLength(child: Child): number {
+  if (Array.isArray(child)) {
+    return child.reduce<number>((length, item) => controlValueLength(item) || length, 0);
+  }
+  if (!isValidElement(child)) {
+    return 0;
+  }
+  const props = child.props as Record<string, unknown>;
+  const value = props.value ?? props.defaultValue;
+  return typeof value === "string" ? value.length : 0;
 }
 
 function wireHonoControl(

@@ -38,6 +38,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
+      esbuild:
+        specifier: 0.28.1
+        version: 0.28.1
       eslint:
         specifier: ^9.39.1
         version: 9.39.4
@@ -208,6 +211,10 @@ importers:
       hono:
         specifier: ^4.12.25
         version: 4.12.25
+    devDependencies:
+      '@podoui/react':
+        specifier: workspace:*
+        version: link:../react
 
   packages/icon-build:
     dependencies:
@@ -6117,7 +6124,6 @@ snapshots:
       '@esbuild/win32-arm64': 0.28.1
       '@esbuild/win32-ia32': 0.28.1
       '@esbuild/win32-x64': 0.28.1
-    optional: true
 
   escalade@3.2.0: {}
 

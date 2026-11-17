@@ -49,7 +49,8 @@ describe("@podoui/hono", () => {
     expect(html).toContain('aria-describedby="email-error"');
     expect(html).toContain('class="podo-field__requirement"');
     expect(html).toContain('class="podo-field__sub-label"');
-    expect(html).toContain("0/500");
+    // 자동 글자 수는 React Field처럼 컨트롤 초기값 길이에서 시작해요("team@podo.dev" = 13).
+    expect(html).toContain("13/500");
     expect(html).not.toContain("Work email");
     expect(html).toContain('aria-invalid="true"');
     expect(html).toContain('name="email"');
@@ -60,6 +61,7 @@ describe("@podoui/hono", () => {
       <Select
         multiple
         open
+        portal={false}
         addable
         addPlaceholder="과일 이름 입력"
         placeholder="전체 과일"
@@ -90,7 +92,7 @@ describe("@podoui/hono", () => {
     expect(html.slice(listboxIndex)).not.toContain("podo-select__add");
 
     const single = renderToString(
-      <Select value="banana" options={[{ value: "banana", label: "바나나" }]} open />
+      <Select value="banana" options={[{ value: "banana", label: "바나나" }]} open portal={false} />
     );
     expect(single).toContain('data-state="selected"');
     expect(single).toContain('class="podo-select__cell-check"');
@@ -102,7 +104,14 @@ describe("@podoui/hono", () => {
       { value: "banana", label: "바나나" },
     ];
     const html = renderToString(
-      <Select id="fruit" aria-label="과일 선택" open value="banana" options={fruits} />
+      <Select
+        id="fruit"
+        aria-label="과일 선택"
+        open
+        portal={false}
+        value="banana"
+        options={fruits}
+      />
     );
     expect(html).toContain('id="fruit"');
     expect(html).toContain('aria-label="과일 선택"');

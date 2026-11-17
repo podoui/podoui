@@ -8,6 +8,6 @@
     "jsxImportSource": "hono/jsx"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"],
-  "references": [{ "path": "../core" }]
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test-utils/**"],
+  "references": [{ "path": "../core" }, { "path": "../react" }]
 }

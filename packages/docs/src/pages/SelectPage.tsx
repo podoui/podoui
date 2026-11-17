@@ -46,7 +46,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Select } from "podo-ui/hono";\n\n<Select placeholder="과일 선택" options={[{ value: "strawberry", label: "딸기" }]} />`,
+    code: `import { Select } from "podo-ui/hono";\n\n<form method="get">\n  <Select id="fruit" name="fruit" placeholder="과일 선택" options={[{ value: "strawberry", label: "딸기" }]} />\n</form>\n\n{/* 동작은 정적 스크립트 하나로 — CSP script-src 'self' 그대로 */}\n<script defer src="/assets/podo-ui/hono/client.js"></script>\n\n// document.addEventListener("podo:value-change", (e) => e.detail.value);`,
   },
   {
     target: "native",

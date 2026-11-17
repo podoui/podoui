@@ -15,7 +15,7 @@
 import { cp, chmod, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join, posix, relative, resolve } from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const packagesRoot = resolve(root, "..");
@@ -90,9 +90,17 @@ async function rewriteDirectory(directory) {
 
 await rewriteDirectory(outRoot);
 
+// podo-ui/hono/client: tsc가 낸 클라이언트 모듈(dist/hono/client/*, React 소스를
+// import)은 배포하지 않고, hono/jsx/dom 별칭으로 묶은 단일 정적 스크립트로 바꿔요.
+await rm(join(outRoot, "hono/client"), { recursive: true, force: true });
+
 // @podoui/cli and @podoui/mcp read `../package.json` for their version;
 // from dist/<name>/index.js that resolves to this file.
 const { version } = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
+const { bundleHonoClient } = await import(
+  pathToFileURL(join(packagesRoot, "hono/scripts/bundle-client.mjs")).href
+);
+await bundleHonoClient({ outfile: join(outRoot, "hono/client.js"), version });
 await writeFile(
   join(outRoot, "package.json"),
   `${JSON.stringify({ name: "podo-ui", version, type: "module" }, null, 2)}\n`
@@ -107,7 +115,6 @@ await chmod(join(outRoot, "mcp/index.js"), 0o755);
 // `podo build`. Projects that do run `podo build` generate their own
 // PodoIcons.css from `.podo` overrides and simply import that instead.
 // Must run after rewriteDirectory so dist/cli and dist/icons resolve.
-const { pathToFileURL } = await import("node:url");
 const { defaultIconManifest, defaultIconSvgs } = await import(
   pathToFileURL(join(outRoot, "cli/index.js")).href
 );

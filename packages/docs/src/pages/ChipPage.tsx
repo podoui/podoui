@@ -24,7 +24,7 @@ const USAGE_TABS: CodeTab[] = [
   {
     target: "hono",
     label: "Hono",
-    code: `import { Chip } from "podo-ui/hono";\n\n<Chip>Label</Chip>`,
+    code: `import { Chip } from "podo-ui/hono";\n\n<Chip>Label</Chip>\n<Chip removable>제거형</Chip>\n\n{/* podo-ui/hono/client가 토글·제거를 맡아요(podo:selected-change, podo:remove). */}\n<script defer src="/assets/podo-ui/hono/client.js"></script>`,
   },
   {
     target: "native",

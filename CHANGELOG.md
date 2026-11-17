@@ -13,6 +13,18 @@
   `data-podo-textarea`·`data-podo-checkbox`·`data-podo-radio`·`data-podo-toast`
   (Field는 자동 글자 수 카운트일 때 `data-podo-field`) 표식을 추가한다.
 - Hono: React `EditorView`와 같은 마크업의 `EditorView`를 추가한다.
+- Hono: 클라이언트 동작용 정적 스크립트 `podo-ui/hono/client`를 추가한다. React 컴포넌트
+  소스를 `hono/jsx/dom`으로 묶은 단일 IIFE로, SSR island 래퍼(`span.podo-island`,
+  `data-podo-island`·`data-podo-props`·`data-podo-id`) 자리에 Select·Chip·Switch를 같은 React
+  코드로 마운트하고 콜백을 `podo:*` CustomEvent로 낸다(`podo:value-change`·`podo:values-change`·
+  `podo:selected-change`·`podo:remove`·`podo:checked-change`·`podo:press`). 함수 등은
+  `window.podo.client.configure(id, props)`로 넘기고, 설치가 끝나면 `podo:ready`가 한 번 온다.
+- Hono: Select·Chip·Switch SSR이 island 래퍼로 감싸지고 React 첫 렌더와 같은 마크업을 낸다
+  (Select 값 영역 `.podo-select__value-content`, 인라인 메뉴의 리스트박스·셀 id, Switch
+  `data-disabled`, 제거 버튼 `tabindex`). Select는 `searchable`·`portal`(기본 true)·`name`
+  (hidden input, `data-name`)을 받는다 — 기본 portal에서는 `open` 메뉴가 클라이언트 마운트 뒤
+  body에 나타나므로 SSR에 펼친 메뉴가 필요하면 `portal={false}`를 준다. 기존 prop은 그대로이고, `value`·`values`·`selected`·`checked`는 클라이언트에서 비제어
+  초기값이 된다. Field 자동 글자 수는 컨트롤 초기값 길이에서 시작하고 입력에 따라 갱신된다.
 
 ## 2.3.9 (2026-08-11)
 

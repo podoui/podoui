@@ -35,5 +35,8 @@
   "homepage": "https://podoui.com",
   "bugs": {
     "url": "https://github.com/podoui/podoui/issues"
+  },
+  "devDependencies": {
+    "@podoui/react": "workspace:*"
   }
 }

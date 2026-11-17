@@ -13,6 +13,8 @@ describe("hono-ssr sample app", () => {
     expect(html).not.toContain("<style");
     expect(html).toContain('type="date"');
     expect(html).toContain('formaction="/echo"');
+    // 동작 스크립트는 외부 정적 파일 하나(CSP 'self').
+    expect(html).toContain('<script defer="" src="/assets/client.js"></script>');
   });
 
   it("echoes submitted GET form values", async () => {
@@ -27,6 +29,7 @@ describe("hono-ssr sample app", () => {
       ["/assets/styles.css", "text/css"],
       ["/assets/PodoIcons.css", "text/css"],
       ["/assets/PodoIcons.woff2", "font/woff2"],
+      ["/assets/client.js", "text/javascript"],
     ] as const) {
       const response = await app.request(path);
       expect(response.status, path).toBe(200);

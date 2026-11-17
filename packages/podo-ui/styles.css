@@ -1848,6 +1848,11 @@
   background: var(--podo-table-table-tr-focused, #f4f4f5);
 }
 
+/* Hono island 래퍼(podo-ui/hono/client 마운트 자리) — 레이아웃에 끼지 않아요. */
+.podo-island {
+  display: contents;
+}
+
 /* Icon 베이스 — 글리프 폰트/코드포인트는 생성된 PodoIcons.css가 담당. */
 .podo-icon {
   color: inherit;

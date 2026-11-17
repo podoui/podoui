@@ -58,6 +58,7 @@
       "types": "./dist/hono/index.d.ts",
       "import": "./dist/hono/index.js"
     },
+    "./hono/client": "./dist/hono/client.js",
     "./native": {
       "types": "./dist/native/index.d.ts",
       "import": "./dist/native/index.js"

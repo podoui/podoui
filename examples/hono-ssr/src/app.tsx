@@ -7,7 +7,7 @@ import { readFile } from "node:fs/promises";
 import { Hono } from "hono";
 import type { Child } from "hono/jsx";
 import { secureHeaders } from "hono/secure-headers";
-import { Button, EditorView, Field, Input, Textarea } from "@podoui/hono";
+import { Button, Chip, EditorView, Field, Input, Select, Switch, Textarea } from "@podoui/hono";
 
 export const app = new Hono();
 
@@ -29,6 +29,7 @@ app.use(
 const podoUi = new URL("../node_modules/podo-ui/", import.meta.url);
 const assetFiles: Record<string, URL> = {
   "styles.css": new URL("styles.css", podoUi),
+  "client.js": new URL("dist/hono/client.js", podoUi),
 };
 const iconAssets = new URL("dist/icons-assets/", podoUi);
 const contentTypes: Record<string, string> = {
@@ -62,6 +63,7 @@ function Page({ title, children }: { title: string; children: Child }) {
         <title>{title} · podo hono-ssr</title>
         <link rel="stylesheet" href="/assets/styles.css" />
         <link rel="stylesheet" href="/assets/PodoIcons.css" />
+        <script defer src="/assets/client.js"></script>
       </head>
       <body>
         <main>
@@ -75,6 +77,7 @@ function Page({ title, children }: { title: string; children: Child }) {
 
 const pages: Array<[path: string, title: string]> = [
   ["/form", "폼 · 네이티브 속성"],
+  ["/select-chip", "Select · Chip · Switch"],
   ["/editor-view", "EditorView"],
 ];
 
@@ -144,6 +147,36 @@ app.get("/echo", (c) => {
     </Page>
   );
 });
+
+const fruit = [
+  { value: "apple", label: "사과" },
+  { value: "pear", label: "배" },
+  { value: "grape", label: "포도" },
+  { value: "peach", label: "복숭아" },
+];
+
+app.get("/select-chip", (c) =>
+  c.html(
+    <Page title="Select · Chip · Switch">
+      <form method="get" action="/echo">
+        <Field id="single" label="단일 선택">
+          <Select name="single" options={fruit} value="pear" />
+        </Field>
+        <Field id="multi" label="다중 선택">
+          <Select name="multi" multiple clearable options={fruit} values={["apple"]} />
+        </Field>
+        <Field id="search" label="검색">
+          <Select name="search" searchable options={fruit} placeholder="과일 검색" />
+        </Field>
+        <p>
+          <Chip id="chip-toggle">토글 칩</Chip> <Chip removable>제거형 칩</Chip>
+        </p>
+        <Switch id="notify" label="알림" />
+        <Button type="submit">제출</Button>
+      </form>
+    </Page>
+  )
+);
 
 app.get("/editor-view", (c) =>
   c.html(
