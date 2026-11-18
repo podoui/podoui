@@ -117,6 +117,7 @@ const pages: Array<[path: string, title: string]> = [
   ["/overlays", "Toast · Tooltip · Table(중첩)"],
   ["/editor", "Editor · 이미지 업로드"],
   ["/long", "긴 페이지 · 스크롤 뒤 portal"],
+  ["/datepicker-fit", "DatePicker 경계 맞춤"],
   ["/editor-view", "EditorView"],
 ];
 
@@ -395,6 +396,116 @@ app.get("/long", (c) =>
     </Page>
   )
 );
+
+// DatePicker 드롭다운 경계 맞춤 확인(계획 podoui-datepicker-fit) — 영역마다 따로 열어요(드로어가
+// 다른 영역을 덮지 않게). A 뷰포트 중간 · B 드로어 모사(본문 72~709 · 푸터 91px, 1280×800 기준) ·
+// C 작은 스크롤 경계 · D datetime 시간 패널. A·B·C 는 `showActions` 로 적용 행을 둬요(눌린 패널에서 적용 도달 확인).
+const fitAreas: Array<[area: string, title: string]> = [
+  ["a", "A 뷰포트 중간"],
+  ["b", "B 드로어"],
+  ["c", "C 작은 경계"],
+  ["d", "D 시간 패널"],
+];
+const clipBox = (height: number) =>
+  `height:${height}px;overflow:auto;border:1px dashed #999;margin:0 0 16px`;
+
+function FitArea({ area }: { area: string }) {
+  if (area === "b") {
+    return (
+      <>
+        <div
+          id="fit-drawer"
+          style="position:fixed;top:72px;bottom:91px;right:0;width:420px;background:#f6f6f6;border-left:1px solid #ccc"
+        >
+          <div id="fit-drawer-body" style="height:100%;overflow:auto;padding:0 16px">
+            <div style="height:28px" aria-hidden="true" />
+            <p>본문 상단</p>
+            <DatePicker showActions id="fit-b-top" name="bTop" portal={false} />
+            <div style="height:107px" aria-hidden="true" />
+            <p>본문 중간</p>
+            <DatePicker showActions id="fit-b-mid" name="bMid" portal={false} />
+            <div style="height:226px" aria-hidden="true" />
+            <p>본문 하단(계약 기간 칸 위치)</p>
+            <DatePicker showActions id="fit-b-bottom" name="bBottom" portal={false} />
+            <div style="height:400px" aria-hidden="true" />
+          </div>
+        </div>
+        <div
+          id="fit-drawer-footer"
+          style="position:fixed;left:0;right:0;bottom:0;height:91px;background:#333;z-index:2000"
+        />
+      </>
+    );
+  }
+  if (area === "c") {
+    return (
+      <>
+        <p>높이 414px 상자</p>
+        <div id="fit-c-414" style={clipBox(414)}>
+          <div style="height:170px" aria-hidden="true" />
+          <DatePicker showActions id="fit-c-414-dp" name="c414" portal={false} />
+          <div style="height:400px" aria-hidden="true" />
+        </div>
+        <p>높이 140px 상자</p>
+        <div id="fit-c-140" style={clipBox(140)}>
+          <div style="height:10px" aria-hidden="true" />
+          <DatePicker showActions id="fit-c-140-dp" name="c140" portal={false} />
+          <div style="height:200px" aria-hidden="true" />
+        </div>
+        <p>극소 상자(지원 범위 밖) 높이 80px · 50px</p>
+        <div id="fit-c-80" style={clipBox(80)}>
+          <div style="height:20px" aria-hidden="true" />
+          <DatePicker showActions id="fit-c-80-dp" name="c80" portal={false} />
+          <div style="height:100px" aria-hidden="true" />
+        </div>
+        <div id="fit-c-50" style={clipBox(50)}>
+          <div style="height:5px" aria-hidden="true" />
+          <DatePicker showActions id="fit-c-50-dp" name="c50" portal={false} />
+          <div style="height:100px" aria-hidden="true" />
+        </div>
+      </>
+    );
+  }
+  if (area === "d") {
+    return (
+      <>
+        <p>높이 250px 상자 안 datetime</p>
+        <div id="fit-d-250" style={clipBox(250)}>
+          <div style="height:10px" aria-hidden="true" />
+          <DatePicker id="fit-d-dp" type="datetime" name="dAt" portal={false} />
+          <div style="height:300px" aria-hidden="true" />
+        </div>
+      </>
+    );
+  }
+  return (
+    <>
+      <div id="fit-a-spacer" style="height:293px" aria-hidden="true" />
+      <div style="display:flex;gap:24px;flex-wrap:wrap">
+        <DatePicker showActions id="fit-a-inline" name="aInline" portal={false} />
+        <DatePicker showActions id="fit-a-portal" name="aPortal" portal />
+        <DatePicker showActions id="fit-a-down" name="aDown" portal={false} direction="down" />
+      </div>
+      <div style="height:1200px" aria-hidden="true" />
+    </>
+  );
+}
+
+app.get("/datepicker-fit", (c) => {
+  const area = c.req.query("area") ?? "a";
+  return c.html(
+    <Page title="DatePicker 경계 맞춤">
+      <p>
+        {fitAreas.map(([key, title]) => (
+          <>
+            <a href={`/datepicker-fit?area=${key}`}>{title}</a>{" "}
+          </>
+        ))}
+      </p>
+      <FitArea area={area} />
+    </Page>
+  );
+});
 
 app.get("/editor-view", (c) =>
   c.html(

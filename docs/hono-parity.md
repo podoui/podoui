@@ -247,7 +247,7 @@ Switch 는 island 라 이 표가 아니라 브리지가 `podo:checked-change` �
 | D-15 | Toaster 카드가 스택 폭 밖으로 34px 넘쳐요 — `.podo-toast` 가 content-box 에 `width: 100%` + 패딩이라, 전역 `box-sizing` 리셋 없는 앱(React 포함)에서 보여요(T7 실브라우저). | `styles.css` `.podo-toaster .podo-toast` 에 `box-sizing: border-box`(공용 결함 수정). `packages/web` 웹컴포넌트 CSS(`podoWebComponentCss`)의 같은 규칙 사본은 2.3.11 범위 밖이었고 **2.4.0 에서 같은 선언을 넣어 수정**했어요(`packages/web/src/index.test.ts` 단언) |
 | D-16 | 다중 Select 에서 옵션을 클릭하면 포커스가 `body` 로 가서 Escape 로 닫히지 않아요(옵션이 포커스를 받지 않는 요소, T7). | React 동작 그대로 유지 — 같은 소스라 Hono 도 같아요. 바깥 클릭으로 닫혀요 |
 | D-17 | Editor SSR 셸의 빈 툴바 자리(44px)가 마운트 뒤 실제 툴바(49px)보다 낮아 본문이 5px 밀려요(T7). | 마운트 전 Editor island 의 툴바 자리 `min-height: 49px`(CSS, 데스크톱 한 줄 기준 — 600px 이하에서 툴바가 여러 줄로 흐르면 그 높이까지는 맞추지 않아요) |
-| D-18 | 샘플에 계획의 「스크롤이 필요한 긴 페이지에 portal island」 가 없었어요(T7). | 샘플 `/long`(스크롤 뒤 Select·DatePicker(portal)·Tooltip) 추가. 2.3.11 까지는 DatePicker 기본 `direction="down"` 이라 뷰포트 아래로 넘칠 수 있었어요 — **2.4.0 에서 기본을 `auto` 로 바꿔 수정**했어요(React 한 곳 · Hono 는 같은 소스, 아래가 부족하고 위가 더 넓으면 위로 열려요). 항상 아래로 열려면 `direction="down"` 명시 |
+| D-18 | 샘플에 계획의 「스크롤이 필요한 긴 페이지에 portal island」 가 없었어요(T7). | 샘플 `/long`(스크롤 뒤 Select·DatePicker(portal)·Tooltip) 추가. 2.3.11 까지는 DatePicker 기본 `direction="down"` 이라 뷰포트 아래로 넘칠 수 있었어요 — **2.4.0 에서 기본을 `auto` 로 바꿔 수정**했어요(React 한 곳 · Hono 는 같은 소스, 아래가 부족하고 위가 더 넓으면 위로 열려요). 항상 아래로 열려면 `direction="down"` 명시. **2.4.1 에서 경계 기준·높이 제한** — `auto` 경계가 뷰포트 ∩ 가장 가까운 스크롤/클립 컨테이너(portal 이면 뷰포트)이고, 양쪽 다 부족하면 넓은 쪽 + 달력 패널만 `max-height`·내부 스크롤(시간 패널·명시 방향은 맞춤 없음). 2.4.0 QA 의 입력 top 668 「아래로 열림」은 측정 시점 문제(배치 전 2프레임 측정, 최종은 위) — 2프레임 깜빡임은 바꾸지 않음 |
 
 ## 8. T1 선행 확인·게이트 증거
 

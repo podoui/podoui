@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import type { ReactElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import DatePicker from "./datepicker.js";
 import type { DatePickerValue } from "./datepicker.js";
@@ -1454,6 +1455,163 @@ describe("DatePicker", () => {
       expect(screen.getByRole("dialog", { name: "날짜 선택" }).className).not.toContain(
         "podo-dp-dropdownUp"
       );
+    });
+  });
+
+  describe("auto fits inside its clipping boundary", () => {
+    // jsdom 은 레이아웃이 없다 — 트리거·클립 상자 rect 와 패널 높이(414)를 요소별로 mock 한다.
+    const originalInnerHeight = Object.getOwnPropertyDescriptor(window, "innerHeight");
+    type Span = [top: number, bottom: number];
+    const rectOf = ([top, bottom]: Span) =>
+      ({
+        top,
+        bottom,
+        left: 20,
+        right: 184,
+        width: 164,
+        height: bottom - top,
+        x: 20,
+        y: top,
+        toJSON: () => ({}),
+      }) as DOMRect;
+    const mockLayout = (innerHeight: number, input: Span, clip?: Span) => {
+      vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+        cb(0);
+        return 0;
+      });
+      vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(414);
+      vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
+        this: HTMLElement
+      ) {
+        if (this.classList.contains("podo-dp-input")) return rectOf(input);
+        if (clip && this.dataset.testid === "clip") return rectOf(clip);
+        return rectOf([0, 0]);
+      });
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: innerHeight });
+    };
+    const openDialog = (picker: ReactElement, overflowY?: "auto" | "visible") => {
+      render(
+        overflowY ? (
+          <div data-testid="clip" style={{ overflowY }}>
+            {picker}
+          </div>
+        ) : (
+          picker
+        )
+      );
+      fireEvent.click(screen.getByRole("button", { name: "YYYY - MM - DD" }));
+      return screen.getByRole("dialog", { name: "날짜 선택" });
+    };
+    const expectPlacement = (dialog: HTMLElement, up: boolean, maxHeight: number | null) => {
+      expect(dialog.className.includes("podo-dp-dropdownUp")).toBe(up);
+      expect(dialog.style.maxHeight).toBe(maxHeight === null ? "" : `${maxHeight}px`);
+      expect(dialog.style.overflowY).toBe(maxHeight === null ? "" : "auto");
+    };
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+      if (originalInnerHeight) Object.defineProperty(window, "innerHeight", originalInnerHeight);
+      else Reflect.deleteProperty(window, "innerHeight");
+    });
+
+    it.each([
+      // [사례, innerHeight, input, clip, up, maxHeight]
+      ["A1 viewport middle", 800, [396, 436], undefined, true, 384],
+      ["A2 short viewport, more room below", 700, [271, 311], undefined, false, 377],
+      ["A3 short viewport, more room above", 700, [375, 415], undefined, true, 363],
+      ["B1 drawer middle", 800, [350, 390], [72, 709], false, 307],
+      ["B2 drawer bottom (R3 rule)", 800, [668, 708], [72, 709], true, null],
+      ["B3 drawer lower middle", 800, [450, 490], [72, 709], true, 366],
+      ["B4 small boundary", 800, [180, 220], [0, 414], false, 182],
+      ["B5 boundary as tall as the panel", 800, [110, 150], [100, 514], false, 352],
+      ["B6 tiny boundary", 800, [310, 350], [300, 440], false, 78],
+      ["B7 negative room (out of support)", 800, [105, 145], [100, 150], false, 0],
+      ["B8 room 8 (out of support)", 800, [120, 160], [100, 180], false, 8],
+      ["N1 clip outside the viewport falls back", 800, [20, 60], [900, 1200], false, null],
+    ] as const)("%s", (_name, innerHeight, input, clip, up, maxHeight) => {
+      mockLayout(innerHeight, [...input], clip ? [...clip] : undefined);
+      const dialog = openDialog(
+        <DatePicker type="date" value={emptyValue} portal={false} />,
+        clip ? "auto" : undefined
+      );
+      expectPlacement(dialog, up, maxHeight);
+    });
+
+    it("N2 ignores an overflow-visible ancestor", () => {
+      mockLayout(800, [396, 436], [0, 100]);
+      const dialog = openDialog(<DatePicker type="date" value={emptyValue} />, "visible");
+      expectPlacement(dialog, true, 384);
+    });
+
+    it("R4 keeps an explicit direction=down unfitted", () => {
+      mockLayout(700, [375, 415]);
+      const dialog = openDialog(<DatePicker type="date" direction="down" value={emptyValue} />);
+      expectPlacement(dialog, false, null);
+    });
+
+    it("R4' keeps an explicit direction=up unfitted", () => {
+      mockLayout(800, [20, 60]);
+      const dialog = openDialog(<DatePicker type="date" direction="up" value={emptyValue} />);
+      expectPlacement(dialog, true, null);
+    });
+
+    it("T1 never squeezes the time panel (its controls would be clipped)", () => {
+      mockLayout(700, [375, 415]);
+      render(<DatePicker type="time" value={emptyValue} portal={false} />);
+      fireEvent.click(screen.getByRole("button", { name: "시 선택 열기" }));
+      // 같은 입력의 달력 패널(A3)은 363px 로 눌린다 — 시간 패널은 방향만 고르고 높이는 그대로.
+      expectPlacement(screen.getByRole("dialog", { name: "시간 선택" }), true, null);
+    });
+
+    it.each([
+      ["start calendar (instant)", "instant", 0],
+      ["end calendar (period)", "period", -1],
+    ] as const)("M1 re-fits after the shown month changes — %s", (_name, mode, nextIndex) => {
+      // 5주 → 6주처럼 월을 바꿔 패널이 커지는 경우: 처음엔 제한 없음, 월 변경 뒤 제한이 필요하다.
+      mockLayout(800, [396, 436]);
+      let height = 340;
+      vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(() => height);
+      render(<DatePicker type="date" mode={mode} value={emptyValue} portal={false} />);
+      fireEvent.click(screen.getAllByRole("button", { name: "YYYY - MM - DD" })[0]!);
+      const dialog = screen.getByRole("dialog", { name: "날짜 선택" });
+      expectPlacement(dialog, false, null);
+
+      height = 400;
+      fireEvent.click(screen.getAllByRole("button", { name: "다음 달" }).at(nextIndex)!);
+      expectPlacement(screen.getByRole("dialog", { name: "날짜 선택" }), true, 384);
+    });
+
+    it("S1 re-measures the natural height while squeezed on portal scroll/resize", () => {
+      // 눌린 상태(offsetHeight 388 < scrollHeight 414)에서 다시 재도 자연 높이(414)로 판정한다.
+      mockLayout(800, [396, 436]);
+      const dialog = openDialog(<DatePicker type="date" value={emptyValue} portal />);
+      expectPlacement(dialog, true, 388);
+
+      vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(388);
+      vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(414);
+      fireEvent.scroll(window);
+      expectPlacement(dialog, true, 388);
+
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: 700 });
+      fireEvent(window, new Event("resize"));
+      // availBelow 252 < availAbove 388 → 위, 자연 높이 414 > 388 → 388 로 제한(offsetHeight 만 보면 제한 없음).
+      expectPlacement(dialog, true, 388);
+    });
+
+    it("P1 portal opens up against the viewport with no gap above", () => {
+      mockLayout(800, [396, 436]);
+      const dialog = openDialog(<DatePicker type="date" value={emptyValue} portal />);
+      expectPlacement(dialog, true, 388);
+      expect(dialog.style.top).toBe("396px");
+      expect(dialog.style.transform).toBe("translateY(-100%)");
+    });
+
+    it("P2 portal opens down against the viewport", () => {
+      mockLayout(700, [271, 311]);
+      const dialog = openDialog(<DatePicker type="date" value={emptyValue} portal />);
+      expectPlacement(dialog, false, 377);
+      expect(dialog.style.top).toBe("311px");
+      expect(dialog.style.transform).toBe("");
     });
   });
 

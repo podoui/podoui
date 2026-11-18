@@ -693,3 +693,18 @@
   - 완료 기준: 정본 `styles.css` 와 같은 위치에 선언, `index.test.ts` 단언 추가·통과, 스냅샷 변화는 추가 선언 줄만, 정본↔사본 Toast 대조표 보고, D-15 비고 갱신.
 - [x] C3 릴리스 준비 2.4.0 — `packages/podo-ui/package.json` version·루트 `CHANGELOG.md` 수기 갱신(2.3.11 선례 — 새 changeset 없음, 되돌리기: `direction="down"` 명시)
   - 완료 기준: version·CHANGELOG·D-15/D-18 비고·이 절의 버전이 모두 2.4.0(기존 잔존 changeset 은 그대로 — `changeset status` 표시 버전은 판정에 쓰지 않음), `pnpm check`·`build`·`release:verify`·`changeset:dry-run` exit 0, 실브라우저(ego-browser) DatePicker 하단 위로 열림·Toast 폭 일치 확인.
+
+### H. DatePicker 드롭다운 경계 맞춤 (2026-11-18, 2.4.1)
+
+계획 원문: 하네스 `podoui-datepicker-fit-plan-v4`(합의 `podoui-datepicker-fit-consensus-v3`). G(2.4.0) 실브라우저 QA 의 미충족분 — DatePicker 만. 시작 시 `npm view podo-ui version` = `2.4.0`(2.4.0 publish 됨).
+
+- [x] C1 샘플 `/datepicker-fit`(A 뷰포트 중간 · B 드로어 모사 · C 작은 경계 · D datetime 시간 패널)
+  - 완료 기준: A·B·C·D 영역 렌더·메뉴 등록, 라이브러리 소스 변경 0, `pnpm build` exit 0.
+- [x] C2 단위 테스트 「auto fits inside its clipping boundary」(계획 §4 표 전 사례, 외부 동작만 단언)
+  - 완료 기준: 수정 전 실행 결과가 before 열과 사례별로 일치(불일치는 보고), 수정 후 after 열 전부 통과.
+- [x] C3 `auto` 경계 = 뷰포트 ∩ 가장 가까운 잘림 조상(portal 이면 뷰포트), 넓은 쪽 + 가용 높이 `max-height`·내부 스크롤, 명시 `down`/`up` 은 방향 고정·맞춤 없음
+  - 완료 기준: 기존 DatePicker·Hono 테스트 통과(Hono 스냅샷 변화 0), `styles.css` 변경 0, 새 prop 없음. 높이 맞춤은 달력 패널만(시간 패널 제외 — 2026-11-18 총괄 판정, 선택 버튼 잘림 회귀 방지). 지원 범위: 가용 높이 ≥ 패널 padding 32px + 한 줄 정도.
+- [x] R3 「위 공간이 큰데 아래로 열림」 원인 — 측정 시점 문제로 확인·총괄 판정으로 종결
+  - 판정(2026-11-18 총괄, 실측 근거): 668 사례는 측정 시점 문제 — 배치 계산 전 2프레임(아래 712~1063)을 잰 값이고 최종 위치는 위(313~664, map-admin dev 2.4.0·샘플 동일). 라이브러리 배치 버그 아님. 2프레임 깜빡임은 계획 §6 「안 함」.
+- [x] C4 릴리스 준비 2.4.1 — `packages/podo-ui/package.json` version·루트 `CHANGELOG.md` 수기(새 changeset 없음)·D-18 비고
+  - 완료 기준: version·CHANGELOG·D-18·이 절 제목이 모두 2.4.1, `pnpm check`·`build`·`release:verify`·`changeset:dry-run` exit 0, 실브라우저(ego-browser) `/datepicker-fit` 확인.

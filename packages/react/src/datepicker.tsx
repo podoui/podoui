@@ -163,8 +163,12 @@ export interface DatePickerProps {
   hideNavArrow?: boolean;
   /**
    * 드롭다운 열림 방향 (기본 `auto`).
-   * `auto` 는 뷰포트 기준으로 아래 공간이 드롭다운 높이보다 부족하고 위가 더 넓으면 위로, 아니면 아래로 열어요.
-   * 위·아래 모두 부족하면 더 넓은 쪽으로 열려요. 항상 아래로 열려면 `direction="down"`.
+   * `auto` 는 뷰포트와 가장 가까운 스크롤/클립 컨테이너의 교집합 기준(portal 이면 뷰포트)으로, 열릴 때와 표시 월을 바꿀 때 계산해요.
+   * 아래 공간이 드롭다운 높이보다 부족하고 위가 더 넓으면 위로, 아니면 아래로 열어요.
+   * 둘 다 부족하면 넓은 쪽으로 열고 그 안에 들어가게 높이를 제한해 안에서 스크롤해요
+   * (달력 패널만 — 시간 패널은 높이를 줄이지 않아요. 지원 범위: 가용 높이가 패널 상하 여백 32px + 한 줄 정도 이상.
+   * 그보다 작은 영역에선 넘칠 수 있어요).
+   * `down`/`up` 명시는 방향 고정이고 높이 맞춤을 하지 않아요. 항상 아래로 열려면 `direction="down"`.
    */
   direction?: "down" | "up" | "auto";
   /** 초기화 버튼 클릭 콜백 */
@@ -181,6 +185,33 @@ export interface DatePickerProps {
 }
 
 // Helper functions
+
+// 드롭다운과 트리거 사이 간격(styles.css 의 `calc(100% + 4px)`·`margin-top: 4px` 와 같아야 해요)과
+// 경계 안쪽 여백(가로 클램프와 같은 8px).
+const DROPDOWN_GAP = 4;
+const DROPDOWN_EDGE = 8;
+
+/** auto 배치 경계 — portal 이면 뷰포트, 아니면 뷰포트 ∩ 가장 가까운 스크롤/클립 조상(html·body 제외). */
+const getClipBoundary = (
+  start: HTMLElement | null,
+  portal: boolean
+): { top: number; bottom: number } => {
+  const viewport = { top: 0, bottom: window.innerHeight };
+  if (portal) return viewport;
+  for (
+    let el = start;
+    el && el !== document.body && el !== document.documentElement;
+    el = el.parentElement
+  ) {
+    const style = window.getComputedStyle(el);
+    if (!/auto|scroll|hidden|clip/.test(`${style.overflowY} ${style.overflow}`)) continue;
+    const rect = el.getBoundingClientRect();
+    const top = Math.max(0, rect.top);
+    const bottom = Math.min(window.innerHeight, rect.bottom);
+    return top < bottom ? { top, bottom } : viewport;
+  }
+  return viewport;
+};
 
 /** CalendarInitial 값을 Date로 변환 */
 const resolveCalendarInitial = (initial: CalendarInitial | undefined, fallback: Date): Date => {
@@ -1083,6 +1114,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   const [resolvedDirection, setResolvedDirection] = useState<"up" | "down">(
     direction === "up" ? "up" : "down"
   );
+  const [dropdownMaxHeight, setDropdownMaxHeight] = useState<number | null>(null);
 
   const shouldShowActions = showActions ?? (mode === "period" && type !== "hour");
   const isCalendarOpen = selectingPart === "date" || selectingPart === "endDate";
@@ -1102,17 +1134,26 @@ const DatePicker: React.FC<DatePickerProps> = ({
     if (!inputRef.current) return;
 
     const inputRect = inputRef.current.getBoundingClientRect();
-    const dropdownHeight = dropdownRef.current?.offsetHeight ?? 420;
-    const spaceBelow = window.innerHeight - inputRect.bottom;
-    const spaceAbove = inputRect.top;
-    const nextDirection =
-      direction === "auto"
-        ? spaceBelow < dropdownHeight && spaceAbove > spaceBelow
-          ? "up"
-          : "down"
-        : direction;
+    let nextDirection: "up" | "down" = direction === "up" ? "up" : "down";
+    let nextMaxHeight: number | null = null;
+    if (direction === "auto") {
+      // 자연 높이: 이미 maxHeight 로 눌린 뒤 재측정해도 흔들리지 않게 scrollHeight 를 같이 본다.
+      const el = dropdownRef.current;
+      const dropdownHeight = el ? Math.max(el.offsetHeight, el.scrollHeight) : 420;
+      const boundary = getClipBoundary(containerRef.current?.parentElement ?? null, portal);
+      // portal up 은 top=input.top + translateY(-100%) 라 margin-bottom 이 간격을 만들지 않는다.
+      const gapUp = portal ? 0 : DROPDOWN_GAP;
+      const availBelow = boundary.bottom - DROPDOWN_EDGE - (inputRect.bottom + DROPDOWN_GAP);
+      const availAbove = inputRect.top - gapUp - (boundary.top + DROPDOWN_EDGE);
+      nextDirection = dropdownHeight > availBelow && availAbove > availBelow ? "up" : "down";
+      const avail = nextDirection === "up" ? availAbove : availBelow;
+      // 시간 패널(고정 335px, 안쪽이 overflow:hidden)은 눌리면 선택 버튼이 잘려 닿을 수 없다 —
+      // 높이 맞춤은 달력 패널에만 건다(시간 패널은 수정 전처럼 자연 높이로 열린다).
+      nextMaxHeight = !isTimeOpen && dropdownHeight > avail ? Math.max(0, Math.floor(avail)) : null;
+    }
 
     setResolvedDirection(nextDirection);
+    setDropdownMaxHeight(nextMaxHeight);
     setDropdownMaxWidth(
       Math.max(
         280,
@@ -1135,19 +1176,21 @@ const DatePicker: React.FC<DatePickerProps> = ({
       left: inputRect.left,
       right: window.innerWidth - inputRect.right,
     });
-  }, [align, direction, mode, quickSelect]);
+  }, [align, direction, isTimeOpen, mode, portal, quickSelect]);
 
   useEffect(() => {
     if (!isDropdownOpen) {
       setPortalPosition(null);
       setDropdownMaxWidth(null);
       setDropdownInlineLeft(null);
+      setDropdownMaxHeight(null);
       return;
     }
 
     const frame = requestAnimationFrame(updateDropdownPlacement);
     return () => cancelAnimationFrame(frame);
-  }, [isDropdownOpen, updateDropdownPlacement]);
+    // 표시 월(시작·종료 달력)이 바뀌면 주 수(5↔6주)만큼 패널 높이가 달라져 다시 맞춘다.
+  }, [isDropdownOpen, updateDropdownPlacement, viewDate, endViewDate]);
 
   useEffect(() => {
     if (!isDropdownOpen || !portal) return;
@@ -2243,6 +2286,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
     const upClass = resolvedDirection === "up" ? styles.dropdownUp : "";
     const commonStyle: React.CSSProperties = {
       ...(dropdownMaxWidth ? { maxWidth: dropdownMaxWidth } : {}),
+      ...(dropdownMaxHeight !== null ? { maxHeight: dropdownMaxHeight, overflowY: "auto" } : {}),
       ...(!portal && dropdownInlineLeft !== null
         ? { left: dropdownInlineLeft, right: "auto" }
         : {}),
