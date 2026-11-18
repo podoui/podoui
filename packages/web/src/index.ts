@@ -984,6 +984,8 @@ input {
    card invisible — the entrance is a transform-only slide. */
 .podo-toaster .podo-toast {
   animation: podo-toast-in 0.18s ease;
+  /* Keep width 100% + padding inside the stack width without a global reset (D-15). */
+  box-sizing: border-box;
   grid-area: 1 / 1;
   opacity: 1;
   transition:

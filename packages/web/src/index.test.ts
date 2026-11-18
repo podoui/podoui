@@ -30,6 +30,10 @@ describe("@podoui/web", () => {
     expect(podoWebComponentCss).toContain('.podo-select[data-state="invalid"][data-open]');
     // 단일 선택의 선택 셀은 라벨도 primary — 다중(멀티셀렉터블) 셀은 제외.
     expect(podoWebComponentCss).toContain(".podo-select__menu:not([aria-multiselectable])");
+    // Toast cards stay inside the stack width without a global box-sizing reset (D-15).
+    expect(podoWebComponentCss).toMatch(
+      /\.podo-toaster \.podo-toast \{[^}]*box-sizing: border-box;/
+    );
     // Table ships as classes only (no shadow element — table semantics).
     expect(podoWebComponentCss).toContain('.podo-table[data-type="grid"]');
     expect(podoWebComponentCss).toContain('.podo-table [data-align="right"]');

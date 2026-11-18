@@ -253,7 +253,7 @@
         "values": ["down", "up", "auto"]
       },
       "description": "드롭다운 열림 방향.",
-      "default": "down"
+      "default": "auto"
     },
     {
       "name": "onReset",

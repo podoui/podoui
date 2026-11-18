@@ -1399,6 +1399,64 @@ describe("DatePicker", () => {
     );
   });
 
+  describe("default direction (auto)", () => {
+    // jsdom은 레이아웃이 없어 offsetHeight 0·rect 0 이다 — 측정값을 mock 해야 auto 판정이 의미를 갖는다.
+    const originalInnerHeight = Object.getOwnPropertyDescriptor(window, "innerHeight");
+    const mockLayout = (rect: { top: number; bottom: number }) => {
+      vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+        cb(0);
+        return 0;
+      });
+      vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(420);
+      vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({
+        top: rect.top,
+        bottom: rect.bottom,
+        left: 20,
+        right: 184,
+        width: 164,
+        height: rect.bottom - rect.top,
+        x: 20,
+        y: rect.top,
+        toJSON: () => ({}),
+      } as DOMRect);
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: 768 });
+    };
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+      // jsdom 이 innerHeight 를 자기 속성으로 두면 원래 descriptor 로, 아니면 mock 이 만든 자기 속성을 지워 원복한다.
+      if (originalInnerHeight) Object.defineProperty(window, "innerHeight", originalInnerHeight);
+      else Reflect.deleteProperty(window, "innerHeight");
+    });
+
+    it("opens upward without a direction prop when the trigger sits near the viewport bottom", () => {
+      mockLayout({ top: 720, bottom: 760 });
+      render(<DatePicker type="date" value={emptyValue} />);
+      fireEvent.click(screen.getByRole("button", { name: "YYYY - MM - DD" }));
+      expect(screen.getByRole("dialog", { name: "날짜 선택" }).className).toContain(
+        "podo-dp-dropdownUp"
+      );
+    });
+
+    it("opens downward without a direction prop when the trigger sits near the viewport top", () => {
+      mockLayout({ top: 20, bottom: 60 });
+      render(<DatePicker type="date" value={emptyValue} />);
+      fireEvent.click(screen.getByRole("button", { name: "YYYY - MM - DD" }));
+      expect(screen.getByRole("dialog", { name: "날짜 선택" }).className).not.toContain(
+        "podo-dp-dropdownUp"
+      );
+    });
+
+    it("keeps opening downward for an explicit direction=down near the viewport bottom", () => {
+      mockLayout({ top: 720, bottom: 760 });
+      render(<DatePicker type="date" direction="down" value={emptyValue} />);
+      fireEvent.click(screen.getByRole("button", { name: "YYYY - MM - DD" }));
+      expect(screen.getByRole("dialog", { name: "날짜 선택" }).className).not.toContain(
+        "podo-dp-dropdownUp"
+      );
+    });
+  });
+
   it("lets initialCalendar override a controlled value month like v1.1.14", () => {
     render(
       <DatePicker

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.4.0 (2026-11-18)
+
+- DatePicker: 기본 `direction`을 `"down"`에서 `"auto"`로 바꾼다(React·Hono 같은 소스). 뷰포트
+  기준으로 아래 공간이 드롭다운 높이보다 부족하고 위가 더 넓으면 위로 열린다(위·아래 모두
+  부족하면 더 넓은 쪽으로 열려 일부 넘칠 수 있다). 이전처럼 항상 아래로 열려면 `direction="down"`을
+  명시한다.
+- Styles(web): 웹 컴포넌트 CSS(`podoWebComponentCss`)의 Toaster 카드도 전역 `box-sizing` 리셋
+  없는 페이지에서 스택 폭을 넘지 않는다(`.podo-toaster .podo-toast { box-sizing: border-box }`,
+  2.3.11 `styles.css` 수정과 같은 규칙).
+
 ## 2.3.11 (2026-11-17)
 
 - Hono: 클라이언트 스크립트가 React `autoFocus`를 마운트 뒤 포커스로 반영한다(검색형 Select

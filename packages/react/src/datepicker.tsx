@@ -161,7 +161,11 @@ export interface DatePickerProps {
   quickSelect?: boolean;
   /** quickSelect 기간 이동 화살표 숨김 */
   hideNavArrow?: boolean;
-  /** 드롭다운 열림 방향 */
+  /**
+   * 드롭다운 열림 방향 (기본 `auto`).
+   * `auto` 는 뷰포트 기준으로 아래 공간이 드롭다운 높이보다 부족하고 위가 더 넓으면 위로, 아니면 아래로 열어요.
+   * 위·아래 모두 부족하면 더 넓은 쪽으로 열려요. 항상 아래로 열려면 `direction="down"`.
+   */
   direction?: "down" | "up" | "auto";
   /** 초기화 버튼 클릭 콜백 */
   onReset?: () => void;
@@ -1011,7 +1015,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   portal = false,
   quickSelect = false,
   hideNavArrow = false,
-  direction = "down",
+  direction = "auto",
   onReset,
   name,
   fromName,

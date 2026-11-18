@@ -682,3 +682,14 @@
   - Select 펼침 체브론·Chip/Toast 닫기·Select 체크 아이콘을 인라인 SVG 에서 PODO 아이콘 폰트(`chevron-down`·`close`·`check`)로 교체 — `chevron-down` 은 Figma 원본 글리프, `close`·`check` 는 기존 기본 폰트 글리프 그대로(Figma 1.2px 선보다 굵음, 2026-11-17 결정 D-6). 선 두께·크기 차이는 T7 스크린샷으로 확인 요청
   - Tooltip 화살표(4×16 포인터)는 아이콘이 아닌 모양이라 아이콘 폰트 대신 CSS `clip-path` 로 같은 좌표를 그림 — 시안 확인 요청
   - Hono 전용 확장(시안 없음): 폼 제출 `name`(Select hidden·DatePicker hidden·Editor textarea), Editor `uploadUrl`, island 래퍼(`display: contents`) — 시안 영향 없음 확인 요청
+
+### G. DatePicker 기본 direction auto · 웹컴포넌트 Toast 폭 (2026-11-18)
+
+계획 원문: 하네스 `podoui-datepicker-toast-plan-v4`. `docs/hono-parity.md` §7 D-15·D-18 후속, podo-ui 2.4.0.
+
+- [x] C1 DatePicker 기본 `direction` 을 `"down"` → `"auto"` (React 한 곳, Hono 는 같은 소스)
+  - 완료 기준: `datepicker.tsx` 기본값 `"auto"`·JSDoc 「뷰포트 기준」, spec `default: "auto"`, 기본 down 서술 grep 0, 신규 React 테스트(하단 → `podo-dp-dropdownUp` / 상단 → 없음 / `direction="down"` 명시 → 없음, `offsetHeight` mock) 와 기존 React·Hono 테스트 통과(Hono 스냅샷 변화 0), D-18 비고 갱신.
+- [x] C2 웹컴포넌트 CSS 사본(`podoWebComponentCss`) `.podo-toaster .podo-toast` 에 `box-sizing: border-box`
+  - 완료 기준: 정본 `styles.css` 와 같은 위치에 선언, `index.test.ts` 단언 추가·통과, 스냅샷 변화는 추가 선언 줄만, 정본↔사본 Toast 대조표 보고, D-15 비고 갱신.
+- [x] C3 릴리스 준비 2.4.0 — `packages/podo-ui/package.json` version·루트 `CHANGELOG.md` 수기 갱신(2.3.11 선례 — 새 changeset 없음, 되돌리기: `direction="down"` 명시)
+  - 완료 기준: version·CHANGELOG·D-15/D-18 비고·이 절의 버전이 모두 2.4.0(기존 잔존 changeset 은 그대로 — `changeset status` 표시 버전은 판정에 쓰지 않음), `pnpm check`·`build`·`release:verify`·`changeset:dry-run` exit 0, 실브라우저(ego-browser) DatePicker 하단 위로 열림·Toast 폭 일치 확인.
