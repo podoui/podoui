@@ -679,7 +679,7 @@
 - [ ] (범위 밖 기록, 2026-11-17 D-7) `packages/spec/samples/components/select.component.json` 이 스키마 위반 — `states[2].name = "completed"` 가 상태 enum 밖이라 `parseComponentDocument` 가 실패해요(HEAD `c866cae6` 부터). 지금은 이 파일을 파싱하는 테스트가 없어요.
   - 완료 기준: 상태 이름을 스키마 어휘로 바꾸거나 스키마에 추가하고, 샘플 컴포넌트 전체를 파싱하는 테스트가 통과한다.
 - 시안 확인 요청(Figma, 코드는 아래로 결정):
-  - Select 펼침 체브론·Chip/Toast 닫기·Select 체크 아이콘을 인라인 SVG 에서 PODO 아이콘 폰트(`chevron-down`·`close`·`check`)로 교체 — `chevron-down` 은 Figma 원본 글리프, `close`·`check` 는 기존 기본 폰트 글리프 그대로(Figma 1.2px 선보다 굵음, 2026-11-17 결정 D-6). 선 두께·크기 차이는 T7 스크린샷으로 확인 요청
+  - Select 펼침 체브론·Chip/Toast 닫기·Select 체크 아이콘을 인라인 SVG 에서 PODO 아이콘 폰트(`chevron-down`·`close`·`check`)로 교체 — `chevron-down` 은 Figma 원본 글리프, `close`·`check` 는 기존 기본 폰트 글리프 그대로(Figma 1.2px 선보다 굵음, 2026-11-17 결정 D-6). 선 두께·크기 차이는 T7 스크린샷으로 확인 요청 — **해소(2026-11-19, podo-ui 2.4.2)**: `close`·`check` 도 문서 프로젝트 Figma 원본 글리프로 교체(D-6 후속), 굵기 차이 없음
   - Tooltip 화살표(4×16 포인터)는 아이콘이 아닌 모양이라 아이콘 폰트 대신 CSS `clip-path` 로 같은 좌표를 그림 — 시안 확인 요청
   - Hono 전용 확장(시안 없음): 폼 제출 `name`(Select hidden·DatePicker hidden·Editor textarea), Editor `uploadUrl`, island 래퍼(`display: contents`) — 시안 영향 없음 확인 요청
 

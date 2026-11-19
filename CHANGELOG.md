@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.4.2 (2026-11-19)
+
+- Icons: 기본 아이콘 폰트(`podo-ui/icons.css`)의 `calendar`·`time`·`refresh`·`chevron-left`·
+  `chevron-right`·`check`·`close`·`search`·`bold`·`italic`·`underline`·`strikethrough`·`table`·
+  `link`·`code` 15개 글리프를 문서 사이트(podoui.com)와 같은 Figma 원본 선 아이콘으로 바꾼다
+  (코드포인트는 그대로). DatePicker 입력·이전/다음 버튼, Select·Chip·Toast의 체크·닫기 아이콘이
+  문서 사이트와 같은 모양으로 보인다. 나머지 기본 아이콘 15개는 이미 같아서 바뀌지 않는다.
+  적용: `podo-ui/icons.css` 소비자는 패키지 업데이트만 하면 된다. CLI 생성물(`podo build`) 소비자는
+  `podo build --dry-run`으로 바뀌는 파일을 확인한 뒤 `podo build --force`로 다시 만든다. 프로젝트가
+  자체 SVG(`.podo/icons/svg`)를 두었으면 그 SVG가 계속 우선한다.
+
 ## 2.4.1 (2026-11-18)
 
 - DatePicker: `direction="auto"`(기본)가 뷰포트와 가장 가까운 스크롤/클립 컨테이너의 교집합을
